@@ -10,11 +10,20 @@ import Cocoa
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-
-
+	
+	var mainViewController: ViewController?
+	
+	let username = ""
+	let password = ""
 
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
+		
+		let config = Config(quality: .lossless)
+		let session = Session(config: config)
+		
+		print(session.login(username: username, password: password))
+		print(session.checkLogin())
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
