@@ -11,6 +11,9 @@
 		B0E582D4223764A500ADAE6C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D3223764A500ADAE6C /* ViewController.swift */; };
 		B0E582D6223764A600ADAE6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0E582D5223764A600ADAE6C /* Assets.xcassets */; };
 		B0E582D9223764A600ADAE6C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E582D7223764A600ADAE6C /* Main.storyboard */; };
+		B0E582E2223764C100ADAE6C /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E1223764C100ADAE6C /* Network.swift */; };
+		B0E582E422376D5000ADAE6C /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E322376D5000ADAE6C /* Models.swift */; };
+		B0E582E62238C84F00ADAE6C /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E52238C84F00ADAE6C /* Logic.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +24,9 @@
 		B0E582D8223764A600ADAE6C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B0E582DA223764A600ADAE6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0E582DB223764A600ADAE6C /* TidalSwift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TidalSwift.entitlements; sourceTree = "<group>"; };
+		B0E582E1223764C100ADAE6C /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		B0E582E322376D5000ADAE6C /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		B0E582E52238C84F00ADAE6C /* Logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logic.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +60,9 @@
 			isa = PBXGroup;
 			children = (
 				B0E582D1223764A500ADAE6C /* AppDelegate.swift */,
+				B0E582E1223764C100ADAE6C /* Network.swift */,
+				B0E582E52238C84F00ADAE6C /* Logic.swift */,
+				B0E582E322376D5000ADAE6C /* Models.swift */,
 				B0E582D3223764A500ADAE6C /* ViewController.swift */,
 				B0E582D5223764A600ADAE6C /* Assets.xcassets */,
 				B0E582D7223764A600ADAE6C /* Main.storyboard */,
@@ -95,6 +104,11 @@
 				TargetAttributes = {
 					B0E582CD223764A500ADAE6C = {
 						CreatedOnToolsVersion = 10.1;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -134,7 +148,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0E582D4223764A500ADAE6C /* ViewController.swift in Sources */,
+				B0E582E62238C84F00ADAE6C /* Logic.swift in Sources */,
 				B0E582D2223764A500ADAE6C /* AppDelegate.swift in Sources */,
+				B0E582E2223764C100ADAE6C /* Network.swift in Sources */,
+				B0E582E422376D5000ADAE6C /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,8 +289,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TidalSwift/TidalSwift.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = V7E5P7292M;
 				INFOPLIST_FILE = TidalSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -281,6 +300,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
@@ -290,8 +310,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TidalSwift/TidalSwift.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = V7E5P7292M;
 				INFOPLIST_FILE = TidalSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -299,6 +321,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
