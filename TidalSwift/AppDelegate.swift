@@ -34,11 +34,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		let loginInfo = importLoginInformation()
 		
-		let config = Config(quality: .lossless)
+		let config = Config(quality: .LOSSLESS)
 		let session = Session(config: config)
 
 		print(session.login(username: loginInfo.username, password: loginInfo.password))
 		print(session.checkLogin())
+		
+		print(session.getMediaUrl(trackId: 73034791)!)
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {

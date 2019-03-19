@@ -98,7 +98,7 @@ class Track: Model {
 	}
 }
 
-class SearchResult: Model {
+class SearchResult {
 	var artists = [Artist]()
 	var albums = [Album]()
 	var tracks = [Track]()

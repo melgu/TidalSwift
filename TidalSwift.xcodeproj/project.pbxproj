@@ -15,6 +15,7 @@
 		B0E582E422376D5000ADAE6C /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E322376D5000ADAE6C /* Models.swift */; };
 		B0E582E62238C84F00ADAE6C /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E52238C84F00ADAE6C /* Logic.swift */; };
 		B0E582E82240869900ADAE6C /* Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0E582E72240869900ADAE6C /* Login Information.txt */; };
+		B0E582EA2240C00100ADAE6C /* Codables.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E92240C00100ADAE6C /* Codables.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		B0E582E322376D5000ADAE6C /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		B0E582E52238C84F00ADAE6C /* Logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logic.swift; sourceTree = "<group>"; };
 		B0E582E72240869900ADAE6C /* Login Information.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Login Information.txt"; sourceTree = "<group>"; };
+		B0E582E92240C00100ADAE6C /* Codables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codables.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 				B0E582E72240869900ADAE6C /* Login Information.txt */,
 				B0E582E1223764C100ADAE6C /* Network.swift */,
 				B0E582E52238C84F00ADAE6C /* Logic.swift */,
+				B0E582E92240C00100ADAE6C /* Codables.swift */,
 				B0E582E322376D5000ADAE6C /* Models.swift */,
 				B0E582D3223764A500ADAE6C /* ViewController.swift */,
 				B0E582D5223764A600ADAE6C /* Assets.xcassets */,
@@ -155,6 +158,7 @@
 				B0E582E62238C84F00ADAE6C /* Logic.swift in Sources */,
 				B0E582D2223764A500ADAE6C /* AppDelegate.swift in Sources */,
 				B0E582E2223764C100ADAE6C /* Network.swift in Sources */,
+				B0E582EA2240C00100ADAE6C /* Codables.swift in Sources */,
 				B0E582E422376D5000ADAE6C /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
