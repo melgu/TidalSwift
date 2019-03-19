@@ -17,29 +17,19 @@ struct LoginInformation {
 struct PersistentInformation {
 	var sessionId: String
 	var countryCode: String
-	var user: User
+	var userId: Int
 }
 
 enum Quality {
-	case lossless
-	case high
-	case low
+	case LOSSLESS
+	case HIGH
+	case LOW
 }
 
-struct LoginResponse: Decodable {
-	let userId: Int
-	let sessionId: String
-	let countryCode: String
-	
-	init(userId: Int, sessionId: String, countryCode: String) {
-		self.userId = userId
-		self.sessionId = sessionId
-		self.countryCode = countryCode
-	}
-	
-	enum CodingKeys: String, CodingKey {
-		case userId, sessionId, countryCode
-	}
+enum Codec {
+	case FLAC
+	case ALAC
+	case AAC
 }
 
 class Config {
@@ -47,12 +37,13 @@ class Config {
 	var apiLocation: String // https://api.tidalhifi.com/v1/
 	var apiToken: String
 	
-	init(quality: Quality = .lossless, apiLocation: String = "https://api.tidalhifi.com/v1/", apiToken: String? = nil) {
+	init(quality: Quality = .LOSSLESS, apiLocation: String = "https://api.tidalhifi.com/v1/", apiToken: String? = nil) {
 		self.quality = quality
+		print(quality)
 		self.apiLocation = apiLocation
 		
 		if apiToken == nil {
-			if quality == .lossless {
+			if quality == .LOSSLESS {
 				self.apiToken = "P5Xbeo5LFvESeDy6"
 			} else {
 				self.apiToken = "wdgaB1CilGA-S_s2"
@@ -72,11 +63,13 @@ class Session {
 	var user: User?
 	var countryCode: String?
 	
-	lazy var sessionParameter: [String: String] = {
-		if sessionId == nil {
+	lazy var sessionParameters: [String: String] = {
+		if sessionId == nil || countryCode == nil {
 			return [:]
 		} else {
-			return ["sessionId": sessionId!]
+			return ["sessionId": sessionId!,
+					"countryCode": countryCode!,
+					"limit": "999"]
 		}
 		
 	}()
@@ -122,14 +115,55 @@ class Session {
 	}
 	
 	func checkLogin() -> Bool {
-		// TODO:
 		if user == nil || self.sessionId == nil  {
 			return false
 		}
 		let url = URL(string: "\(config.apiLocation)users/\(self.user!.id)/subscription")!
-		print(sessionParameter)
-		return get(url: url, parameters: sessionParameter).ok
+		print(sessionParameters)
+		return get(url: url, parameters: sessionParameters).ok
 	}
+	
+	func getMediaUrl(trackId: Int) -> URL? {
+		var parameters = sessionParameters
+		parameters["soundQuality"] = "\(config.quality)"
+		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/streamUrl")!
+		let response = get(url: url, parameters: parameters)
+		
+		var mediaUrlResponse: MediaUrlResponse
+		do {
+			mediaUrlResponse = try JSONDecoder().decode(MediaUrlResponse.self, from: response.content!)
+		} catch {
+			appDelegate.mainViewController?.errorDialog(title: "Login failed (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
+			return nil
+		}
+		print("Track ID: \(mediaUrlResponse.trackId), Quality: \(mediaUrlResponse.soundQuality), Codec: \(mediaUrlResponse.codec)")
+		return URL(string: mediaUrlResponse.url)
+	}
+	
+//	func search(section: String, term: String) -> SearchResult {
+//		var parameters = sessionParameters
+//		parameters["query"] = term
+//		parameters["limit"] = "50"
+//		if ["artist", "album", "playlist", "track"].contains(section) {
+//			let sectionPlural = section + "s"
+//			let url = URL(string: "\(config.apiLocation)search/\(sectionPlural)")!
+//			let result = mapRequest(url: url, parameters: parameters, ret: sectionPlural)
+//
+//		}
+//	}
+	
+//	func mapRequest(url: URL, parameters: [String: String], ret: String) -> Any {
+//		let obj = get(url: url, parameters: parameters)
+//		var parse: Any
+//		if ret.starts(with: "artist") {
+//			parse =
+//		}
+//	}
+//
+//	func parseArtist(json) -> <#return type#> {
+//		<#function body#>
+//	}
+	
 }
 
 class Favorites {
