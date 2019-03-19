@@ -9,6 +9,17 @@
 import Foundation
 import Cocoa
 
+struct LoginInformation {
+	var username: String
+	var password: String
+}
+
+struct PersistentInformation {
+	var sessionId: String
+	var countryCode: String
+	var user: User
+}
+
 enum Quality {
 	case lossless
 	case high
