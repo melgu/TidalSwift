@@ -107,15 +107,15 @@ struct SearchResultPlaylistResponse: Decodable {
 	let url: URL
 	let image: String
 	let popularity: Int
-	let squareImage: String
+	let squareImage: String?
 }
 
 struct SearchResultPlaylistCreatorResponse: Decodable {
-	let id: Int
-	let name: String
+	let id: Int?
+	let name: String?
 	let url: URL?
 	let picture: String?
-	let popularity: Int
+	let popularity: Int?
 }
 
 struct SearchResultTrackResponse: Decodable {
@@ -192,17 +192,47 @@ struct FavoritesResponse: Decodable {
 
 // Date
 
-func customDateFormatter() -> DateFormatter {
-	let formatter = DateFormatter()
-	formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-	formatter.timeZone = TimeZone(secondsFromGMT: 0)
-	formatter.locale = Locale(identifier: "en_US_POSIX")
-	return formatter
-}
-
 func customJSONDecoder() -> JSONDecoder {
 	let decoder = JSONDecoder()
-	decoder.dateDecodingStrategy = .formatted(customDateFormatter())
+	decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601OptionalTime)
 	return decoder
 }
 
+class OptionalTimeDateFormatter: DateFormatter {
+	static let withoutTime: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.calendar = Calendar(identifier: .iso8601)
+		formatter.locale = Locale(identifier: "en_US_POSIX")
+		formatter.timeZone = TimeZone(identifier: "UTC")
+		formatter.dateFormat = "yyyy-MM-dd"
+		return formatter
+	}()
+	
+	func setup() {
+		self.calendar = Calendar(identifier: .iso8601)
+		self.locale = Locale(identifier: "en_US_POSIX")
+		self.timeZone = TimeZone(identifier: "UTC")
+		self.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+	}
+	
+	override init() {
+		super.init()
+		setup()
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
+		setup()
+	}
+	
+	override func date(from string: String) -> Date? {
+		if let result = super.date(from: string) {
+			return result
+		}
+		return OptionalTimeDateFormatter.withoutTime.date(from: string)
+	}
+}
+
+extension DateFormatter {
+	static let iso8601OptionalTime = OptionalTimeDateFormatter()
+}

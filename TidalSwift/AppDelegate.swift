@@ -42,11 +42,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 //		print(session.getMediaUrl(trackId: 73034791)!)
 		
-//		let searchResponse = session.search(for: "La Mala's Christmas Favorites", limit: 1)
-//		print(searchResponse?.artists.totalNumberOfItems)
-//		print(searchResponse?.topHit?.type)
-//		print(searchResponse?.topHit?.value.id)
-//		print(searchResponse?.topHit?.value.popularity)
+		let searchResponse = session.search(for: "Rolf Zuckowski", limit: 2)
+		print(searchResponse?.artists.totalNumberOfItems)
+		print(searchResponse?.topHit)
+		print(searchResponse?.topHit?.type)
+		print(searchResponse?.topHit?.value.id)
+		print(searchResponse?.topHit?.value.popularity)
 		
 		print("-----")
 	}

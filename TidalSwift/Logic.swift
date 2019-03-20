@@ -110,7 +110,7 @@ class Session {
 			loginResponse = try JSONDecoder().decode(LoginResponse.self, from: response.content!)
 		} catch {
 			print("Error info: \(error)")
-			appDelegate.mainViewController?.errorDialog(title: "Login failed (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
+			appDelegate.mainViewController?.errorDialog(title: "Login failed (JSON Parse Error)", text: "Couldn't Parse JSON. Error: \(error)")
 			return false
 		}
 		
@@ -143,7 +143,7 @@ class Session {
 			mediaUrlResponse = try JSONDecoder().decode(MediaUrlResponse.self, from: response.content!)
 		} catch {
 			print("Error info: \(error)")
-			appDelegate.mainViewController?.errorDialog(title: "Couldn't get media URL (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
+			appDelegate.mainViewController?.errorDialog(title: "Couldn't get media URL (JSON Parse Error)", text: "Couldn't Parse JSON. Error: \(error)")
 			return nil
 		}
 		print("Track ID: \(mediaUrlResponse.trackId), Quality: \(mediaUrlResponse.soundQuality), Codec: \(mediaUrlResponse.codec)")
@@ -157,14 +157,14 @@ class Session {
 		
 		let url = URL(string: "\(config.apiLocation)search/")!
 		let response = get(url: url, parameters: parameters)
-		print(String(data: response.content!, encoding: String.Encoding.utf8))
+//		print(String(data: response.content!, encoding: String.Encoding.utf8))
 		
 		var searchResultResponse: SearchResultResponse?
 		do {
 			searchResultResponse = try customJSONDecoder().decode(SearchResultResponse.self, from: response.content!)
 		} catch {
 			print("Error info: \(error)")
-			appDelegate.mainViewController?.errorDialog(title: "Search failed (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
+			appDelegate.mainViewController?.errorDialog(title: "Search failed (JSON Parse Error)", text: "Couldn't Parse JSON. Error: \(error)")
 		}
 		
 		return searchResultResponse
