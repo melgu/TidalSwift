@@ -103,6 +103,7 @@ class SearchResult {
 	var albums = [Album]()
 	var tracks = [Track]()
 	var playlists = [Playlist]()
+	var topHit: Track?
 }
 
 class Category: Model {
