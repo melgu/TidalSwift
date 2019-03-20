@@ -15,7 +15,7 @@ struct LoginResponse: Decodable {
 }
 
 struct MediaUrlResponse: Decodable {
-	let url: String
+	let url: URL
 	let trackId: Int
 	let soundQuality: String
 	let encryptionKey: String
@@ -35,37 +35,41 @@ struct SearchResultAlbumsResponse: Decodable {
 	let limit: Int
 	let offset: Int // Probably used when requesting with limit
 	let totalNumberOfItems: Int
-	let items: [SearchResultArtistResponse]
+	let items: [SearchResultAlbumResponse]
 }
 
 struct SearchResultPlaylistsResponse: Decodable {
 	let limit: Int
 	let offset: Int // Probably used when requesting with limit
 	let totalNumberOfItems: Int
-	let items: [SearchResultArtistResponse]
+	let items: [SearchResultPlaylistResponse]
 }
 
 struct SearchResultTracksResponse: Decodable {
 	let limit: Int
 	let offset: Int // Probably used when requesting with limit
 	let totalNumberOfItems: Int
-	let items: [SearchResultArtistResponse]
+	let items: [SearchResultTrackResponse]
 }
 
 struct SearchResultVideosResponse: Decodable {
 	let limit: Int
 	let offset: Int // Probably used when requesting with limit
 	let totalNumberOfItems: Int
-	let items: [SearchResultArtistResponse]
+	let items: [SearchResultVideoResponse]
 }
 
 struct SearchResultArtistResponse: Decodable {
 	let id: Int
 	let name: String
-	let url: String?
+	let url: URL?
 	let picture: String?
 	let popularity: Int?
 	let type: String? // What role he/she played
+	
+//	func getPicture() -> Data {
+//		<#function body#>
+//	}
 }
 
 struct SearchResultAlbumResponse: Decodable {
@@ -80,30 +84,38 @@ struct SearchResultAlbumResponse: Decodable {
 	let numberOfVolumes: Int?
 	let releaseDate: Date?
 	let copyright: String?
-	let url: String?
+	let url: URL?
 	let cover: String
 	let explicit: Bool?
 	let popularity: Int?
 	let audioQuality: String?
-	let artists: SearchResultArtistsResponse?
+	let artists: [SearchResultArtistResponse]?
 }
 
 struct SearchResultPlaylistResponse: Decodable {
-	let uuid: Int
+	let uuid: String
 	let title: String
 	let numberOfTracks: Int
 	let numberOfVideos: Int
-	let creator: String
+	let creator: SearchResultPlaylistCreatorResponse
 	let description: String
 	let duration: Int
 	let lastUpdated: Date
 	let created: Date
 	let type: String // e.g. Editorial
 	let publicPlaylist: Bool
-	let url: String
+	let url: URL
 	let image: String
 	let popularity: Int
 	let squareImage: String
+}
+
+struct SearchResultPlaylistCreatorResponse: Decodable {
+	let id: Int
+	let name: String
+	let url: URL?
+	let picture: String?
+	let popularity: Int
 }
 
 struct SearchResultTrackResponse: Decodable {
@@ -119,12 +131,12 @@ struct SearchResultTrackResponse: Decodable {
 	let volumeNumber: Int
 	let popularity: Int
 	let copyright: String
-	let url: String
+	let url: URL
 	let isrc: String
 	let editable: Bool
 	let explicit: Bool
 	let audioQuality: String
-	let artists: SearchResultArtistsResponse
+	let artists: [SearchResultArtistResponse]
 	let album: SearchResultAlbumResponse
 }
 
@@ -148,9 +160,14 @@ struct SearchResultVideoResponse: Decodable {
 }
 
 struct SearchResultTopHitResponse: Decodable {
-	let value: [String: String]
+	let value: SearchResultTopHitValueResponse
 	let type: String
-	// TODO: Can be different type (artist, album...)
+}
+
+struct SearchResultTopHitValueResponse: Decodable {
+	let id: Int?
+	let uuid: String?
+	let popularity: Int
 }
 
 struct SearchResultResponse: Decodable {
@@ -159,7 +176,7 @@ struct SearchResultResponse: Decodable {
 	let playlists: SearchResultPlaylistsResponse
 	let tracks: SearchResultTracksResponse
 	let videos: SearchResultVideosResponse
-	let topHit: SearchResultTopHitResponse
+	let topHit: SearchResultTopHitResponse?
 }
 
 struct FavoritesResponse: Decodable {
@@ -171,3 +188,21 @@ struct FavoritesResponse: Decodable {
 	let updatedVideoPlaylists: Date?
 	let updatedFavoriteVideos: Date?
 }
+
+
+// Date
+
+func customDateFormatter() -> DateFormatter {
+	let formatter = DateFormatter()
+	formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+	formatter.timeZone = TimeZone(secondsFromGMT: 0)
+	formatter.locale = Locale(identifier: "en_US_POSIX")
+	return formatter
+}
+
+func customJSONDecoder() -> JSONDecoder {
+	let decoder = JSONDecoder()
+	decoder.dateDecodingStrategy = .formatted(customDateFormatter())
+	return decoder
+}
+

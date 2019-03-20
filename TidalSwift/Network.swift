@@ -19,8 +19,8 @@ enum HttpMethod {
 	case post
 }
 
-func encodeParameters(_ params: [String: String]) -> String {
-	let queryItems = params.map { URLQueryItem(name:$0, value:$1)}
+func encodeParameters(_ parameters: [String: String]) -> String {
+	let queryItems = parameters.map { URLQueryItem(name:$0, value:$1)}
 	var components = URLComponents()
 	components.queryItems = queryItems
 	return components.percentEncodedQuery ?? ""
@@ -35,7 +35,6 @@ func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Resp
 		request.httpMethod = "GET"
 		// If GET, parameters are part of the URL
 		let urlString = request.url!.absoluteString + "?" + encodeParameters(parameters)
-		print("urlString: \(urlString)")
 		request.url = URL(string: urlString)
 	case .post:
 		request.httpMethod = "POST"
@@ -64,7 +63,7 @@ func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Resp
 			return
 		}
 		
-		print("responseString = \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
+//		print("responseString = \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
 		networkResponse = Response(statusCode: response.statusCode, content: data, ok: true)
 		semaphore.signal()
 	}

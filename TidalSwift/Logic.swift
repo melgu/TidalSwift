@@ -36,10 +36,15 @@ class Config {
 	var quality: Quality
 	var apiLocation: String // https://api.tidalhifi.com/v1/
 	var apiToken: String
+	var imageUrl: URL
+	var imageSize: Int
 	
-	init(quality: Quality = .LOSSLESS, apiLocation: String = "https://api.tidalhifi.com/v1/", apiToken: String? = nil) {
+	init(quality: Quality = .LOSSLESS,
+		 apiLocation: String = "https://api.tidalhifi.com/v1/",
+		 apiToken: String? = nil,
+		 imageUrl: URL = URL(string: "http://images.osl.wimpmusic.com/im/im")!,
+		 imageSize: Int = 1280) {
 		self.quality = quality
-		print(quality)
 		self.apiLocation = apiLocation
 		
 		if apiToken == nil {
@@ -51,6 +56,9 @@ class Config {
 		} else {
 			self.apiToken = apiToken!
 		}
+		
+		self.imageUrl = imageUrl
+		self.imageSize = imageSize
 	}
 }
 
@@ -101,6 +109,7 @@ class Session {
 		do {
 			loginResponse = try JSONDecoder().decode(LoginResponse.self, from: response.content!)
 		} catch {
+			print("Error info: \(error)")
 			appDelegate.mainViewController?.errorDialog(title: "Login failed (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
 			return false
 		}
@@ -133,26 +142,29 @@ class Session {
 		do {
 			mediaUrlResponse = try JSONDecoder().decode(MediaUrlResponse.self, from: response.content!)
 		} catch {
-			appDelegate.mainViewController?.errorDialog(title: "Login failed (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
+			print("Error info: \(error)")
+			appDelegate.mainViewController?.errorDialog(title: "Couldn't get media URL (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
 			return nil
 		}
 		print("Track ID: \(mediaUrlResponse.trackId), Quality: \(mediaUrlResponse.soundQuality), Codec: \(mediaUrlResponse.codec)")
-		return URL(string: mediaUrlResponse.url)
+		return mediaUrlResponse.url
 	}
 	
-	func search(for term: String) -> SearchResultResponse? {
+	func search(for term: String, limit: Int = 50) -> SearchResultResponse? {
 		var parameters = sessionParameters
 		parameters["query"] = term
-		parameters["limit"] = "50"
+		parameters["limit"] = String(limit)
 		
 		let url = URL(string: "\(config.apiLocation)search/")!
 		let response = get(url: url, parameters: parameters)
+		print(String(data: response.content!, encoding: String.Encoding.utf8))
 		
 		var searchResultResponse: SearchResultResponse?
 		do {
-			searchResultResponse = try JSONDecoder().decode(SearchResultResponse.self, from: response.content!)
+			searchResultResponse = try customJSONDecoder().decode(SearchResultResponse.self, from: response.content!)
 		} catch {
-			appDelegate.mainViewController?.errorDialog(title: "Login failed (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
+			print("Error info: \(error)")
+			appDelegate.mainViewController?.errorDialog(title: "Search failed (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
 		}
 		
 		return searchResultResponse
