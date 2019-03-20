@@ -140,29 +140,23 @@ class Session {
 		return URL(string: mediaUrlResponse.url)
 	}
 	
-//	func search(section: String, term: String) -> SearchResult {
-//		var parameters = sessionParameters
-//		parameters["query"] = term
-//		parameters["limit"] = "50"
-//		if ["artist", "album", "playlist", "track"].contains(section) {
-//			let sectionPlural = section + "s"
-//			let url = URL(string: "\(config.apiLocation)search/\(sectionPlural)")!
-//			let result = mapRequest(url: url, parameters: parameters, ret: sectionPlural)
-//
-//		}
-//	}
-	
-//	func mapRequest(url: URL, parameters: [String: String], ret: String) -> Any {
-//		let obj = get(url: url, parameters: parameters)
-//		var parse: Any
-//		if ret.starts(with: "artist") {
-//			parse =
-//		}
-//	}
-//
-//	func parseArtist(json) -> <#return type#> {
-//		<#function body#>
-//	}
+	func search(for term: String) -> SearchResultResponse? {
+		var parameters = sessionParameters
+		parameters["query"] = term
+		parameters["limit"] = "50"
+		
+		let url = URL(string: "\(config.apiLocation)search/")!
+		let response = get(url: url, parameters: parameters)
+		
+		var searchResultResponse: SearchResultResponse?
+		do {
+			searchResultResponse = try JSONDecoder().decode(SearchResultResponse.self, from: response.content!)
+		} catch {
+			appDelegate.mainViewController?.errorDialog(title: "Login failed (JSON Parse Error)", text: "Couldn't Parse JSON Response: \(response.content!)")
+		}
+		
+		return searchResultResponse
+	}
 	
 }
 

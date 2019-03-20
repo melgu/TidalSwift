@@ -19,13 +19,11 @@ enum HttpMethod {
 	case post
 }
 
-func formParameterString(from array: [String: String]) -> String {
-	var result = ""
-	for (key, value) in array {
-		result += key + "=" + value + "&"
-	}
-	result = String(result.dropLast())
-	return result
+func encodeParameters(_ params: [String: String]) -> String {
+	let queryItems = params.map { URLQueryItem(name:$0, value:$1)}
+	var components = URLComponents()
+	components.queryItems = queryItems
+	return components.percentEncodedQuery ?? ""
 }
 
 func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Response {
@@ -36,12 +34,13 @@ func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Resp
 	case .get:
 		request.httpMethod = "GET"
 		// If GET, parameters are part of the URL
-		let urlString = request.url!.absoluteString + "?" + formParameterString(from: parameters)
+		let urlString = request.url!.absoluteString + "?" + encodeParameters(parameters)
+		print("urlString: \(urlString)")
 		request.url = URL(string: urlString)
 	case .post:
 		request.httpMethod = "POST"
 		// If POST, parameters are part of the body
-		request.httpBody = formParameterString(from: parameters).data(using: String.Encoding.utf8)
+		request.httpBody = encodeParameters(parameters).data(using: String.Encoding.utf8)
 	}
 	print("Network Request with URL: \(request.url!.absoluteString)")
 	
