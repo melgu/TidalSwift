@@ -38,11 +38,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let session = Session(config: config)
 
 		print(session.login(username: loginInfo.username, password: loginInfo.password))
-//		print(session.checkLogin())
+		print(session.checkLogin())
 		
 //		print(session.getMediaUrl(trackId: 73034791)!)
-		let searchResponse = session.search(for: "Rolf Zuckowski")
-		print(searchResponse?.artists.totalNumberOfItems)
+		
+//		let searchResponse = session.search(for: "La Mala's Christmas Favorites", limit: 1)
+//		print(searchResponse?.artists.totalNumberOfItems)
+//		print(searchResponse?.topHit?.type)
+//		print(searchResponse?.topHit?.value.id)
+//		print(searchResponse?.topHit?.value.popularity)
+		
+		print("-----")
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
