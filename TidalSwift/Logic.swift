@@ -63,8 +63,6 @@ class Config {
 }
 
 class Session {
-	let appDelegate = NSApplication.shared.delegate as! AppDelegate
-	
 	var config: Config
 	
 	var sessionId: String?
@@ -101,7 +99,7 @@ class Session {
 		]
 		let response = post(url: url, parameters: parameters)
 		if !response.ok {
-			appDelegate.mainViewController?.errorDialog(title: "Login failed (HTTP Error)", text: "Status Code: \(response.statusCode ?? -1)")
+			displayError(title: "Login failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
 			return false
 		}
 		
@@ -109,8 +107,7 @@ class Session {
 		do {
 			loginResponse = try JSONDecoder().decode(LoginResponse.self, from: response.content!)
 		} catch {
-			print("Error info: \(error)")
-			appDelegate.mainViewController?.errorDialog(title: "Login failed (JSON Parse Error)", text: "Couldn't Parse JSON. Error: \(error)")
+			displayError(title: "Login failed (JSON Parse Error)", content: "\(error)")
 			return false
 		}
 		
@@ -132,22 +129,39 @@ class Session {
 		return get(url: url, parameters: sessionParameters).ok
 	}
 	
+	func getSubscriptionInfo() -> SubscriptionResponse? {
+		if user == nil  {
+			return nil
+		}
+		
+		let url = URL(string: "\(config.apiLocation)users/\(self.user!.id)/subscription")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var searchResultResponse: SubscriptionResponse?
+		do {
+			searchResultResponse = try customJSONDecoder().decode(SubscriptionResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Subscription Info failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return searchResultResponse
+	}
+	
 	func getMediaUrl(trackId: Int) -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(config.quality)"
 		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/streamUrl")!
 		let response = get(url: url, parameters: parameters)
 		
-		var mediaUrlResponse: MediaUrlResponse
+		var mediaUrlResponse: MediaUrlResponse?
 		do {
 			mediaUrlResponse = try JSONDecoder().decode(MediaUrlResponse.self, from: response.content!)
 		} catch {
-			print("Error info: \(error)")
-			appDelegate.mainViewController?.errorDialog(title: "Couldn't get media URL (JSON Parse Error)", text: "Couldn't Parse JSON. Error: \(error)")
-			return nil
+			displayError(title: "Couldn't get media URL (JSON Parse Error)", content: "\(error)")
 		}
-		print("Track ID: \(mediaUrlResponse.trackId), Quality: \(mediaUrlResponse.soundQuality), Codec: \(mediaUrlResponse.codec)")
-		return mediaUrlResponse.url
+//		print("Track ID: \(mediaUrlResponse.trackId), Quality: \(mediaUrlResponse.soundQuality), Codec: \(mediaUrlResponse.codec)")
+		
+		return mediaUrlResponse?.url
 	}
 	
 	func search(for term: String, limit: Int = 50) -> SearchResultResponse? {
@@ -163,8 +177,7 @@ class Session {
 		do {
 			searchResultResponse = try customJSONDecoder().decode(SearchResultResponse.self, from: response.content!)
 		} catch {
-			print("Error info: \(error)")
-			appDelegate.mainViewController?.errorDialog(title: "Search failed (JSON Parse Error)", text: "Couldn't Parse JSON. Error: \(error)")
+			displayError(title: "Search failed (JSON Parse Error)", content: "\(error)")
 		}
 		
 		return searchResultResponse
@@ -193,4 +206,11 @@ class User {
 		self.favorites = Favorites(session: session, userId: id)
 	}
 	
+}
+
+func displayError(title: String, content: String) {
+	let appDelegate = NSApplication.shared.delegate as! AppDelegate
+	
+	print("Error info: \(content)")
+	appDelegate.mainViewController?.errorDialog(title: title, text: content)
 }
