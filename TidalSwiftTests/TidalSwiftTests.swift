@@ -45,27 +45,44 @@ class TidalSwiftTests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-		
-		print(session.getMediaUrl(trackId: 73034791)!)
-		
-//		let searchResponse = session.search(for: "Rolf Zuckowski", limit: 2)
-//		print(searchResponse?.artists.totalNumberOfItems)
-//		print(searchResponse?.topHit)
-//		print(searchResponse?.topHit?.type)
-//		print(searchResponse?.topHit?.value.id)
-//		print(searchResponse?.topHit?.value.popularity)
-    }
 	
 	func testLoadSession() {
+		let temp = PersistentInformation(sessionId: session.sessionId!, countryCode: session.countryCode!, userId: session.user!.id)
 		
+		let config = Config(quality: .LOSSLESS)
+		session = Session(config: config)
+		session.loadSession(userId: temp.userId, sessionId: temp.sessionId, countryCode: temp.countryCode)
+		
+		let result = session.checkLogin()
+		XCTAssert(result)
 	}
 	
 	func testLogin() {
+		func importLoginInformation() -> LoginInformation {
+			let fileLocation = Bundle.main.path(forResource: "Login Information", ofType: "txt")!
+			var content = ""
+			do {
+				content = try String(contentsOfFile: fileLocation)
+				print(content)
+			} catch {
+				print("Error Reading Login Information")
+			}
+			
+			let lines: [String] = content.components(separatedBy: "\n")
+			let result = LoginInformation(username: lines[0], password: lines[1])
+			
+			return result
+		}
 		
+		
+		let loginInfo = importLoginInformation()
+		
+		let config = Config(quality: .LOSSLESS)
+		session = Session(config: config)
+		
+		let result = session.login(username: loginInfo.username, password: loginInfo.password)
+		
+		XCTAssert(result)
 	}
 	
 	func testCheckLogin() {
@@ -83,14 +100,8 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testSearch() {
-		
+		let searchResult = session.search(for: "Rolf Zuckowski")
+		XCTAssertNotNil(searchResult)
 	}
-
-//    func testPerformanceExample() {
-//        // This is an example of a performance test case.
-//        self.measure {
-//            // Put the code you want to measure the time of here.
-//        }
-//    }
 
 }
