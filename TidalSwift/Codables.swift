@@ -14,6 +14,21 @@ struct LoginResponse: Decodable {
 	let countryCode: String
 }
 
+struct SubscriptionResponse: Decodable {
+	let validUntil: Date
+	let status: String
+	let subscription: SubscriptionTypeResponse
+	let highestSoundQuality: String
+	let premiumAccess: Bool
+	let canGetTrial: Bool
+	let paymentType: String
+}
+
+struct SubscriptionTypeResponse: Decodable {
+	let type: String
+	let offlineGracePeriod: Int
+}
+
 struct MediaUrlResponse: Decodable {
 	let url: URL
 	let trackId: Int
