@@ -90,6 +90,110 @@ class Session {
 		self.countryCode = countryCode
 	}
 	
+	func readSessionFromFile() -> Bool {
+		let fileLocation = Bundle.main.path(forResource: "Session Information", ofType: "txt")!
+		var content = ""
+		
+		let fileManager = FileManager.default
+		
+		if fileManager.fileExists(atPath: fileLocation) {
+			print("Existing session.")
+			
+			do {
+				content = try String(contentsOfFile: fileLocation)
+//				print(content)
+			} catch {
+				displayError(title: "Couldn't read Session Information", content: "\(error)")
+			}
+			
+			let lines: [String] = content.components(separatedBy: "\n")
+			loadSession(userId: Int(lines[0])!, sessionId: lines[1], countryCode: lines[2])
+			
+			return true
+		} else {
+			print("No existing session.")
+			return false
+		}
+	}
+	
+	func writeSessionToFile(userId: Int, sessionId: String, countryCode: String) {
+		let fileLocation = Bundle.main.url(forResource: "Session Information", withExtension: "txt")!
+		let content = "\(userId)\n\(sessionId)\n\(countryCode)"
+		do {
+			try content.write(to: fileLocation, atomically: true, encoding: String.Encoding.utf8)
+		} catch {
+			displayError(title: "Couldn't save Session Information", content: "\(error)")
+		}
+	}
+	
+	func readConfigFromFile() -> Config {
+		let fileLocation = Bundle.main.path(forResource: "Config", ofType: "txt")!
+		var content = ""
+		do {
+			content = try String(contentsOfFile: fileLocation)
+//			print(content)
+		} catch {
+			displayError(title: "Couldn't read Config", content: "\(error)")
+		}
+		
+		let lines: [String] = content.components(separatedBy: "\n")
+		
+		var quality: Quality?
+		switch lines[0] {
+		case "LOSSLESS":
+			quality = .LOSSLESS
+		case "HIGH":
+			quality = .HIGH
+		case "LOW":
+			quality = .LOW
+		default:
+			quality = .LOSSLESS
+		}
+		
+		return Config(quality: quality!, apiLocation: lines[1], apiToken: lines[2],
+					  imageUrl: URL(string: lines[3])!, imageSize: Int(lines[4])!)
+	}
+	
+	func writeConfigToFile(config: Config) {
+		let fileLocation = Bundle.main.url(forResource: "Config", withExtension: "txt")!
+		let content =	"""
+						\(config.quality)
+						\(config.apiLocation)
+						\(config.apiToken)
+						\(config.imageUrl)
+						\(config.imageSize)
+						"""
+		do {
+			try content.write(to: fileLocation, atomically: true, encoding: String.Encoding.utf8)
+		} catch {
+			displayError(title: "Couldn't save Config", content: "\(error)")
+		}
+	}
+	
+	func readLoginInformationFromFile(path: String = "Login Information") -> LoginInformation {
+		let fileLocation = Bundle.main.path(forResource: path, ofType: "txt")!
+		var content = ""
+		do {
+			content = try String(contentsOfFile: fileLocation)
+//			print(content)
+		} catch {
+			displayError(title: "Couldn't read Config", content: "\(error)")
+		}
+		
+		let lines: [String] = content.components(separatedBy: "\n")
+		return LoginInformation(username: lines[0], password: lines[1])
+	}
+	
+	func writeLoginInformationToFile(loginInformation: LoginInformation) {
+		let fileLocation = Bundle.main.url(forResource: "Login Information", withExtension: "txt")!
+		let content = "\(loginInformation.username)\n\(loginInformation.password)"
+		do {
+			try content.write(to: fileLocation, atomically: true, encoding: String.Encoding.utf8)
+		} catch {
+			displayError(title: "Couldn't save Login Information", content: "\(error)")
+		}
+	}
+	
 	func login(username: String, password: String) -> Bool {
 		let url = URL(string: config.apiLocation + "login/username")!
 		let parameters: [String: String] = [
@@ -114,9 +218,9 @@ class Session {
 		sessionId = loginResponse.sessionId
 		countryCode = loginResponse.countryCode
 		user = User(session: self, id: loginResponse.userId)
-		print("Logged in as User: \(user!.id)")
-		print("Session ID: \(sessionId!)")
-		print("Country Code: \(countryCode!)")
+//		print("Logged in as User: \(user!.id)")
+//		print("Session ID: \(sessionId!)")
+//		print("Country Code: \(countryCode!)")
 		return true
 	}
 	
