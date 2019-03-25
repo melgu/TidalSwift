@@ -19,40 +19,64 @@ class TidalSwiftTests: XCTestCase {
 		let config = Config(quality: .LOSSLESS)
 		session = Session(config: config)
 		
-		let loginInfo = session.readLoginInformationFromFile(path: "Demo Login Information")
+		let loginInfo = session.readDemoLoginInformation()
 		_ = session.login(username: loginInfo.username, password: loginInfo.password)
     }
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+		
+		session.deletePersistantInformation()
     }
 	
-	func testLoadSession() {
-		let temp = PersistentInformation(sessionId: session.sessionId!, countryCode: session.countryCode!, userId: session.user!.id)
+	func testSaveAndLoadSession() {
+		let tempSessionId = session.sessionId
+		let tempCountryCode = session.countryCode
+		let tempUserId = session.user!.id
 		
-		let config = Config(quality: .LOSSLESS)
-		session = Session(config: config)
-		session.loadSession(userId: temp.userId, sessionId: temp.sessionId, countryCode: temp.countryCode)
+		session.saveSession()
+		session.loadSession()
 		
-		let result = session.checkLogin()
-		XCTAssert(result)
+		XCTAssertEqual(tempSessionId, session.sessionId)
+		XCTAssertEqual(tempCountryCode, session.countryCode)
+		XCTAssertEqual(tempUserId, session.user!.id)
 	}
 	
-	func testWriteAndReadLogin() {
-		let testInfo = session.readLoginInformationFromFile(path: "Demo Login Information")
+	func testSaveAndLoadLogin() {
+		let loginInfo = session.readDemoLoginInformation()
 		
-		// Write
-		session.writeLoginInformationToFile(loginInformation: testInfo)
+		session.saveLoginInformation(loginInformation: loginInfo)
+		let permanentLoginInfoOptional = session.loadLoginInformation()
 		
-		// Read back
-		let loginInfo = session.readLoginInformationFromFile()
+		XCTAssertNotNil(permanentLoginInfoOptional)
 		
-		XCTAssertEqual(loginInfo.username, testInfo.username)
-		XCTAssertEqual(loginInfo.password, testInfo.password)
+		guard let permanentLoginInfo = permanentLoginInfoOptional else {
+			return
+		}
+		
+		XCTAssertEqual(permanentLoginInfo.username, loginInfo.username)
+		XCTAssertEqual(permanentLoginInfo.password, loginInfo.password)
+	}
+	
+	func testSaveAndLoadConfig() {
+		session.saveConfig()
+		let permanentConfigOptional = session.loadConfig()
+		
+		XCTAssertNotNil(permanentConfigOptional)
+		
+		guard let permanentConfig = permanentConfigOptional else {
+			return
+		}
+		
+		XCTAssertEqual(permanentConfig.quality, session.config.quality)
+		XCTAssertEqual(permanentConfig.apiLocation, session.config.apiLocation)
+		XCTAssertEqual(permanentConfig.apiToken, session.config.apiToken)
+		XCTAssertEqual(permanentConfig.imageUrl, session.config.imageUrl)
+		XCTAssertEqual(permanentConfig.imageSize, session.config.imageSize)
 	}
 	
 	func testLogin() {
-		let loginInfo = session.readLoginInformationFromFile()
+		let loginInfo = session.readDemoLoginInformation()
 		
 		let config = Config(quality: .LOSSLESS)
 		session = Session(config: config)

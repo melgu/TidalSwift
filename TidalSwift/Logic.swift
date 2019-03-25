@@ -66,8 +66,8 @@ class Session {
 	var config: Config
 	
 	var sessionId: String?
-	var user: User?
 	var countryCode: String?
+	var user: User?
 	
 	lazy var sessionParameters: [String: String] = {
 		if sessionId == nil || countryCode == nil {
@@ -84,62 +84,60 @@ class Session {
 		self.config = config
 	}
 	
-	func loadSession(userId: Int, sessionId: String, countryCode: String) {
-		self.user = User(session: self, id: userId)
-		self.sessionId = sessionId
-		self.countryCode = countryCode
-	}
-	
-	func readSessionFromFile() -> Bool {
-		let fileLocation = Bundle.main.path(forResource: "Session Information", ofType: "txt")!
-		var content = ""
+	func loadSession() {
+		let persistentInformationOptional: [String: String]? = UserDefaults.standard.dictionary(forKey: "Session Information") as? [String : String]
 		
-		let fileManager = FileManager.default
-		
-		if fileManager.fileExists(atPath: fileLocation) {
-			print("Existing session.")
-			
-			do {
-				content = try String(contentsOfFile: fileLocation)
-//				print(content)
-			} catch {
-				displayError(title: "Couldn't read Session Information", content: "\(error)")
-			}
-			
-			let lines: [String] = content.components(separatedBy: "\n")
-			loadSession(userId: Int(lines[0])!, sessionId: lines[1], countryCode: lines[2])
-			
-			return true
-		} else {
-			print("No existing session.")
-			return false
-		}
-	}
-	
-	func writeSessionToFile(userId: Int, sessionId: String, countryCode: String) {
-		let fileLocation = Bundle.main.url(forResource: "Session Information", withExtension: "txt")!
-		let content = "\(userId)\n\(sessionId)\n\(countryCode)"
-		do {
-			try content.write(to: fileLocation, atomically: true, encoding: String.Encoding.utf8)
-		} catch {
-			displayError(title: "Couldn't save Session Information", content: "\(error)")
-		}
-	}
-	
-	func readConfigFromFile() -> Config {
-		let fileLocation = Bundle.main.path(forResource: "Config", ofType: "txt")!
-		var content = ""
-		do {
-			content = try String(contentsOfFile: fileLocation)
-//			print(content)
-		} catch {
-			displayError(title: "Couldn't read Config", content: "\(error)")
+		guard let persistentInformation = persistentInformationOptional else {
+			displayError(title: "Couldn't load Session", content: "Persistent Session Information doesn't exist")
+			return
 		}
 		
-		let lines: [String] = content.components(separatedBy: "\n")
+		self.sessionId = persistentInformation["sessionId"]
+		self.countryCode = persistentInformation["countryCode"]
+		self.user = User(session: self, id: Int(persistentInformation["userId"]!)!)
+	}
+	
+	func saveSession() {
+		guard let sessionId = sessionId, let countryCode = countryCode, let userId = user?.id else {
+			displayError(title: "Couldn't save Session Information", content: "Session Information wasn't set yet.")
+			return
+		}
+		
+		let persistentInformation: [String: String] = ["sessionId": sessionId,
+													   "countryCode": countryCode,
+													   "userId": String(userId)]
+		
+		UserDefaults.standard.set(persistentInformation, forKey: "Session Information")
+	}
+	
+	func loadLoginInformation() -> LoginInformation? {
+		let persistentInformationOptional: [String: String]? = UserDefaults.standard.dictionary(forKey: "Login Information") as? [String : String]
+		
+		guard let persistentInformation = persistentInformationOptional else {
+			displayError(title: "Couldn't load Login Information", content: "Persistent Login Information doesn't exist")
+			return nil
+		}
+		
+		return LoginInformation(username: persistentInformation["username"]!, password: persistentInformation["password"]!)
+	}
+	
+	func saveLoginInformation(loginInformation: LoginInformation) {
+		let persistentInformation = ["username": loginInformation.username,
+									 "password": loginInformation.password]
+		
+		UserDefaults.standard.set(persistentInformation, forKey: "Login Information")
+	}
+	
+	func loadConfig() -> Config? {
+		let persistentInformationOptional: [String: String]? = UserDefaults.standard.dictionary(forKey: "Config Information") as? [String : String]
+		
+		guard let persistentInformation = persistentInformationOptional else {
+			displayError(title: "Couldn't load Config", content: "Persistent Config doesn't exist")
+			return nil
+		}
 		
 		var quality: Quality?
-		switch lines[0] {
+		switch persistentInformation["quality"] {
 		case "LOSSLESS":
 			quality = .LOSSLESS
 		case "HIGH":
@@ -149,49 +147,41 @@ class Session {
 		default:
 			quality = .LOSSLESS
 		}
+
+		return Config(quality: quality!,
+					  apiLocation: persistentInformation["apiLocation"]!,
+					  apiToken: persistentInformation["apiToken"],
+					  imageUrl: URL(string: persistentInformation["imageUrl"]!)!,
+					  imageSize: Int(persistentInformation["imageSize"]!)!)
+	}
+	
+	func saveConfig() {
+		let persistentInformation: [String: String] = ["quality": "\(config.quality)",
+													   "apiLocation": config.apiLocation,
+													   "apiToken": config.apiToken,
+													   "imageUrl": config.imageUrl.absoluteString,
+													   "imageSize": String(config.imageSize)]
 		
-		return Config(quality: quality!, apiLocation: lines[1], apiToken: lines[2],
-					  imageUrl: URL(string: lines[3])!, imageSize: Int(lines[4])!)
+		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
 	}
 	
-	func writeConfigToFile(config: Config) {
-		let fileLocation = Bundle.main.url(forResource: "Config", withExtension: "txt")!
-		let content =	"""
-						\(config.quality)
-						\(config.apiLocation)
-						\(config.apiToken)
-						\(config.imageUrl)
-						\(config.imageSize)
-						"""
-		do {
-			try content.write(to: fileLocation, atomically: true, encoding: String.Encoding.utf8)
-		} catch {
-			displayError(title: "Couldn't save Config", content: "\(error)")
-		}
+	func deletePersistantInformation() {
+		let domain = Bundle.main.bundleIdentifier!
+		UserDefaults.standard.removePersistentDomain(forName: domain)
 	}
-	
-	func readLoginInformationFromFile(path: String = "Login Information") -> LoginInformation {
-		let fileLocation = Bundle.main.path(forResource: path, ofType: "txt")!
+
+	func readDemoLoginInformation() -> LoginInformation {
+		let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
 		var content = ""
 		do {
 			content = try String(contentsOfFile: fileLocation)
 //			print(content)
 		} catch {
-			displayError(title: "Couldn't read Config", content: "\(error)")
+			displayError(title: "Couldn't read Demo Login", content: "\(error)")
 		}
-		
+
 		let lines: [String] = content.components(separatedBy: "\n")
 		return LoginInformation(username: lines[0], password: lines[1])
-	}
-	
-	func writeLoginInformationToFile(loginInformation: LoginInformation) {
-		let fileLocation = Bundle.main.url(forResource: "Login Information", withExtension: "txt")!
-		let content = "\(loginInformation.username)\n\(loginInformation.password)"
-		do {
-			try content.write(to: fileLocation, atomically: true, encoding: String.Encoding.utf8)
-		} catch {
-			displayError(title: "Couldn't save Login Information", content: "\(error)")
-		}
 	}
 	
 	func login(username: String, password: String) -> Bool {
