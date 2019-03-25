@@ -12,33 +12,14 @@ import XCTest
 class TidalSwiftTests: XCTestCase {
 	
 	var session: Session = Session(config: Config(quality: .LOSSLESS))
-	
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 		
-		func importLoginInformation() -> LoginInformation {
-			let fileLocation = Bundle.main.path(forResource: "Login Information", ofType: "txt")!
-			var content = ""
-			do {
-				content = try String(contentsOfFile: fileLocation)
-				print(content)
-			} catch {
-				print("Error Reading Login Information")
-			}
-			
-			let lines: [String] = content.components(separatedBy: "\n")
-			let result = LoginInformation(username: lines[0], password: lines[1])
-			
-			return result
-		}
-		
-		
-		let loginInfo = importLoginInformation()
-		
 		let config = Config(quality: .LOSSLESS)
 		session = Session(config: config)
 		
+		let loginInfo = session.readLoginInformationFromFile(path: "Demo Login Information")
 		_ = session.login(username: loginInfo.username, password: loginInfo.password)
     }
 
@@ -57,25 +38,21 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssert(result)
 	}
 	
+	func testWriteAndReadLogin() {
+		let testInfo = session.readLoginInformationFromFile(path: "Demo Login Information")
+		
+		// Write
+		session.writeLoginInformationToFile(loginInformation: testInfo)
+		
+		// Read back
+		let loginInfo = session.readLoginInformationFromFile()
+		
+		XCTAssertEqual(loginInfo.username, testInfo.username)
+		XCTAssertEqual(loginInfo.password, testInfo.password)
+	}
+	
 	func testLogin() {
-		func importLoginInformation() -> LoginInformation {
-			let fileLocation = Bundle.main.path(forResource: "Login Information", ofType: "txt")!
-			var content = ""
-			do {
-				content = try String(contentsOfFile: fileLocation)
-				print(content)
-			} catch {
-				print("Error Reading Login Information")
-			}
-			
-			let lines: [String] = content.components(separatedBy: "\n")
-			let result = LoginInformation(username: lines[0], password: lines[1])
-			
-			return result
-		}
-		
-		
-		let loginInfo = importLoginInformation()
+		let loginInfo = session.readLoginInformationFromFile()
 		
 		let config = Config(quality: .LOSSLESS)
 		session = Session(config: config)
