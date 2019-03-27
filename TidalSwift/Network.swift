@@ -41,7 +41,7 @@ func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Resp
 		// If POST, parameters are part of the body
 		request.httpBody = encodeParameters(parameters).data(using: String.Encoding.utf8)
 	}
-	print("Network Request with URL: \(request.url!.absoluteString)")
+//	print("Network Request with URL: \(request.url!.absoluteString)")
 	
 	var networkResponse = Response(statusCode: nil, content: nil, ok: false)
 	
