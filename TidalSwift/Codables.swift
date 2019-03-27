@@ -81,16 +81,12 @@ struct SearchResultArtistResponse: Decodable {
 	let picture: String?
 	let popularity: Int?
 	let type: String? // What role he/she played
-	
-//	func getPicture() -> Data {
-//		<#function body#>
-//	}
 }
 
 struct SearchResultAlbumResponse: Decodable {
 	let id: Int
 	let title: String
-	let duration: Int?
+	let duration: Int? // In Seconds
 	let streamReady: Bool?
 	let streamStartDate: Date?
 	let allowStreaming: Bool?
@@ -217,7 +213,6 @@ class OptionalTimeDateFormatter: DateFormatter {
 	static let withoutTime: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.calendar = Calendar(identifier: .iso8601)
-		formatter.locale = Locale(identifier: "en_US_POSIX")
 		formatter.timeZone = TimeZone(identifier: "UTC")
 		formatter.dateFormat = "yyyy-MM-dd"
 		return formatter
@@ -225,7 +220,6 @@ class OptionalTimeDateFormatter: DateFormatter {
 	
 	func setup() {
 		self.calendar = Calendar(identifier: .iso8601)
-		self.locale = Locale(identifier: "en_US_POSIX")
 		self.timeZone = TimeZone(identifier: "UTC")
 		self.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
 	}

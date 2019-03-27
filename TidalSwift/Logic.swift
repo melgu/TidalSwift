@@ -219,7 +219,7 @@ class Session {
 			return false
 		}
 		let url = URL(string: "\(config.apiLocation)users/\(self.user!.id)/subscription")!
-		print(sessionParameters)
+//		print(sessionParameters)
 		return get(url: url, parameters: sessionParameters).ok
 	}
 	
