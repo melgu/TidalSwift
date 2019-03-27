@@ -165,6 +165,7 @@
 					};
 					B0E582EE224329A000ADAE6C = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = B0E582CD223764A500ADAE6C;
 					};
 				};
@@ -425,7 +426,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwiftTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TidalSwift.app/Contents/MacOS/TidalSwift";
 			};
 			name = Debug;
@@ -447,7 +448,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwiftTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TidalSwift.app/Contents/MacOS/TidalSwift";
 			};
 			name = Release;
