@@ -258,10 +258,11 @@ class Session {
 		return mediaUrlResponse?.url
 	}
 	
-	func search(for term: String, limit: Int = 50) -> SearchResultResponse? {
+	func search(for term: String, limit: Int = 50, offset: Int = 0) -> SearchResultResponse? {
 		var parameters = sessionParameters
 		parameters["query"] = term
-		parameters["limit"] = String(limit)
+		parameters["limit"] = String(limit) // Server-side limit of 300. Doesn't go higher (also limits totalNumberOfItems to 300. Can go higher using offset.
+		parameters["offset"] = String(offset)
 		
 		let url = URL(string: "\(config.apiLocation)search/")!
 		let response = get(url: url, parameters: parameters)

@@ -141,7 +141,7 @@ struct SearchResultTrackResponse: Decodable {
 	let trackNumber: Int
 	let volumeNumber: Int
 	let popularity: Int
-	let copyright: String
+	let copyright: String?
 	let url: URL
 	let isrc: String
 	let editable: Bool
@@ -221,7 +221,7 @@ class OptionalTimeDateFormatter: DateFormatter {
 	func setup() {
 		self.calendar = Calendar(identifier: .iso8601)
 		self.timeZone = TimeZone(identifier: "UTC")
-		self.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+		self.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ"
 	}
 	
 	override init() {
