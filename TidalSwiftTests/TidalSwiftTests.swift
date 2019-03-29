@@ -11,16 +11,15 @@ import XCTest
 
 class TidalSwiftTests: XCTestCase {
 	
-	var session: Session = Session(config: Config(quality: .LOSSLESS))
+	var session: Session = Session(config: Config(quality: .LOSSLESS, loginInformation: readDemoLoginInformation()))
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 		
-		let config = Config(quality: .LOSSLESS)
+		let config = Config(quality: .LOSSLESS, loginInformation: readDemoLoginInformation())
 		session = Session(config: config)
 		
-		let loginInfo = session.readDemoLoginInformation()
-		_ = session.login(username: loginInfo.username, password: loginInfo.password)
+		_ = session.login()
     }
 
     override func tearDown() {
@@ -42,46 +41,25 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(tempUserId, session.user!.id)
 	}
 	
-	func testSaveAndLoadLogin() {
-		let loginInfo = session.readDemoLoginInformation()
-		
-		session.saveLoginInformation(loginInformation: loginInfo)
-		let permanentLoginInfoOptional = session.loadLoginInformation()
-		
-		XCTAssertNotNil(permanentLoginInfoOptional)
-		
-		guard let permanentLoginInfo = permanentLoginInfoOptional else {
-			return
-		}
-		
-		XCTAssertEqual(permanentLoginInfo.username, loginInfo.username)
-		XCTAssertEqual(permanentLoginInfo.password, loginInfo.password)
-	}
-	
 	func testSaveAndLoadConfig() {
+		let oldConfig = session.config
 		session.saveConfig()
-		let permanentConfigOptional = session.loadConfig()
+		session = Session(config: nil)
 		
-		XCTAssertNotNil(permanentConfigOptional)
-		
-		guard let permanentConfig = permanentConfigOptional else {
-			return
-		}
-		
-		XCTAssertEqual(permanentConfig.quality, session.config.quality)
-		XCTAssertEqual(permanentConfig.apiLocation, session.config.apiLocation)
-		XCTAssertEqual(permanentConfig.apiToken, session.config.apiToken)
-		XCTAssertEqual(permanentConfig.imageUrl, session.config.imageUrl)
-		XCTAssertEqual(permanentConfig.imageSize, session.config.imageSize)
+		XCTAssertEqual(oldConfig.quality, session.config.quality)
+		XCTAssertEqual(oldConfig.apiLocation, session.config.apiLocation)
+		XCTAssertEqual(oldConfig.apiToken, session.config.apiToken)
+		XCTAssertEqual(oldConfig.imageUrl, session.config.imageUrl)
+		XCTAssertEqual(oldConfig.imageSize, session.config.imageSize)
 	}
 	
 	func testLogin() {
-		let loginInfo = session.readDemoLoginInformation()
+		let loginInfo = readDemoLoginInformation()
 		
-		let config = Config(quality: .LOSSLESS)
+		let config = Config(quality: .LOSSLESS, loginInformation: loginInfo)
 		session = Session(config: config)
 		
-		let result = session.login(username: loginInfo.username, password: loginInfo.password)
+		let result = session.login()
 		
 		XCTAssert(result)
 	}
@@ -89,7 +67,7 @@ class TidalSwiftTests: XCTestCase {
 	func testCheckLogin() {
 		XCTAssert(session.checkLogin())
 		
-		let config = Config(quality: .LOSSLESS)
+		let config = Config(quality: .LOSSLESS, loginInformation: readDemoLoginInformation())
 		session = Session(config: config)
 		
 		XCTAssertFalse(session.checkLogin())

@@ -34,16 +34,18 @@ enum Codec {
 
 class Config {
 	var quality: Quality
-	var apiLocation: String // https://api.tidalhifi.com/v1/
+	var apiLocation: String
 	var apiToken: String
-	var imageUrl: URL
+	var imageUrl: String
 	var imageSize: Int
+	var loginInformation: LoginInformation
 	
 	init(quality: Quality = .LOSSLESS,
 		 apiLocation: String = "https://api.tidalhifi.com/v1/",
 		 apiToken: String? = nil,
-		 imageUrl: URL = URL(string: "http://images.osl.wimpmusic.com/im/im")!,
-		 imageSize: Int = 1280) {
+		 imageUrl: String = "http://images.osl.wimpmusic.com/im/im/",
+		 imageSize: Int = 1280,
+		 loginInformation: LoginInformation) {
 		self.quality = quality
 		self.apiLocation = apiLocation
 		
@@ -59,6 +61,7 @@ class Config {
 		
 		self.imageUrl = imageUrl
 		self.imageSize = imageSize
+		self.loginInformation = loginInformation
 	}
 }
 
@@ -80,8 +83,42 @@ class Session {
 		
 	}()
 	
-	init(config: Config) {
-		self.config = config
+	init(config: Config?) {
+		func loadConfig() -> Config? {
+			let persistentInformationOptional: [String: String]? = UserDefaults.standard.dictionary(forKey: "Config Information") as? [String : String]
+			
+			guard let persistentInformation = persistentInformationOptional else {
+				displayError(title: "Couldn't load Config", content: "Persistent Config doesn't exist")
+				return nil
+			}
+			
+			var quality: Quality?
+			switch persistentInformation["quality"] {
+			case "LOSSLESS":
+				quality = .LOSSLESS
+			case "HIGH":
+				quality = .HIGH
+			case "LOW":
+				quality = .LOW
+			default:
+				quality = .LOSSLESS
+			}
+			
+			return Config(quality: quality!,
+						  apiLocation: persistentInformation["apiLocation"]!,
+						  apiToken: persistentInformation["apiToken"]!,
+						  imageUrl: persistentInformation["imageUrl"]!,
+						  imageSize: Int(persistentInformation["imageSize"]!)!,
+						  loginInformation: LoginInformation(username: persistentInformation["username"]!,
+															 password: persistentInformation["password"]!))
+		}
+		
+		if let config = config {
+			self.config = config
+		} else {
+			self.config = loadConfig()!
+		}
+		
 	}
 	
 	func loadSession() {
@@ -110,57 +147,14 @@ class Session {
 		UserDefaults.standard.set(persistentInformation, forKey: "Session Information")
 	}
 	
-	func loadLoginInformation() -> LoginInformation? {
-		let persistentInformationOptional: [String: String]? = UserDefaults.standard.dictionary(forKey: "Login Information") as? [String : String]
-		
-		guard let persistentInformation = persistentInformationOptional else {
-			displayError(title: "Couldn't load Login Information", content: "Persistent Login Information doesn't exist")
-			return nil
-		}
-		
-		return LoginInformation(username: persistentInformation["username"]!, password: persistentInformation["password"]!)
-	}
-	
-	func saveLoginInformation(loginInformation: LoginInformation) {
-		let persistentInformation = ["username": loginInformation.username,
-									 "password": loginInformation.password]
-		
-		UserDefaults.standard.set(persistentInformation, forKey: "Login Information")
-	}
-	
-	func loadConfig() -> Config? {
-		let persistentInformationOptional: [String: String]? = UserDefaults.standard.dictionary(forKey: "Config Information") as? [String : String]
-		
-		guard let persistentInformation = persistentInformationOptional else {
-			displayError(title: "Couldn't load Config", content: "Persistent Config doesn't exist")
-			return nil
-		}
-		
-		var quality: Quality?
-		switch persistentInformation["quality"] {
-		case "LOSSLESS":
-			quality = .LOSSLESS
-		case "HIGH":
-			quality = .HIGH
-		case "LOW":
-			quality = .LOW
-		default:
-			quality = .LOSSLESS
-		}
-
-		return Config(quality: quality!,
-					  apiLocation: persistentInformation["apiLocation"]!,
-					  apiToken: persistentInformation["apiToken"],
-					  imageUrl: URL(string: persistentInformation["imageUrl"]!)!,
-					  imageSize: Int(persistentInformation["imageSize"]!)!)
-	}
-	
 	func saveConfig() {
 		let persistentInformation: [String: String] = ["quality": "\(config.quality)",
 													   "apiLocation": config.apiLocation,
 													   "apiToken": config.apiToken,
-													   "imageUrl": config.imageUrl.absoluteString,
-													   "imageSize": String(config.imageSize)]
+													   "imageUrl": config.imageUrl,
+													   "imageSize": String(config.imageSize),
+													   "username": config.loginInformation.username,
+													   "password": config.loginInformation.password]
 		
 		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
 	}
@@ -169,27 +163,13 @@ class Session {
 		let domain = Bundle.main.bundleIdentifier!
 		UserDefaults.standard.removePersistentDomain(forName: domain)
 	}
-
-	func readDemoLoginInformation() -> LoginInformation {
-		let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
-		var content = ""
-		do {
-			content = try String(contentsOfFile: fileLocation)
-//			print(content)
-		} catch {
-			displayError(title: "Couldn't read Demo Login", content: "\(error)")
-		}
-
-		let lines: [String] = content.components(separatedBy: "\n")
-		return LoginInformation(username: lines[0], password: lines[1])
-	}
 	
-	func login(username: String, password: String) -> Bool {
+	func login() -> Bool {
 		let url = URL(string: config.apiLocation + "login/username")!
 		let parameters: [String: String] = [
 			"token": config.apiToken,
-			"username": username,
-			"password": password
+			"username": config.loginInformation.username,
+			"password": config.loginInformation.password
 		]
 		let response = post(url: url, parameters: parameters)
 		if !response.ok {
@@ -308,4 +288,17 @@ func displayError(title: String, content: String) {
 	
 	print("Error info: \(content)")
 	appDelegate.mainViewController?.errorDialog(title: title, text: content)
+}
+
+func readDemoLoginInformation() -> LoginInformation {
+	let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
+	var content = ""
+	do {
+		content = try String(contentsOfFile: fileLocation)
+	} catch {
+		displayError(title: "Couldn't read Demo Login", content: "\(error)")
+	}
+	
+	let lines: [String] = content.components(separatedBy: "\n")
+	return LoginInformation(username: lines[0], password: lines[1])
 }
