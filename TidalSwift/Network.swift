@@ -50,14 +50,14 @@ func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Resp
 		guard let data = data,
 			let response = response as? HTTPURLResponse,
 			error == nil else {								// check for fundamental networking error
-				print("error", error ?? "Unknown error")
+//				print("error", error ?? "Unknown error")
 				semaphore.signal()
 				return
 		}
 		
 		guard (200 ... 299) ~= response.statusCode else {	// check for http errors
-			print("statusCode should be 2xx, but is \(response.statusCode)")
-			print("response = \(response)")
+//			print("statusCode should be 2xx, but is \(response.statusCode)")
+//			print("response = \(response)")
 			networkResponse.statusCode = response.statusCode
 			semaphore.signal()
 			return

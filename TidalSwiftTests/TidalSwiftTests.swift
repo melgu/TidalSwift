@@ -55,13 +55,26 @@ class TidalSwiftTests: XCTestCase {
 	
 	func testLogin() {
 		let loginInfo = readDemoLoginInformation()
-		
 		let config = Config(quality: .LOSSLESS, loginInformation: loginInfo)
 		session = Session(config: config)
-		
 		let result = session.login()
-		
 		XCTAssert(result)
+	}
+	
+	func testWrongLogin() {
+		// Wrong Login Info
+		let loginInfo1 = LoginInformation(username: "ABC", password: "ABC")
+		let config1 = Config(quality: .LOSSLESS, loginInformation: loginInfo1)
+		session = Session(config: config1)
+		let result1 = session.login()
+		XCTAssertFalse(result1)
+		
+		// Empty Login Info
+		let loginInfo2 = LoginInformation(username: "", password: "")
+		let config2 = Config(quality: .LOSSLESS, loginInformation: loginInfo2)
+		session = Session(config: config2)
+		let result2 = session.login()
+		XCTAssertFalse(result2)
 	}
 	
 	func testCheckLogin() {

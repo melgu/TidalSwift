@@ -173,8 +173,13 @@ class Session {
 		]
 		let response = post(url: url, parameters: parameters)
 		if !response.ok {
-			displayError(title: "Login failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
-			return false
+			if response.statusCode == 401 { // Wrong Username / Password
+				displayError(title: "Wrong username or password", content: "The username and password combination you entered is wrong.")
+				return false
+			} else {
+				displayError(title: "Login failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)\nPlease report this error to the developer.")
+				return false
+			}
 		}
 		
 		var loginResponse: LoginResponse
@@ -280,14 +285,14 @@ class User {
 		self.id = id
 		self.favorites = Favorites(session: session, userId: id)
 	}
-	
 }
 
 func displayError(title: String, content: String) {
-	let appDelegate = NSApplication.shared.delegate as! AppDelegate
+	// Comment out while unit testing to prevent pop-ups
 	
-	print("Error info: \(content)")
-	appDelegate.mainViewController?.errorDialog(title: title, text: content)
+//	print("Error info: \(content)")
+//	let appDelegate = NSApplication.shared.delegate as! AppDelegate
+//	appDelegate.mainViewController?.errorDialog(title: title, text: content)
 }
 
 func readDemoLoginInformation() -> LoginInformation {
