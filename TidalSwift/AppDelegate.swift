@@ -16,6 +16,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
 		
+//		let loginInfo = readDemoLoginInformation()
+//		let config = Config(loginInformation: loginInfo)
+		let session = Session(config: nil)
+		
+		session.loadSession()
+		
+		print(session.checkLogin())
+		
 		print("-----")
 	}
 
