@@ -12,10 +12,18 @@ import XCTest
 class TidalSwiftTests: XCTestCase {
 	
 	var session: Session = Session(config: Config(quality: .LOSSLESS, loginInformation: readDemoLoginInformation()))
+	
+	var tempConfig: Config?
+	var tempSession: Session?
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 		
+		// Before messing with UserDefaults, load Session with saved values into variable
+		tempSession = Session(config: nil)
+		tempSession?.loadSession()
+		
+		// Now, we are free to mess around
 		let config = Config(quality: .LOSSLESS, loginInformation: readDemoLoginInformation())
 		session = Session(config: config)
 		
@@ -25,7 +33,12 @@ class TidalSwiftTests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
 		
+		// Delete messed-with UserDefaults
 		session.deletePersistantInformation()
+		
+		// Save back old UserDefaults
+		tempSession?.saveConfig()
+		tempSession?.saveSession()
     }
 	
 	func testSaveAndLoadSession() {
