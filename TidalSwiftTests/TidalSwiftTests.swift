@@ -27,7 +27,10 @@ class TidalSwiftTests: XCTestCase {
 		let config = Config(quality: .LOSSLESS, loginInformation: readDemoLoginInformation())
 		session = Session(config: config)
 		
-		_ = session.login()
+		session.loadSession()
+		if !session.checkLogin() {
+			_ = session.login()
+		}
     }
 
     override func tearDown() {
