@@ -136,7 +136,7 @@ class Session {
 	
 	func saveSession() {
 		guard let sessionId = sessionId, let countryCode = countryCode, let userId = userId else {
-			displayError(title: "Couldn't save Session Information", content: "Session Information wasn't set yet.")
+			displayError(title: "Couldn't save Session Information", content: "Session Information wasn't set yet. You're probably not logged in.")
 			return
 		}
 		
