@@ -47,14 +47,14 @@ class TidalSwiftTests: XCTestCase {
 	func testSaveAndLoadSession() {
 		let tempSessionId = session.sessionId
 		let tempCountryCode = session.countryCode
-		let tempUserId = session.user!.id
+		let tempUserId = session.userId
 		
 		session.saveSession()
 		session.loadSession()
 		
 		XCTAssertEqual(tempSessionId, session.sessionId)
 		XCTAssertEqual(tempCountryCode, session.countryCode)
-		XCTAssertEqual(tempUserId, session.user!.id)
+		XCTAssertEqual(tempUserId, session.userId)
 	}
 	
 	func testSaveAndLoadConfig() {
@@ -137,7 +137,7 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testSearchAlbum() {
-		let searchResult = session.search(for: "Jacob Collier In My Room")
+		let searchResult = session.search(for: "Jacob Collier In My Room") // TODO: Change "In my Room" to "Djesse" to test multiple artists
 		XCTAssertEqual(searchResult?.albums.totalNumberOfItems, 1)
 		XCTAssertEqual(searchResult?.albums.items[0].id, 59978881)
 		XCTAssertEqual(searchResult?.albums.items[0].title, "In My Room")

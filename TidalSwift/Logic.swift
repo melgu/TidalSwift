@@ -70,7 +70,7 @@ class Session {
 	
 	var sessionId: String?
 	var countryCode: String?
-	var user: User?
+	var userId: Int?
 	
 	lazy var sessionParameters: [String: String] = {
 		if sessionId == nil || countryCode == nil {
@@ -131,11 +131,11 @@ class Session {
 		
 		self.sessionId = persistentInformation["sessionId"]
 		self.countryCode = persistentInformation["countryCode"]
-		self.user = User(session: self, id: Int(persistentInformation["userId"]!)!)
+		self.userId = Int(persistentInformation["userId"]!)
 	}
 	
 	func saveSession() {
-		guard let sessionId = sessionId, let countryCode = countryCode, let userId = user?.id else {
+		guard let sessionId = sessionId, let countryCode = countryCode, let userId = userId else {
 			displayError(title: "Couldn't save Session Information", content: "Session Information wasn't set yet.")
 			return
 		}
@@ -192,7 +192,7 @@ class Session {
 		
 		sessionId = loginResponse.sessionId
 		countryCode = loginResponse.countryCode
-		user = User(session: self, id: loginResponse.userId)
+		userId = loginResponse.userId
 //		print("Logged in as User: \(user!.id)")
 //		print("Session ID: \(sessionId!)")
 //		print("Country Code: \(countryCode!)")
@@ -200,20 +200,21 @@ class Session {
 	}
 	
 	func checkLogin() -> Bool {
-		if user == nil || self.sessionId == nil  {
+		guard let userId = userId, sessionId != nil else {
 			return false
 		}
-		let url = URL(string: "\(config.apiLocation)users/\(self.user!.id)/subscription")!
+		
+		let url = URL(string: "\(config.apiLocation)users/\(userId)/subscription")!
 //		print(sessionParameters)
 		return get(url: url, parameters: sessionParameters).ok
 	}
 	
 	func getSubscriptionInfo() -> SubscriptionResponse? {
-		if user == nil  {
+		guard let userId = userId else {
 			return nil
 		}
 		
-		let url = URL(string: "\(config.apiLocation)users/\(self.user!.id)/subscription")!
+		let url = URL(string: "\(config.apiLocation)users/\(userId)/subscription")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		var searchResultResponse: SubscriptionResponse?
@@ -263,27 +264,182 @@ class Session {
 		return searchResultResponse
 	}
 	
-}
-
-class Favorites {
-	let session: Session
-	let baseUrl: String
-	
-	init(session: Session, userId: Int) {
-		self.session = session
-		baseUrl = "users/\(userId)/favorites"
+	func getPlaylist(playlistId: String) -> SearchResultPlaylistResponse? {
+		let url = URL(string: "\(config.apiLocation)playlists/\(playlistId)")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var playlistResponse: SearchResultPlaylistResponse?
+		do {
+			playlistResponse = try customJSONDecoder().decode(SearchResultPlaylistResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Playlist Info failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return playlistResponse
 	}
-}
-
-class User {
-	let session: Session
-	let id: Int
-	let favorites: Favorites
 	
-	init(session: Session, id: Int) {
-		self.session = session
-		self.id = id
-		self.favorites = Favorites(session: session, userId: id)
+	func getPlaylistTracks(playlistId: String) -> [SearchResultTrackResponse]? {
+		let url = URL(string: "\(config.apiLocation)playlists/\(playlistId)/tracks")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var playlistTracksResponse: SearchResultTracksResponse?
+		do {
+			playlistTracksResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Playlist Tracks failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return playlistTracksResponse?.items
+	}
+	
+	func getAlbum(albumId: Int) -> SearchResultAlbumResponse? {
+		let url = URL(string: "\(config.apiLocation)albums/\(albumId)")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var albumResponse: SearchResultAlbumResponse?
+		do {
+			albumResponse = try customJSONDecoder().decode(SearchResultAlbumResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Album Info failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return albumResponse
+	}
+	
+	func getAlbumTracks(albumId: Int) -> [SearchResultTrackResponse]? {
+		let url = URL(string: "\(config.apiLocation)albums/\(albumId)/tracks")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var albumTracksResponse: SearchResultTracksResponse?
+		do {
+			albumTracksResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Album Tracks failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return albumTracksResponse?.items
+	}
+	
+	func getArtist(artistId: Int) -> SearchResultArtistResponse? {
+		let url = URL(string: "\(config.apiLocation)artists/\(artistId)")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var artistResponse: SearchResultArtistResponse?
+		do {
+			artistResponse = try customJSONDecoder().decode(SearchResultArtistResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Artist Info failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return artistResponse
+	}
+	
+	enum artistAlbumFilter {
+		case EPSANDSINGLES
+		case COMPILATIONS
+	}
+	
+	func getArtistAlbums(artistId: Int, filter: artistAlbumFilter? = nil) -> [SearchResultAlbumResponse]? {
+		var parameters = sessionParameters
+		if let filter = filter {
+			parameters["filter"] = "\(filter)"
+		}
+		
+		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/albums")!
+		let response = get(url: url, parameters: parameters)
+		
+		var artistAlbumsResponse: SearchResultAlbumsResponse?
+		do {
+			artistAlbumsResponse = try customJSONDecoder().decode(SearchResultAlbumsResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Artist Albums failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return artistAlbumsResponse?.items
+	}
+	
+	func getArtistTopTracks(artistId: Int) -> [SearchResultTrackResponse]? {
+		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var artistTopTracksResponse: SearchResultTracksResponse?
+		do {
+			artistTopTracksResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Artist Top Tracks failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return artistTopTracksResponse?.items
+	}
+	
+	func getArtistBio(artistId: Int) -> ArtistBio? {
+		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/bio")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var artistBio: ArtistBio?
+		do {
+			artistBio = try customJSONDecoder().decode(ArtistBio.self, from: response.content!)
+		} catch {
+			displayError(title: "Artist Bio failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return artistBio
+	}
+	
+	func getArtistSimilar(artistId: Int) -> [SearchResultArtistResponse]? {
+		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var similarArtistsResponse: SearchResultArtistsResponse?
+		do {
+			similarArtistsResponse = try customJSONDecoder().decode(SearchResultArtistsResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Similar Artists failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return similarArtistsResponse?.items
+	}
+	
+	func getArtistRadio(artistId: Int) -> [SearchResultTrackResponse]? {
+		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var artistRadioResponse: SearchResultTracksResponse?
+		do {
+			artistRadioResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Artist Radio failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return artistRadioResponse?.items
+	}
+	
+	func getUser(userId: Int) -> User? {
+		let url = URL(string: "\(config.apiLocation)user/\(userId)")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var user: User?
+		do {
+			user = try customJSONDecoder().decode(User.self, from: response.content!)
+		} catch {
+			displayError(title: "User failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return user
+	}
+	
+	func getUserPlaylists(userId: Int) -> [SearchResultPlaylistResponse]? {
+		let url = URL(string: "\(config.apiLocation)user/\(userId)/playlists")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var userPlaylistResponse: SearchResultPlaylistsResponse?
+		do {
+			userPlaylistResponse = try customJSONDecoder().decode(SearchResultPlaylistsResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "User Playlists failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return userPlaylistResponse?.items
 	}
 }
 
