@@ -41,35 +41,35 @@ struct MediaUrlResponse: Decodable {
 
 struct SearchResultArtistsResponse: Decodable {
 	let limit: Int
-	let offset: Int // Probably used when requesting with limit
+	let offset: Int
 	let totalNumberOfItems: Int
 	let items: [SearchResultArtistResponse]
 }
 
 struct SearchResultAlbumsResponse: Decodable {
 	let limit: Int
-	let offset: Int // Probably used when requesting with limit
+	let offset: Int
 	let totalNumberOfItems: Int
 	let items: [SearchResultAlbumResponse]
 }
 
 struct SearchResultPlaylistsResponse: Decodable {
 	let limit: Int
-	let offset: Int // Probably used when requesting with limit
+	let offset: Int
 	let totalNumberOfItems: Int
 	let items: [SearchResultPlaylistResponse]
 }
 
 struct SearchResultTracksResponse: Decodable {
 	let limit: Int
-	let offset: Int // Probably used when requesting with limit
+	let offset: Int
 	let totalNumberOfItems: Int
 	let items: [SearchResultTrackResponse]
 }
 
 struct SearchResultVideosResponse: Decodable {
 	let limit: Int
-	let offset: Int // Probably used when requesting with limit
+	let offset: Int
 	let totalNumberOfItems: Int
 	let items: [SearchResultVideoResponse]
 }
@@ -81,6 +81,8 @@ struct SearchResultArtistResponse: Decodable {
 	let picture: String?
 	let popularity: Int?
 	let type: String? // What role he/she played
+	let banner: String?
+	let relationType: String? // e.g. SIMILAR_ARTIST
 }
 
 struct SearchResultAlbumResponse: Decodable {
@@ -90,16 +92,23 @@ struct SearchResultAlbumResponse: Decodable {
 	let streamReady: Bool?
 	let streamStartDate: Date?
 	let allowStreaming: Bool?
+	let premiumStreamingOnly: Bool?
 	let numberOfTracks: Int?
 	let numberOfVideos: Int?
 	let numberOfVolumes: Int?
 	let releaseDate: Date?
 	let copyright: String?
+	let type: String?
+	let version: String?
 	let url: URL?
 	let cover: String
+	let videoCover: String?
 	let explicit: Bool?
+	let upc: String?
 	let popularity: Int?
 	let audioQuality: String?
+	let surroundTypes: [String]?
+	let artist: SearchResultArtistResponse?
 	let artists: [SearchResultArtistResponse]?
 }
 
@@ -113,7 +122,7 @@ struct SearchResultPlaylistResponse: Decodable {
 	let duration: Int
 	let lastUpdated: Date
 	let created: Date
-	let type: String // e.g. Editorial
+	let type: String // e.g. EDITORIAL or USER
 	let publicPlaylist: Bool
 	let url: URL
 	let image: String
@@ -138,8 +147,10 @@ struct SearchResultTrackResponse: Decodable {
 	let allowStreaming: Bool
 	let streamReady: Bool
 	let streamStartDate: Date
+	let premiumStreamingOnly: Bool?
 	let trackNumber: Int
 	let volumeNumber: Int
+	let version: String?
 	let popularity: Int
 	let copyright: String?
 	let url: URL
@@ -147,6 +158,8 @@ struct SearchResultTrackResponse: Decodable {
 	let editable: Bool
 	let explicit: Bool
 	let audioQuality: String
+	let surroundTypes: [String]?
+	let artist: SearchResultArtistResponse?
 	let artists: [SearchResultArtistResponse]
 	let album: SearchResultAlbumResponse
 }
@@ -157,7 +170,7 @@ struct SearchResultVideoResponse: Decodable {
 	let volumeNumber: Int
 	let trackNumber: Int
 	let releaseDate: Date
-	//	let imagePath: String // Maybe use it at later stage if necessary
+	let imagePath: String? // As far as I know always null
 	let imageId: String
 	let duration: Int
 	let quality: String
@@ -167,6 +180,8 @@ struct SearchResultVideoResponse: Decodable {
 	let explicit: Bool
 	let popularity: Int
 	let type: String // e.g. Music Video
+	let adsUrl: String?
+	let adsPrePaywallOnly: Bool
 	let artists: [SearchResultArtistResponse]
 }
 
@@ -200,6 +215,27 @@ struct FavoritesResponse: Decodable {
 	let updatedFavoriteVideos: Date?
 }
 
+struct ArtistBio: Decodable {
+	let source: String
+	let lastUpdated: Date
+	let text: String
+}
+
+struct User: Decodable {
+	let id: Int
+	let userName: String
+	let firstName: String
+	let lastName: String
+	let email: String
+	let countryCode: String
+	let created: Date
+	let picture: String
+	let newsletter: Bool
+	let acceptedEULA: Bool
+	let gender: String
+	let dateOfBirth: Date
+	let facebookUid: Int
+}
 
 // Date
 
