@@ -18,11 +18,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 //		let loginInfo = readDemoLoginInformation()
 //		let config = Config(loginInformation: loginInfo)
-		let session = Session(config: nil)
-		
-		session.loadSession()
-		
-		print(session.checkLogin())
+//		let session = Session(config: nil)
+//
+//		session.loadSession()
+//
+//		print(session.checkLogin())
 		
 		print("-----")
 	}
