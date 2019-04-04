@@ -69,6 +69,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(oldConfig.imageSize, session.config.imageSize)
 	}
 	
+	// Login Testing commented out to prevent potential ban from the server if done too often
 //	func testLogin() {
 //		let loginInfo = readDemoLoginInformation()
 //		let config = Config(quality: .LOSSLESS, loginInformation: loginInfo)
@@ -117,10 +118,11 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(info?.paymentType, "PARENT")
 	}
 	
-	func testGetMediaUrl() {
-		let url = session.getMediaUrl(trackId: 59978883)
-		XCTAssertNotNil(url)
-	}
+	// Stops your music playback if you're listening in the web player or official app
+//	func testGetMediaUrl() {
+//		let url = session.getMediaUrl(trackId: 59978883)
+//		XCTAssertNotNil(url)
+//	}
 	
 	func testSearchArtist() {
 		let searchResult = session.search(for: "Jacob Collier")
@@ -342,6 +344,12 @@ class TidalSwiftTests: XCTestCase {
 	
 	func testTrackRadio() {
 		// TODO:
+		let optionalTrackRadio = session.getTrackRadio(trackId: 59978883)
+		XCTAssertNotNil(optionalTrackRadio)
+		let trackRadio = optionalTrackRadio!
+		
+		XCTAssertEqual(trackRadio[0].id, 59978883)
+		XCTAssertEqual(trackRadio[0].title, "In My Room")
 	}
 	
 	func testGenres() { // Overview over all Genres
