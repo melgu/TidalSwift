@@ -19,13 +19,12 @@ class ViewController: NSViewController {
 	}
 	
 	
-
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		// Do any additional setup after loading the view.
-		let appDelegate = NSApplication.shared.delegate as! AppDelegate
-		appDelegate.mainViewController = self
+		let appDelegate = NSApplication.shared.delegate as? AppDelegate
+		appDelegate?.mainViewController = self
 	}
 
 	override var representedObject: Any? {
@@ -36,4 +35,3 @@ class ViewController: NSViewController {
 
 
 }
-

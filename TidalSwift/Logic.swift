@@ -85,7 +85,8 @@ class Session {
 	
 	init(config: Config?) {
 		func loadConfig() -> Config? {
-			let persistentInformationOptional: [String: String]? = UserDefaults.standard.dictionary(forKey: "Config Information") as? [String : String]
+			let persistentInformationOptional: [String: String]? =
+				UserDefaults.standard.dictionary(forKey: "Config Information") as? [String: String]
 			
 			guard let persistentInformation = persistentInformationOptional else {
 				displayError(title: "Couldn't load Config", content: "Persistent Config doesn't exist")
@@ -122,7 +123,8 @@ class Session {
 	}
 	
 	func loadSession() {
-		let persistentInformationOptional: [String: String]? = UserDefaults.standard.dictionary(forKey: "Session Information") as? [String : String]
+		let persistentInformationOptional: [String: String]? =
+			UserDefaults.standard.dictionary(forKey: "Session Information") as? [String: String]
 		
 		guard let persistentInformation = persistentInformationOptional else {
 			displayError(title: "Couldn't load Session", content: "Persistent Session Information doesn't exist")
@@ -136,7 +138,8 @@ class Session {
 	
 	func saveSession() {
 		guard let sessionId = sessionId, let countryCode = countryCode, let userId = userId else {
-			displayError(title: "Couldn't save Session Information", content: "Session Information wasn't set yet. You're probably not logged in.")
+			displayError(title: "Couldn't save Session Information",
+						 content: "Session Information wasn't set yet. You're probably not logged in.")
 			return
 		}
 		
@@ -174,10 +177,12 @@ class Session {
 		let response = post(url: url, parameters: parameters)
 		if !response.ok {
 			if response.statusCode == 401 { // Wrong Username / Password
-				displayError(title: "Wrong username or password", content: "The username and password combination you entered is wrong.")
+				displayError(title: "Wrong username or password",
+							 content: "The username and password combination you entered is wrong.")
 				return false
 			} else {
-				displayError(title: "Login failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)\nPlease report this error to the developer.")
+				displayError(title: "Login failed (HTTP Error)",
+							 content: "Status Code: \(response.statusCode ?? -1)\nPlease report this error to the developer.")
 				return false
 			}
 		}
@@ -239,7 +244,11 @@ class Session {
 		} catch {
 			displayError(title: "Couldn't get media URL (JSON Parse Error)", content: "\(error)")
 		}
-//		print("Track ID: \(mediaUrlResponse.trackId), Quality: \(mediaUrlResponse.soundQuality), Codec: \(mediaUrlResponse.codec)")
+		print("""
+			Track ID: \(mediaUrlResponse?.trackId ?? -1),
+			Quality: \(mediaUrlResponse?.soundQuality ?? ""),
+			Codec: \(mediaUrlResponse?.codec ?? "")
+			""")
 		
 		return mediaUrlResponse?.url
 	}
@@ -247,8 +256,10 @@ class Session {
 	func search(for term: String, limit: Int = 50, offset: Int = 0) -> SearchResultResponse? {
 		var parameters = sessionParameters
 		parameters["query"] = term
-		parameters["limit"] = String(limit) // Server-side limit of 300. Doesn't go higher (also limits totalNumberOfItems to 300. Can go higher using offset.
+		parameters["limit"] = String(limit)
 		parameters["offset"] = String(offset)
+		// Server-side limit of 300. Doesn't go higher (also limits totalNumberOfItems to 300.
+		// Can potentially go higher using offset.
 		
 		let url = URL(string: "\(config.apiLocation)search/")!
 		let response = get(url: url, parameters: parameters)

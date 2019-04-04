@@ -6,6 +6,20 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		B0E6AED22255ADE200D7DA7B /* SwiftLint */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = B0E6AED32255ADE200D7DA7B /* Build configuration list for PBXAggregateTarget "SwiftLint" */;
+			buildPhases = (
+				B0E6AED62255ADF900D7DA7B /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = SwiftLint;
+			productName = SwiftLint;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		B0E582D2223764A500ADAE6C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D1223764A500ADAE6C /* AppDelegate.swift */; };
 		B0E582D4223764A500ADAE6C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D3223764A500ADAE6C /* ViewController.swift */; };
@@ -43,6 +57,7 @@
 		B0E582EF224329A000ADAE6C /* TidalSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TidalSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E582F1224329A000ADAE6C /* TidalSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TidalSwiftTests.swift; sourceTree = "<group>"; };
 		B0E582F3224329A000ADAE6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B0E6AED72255AEBE00D7DA7B /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +81,7 @@
 		B0E582C5223764A400ADAE6C = {
 			isa = PBXGroup;
 			children = (
+				B0E6AED72255AEBE00D7DA7B /* .swiftlint.yml */,
 				B0E582D0223764A500ADAE6C /* TidalSwift */,
 				B0E582F0224329A000ADAE6C /* TidalSwiftTests */,
 				B0E582CF223764A500ADAE6C /* Products */,
@@ -168,6 +184,9 @@
 						LastSwiftMigration = 1020;
 						TestTargetID = B0E582CD223764A500ADAE6C;
 					};
+					B0E6AED22255ADE200D7DA7B = {
+						CreatedOnToolsVersion = 10.2;
+					};
 				};
 			};
 			buildConfigurationList = B0E582C9223764A400ADAE6C /* Build configuration list for PBXProject "TidalSwift" */;
@@ -185,6 +204,7 @@
 			targets = (
 				B0E582CD223764A500ADAE6C /* TidalSwift */,
 				B0E582EE224329A000ADAE6C /* TidalSwiftTests */,
+				B0E6AED22255ADE200D7DA7B /* SwiftLint */,
 			);
 		};
 /* End PBXProject section */
@@ -208,6 +228,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B0E6AED62255ADF900D7DA7B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B0E582CA223764A500ADAE6C /* Sources */ = {
@@ -455,6 +495,24 @@
 			};
 			name = Release;
 		};
+		B0E6AED42255ADE200D7DA7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = V7E5P7292M;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B0E6AED52255ADE200D7DA7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = V7E5P7292M;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -481,6 +539,15 @@
 			buildConfigurations = (
 				B0E582F7224329A000ADAE6C /* Debug */,
 				B0E582F8224329A000ADAE6C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0E6AED32255ADE200D7DA7B /* Build configuration list for PBXAggregateTarget "SwiftLint" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0E6AED42255ADE200D7DA7B /* Debug */,
+				B0E6AED52255ADE200D7DA7B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
