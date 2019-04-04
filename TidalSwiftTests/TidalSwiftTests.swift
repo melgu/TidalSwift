@@ -340,6 +340,28 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResultWithHighLimit?.tracks.totalNumberOfItems, 300)
 	}
 	
+	func testTrackRadio() {
+		// TODO:
+	}
+	
+	func testGenres() { // Overview over all Genres
+		let optionalGenres = session.getGenres()
+		XCTAssertNotNil(optionalGenres)
+		let genres = optionalGenres!
+		
+		XCTAssertEqual(genres[1].name, "Pop")
+		XCTAssertEqual(genres[1].path, "Pop")
+		XCTAssertEqual(genres[1].hasPlaylists, true)
+		XCTAssertEqual(genres[1].hasArtists, false)
+		XCTAssertEqual(genres[1].hasAlbums, true)
+		XCTAssertEqual(genres[1].hasTracks, true)
+		XCTAssertEqual(genres[1].hasVideos, true)
+		XCTAssertEqual(genres[1].image, "0239132d-99be-41f4-929d-e27280f7bff1")
+		
+		XCTAssertEqual(genres[5].name, "R&B / Soul")
+		XCTAssertEqual(genres[5].path, "Funk")
+	}
+	
 	func testDateDecoder() {
 		// Tests if the DateDecoder defined at the bottom of Codable correctly decodes a date.
 		// Makes sure there is no time zone switching.

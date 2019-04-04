@@ -237,6 +237,31 @@ struct User: Decodable {
 	let facebookUid: Int
 }
 
+struct Genres: Decodable {
+	let items: [Genre]
+	
+	init(from decoder: Decoder) throws {
+		var containersArray = try decoder.unkeyedContainer()
+		var temp: [Genre] = []
+		for _ in 0..<containersArray.count! {
+			temp.append(try containersArray.decode(Genre.self))
+		}
+		items = temp
+	}
+}
+
+struct Genre: Decodable {
+	let name: String
+	let path: String
+	let hasPlaylists: Bool
+	let hasArtists: Bool
+	let hasAlbums: Bool
+	let hasTracks: Bool
+	let hasVideos: Bool
+	let image: String
+}
+
+
 // Date
 
 func customJSONDecoder() -> JSONDecoder {
