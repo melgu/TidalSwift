@@ -452,12 +452,64 @@ class Session {
 		
 		return userPlaylistResponse?.items
 	}
+	
+	func getTrackRadio(trackId: Int, limit: Int = 100, offset: Int = 0) -> [SearchResultTrackResponse]? {
+		var parameters = sessionParameters
+		parameters["limit"] = String(limit)
+		parameters["offset"] = String(offset)
+		
+		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/radio")!
+		let response = get(url: url, parameters: parameters)
+		
+		var trackRadioResponse: SearchResultTracksResponse?
+		do {
+			trackRadioResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+		} catch {
+			displayError(title: "Track Radio failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return trackRadioResponse?.items
+	}
+	
+//	func getFeatured() -> <#return type#> {
+//		<#function body#>
+//	}
+//
+//	func getFeaturedItems() -> <#return type#> {
+//		<#function body#>
+//	}
+//
+//	func getMoods() -> <#return type#> {
+//		<#function body#>
+//	}
+//
+//	func getMoodPlaylists() -> <#return type#> {
+//		<#function body#>
+//	}
+	
+	func getGenres() -> [Genre]? { // Overview over all Genres
+		let url = URL(string: "\(config.apiLocation)genres")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		var genresResponse: Genres?
+		do {
+			genresResponse = try customJSONDecoder().decode(Genres.self, from: response.content!)
+		} catch {
+			displayError(title: "Genres failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return genresResponse?.items
+	}
+	
+//	func getGenreItems(genreId: Int, contentType: String) -> <#return type#> {
+//		<#function body#>
+//	}
 }
 
 func displayError(title: String, content: String) {
 	// Comment out while unit testing to prevent pop-ups
 	
-//	print("Error info: \(content)")
+	print("Error info: \(content)")
 //	let appDelegate = NSApplication.shared.delegate as! AppDelegate
 //	appDelegate.mainViewController?.errorDialog(title: title, text: content)
 }
