@@ -20,7 +20,7 @@ enum HttpMethod {
 }
 
 func encodeParameters(_ parameters: [String: String]) -> String {
-	let queryItems = parameters.map { URLQueryItem(name:$0, value:$1)}
+	let queryItems = parameters.map { URLQueryItem(name: $0, value: $1) }
 	var components = URLComponents()
 	components.queryItems = queryItems
 	return components.percentEncodedQuery ?? ""

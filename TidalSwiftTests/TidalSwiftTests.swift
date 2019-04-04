@@ -137,7 +137,8 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testSearchAlbum() {
-		let searchResult = session.search(for: "Jacob Collier In My Room") // TODO: Change "In my Room" to "Djesse" to test multiple artists
+		// TODO: Change "In my Room" to "Djesse" to test multiple artists
+		let searchResult = session.search(for: "Jacob Collier In My Room")
 		XCTAssertEqual(searchResult?.albums.totalNumberOfItems, 1)
 		XCTAssertEqual(searchResult?.albums.items[0].id, 59978881)
 		XCTAssertEqual(searchResult?.albums.items[0].title, "In My Room")
@@ -342,15 +343,15 @@ class TidalSwiftTests: XCTestCase {
 	func testDateDecoder() {
 		// Tests if the DateDecoder defined at the bottom of Codable correctly decodes a date.
 		// Makes sure there is no time zone switching.
-		let rawString =    "2016-07-15"
+		let rawString = "2016-07-15"
 		let date = DateFormatter.iso8601OptionalTime.date(from: rawString)!
 		let resultString = "2016-07-15 00:00:00 +0000"
 		XCTAssertEqual(resultString, "\(date)")
 		
 		// Test sub-second accuracy
 		let subSecondString = "2019-03-28T06:49:21.123GMT"
-		let subSecondDate =   DateFormatter.iso8601OptionalTime.date(from: subSecondString)!
-		let wrongResult =     "2019-03-28T06:49:21.000GMT"
+		let subSecondDate = DateFormatter.iso8601OptionalTime.date(from: subSecondString)!
+		let wrongResult = "2019-03-28T06:49:21.000GMT"
 		let subSecondResult = DateFormatter.iso8601OptionalTime.string(from: subSecondDate)
 		XCTAssertNotEqual(wrongResult, subSecondResult)
 		XCTAssertEqual(subSecondString, subSecondResult)

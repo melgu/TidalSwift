@@ -1,0 +1,41 @@
+disabled_rules: # rule identifiers to exclude from running
+ - type_name
+# - line_length
+ - file_length
+ - type_body_length
+ - identifier_name
+ - vertical_parameter_alignment
+opt_in_rules: # some rules are only opt-in
+ - empty_count
+ - closure_end_indentation
+ - closure_spacing
+ - fatal_error_message
+# - sorted_imports
+ - operator_usage_whitespace
+ - redundant_nil_coalescing
+ - switch_case_on_newline
+ - attributes
+ - no_extension_access_modifier
+ - implicit_return
+# Find all the available rules by running:
+# swiftlint rules
+included: # paths to include during linting. `--path` is ignored if present.
+
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+# - Source/ExcludedFolder
+# - Source/ExcludedFile.swift
+# - Source/*/ExcludedFile.swift # Exclude files with a wildcard
+
+# configurable rules can be customized from this configuration file
+# binary rules can set their severity level
+# rules that have both warning and error levels, can set just the warning level
+# implicitly
+# naming rules can set warnings/errors for min_length and max_length
+# additionally they can set excluded names
+trailing_whitespace:
+  ignores_empty_lines: true
+  ignores_comments: true
+vertical_whitespace:
+  max_empty_lines: 2
+
+reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown)
