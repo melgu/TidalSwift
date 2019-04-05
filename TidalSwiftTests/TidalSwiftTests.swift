@@ -139,33 +139,52 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testSearchAlbum() {
-		// TODO: Change "In my Room" to "Djesse" to test multiple artists
-		let searchResult = session.search(for: "Jacob Collier In My Room")
-		XCTAssertEqual(searchResult?.albums.totalNumberOfItems, 1)
-		XCTAssertEqual(searchResult?.albums.items[0].id, 59978881)
-		XCTAssertEqual(searchResult?.albums.items[0].title, "In My Room")
-		XCTAssertEqual(searchResult?.albums.items[0].duration, 3531)
+		let searchResult = session.search(for: "Jacob Collier Djesse Vol. 1")
+		
+		// Master Version
+		XCTAssertEqual(searchResult?.albums.totalNumberOfItems, 2)
+		XCTAssertEqual(searchResult?.albums.items[0].id, 100006868)
+		XCTAssertEqual(searchResult?.albums.items[0].title, "Djesse (Vol. 1)")
+		XCTAssertEqual(searchResult?.albums.items[0].duration, 3196)
 		XCTAssertEqual(searchResult?.albums.items[0].streamReady, true)
 		XCTAssertEqual(searchResult?.albums.items[0].streamStartDate,
-					   DateFormatter.iso8601OptionalTime.date(from: "2016-07-01"))
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
 		XCTAssertEqual(searchResult?.albums.items[0].allowStreaming, true)
-		XCTAssertEqual(searchResult?.albums.items[0].numberOfTracks, 11)
+		XCTAssertEqual(searchResult?.albums.items[0].numberOfTracks, 9)
 		XCTAssertEqual(searchResult?.albums.items[0].numberOfVideos, 0)
 		XCTAssertEqual(searchResult?.albums.items[0].numberOfVolumes, 1)
 		XCTAssertEqual(searchResult?.albums.items[0].releaseDate,
-					   DateFormatter.iso8601OptionalTime.date(from: "2016-07-15"))
-		XCTAssertEqual(searchResult?.albums.items[0].copyright, "2016 Membran")
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
+		XCTAssertEqual(searchResult?.albums.items[0].copyright,
+					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
 		XCTAssertNotNil(searchResult?.albums.items[0].popularity)
-		XCTAssertEqual(searchResult?.albums.items[0].audioQuality, "LOSSLESS")
+		XCTAssertEqual(searchResult?.albums.items[0].audioQuality, "HI_RES")
 		
-		// Album Artist
-		XCTAssertEqual(searchResult?.albums.items[0].artists?.count, 1)
+		// HiFi Version
+		XCTAssertEqual(searchResult?.albums.items[1].audioQuality, "LOSSLESS")
+		
+		// Album Artists
+		XCTAssertEqual(searchResult?.albums.items[0].artists?.count, 3)
 		XCTAssertEqual(searchResult?.albums.items[0].artists?[0].id, 7553669)
 		XCTAssertEqual(searchResult?.albums.items[0].artists?[0].name, "Jacob Collier")
 		XCTAssertNil(searchResult?.albums.items[0].artists?[0].url)
 		XCTAssertNil(searchResult?.albums.items[0].artists?[0].picture)
 		XCTAssertNil(searchResult?.albums.items[0].artists?[0].popularity)
 		XCTAssertEqual(searchResult?.albums.items[0].artists?[0].type, "MAIN")
+		
+		XCTAssertEqual(searchResult?.albums.items[0].artists?[1].id, 4631340)
+		XCTAssertEqual(searchResult?.albums.items[0].artists?[1].name, "Metropole Orkest")
+		XCTAssertNil(searchResult?.albums.items[0].artists?[1].url)
+		XCTAssertNil(searchResult?.albums.items[0].artists?[1].picture)
+		XCTAssertNil(searchResult?.albums.items[0].artists?[1].popularity)
+		XCTAssertEqual(searchResult?.albums.items[0].artists?[1].type, "MAIN")
+		
+		XCTAssertEqual(searchResult?.albums.items[0].artists?[2].id, 4374293)
+		XCTAssertEqual(searchResult?.albums.items[0].artists?[2].name, "Jules Buckley")
+		XCTAssertNil(searchResult?.albums.items[0].artists?[2].url)
+		XCTAssertNil(searchResult?.albums.items[0].artists?[2].picture)
+		XCTAssertNil(searchResult?.albums.items[0].artists?[2].popularity)
+		XCTAssertEqual(searchResult?.albums.items[0].artists?[2].type, "MAIN")
 	}
 	
 	func testSearchPlaylist() {
@@ -343,7 +362,6 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testTrackRadio() {
-		// TODO:
 		let optionalTrackRadio = session.getTrackRadio(trackId: 59978883)
 		XCTAssertNotNil(optionalTrackRadio)
 		let trackRadio = optionalTrackRadio!
