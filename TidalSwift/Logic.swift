@@ -232,6 +232,7 @@ class Session {
 		return searchResultResponse
 	}
 	
+	// Only works for music tracks (no videos at the moment)
 	func getMediaUrl(trackId: Int) -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(config.quality)"
@@ -425,6 +426,24 @@ class Session {
 		return artistRadioResponse?.items
 	}
 	
+	func getTrackRadio(trackId: Int, limit: Int = 100, offset: Int = 0) -> [Track]? {
+		var parameters = sessionParameters
+		parameters["limit"] = String(limit)
+		parameters["offset"] = String(offset)
+		
+		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/radio")!
+		let response = get(url: url, parameters: parameters)
+		
+		var trackRadioResponse: Tracks?
+		do {
+			trackRadioResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
+		} catch {
+			displayError(title: "Track Radio failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return trackRadioResponse?.items
+	}
+	
 	func getUser(userId: Int) -> User? {
 		let url = URL(string: "\(config.apiLocation)user/\(userId)")!
 		let response = get(url: url, parameters: sessionParameters)
@@ -451,24 +470,6 @@ class Session {
 		}
 		
 		return userPlaylistResponse?.items
-	}
-	
-	func getTrackRadio(trackId: Int, limit: Int = 100, offset: Int = 0) -> [Track]? {
-		var parameters = sessionParameters
-		parameters["limit"] = String(limit)
-		parameters["offset"] = String(offset)
-		
-		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/radio")!
-		let response = get(url: url, parameters: parameters)
-		
-		var trackRadioResponse: Tracks?
-		do {
-			trackRadioResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
-		} catch {
-			displayError(title: "Track Radio failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return trackRadioResponse?.items
 	}
 	
 //	func getFeatured() -> <#return type#> {

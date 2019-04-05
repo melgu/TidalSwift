@@ -183,6 +183,7 @@ struct Video: Decodable {
 	let adsUrl: String?
 	let adsPrePaywallOnly: Bool
 	let artists: [Artist]
+	let album: Album?
 }
 
 struct TopHit: Decodable {
