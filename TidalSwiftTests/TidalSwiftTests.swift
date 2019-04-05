@@ -120,8 +120,16 @@ class TidalSwiftTests: XCTestCase {
 	
 	// Stops your music playback if you're listening in the web player or official app
 //	func testGetMediaUrl() {
-//		let url = session.getMediaUrl(trackId: 59978883)
-//		XCTAssertNotNil(url)
+//		// Music
+//		let trackUrl = session.getMediaUrl(trackId: 59978883)
+//		XCTAssertNotNil(trackUrl)
+//		print(trackUrl)
+//
+//		// Video (Fatal error at the moment:
+//		// Unexpectedly found nil while unwrapping an Optional value)
+////		let videoUrl = session.getMediaUrl(trackId: 33835599)
+////		XCTAssertNotNil(videoUrl)
+////		print(videoUrl)
 //	}
 	
 	func testSearchArtist() {
@@ -263,6 +271,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResult?.videos.items[0].trackNumber, 1)
 		XCTAssertEqual(searchResult?.videos.items[0].releaseDate,
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-11-16"))
+		XCTAssertNil(searchResult?.videos.items[0].imagePath)
 		XCTAssertEqual(searchResult?.videos.items[0].imageId,
 					   "94cf59fb-2816-4c40-989d-8aff2365baf9")
 		XCTAssertEqual(searchResult?.videos.items[0].duration, 406)
@@ -275,6 +284,8 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResult?.videos.items[0].explicit, false)
 //		print(searchResult?.videos.items[0].popularity)
 		XCTAssertEqual(searchResult?.videos.items[0].type, "Music Video")
+		XCTAssertNil(searchResult?.videos.items[0].adsUrl)
+		XCTAssertEqual(searchResult?.videos.items[0].adsPrePaywallOnly, true)
 		
 		// Artists
 		XCTAssertEqual(searchResult?.tracks.items[0].artists.count, 3)
@@ -290,6 +301,9 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResult?.tracks.items[0].artists[2].id, 4374293)
 		XCTAssertEqual(searchResult?.tracks.items[0].artists[2].name, "Jules Buckley")
 		XCTAssertEqual(searchResult?.videos.items[0].artists[2].type, "MAIN")
+		
+		// Album (probably need to find a better example)
+		XCTAssertNil(searchResult?.videos.items[0].album)
 		
 	}
 	
@@ -361,6 +375,46 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResultWithHighLimit?.tracks.totalNumberOfItems, 300)
 	}
 	
+//	func testGetPlaylist() {
+//		<#function body#>
+//	}
+//
+//	func testGetPlaylistTracks() {
+//		<#function body#>
+//	}
+//
+//	func testGetAlbum() {
+//		<#function body#>
+//	}
+//
+//	func testGetAlbumTracks() {
+//		<#function body#>
+//	}
+//
+//	func testGetArtist() {
+//		<#function body#>
+//	}
+//
+//	func testGetArtistAlbums() {
+//		<#function body#>
+//	}
+//
+//	func testGetArtistTopTracks() {
+//		<#function body#>
+//	}
+//
+//	func testGetArtistBio() {
+//		<#function body#>
+//	}
+//
+//	func testGetArtistSimilar() {
+//		<#function body#>
+//	}
+//
+//	func testGetArtistRadio() {
+//		<#function body#>
+//	}
+	
 	func testTrackRadio() {
 		let optionalTrackRadio = session.getTrackRadio(trackId: 59978883)
 		XCTAssertNotNil(optionalTrackRadio)
@@ -370,7 +424,15 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(trackRadio[0].title, "In My Room")
 	}
 	
-	func testGenres() { // Overview over all Genres
+//	func testGetUser() {
+//		<#function body#>
+//	}
+//	
+//	func testGetUserPlaylists() {
+//		<#function body#>
+//	}
+	
+	func testGetGenres() { // Overview over all Genres
 		let optionalGenres = session.getGenres()
 		XCTAssertNotNil(optionalGenres)
 		let genres = optionalGenres!
