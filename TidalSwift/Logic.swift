@@ -9,7 +9,7 @@
 import Foundation
 import Cocoa
 
-struct LoginInformation {
+struct LoginCredentials {
 	var username: String
 	var password: String
 }
@@ -38,14 +38,14 @@ class Config {
 	var apiToken: String
 	var imageUrl: String
 	var imageSize: Int
-	var loginInformation: LoginInformation
+	var loginInformation: LoginCredentials
 	
 	init(quality: Quality = .LOSSLESS,
 		 apiLocation: String = "https://api.tidalhifi.com/v1/",
 		 apiToken: String? = nil,
 		 imageUrl: String = "http://images.osl.wimpmusic.com/im/im/",
 		 imageSize: Int = 1280,
-		 loginInformation: LoginInformation) {
+		 loginInformation: LoginCredentials) {
 		self.quality = quality
 		self.apiLocation = apiLocation
 		
@@ -110,7 +110,7 @@ class Session {
 						  apiToken: persistentInformation["apiToken"]!,
 						  imageUrl: persistentInformation["imageUrl"]!,
 						  imageSize: Int(persistentInformation["imageSize"]!)!,
-						  loginInformation: LoginInformation(username: persistentInformation["username"]!,
+						  loginInformation: LoginCredentials(username: persistentInformation["username"]!,
 															 password: persistentInformation["password"]!))
 		}
 		
@@ -214,7 +214,7 @@ class Session {
 		return get(url: url, parameters: sessionParameters).ok
 	}
 	
-	func getSubscriptionInfo() -> SubscriptionResponse? {
+	func getSubscriptionInfo() -> Subscription? {
 		guard let userId = userId else {
 			return nil
 		}
@@ -222,9 +222,9 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)users/\(userId)/subscription")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var searchResultResponse: SubscriptionResponse?
+		var searchResultResponse: Subscription?
 		do {
-			searchResultResponse = try customJSONDecoder().decode(SubscriptionResponse.self, from: response.content!)
+			searchResultResponse = try customJSONDecoder().decode(Subscription.self, from: response.content!)
 		} catch {
 			displayError(title: "Subscription Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -238,9 +238,9 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/streamUrl")!
 		let response = get(url: url, parameters: parameters)
 		
-		var mediaUrlResponse: MediaUrlResponse?
+		var mediaUrlResponse: MediaUrl?
 		do {
-			mediaUrlResponse = try JSONDecoder().decode(MediaUrlResponse.self, from: response.content!)
+			mediaUrlResponse = try JSONDecoder().decode(MediaUrl.self, from: response.content!)
 		} catch {
 			displayError(title: "Couldn't get media URL (JSON Parse Error)", content: "\(error)")
 		}
@@ -253,7 +253,7 @@ class Session {
 		return mediaUrlResponse?.url
 	}
 	
-	func search(for term: String, limit: Int = 50, offset: Int = 0) -> SearchResultResponse? {
+	func search(for term: String, limit: Int = 50, offset: Int = 0) -> SearchResult? {
 		var parameters = sessionParameters
 		parameters["query"] = term
 		parameters["limit"] = String(limit)
@@ -265,9 +265,9 @@ class Session {
 		let response = get(url: url, parameters: parameters)
 //		print(String(data: response.content!, encoding: String.Encoding.utf8))
 		
-		var searchResultResponse: SearchResultResponse?
+		var searchResultResponse: SearchResult?
 		do {
-			searchResultResponse = try customJSONDecoder().decode(SearchResultResponse.self, from: response.content!)
+			searchResultResponse = try customJSONDecoder().decode(SearchResult.self, from: response.content!)
 		} catch {
 			displayError(title: "Search failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -275,13 +275,13 @@ class Session {
 		return searchResultResponse
 	}
 	
-	func getPlaylist(playlistId: String) -> SearchResultPlaylistResponse? {
+	func getPlaylist(playlistId: String) -> Playlist? {
 		let url = URL(string: "\(config.apiLocation)playlists/\(playlistId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var playlistResponse: SearchResultPlaylistResponse?
+		var playlistResponse: Playlist?
 		do {
-			playlistResponse = try customJSONDecoder().decode(SearchResultPlaylistResponse.self, from: response.content!)
+			playlistResponse = try customJSONDecoder().decode(Playlist.self, from: response.content!)
 		} catch {
 			displayError(title: "Playlist Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -289,13 +289,13 @@ class Session {
 		return playlistResponse
 	}
 	
-	func getPlaylistTracks(playlistId: String) -> [SearchResultTrackResponse]? {
+	func getPlaylistTracks(playlistId: String) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)playlists/\(playlistId)/tracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var playlistTracksResponse: SearchResultTracksResponse?
+		var playlistTracksResponse: Tracks?
 		do {
-			playlistTracksResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+			playlistTracksResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
 		} catch {
 			displayError(title: "Playlist Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -303,13 +303,13 @@ class Session {
 		return playlistTracksResponse?.items
 	}
 	
-	func getAlbum(albumId: Int) -> SearchResultAlbumResponse? {
+	func getAlbum(albumId: Int) -> Album? {
 		let url = URL(string: "\(config.apiLocation)albums/\(albumId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var albumResponse: SearchResultAlbumResponse?
+		var albumResponse: Album?
 		do {
-			albumResponse = try customJSONDecoder().decode(SearchResultAlbumResponse.self, from: response.content!)
+			albumResponse = try customJSONDecoder().decode(Album.self, from: response.content!)
 		} catch {
 			displayError(title: "Album Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -317,13 +317,13 @@ class Session {
 		return albumResponse
 	}
 	
-	func getAlbumTracks(albumId: Int) -> [SearchResultTrackResponse]? {
+	func getAlbumTracks(albumId: Int) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)albums/\(albumId)/tracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var albumTracksResponse: SearchResultTracksResponse?
+		var albumTracksResponse: Tracks?
 		do {
-			albumTracksResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+			albumTracksResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
 		} catch {
 			displayError(title: "Album Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -331,13 +331,13 @@ class Session {
 		return albumTracksResponse?.items
 	}
 	
-	func getArtist(artistId: Int) -> SearchResultArtistResponse? {
+	func getArtist(artistId: Int) -> Artist? {
 		let url = URL(string: "\(config.apiLocation)artists/\(artistId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var artistResponse: SearchResultArtistResponse?
+		var artistResponse: Artist?
 		do {
-			artistResponse = try customJSONDecoder().decode(SearchResultArtistResponse.self, from: response.content!)
+			artistResponse = try customJSONDecoder().decode(Artist.self, from: response.content!)
 		} catch {
 			displayError(title: "Artist Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -350,7 +350,7 @@ class Session {
 		case COMPILATIONS
 	}
 	
-	func getArtistAlbums(artistId: Int, filter: artistAlbumFilter? = nil) -> [SearchResultAlbumResponse]? {
+	func getArtistAlbums(artistId: Int, filter: artistAlbumFilter? = nil) -> [Album]? {
 		var parameters = sessionParameters
 		if let filter = filter {
 			parameters["filter"] = "\(filter)"
@@ -359,9 +359,9 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/albums")!
 		let response = get(url: url, parameters: parameters)
 		
-		var artistAlbumsResponse: SearchResultAlbumsResponse?
+		var artistAlbumsResponse: Albums?
 		do {
-			artistAlbumsResponse = try customJSONDecoder().decode(SearchResultAlbumsResponse.self, from: response.content!)
+			artistAlbumsResponse = try customJSONDecoder().decode(Albums.self, from: response.content!)
 		} catch {
 			displayError(title: "Artist Albums failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -369,13 +369,13 @@ class Session {
 		return artistAlbumsResponse?.items
 	}
 	
-	func getArtistTopTracks(artistId: Int) -> [SearchResultTrackResponse]? {
+	func getArtistTopTracks(artistId: Int) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var artistTopTracksResponse: SearchResultTracksResponse?
+		var artistTopTracksResponse: Tracks?
 		do {
-			artistTopTracksResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+			artistTopTracksResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
 		} catch {
 			displayError(title: "Artist Top Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -397,13 +397,13 @@ class Session {
 		return artistBio
 	}
 	
-	func getArtistSimilar(artistId: Int) -> [SearchResultArtistResponse]? {
+	func getArtistSimilar(artistId: Int) -> [Artist]? {
 		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var similarArtistsResponse: SearchResultArtistsResponse?
+		var similarArtistsResponse: Artists?
 		do {
-			similarArtistsResponse = try customJSONDecoder().decode(SearchResultArtistsResponse.self, from: response.content!)
+			similarArtistsResponse = try customJSONDecoder().decode(Artists.self, from: response.content!)
 		} catch {
 			displayError(title: "Similar Artists failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -411,13 +411,13 @@ class Session {
 		return similarArtistsResponse?.items
 	}
 	
-	func getArtistRadio(artistId: Int) -> [SearchResultTrackResponse]? {
+	func getArtistRadio(artistId: Int) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var artistRadioResponse: SearchResultTracksResponse?
+		var artistRadioResponse: Tracks?
 		do {
-			artistRadioResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+			artistRadioResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
 		} catch {
 			displayError(title: "Artist Radio failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -439,13 +439,13 @@ class Session {
 		return user
 	}
 	
-	func getUserPlaylists(userId: Int) -> [SearchResultPlaylistResponse]? {
+	func getUserPlaylists(userId: Int) -> [Playlist]? {
 		let url = URL(string: "\(config.apiLocation)user/\(userId)/playlists")!
 		let response = get(url: url, parameters: sessionParameters)
 		
-		var userPlaylistResponse: SearchResultPlaylistsResponse?
+		var userPlaylistResponse: Playlists?
 		do {
-			userPlaylistResponse = try customJSONDecoder().decode(SearchResultPlaylistsResponse.self, from: response.content!)
+			userPlaylistResponse = try customJSONDecoder().decode(Playlists.self, from: response.content!)
 		} catch {
 			displayError(title: "User Playlists failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -453,7 +453,7 @@ class Session {
 		return userPlaylistResponse?.items
 	}
 	
-	func getTrackRadio(trackId: Int, limit: Int = 100, offset: Int = 0) -> [SearchResultTrackResponse]? {
+	func getTrackRadio(trackId: Int, limit: Int = 100, offset: Int = 0) -> [Track]? {
 		var parameters = sessionParameters
 		parameters["limit"] = String(limit)
 		parameters["offset"] = String(offset)
@@ -461,9 +461,9 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/radio")!
 		let response = get(url: url, parameters: parameters)
 		
-		var trackRadioResponse: SearchResultTracksResponse?
+		var trackRadioResponse: Tracks?
 		do {
-			trackRadioResponse = try customJSONDecoder().decode(SearchResultTracksResponse.self, from: response.content!)
+			trackRadioResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
 		} catch {
 			displayError(title: "Track Radio failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -514,7 +514,7 @@ func displayError(title: String, content: String) {
 //	appDelegate.mainViewController?.errorDialog(title: title, text: content)
 }
 
-func readDemoLoginInformation() -> LoginInformation {
+func readDemoLoginInformation() -> LoginCredentials {
 	let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
 	var content = ""
 	do {
@@ -524,5 +524,5 @@ func readDemoLoginInformation() -> LoginInformation {
 	}
 	
 	let lines: [String] = content.components(separatedBy: "\n")
-	return LoginInformation(username: lines[0], password: lines[1])
+	return LoginCredentials(username: lines[0], password: lines[1])
 }

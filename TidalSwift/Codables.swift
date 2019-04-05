@@ -14,22 +14,22 @@ struct LoginResponse: Decodable {
 	let countryCode: String
 }
 
-struct SubscriptionResponse: Decodable {
+struct Subscription: Decodable {
 	let validUntil: Date
 	let status: String
-	let subscription: SubscriptionTypeResponse
+	let subscription: SubscriptionType
 	let highestSoundQuality: String
 	let premiumAccess: Bool
 	let canGetTrial: Bool
 	let paymentType: String
 }
 
-struct SubscriptionTypeResponse: Decodable {
+struct SubscriptionType: Decodable {
 	let type: String
 	let offlineGracePeriod: Int
 }
 
-struct MediaUrlResponse: Decodable {
+struct MediaUrl: Decodable {
 	let url: URL
 	let trackId: Int
 	let soundQuality: String
@@ -39,42 +39,42 @@ struct MediaUrlResponse: Decodable {
 
 // Section: Search
 
-struct SearchResultArtistsResponse: Decodable {
+struct Artists: Decodable {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
-	let items: [SearchResultArtistResponse]
+	let items: [Artist]
 }
 
-struct SearchResultAlbumsResponse: Decodable {
+struct Albums: Decodable {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
-	let items: [SearchResultAlbumResponse]
+	let items: [Album]
 }
 
-struct SearchResultPlaylistsResponse: Decodable {
+struct Playlists: Decodable {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
-	let items: [SearchResultPlaylistResponse]
+	let items: [Playlist]
 }
 
-struct SearchResultTracksResponse: Decodable {
+struct Tracks: Decodable {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
-	let items: [SearchResultTrackResponse]
+	let items: [Track]
 }
 
-struct SearchResultVideosResponse: Decodable {
+struct Videos: Decodable {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
-	let items: [SearchResultVideoResponse]
+	let items: [Video]
 }
 
-struct SearchResultArtistResponse: Decodable {
+struct Artist: Decodable {
 	let id: Int
 	let name: String
 	let url: URL?
@@ -85,7 +85,7 @@ struct SearchResultArtistResponse: Decodable {
 	let relationType: String? // e.g. SIMILAR_ARTIST
 }
 
-struct SearchResultAlbumResponse: Decodable {
+struct Album: Decodable {
 	let id: Int
 	let title: String
 	let duration: Int? // In Seconds
@@ -108,16 +108,16 @@ struct SearchResultAlbumResponse: Decodable {
 	let popularity: Int?
 	let audioQuality: String?
 	let surroundTypes: [String]?
-	let artist: SearchResultArtistResponse?
-	let artists: [SearchResultArtistResponse]?
+	let artist: Artist?
+	let artists: [Artist]?
 }
 
-struct SearchResultPlaylistResponse: Decodable {
+struct Playlist: Decodable {
 	let uuid: String
 	let title: String
 	let numberOfTracks: Int
 	let numberOfVideos: Int
-	let creator: SearchResultPlaylistCreatorResponse
+	let creator: PlaylistCreator
 	let description: String
 	let duration: Int
 	let lastUpdated: Date
@@ -130,7 +130,7 @@ struct SearchResultPlaylistResponse: Decodable {
 	let squareImage: String?
 }
 
-struct SearchResultPlaylistCreatorResponse: Decodable {
+struct PlaylistCreator: Decodable {
 	let id: Int?
 	let name: String?
 	let url: URL?
@@ -138,7 +138,7 @@ struct SearchResultPlaylistCreatorResponse: Decodable {
 	let popularity: Int?
 }
 
-struct SearchResultTrackResponse: Decodable {
+struct Track: Decodable {
 	let id: Int
 	let title: String
 	let duration: Int
@@ -159,12 +159,12 @@ struct SearchResultTrackResponse: Decodable {
 	let explicit: Bool
 	let audioQuality: String
 	let surroundTypes: [String]?
-	let artist: SearchResultArtistResponse?
-	let artists: [SearchResultArtistResponse]
-	let album: SearchResultAlbumResponse
+	let artist: Artist?
+	let artists: [Artist]
+	let album: Album
 }
 
-struct SearchResultVideoResponse: Decodable {
+struct Video: Decodable {
 	let id: Int
 	let title: String
 	let volumeNumber: Int
@@ -182,27 +182,27 @@ struct SearchResultVideoResponse: Decodable {
 	let type: String // e.g. Music Video
 	let adsUrl: String?
 	let adsPrePaywallOnly: Bool
-	let artists: [SearchResultArtistResponse]
+	let artists: [Artist]
 }
 
-struct SearchResultTopHitResponse: Decodable {
-	let value: SearchResultTopHitValueResponse
+struct TopHit: Decodable {
+	let value: TopHitValue
 	let type: String
 }
 
-struct SearchResultTopHitValueResponse: Decodable {
+struct TopHitValue: Decodable {
 	let id: Int?
 	let uuid: String?
 	let popularity: Int
 }
 
-struct SearchResultResponse: Decodable {
-	let artists: SearchResultArtistsResponse
-	let albums: SearchResultAlbumsResponse
-	let playlists: SearchResultPlaylistsResponse
-	let tracks: SearchResultTracksResponse
-	let videos: SearchResultVideosResponse
-	let topHit: SearchResultTopHitResponse?
+struct SearchResult: Decodable {
+	let artists: Artists
+	let albums: Albums
+	let playlists: Playlists
+	let tracks: Tracks
+	let videos: Videos
+	let topHit: TopHit?
 }
 
 struct FavoritesResponse: Decodable {
