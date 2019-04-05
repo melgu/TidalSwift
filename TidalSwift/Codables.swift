@@ -85,6 +85,12 @@ struct Artist: Decodable {
 	let relationType: String? // e.g. SIMILAR_ARTIST
 }
 
+struct ArtistBio: Decodable {
+	let source: String
+	let lastUpdated: Date
+	let text: String
+}
+
 struct Album: Decodable {
 	let id: Int
 	let title: String
@@ -146,7 +152,7 @@ struct Track: Decodable {
 	let peak: Float
 	let allowStreaming: Bool
 	let streamReady: Bool
-	let streamStartDate: Date
+	let streamStartDate: Date?
 	let premiumStreamingOnly: Bool?
 	let trackNumber: Int
 	let volumeNumber: Int
@@ -157,7 +163,7 @@ struct Track: Decodable {
 	let isrc: String
 	let editable: Bool
 	let explicit: Bool
-	let audioQuality: String
+	let audioQuality: String?
 	let surroundTypes: [String]?
 	let artist: Artist?
 	let artists: [Artist]
@@ -214,12 +220,6 @@ struct FavoritesResponse: Decodable {
 	let updatedPlaylists: Date?
 	let updatedVideoPlaylists: Date?
 	let updatedFavoriteVideos: Date?
-}
-
-struct ArtistBio: Decodable {
-	let source: String
-	let lastUpdated: Date
-	let text: String
 }
 
 struct User: Decodable {

@@ -144,13 +144,15 @@ class TidalSwiftTests: XCTestCase {
 					   "daaa931c-afc0-4c63-819c-c821393b6a45")
 		XCTAssertNotNil(searchResult?.artists.items[0].popularity)
 		XCTAssertNil(searchResult?.artists.items[0].type)
+		XCTAssertNil(searchResult?.artists.items[0].banner)
+		XCTAssertNil(searchResult?.artists.items[0].relationType)
 	}
 	
 	func testSearchAlbum() {
 		let searchResult = session.search(for: "Jacob Collier Djesse Vol. 1")
+		XCTAssertEqual(searchResult?.albums.totalNumberOfItems, 2)
 		
 		// Master Version
-		XCTAssertEqual(searchResult?.albums.totalNumberOfItems, 2)
 		XCTAssertEqual(searchResult?.albums.items[0].id, 100006868)
 		XCTAssertEqual(searchResult?.albums.items[0].title, "Djesse (Vol. 1)")
 		XCTAssertEqual(searchResult?.albums.items[0].duration, 3196)
@@ -214,6 +216,7 @@ class TidalSwiftTests: XCTestCase {
 					   DateFormatter.iso8601OptionalTime.date(from:
 						"2018-01-19T17:56:03.125GMT"))
 		XCTAssertEqual(searchResult?.playlists.items[0].type, "EDITORIAL")
+		// Here it's false, but in the Playlist test it's true. No idea, why.
 		XCTAssertEqual(searchResult?.playlists.items[0].publicPlaylist, false)
 		XCTAssertEqual(searchResult?.playlists.items[0].url, URL(string:
 			"http://www.tidal.com/playlist/96696a2c-b284-4dd3-8e51-5e0dae44ace0"))
@@ -375,38 +378,291 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResultWithHighLimit?.tracks.totalNumberOfItems, 300)
 	}
 	
-//	func testGetPlaylist() {
-//		<#function body#>
-//	}
-//
-//	func testGetPlaylistTracks() {
-//		<#function body#>
-//	}
-//
-//	func testGetAlbum() {
-//		<#function body#>
-//	}
-//
-//	func testGetAlbumTracks() {
-//		<#function body#>
-//	}
-//
-//	func testGetArtist() {
-//		<#function body#>
-//	}
-//
-//	func testGetArtistAlbums() {
-//		<#function body#>
-//	}
-//
-//	func testGetArtistTopTracks() {
-//		<#function body#>
-//	}
-//
-//	func testGetArtistBio() {
-//		<#function body#>
-//	}
-//
+	func testGetPlaylist() {
+		let playlist = session.getPlaylist(playlistId: "96696a2c-b284-4dd3-8e51-5e0dae44ace0")
+		
+		XCTAssertEqual(playlist?.uuid, "96696a2c-b284-4dd3-8e51-5e0dae44ace0")
+		XCTAssertEqual(playlist?.title, "Barack Obama Speeches")
+		XCTAssertEqual(playlist?.numberOfTracks, 20)
+		XCTAssertEqual(playlist?.numberOfVideos, 0)
+		let description = "Grab inspiration from this collection of No. 44's notable speeches. "
+		XCTAssertEqual(playlist?.description, description)
+		XCTAssertEqual(playlist?.duration, 34170)
+		XCTAssertEqual(playlist?.lastUpdated,
+					   DateFormatter.iso8601OptionalTime.date(from:
+						"2019-02-28T21:14:54.402GMT"))
+		XCTAssertEqual(playlist?.created,
+					   DateFormatter.iso8601OptionalTime.date(from:
+						"2018-01-19T17:56:03.125GMT"))
+		XCTAssertEqual(playlist?.type, "EDITORIAL")
+		XCTAssertEqual(playlist?.publicPlaylist, true)
+		// Here it's true, but in the Search test it's false. No idea, why.
+		XCTAssertEqual(playlist?.url, URL(string:
+			"http://www.tidal.com/playlist/96696a2c-b284-4dd3-8e51-5e0dae44ace0"))
+		XCTAssertEqual(playlist?.image, "43f8e4db-769c-40f6-b561-99609aef0c13")
+		//		print(searchResult?.playlists.items[0].popularity)
+		XCTAssertEqual(playlist?.squareImage, "50fbe933-0049-4e0e-be82-2de70b19168e")
+	}
+
+	func testGetPlaylistTracks() {
+		let optionalPlaylistTracks = session.getPlaylistTracks(playlistId: "96696a2c-b284-4dd3-8e51-5e0dae44ace0")
+		XCTAssertNotNil(optionalPlaylistTracks)
+		guard let playlistTracks = optionalPlaylistTracks else {
+			return
+		}
+		
+		XCTAssertEqual(playlistTracks.count, 20) // Only 19 visible, at least in Germany
+		
+		XCTAssertEqual(playlistTracks[0].id, 9312527)
+		XCTAssertEqual(playlistTracks[0].title, "Iowa Caucus Victory Speech")
+		XCTAssertEqual(playlistTracks[0].duration, 777)
+		XCTAssertEqual(playlistTracks[0].replayGain, -8.13)
+		XCTAssertEqual(playlistTracks[0].peak, 1.0)
+		XCTAssertEqual(playlistTracks[0].allowStreaming, true)
+		XCTAssertEqual(playlistTracks[0].streamReady, true)
+		XCTAssertEqual(playlistTracks[0].streamStartDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2009-02-01"))
+		XCTAssertEqual(playlistTracks[0].premiumStreamingOnly, false)
+		XCTAssertEqual(playlistTracks[0].trackNumber, 22)
+		XCTAssertEqual(playlistTracks[0].volumeNumber, 1)
+		XCTAssertNil(playlistTracks[0].version)
+//		print(playlistTracks[0].popularity)
+		XCTAssertEqual(playlistTracks[0].copyright, "2009 Master Classics Records")
+		XCTAssertEqual(playlistTracks[0].url, URL(string:
+			"http://www.tidal.com/track/9312527"))
+		XCTAssertEqual(playlistTracks[0].isrc, "USA560912799")
+		XCTAssertEqual(playlistTracks[0].editable, true)
+		XCTAssertEqual(playlistTracks[0].explicit, false)
+		XCTAssertEqual(playlistTracks[0].audioQuality, "LOSSLESS")
+		XCTAssertEqual(playlistTracks[0].surroundTypes, [])
+		XCTAssertEqual(playlistTracks[0].artist?.id, 3969810)
+		XCTAssertEqual(playlistTracks[0].artist?.name, "Barack Obama")
+		XCTAssertEqual(playlistTracks[0].artists.count, 1)
+		XCTAssertEqual(playlistTracks[0].artists[0].id, 3969810)
+		XCTAssertEqual(playlistTracks[0].artists[0].name, "Barack Obama")
+		
+		XCTAssertEqual(playlistTracks[19].id, 47393478)
+		XCTAssertEqual(playlistTracks[19].title, "Yes We Did (feat. New Hampshire Primary Address)")
+	}
+
+	func testGetAlbum() {
+		let album = session.getAlbum(albumId: 100006868)
+		
+		XCTAssertEqual(album?.id, 100006868)
+		XCTAssertEqual(album?.title, "Djesse (Vol. 1)")
+		XCTAssertEqual(album?.duration, 3196)
+		XCTAssertEqual(album?.streamReady, true)
+		XCTAssertEqual(album?.streamStartDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
+		XCTAssertEqual(album?.allowStreaming, true)
+		XCTAssertEqual(album?.numberOfTracks, 9)
+		XCTAssertEqual(album?.numberOfVideos, 0)
+		XCTAssertEqual(album?.numberOfVolumes, 1)
+		XCTAssertEqual(album?.releaseDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
+		XCTAssertEqual(album?.copyright,
+					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
+		XCTAssertNotNil(album?.popularity)
+		XCTAssertEqual(album?.audioQuality, "HI_RES") // Master
+		
+		// Album Artists
+		XCTAssertEqual(album?.artists?.count, 3)
+		XCTAssertEqual(album?.artists?[0].id, 7553669)
+		XCTAssertEqual(album?.artists?[0].name, "Jacob Collier")
+		XCTAssertNil(album?.artists?[0].url)
+		XCTAssertNil(album?.artists?[0].picture)
+		XCTAssertNil(album?.artists?[0].popularity)
+		XCTAssertEqual(album?.artists?[0].type, "MAIN")
+		
+		XCTAssertEqual(album?.artists?[1].id, 4631340)
+		XCTAssertEqual(album?.artists?[1].name, "Metropole Orkest")
+		XCTAssertNil(album?.artists?[1].url)
+		XCTAssertNil(album?.artists?[1].picture)
+		XCTAssertNil(album?.artists?[1].popularity)
+		XCTAssertEqual(album?.artists?[1].type, "MAIN")
+		
+		XCTAssertEqual(album?.artists?[2].id, 4374293)
+		XCTAssertEqual(album?.artists?[2].name, "Jules Buckley")
+		XCTAssertNil(album?.artists?[2].url)
+		XCTAssertNil(album?.artists?[2].picture)
+		XCTAssertNil(album?.artists?[2].popularity)
+		XCTAssertEqual(album?.artists?[2].type, "MAIN")
+	}
+
+	func testGetAlbumTracks() {
+		let optionalAlbumTracks = session.getAlbumTracks(albumId: 100006868)
+		XCTAssertNotNil(optionalAlbumTracks)
+		guard let albumTracks = optionalAlbumTracks else {
+			return
+		}
+		
+		XCTAssertEqual(albumTracks.count, 9)
+		
+		XCTAssertEqual(albumTracks[0].id, 100006869)
+		XCTAssertEqual(albumTracks[0].title, "Home Is")
+		XCTAssertEqual(albumTracks[0].duration, 345)
+		XCTAssertEqual(albumTracks[0].replayGain, -5.94)
+		XCTAssertEqual(albumTracks[0].peak, 0.999957)
+		XCTAssertEqual(albumTracks[0].allowStreaming, true)
+		XCTAssertEqual(albumTracks[0].streamReady, true)
+		XCTAssertEqual(albumTracks[0].streamStartDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
+		XCTAssertEqual(albumTracks[0].trackNumber, 1)
+		XCTAssertEqual(albumTracks[0].volumeNumber, 1)
+		//		print(albumTracks[0].popularity)
+		XCTAssertEqual(albumTracks[0].copyright,
+					   "℗ 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
+		XCTAssertEqual(albumTracks[0].url,
+					   URL(string: "http://www.tidal.com/track/100006869"))
+		XCTAssertEqual(albumTracks[0].isrc, "GBUM71807062")
+		XCTAssertEqual(albumTracks[0].editable, false)
+		XCTAssertEqual(albumTracks[0].explicit, false)
+		XCTAssertEqual(albumTracks[0].audioQuality, "HI_RES") // Master
+		
+		XCTAssertEqual(albumTracks[8].id, 100006880)
+		XCTAssertEqual(albumTracks[8].title, "All Night Long")
+
+		// Artists
+		XCTAssertEqual(albumTracks[0].artists.count, 2)
+		XCTAssertEqual(albumTracks[0].artists[0].id, 7553669)
+		XCTAssertEqual(albumTracks[0].artists[0].name, "Jacob Collier")
+		XCTAssertEqual(albumTracks[0].artists[0].type, "MAIN")
+		
+		XCTAssertEqual(albumTracks[0].artists[1].id, 4236852)
+		XCTAssertEqual(albumTracks[0].artists[1].name, "Voces8")
+		XCTAssertEqual(albumTracks[0].artists[1].type, "MAIN")
+
+		// Album
+		XCTAssertEqual(albumTracks[0].album.id, 100006868)
+		XCTAssertEqual(albumTracks[0].album.title, "Djesse (Vol. 1)")
+	}
+
+	func testGetArtist() {
+		let artist = session.getArtist(artistId: 7553669)
+		
+		XCTAssertEqual(artist?.id, 7553669)
+		XCTAssertEqual(artist?.name, "Jacob Collier")
+		XCTAssertEqual(artist?.url, URL(string:
+			"http://www.tidal.com/artist/7553669"))
+		// Interestingly the resulting URL is HTTP instead of HTTPS
+		XCTAssertEqual(artist?.picture,
+					   "daaa931c-afc0-4c63-819c-c821393b6a45")
+		XCTAssertNotNil(artist?.popularity)
+		XCTAssertNil(artist?.type)
+		XCTAssertNil(artist?.banner)
+		XCTAssertNil(artist?.relationType)
+	}
+
+	func testGetArtistAlbums() {
+		let optionalArtistAlbums = session.getArtistAlbums(artistId: 7553669)
+		XCTAssertNotNil(optionalArtistAlbums)
+		guard let artistAlbums = optionalArtistAlbums else {
+			return
+		}
+		
+		XCTAssertEqual(artistAlbums[0].id, 100006868)
+		XCTAssertEqual(artistAlbums[0].title, "Djesse (Vol. 1)")
+		XCTAssertEqual(artistAlbums[0].duration, 3196)
+		XCTAssertEqual(artistAlbums[0].streamReady, true)
+		XCTAssertEqual(artistAlbums[0].streamStartDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
+		XCTAssertEqual(artistAlbums[0].allowStreaming, true)
+		XCTAssertEqual(artistAlbums[0].numberOfTracks, 9)
+		XCTAssertEqual(artistAlbums[0].numberOfVideos, 0)
+		XCTAssertEqual(artistAlbums[0].numberOfVolumes, 1)
+		XCTAssertEqual(artistAlbums[0].releaseDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
+		XCTAssertEqual(artistAlbums[0].copyright,
+					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
+		XCTAssertNotNil(artistAlbums[0].popularity)
+		XCTAssertEqual(artistAlbums[0].audioQuality, "HI_RES") // Master
+		
+		// Album Artists
+		XCTAssertEqual(artistAlbums[0].artists?.count, 3)
+		XCTAssertEqual(artistAlbums[0].artists?[0].id, 7553669)
+		XCTAssertEqual(artistAlbums[0].artists?[0].name, "Jacob Collier")
+		XCTAssertNil(artistAlbums[0].artists?[0].url)
+		XCTAssertNil(artistAlbums[0].artists?[0].picture)
+		XCTAssertNil(artistAlbums[0].artists?[0].popularity)
+		XCTAssertEqual(artistAlbums[0].artists?[0].type, "MAIN")
+		
+		XCTAssertEqual(artistAlbums[0].artists?[1].id, 4631340)
+		XCTAssertEqual(artistAlbums[0].artists?[1].name, "Metropole Orkest")
+		XCTAssertNil(artistAlbums[0].artists?[1].url)
+		XCTAssertNil(artistAlbums[0].artists?[1].picture)
+		XCTAssertNil(artistAlbums[0].artists?[1].popularity)
+		XCTAssertEqual(artistAlbums[0].artists?[1].type, "MAIN")
+		
+		XCTAssertEqual(artistAlbums[0].artists?[2].id, 4374293)
+		XCTAssertEqual(artistAlbums[0].artists?[2].name, "Jules Buckley")
+		XCTAssertNil(artistAlbums[0].artists?[2].url)
+		XCTAssertNil(artistAlbums[0].artists?[2].picture)
+		XCTAssertNil(artistAlbums[0].artists?[2].popularity)
+		XCTAssertEqual(artistAlbums[0].artists?[2].type, "MAIN")
+		
+		XCTAssertEqual(artistAlbums[1].id, 100006800)
+		XCTAssertEqual(artistAlbums[1].title, "Djesse (Vol. 1)")
+		XCTAssertEqual(artistAlbums[1].audioQuality, "LOSSLESS") // HiFi
+	}
+
+	func testGetArtistTopTracks() {
+		// Probably needs to be updated once in a while as it can change
+		
+		let optionalArtistTopTracks = session.getArtistTopTracks(artistId: 16579)
+		XCTAssertNotNil(optionalArtistTopTracks)
+		guard let artistTopTracks = optionalArtistTopTracks else {
+			return
+		}
+		
+		XCTAssertEqual(artistTopTracks.count, 157)
+		
+		XCTAssertEqual(artistTopTracks[0].id, 8414613)
+		XCTAssertEqual(artistTopTracks[0].title, "In diesem Moment")
+		XCTAssertEqual(artistTopTracks[0].duration, 226)
+		XCTAssertEqual(artistTopTracks[0].replayGain, -9.8)
+		XCTAssertEqual(artistTopTracks[0].peak, 0.980865)
+		XCTAssertEqual(artistTopTracks[0].allowStreaming, true)
+		XCTAssertEqual(artistTopTracks[0].streamReady, true)
+		XCTAssertEqual(artistTopTracks[0].streamStartDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2016-06-05"))
+		XCTAssertEqual(artistTopTracks[0].trackNumber, 4)
+		XCTAssertEqual(artistTopTracks[0].volumeNumber, 1)
+		//		print(artistTopTracks[0].popularity)
+		XCTAssertEqual(artistTopTracks[0].copyright,
+					   "2011 Starwatch Music Under Exclusive License To Warner Music Group Germany Holding GmbH / A Warner Music Group Company")
+		XCTAssertEqual(artistTopTracks[0].url,
+					   URL(string: "http://www.tidal.com/track/8414613"))
+		XCTAssertEqual(artistTopTracks[0].isrc, "DEA621100465")
+		XCTAssertEqual(artistTopTracks[0].editable, false)
+		XCTAssertEqual(artistTopTracks[0].explicit, false)
+		XCTAssertEqual(artistTopTracks[0].audioQuality, "LOSSLESS") // Master
+		
+		XCTAssertEqual(artistTopTracks[1].id, 17690644)
+		XCTAssertEqual(artistTopTracks[1].title, "Wir sind da (Giraffenaffensong)")
+		
+		// Artists
+		XCTAssertEqual(artistTopTracks[0].artists.count, 1)
+		XCTAssertEqual(artistTopTracks[0].artists[0].id, 16579)
+		XCTAssertEqual(artistTopTracks[0].artists[0].name, "Roger Cicero")
+		XCTAssertEqual(artistTopTracks[0].artists[0].type, "MAIN")
+		
+		// Album
+		XCTAssertEqual(artistTopTracks[0].album.id, 8414609)
+		XCTAssertEqual(artistTopTracks[0].album.title, "In diesem Moment")
+	}
+
+	func testGetArtistBio() {
+		// Probably needs to be updated once in a while as it can change
+		let artistBio = session.getArtistBio(artistId: 7553669)
+		
+		XCTAssertEqual(artistBio?.source, "TiVo")
+//		print(DateFormatter.iso8601OptionalTime.string(for: artistBio?.lastUpdated))
+		XCTAssertEqual(artistBio?.lastUpdated,
+					   DateFormatter.iso8601OptionalTime.date(from:
+						"2019-03-21T17:22:17.276GMT"))
+		XCTAssertEqual(artistBio?.text, "A Grammy-winning crossover jazz vocalist and multi-instrumentalist with a flair for harmony and arranging, [wimpLink artistId=\"7553669\"]Jacob Collier[/wimpLink] became an Internet sensation in the early 2010s with his layered performances, achieving a one-man harmony vocal group, often with accompanying video takes. A mix of original songs and heavily stylized covers, his debut album, 2016\'s [wimpLink albumId=\"59978881\"]In My Room[/wimpLink], reached the Top Three of the Billboard jazz chart.<br/>Raised in North London, England in a family of musicians, [wimpLink artistId=\"7553669\"]Collier[/wimpLink] began sharing music videos of his slick, multi-track performances from his home music-room as a 17-year-old in late 2011. Presenting most of the videos in a grid layout so that each vocal and instrumental take was visible, he would often arrange and perform up to eight-part vocal harmonies, with accompaniment ranging from keyboards and stringed instruments to varied percussion. His early songs included original tunes such as \"Serendipity,\" and covers of songwriters spanning the Gershwins, [wimpLink artistId=\"28796\"]Burt Bacharach[/wimpLink], and [wimpLink artistId=\"239\"]Stevie Wonder[/wimpLink]. While enrolled as a jazz piano performance major at the Royal Academy of Music, he developed a method of solo, multimedia live performance with the Massachusetts Institute of Technology\'s Media Lab, which he debuted at the 2015 Montreux Jazz Festival, where he opened for [wimpLink artistId=\"209\"]Herbie Hancock[/wimpLink] and [wimpLink artistId=\"10957\"]Chick Corea[/wimpLink]. Soon in demand for his arranging skills as well as performing, he began collaborating with other musicians, including an appearance on [wimpLink artistId=\"6316418\"]Snarky Puppy[/wimpLink]\'s early-2016 release [wimpLink albumId=\"56746563\"]Family Dinner, Vol. 2[/wimpLink]. [wimpLink artistId=\"7553669\"]Collier[/wimpLink]\'s first official single from an album of his own, \"Hideaway\" appeared in April 2016. His debut LP, [wimpLink albumId=\"59978881\"]In My Room[/wimpLink], followed mid-year on the Membran label and charted in Switzerland and the Netherlands in addition to reaching number three on Billboard\'s Jazz Albums chart. In 2017, [wimpLink artistId=\"7553669\"]Collier[/wimpLink] won two Grammy Awards for his arranging: one for his version of [wimpLink artistId=\"239\"]Stevie Wonder[/wimpLink]\'s \"You and I\" (Best Arrangement, Instrumental or A Cappella) and one for his cover of The Flintstones theme song (Best Arrangement, Instrumental and Vocals). <br/>By the time he returned to the studio to work on his second album in 2018, he\'d been touring internationally for over two years. <br/>Described as the first of a four-volume project, [wimpLink albumId=\"100006868\"]Djesse, Vol. 1[/wimpLink] arrived on Decca in December of 2018. It featured the [wimpLink artistId=\"4631340\"]Metropole Orkest[/wimpLink], conducted by [wimpLink artistId=\"4374293\"]Jules Buckley[/wimpLink] as well as collaborations with [wimpLink artistId=\"4770170\"]Laura Mvula[/wimpLink], Moroccan singer Hamid El Kasri, the a cappella groups [wimpLink artistId=\"13928\"]Take 6[/wimpLink] and [wimpLink artistId=\"4236852\"]Voces8[/wimpLink], and Suzie Collier, [wimpLink artistId=\"7553669\"]Jacob[/wimpLink]\'s mother. ~ Marcy Donelson")
+	}
+
 //	func testGetArtistSimilar() {
 //		<#function body#>
 //	}
@@ -418,7 +674,9 @@ class TidalSwiftTests: XCTestCase {
 	func testTrackRadio() {
 		let optionalTrackRadio = session.getTrackRadio(trackId: 59978883)
 		XCTAssertNotNil(optionalTrackRadio)
-		let trackRadio = optionalTrackRadio!
+		guard let trackRadio = optionalTrackRadio else {
+			return
+		}
 		
 		XCTAssertEqual(trackRadio[0].id, 59978883)
 		XCTAssertEqual(trackRadio[0].title, "In My Room")
@@ -435,7 +693,9 @@ class TidalSwiftTests: XCTestCase {
 	func testGetGenres() { // Overview over all Genres
 		let optionalGenres = session.getGenres()
 		XCTAssertNotNil(optionalGenres)
-		let genres = optionalGenres!
+		guard let genres = optionalGenres else {
+			return
+		}
 		
 		XCTAssertEqual(genres[1].name, "Pop")
 		XCTAssertEqual(genres[1].path, "Pop")
