@@ -822,6 +822,36 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(genres[5].path, "Funk")
 	}
 	
+	func testGetGenreTracks() {
+		// Hard to test because contents will change fairly often
+		let optionalGenreTracks = session.getGenreTracks(genreName: "Pop")
+		XCTAssertNotNil(optionalGenreTracks)
+		guard let genreTracks = optionalGenreTracks else {
+			return
+		}
+		XCTAssert(genreTracks.count > 0)
+	}
+	
+	func testGetGenreAlbums() {
+		// Hard to test because contents will change fairly often
+		let optionalGenreAlbums = session.getGenreAlbums(genreName: "Pop")
+		XCTAssertNotNil(optionalGenreAlbums)
+		guard let genreAlbums = optionalGenreAlbums else {
+			return
+		}
+		XCTAssert(genreAlbums.count > 0)
+	}
+	
+	func testGetGenrePlaylists() {
+		// Hard to test because contents will change fairly often
+		let optionalGenrePlaylists = session.getGenrePlaylists(genreName: "Pop")
+		XCTAssertNotNil(optionalGenrePlaylists)
+		guard let genrePlaylists = optionalGenrePlaylists else {
+			return
+		}
+		XCTAssert(genrePlaylists.count > 0)
+	}
+	
 	func testDateDecoder() {
 		// Tests if the DateDecoder defined at the bottom of Codable correctly decodes a date.
 		// Makes sure there is no time zone switching.

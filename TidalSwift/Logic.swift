@@ -597,8 +597,8 @@ class Session {
 	
 	// Haven't found Artists in there yet, so only Tracks, Albums & Playlists
 	
-	func getGenreTracks(genreId: Int) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)genres/\(genreId)/tracks")!
+	func getGenreTracks(genreName: String) -> [Track]? {
+		let url = URL(string: "\(config.apiLocation)genres/\(genreName)/tracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -616,8 +616,8 @@ class Session {
 		return genreTracks?.items
 	}
 	
-	func getGenreAlbums(genreId: Int) -> [Album]? {
-		let url = URL(string: "\(config.apiLocation)genres/\(genreId)/albums")!
+	func getGenreAlbums(genreName: String) -> [Album]? {
+		let url = URL(string: "\(config.apiLocation)genres/\(genreName)/albums")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -635,8 +635,8 @@ class Session {
 		return genresAlbums?.items
 	}
 	
-	func getGenrePlaylists(genreId: Int) -> [Playlist]? {
-		let url = URL(string: "\(config.apiLocation)genres/\(genreId)/playlists")!
+	func getGenrePlaylists(genreName: String) -> [Playlist]? {
+		let url = URL(string: "\(config.apiLocation)genres/\(genreName)/playlists")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
