@@ -8,6 +8,20 @@
 
 import Foundation
 
+enum AudioQuality: String, Decodable {
+	case master = "HI_RES" // Master
+	case hifi = "LOSSLESS"
+	case high = "HIGH"
+	case low = "LOW"
+}
+
+// Currently unneeded
+//enum Codec {
+//	case FLAC
+//	case ALAC
+//	case AAC
+//}
+
 struct LoginResponse: Decodable {
 	let userId: Int
 	let sessionId: String
@@ -18,7 +32,7 @@ struct Subscription: Decodable {
 	let validUntil: Date
 	let status: String
 	let subscription: SubscriptionType
-	let highestSoundQuality: String
+	let highestSoundQuality: AudioQuality
 	let premiumAccess: Bool
 	let canGetTrial: Bool
 	let paymentType: String
@@ -32,12 +46,10 @@ struct SubscriptionType: Decodable {
 struct MediaUrl: Decodable {
 	let url: URL
 	let trackId: Int
-	let soundQuality: String
+	let soundQuality: AudioQuality
 	let encryptionKey: String
 	let codec: String
 }
-
-// Section: Search
 
 struct Artists: Decodable {
 	let limit: Int
@@ -112,10 +124,17 @@ struct Album: Decodable {
 	let explicit: Bool?
 	let upc: String?
 	let popularity: Int?
-	let audioQuality: String?
+	let audioQuality: AudioQuality?
 	let surroundTypes: [String]?
 	let artist: Artist?
 	let artists: [Artist]?
+}
+
+enum PlaylistType: String, Decodable {
+	case user = "USER"
+	case editorial = "EDITORIAL"
+	case artist = "ARTIST"
+	// Haven't seen others yet
 }
 
 struct Playlist: Decodable {
@@ -128,7 +147,7 @@ struct Playlist: Decodable {
 	let duration: Int
 	let lastUpdated: Date
 	let created: Date
-	let type: String // e.g. EDITORIAL or USER
+	let type: PlaylistType
 	let publicPlaylist: Bool
 	let url: URL
 	let image: String
@@ -163,7 +182,7 @@ struct Track: Decodable {
 	let isrc: String
 	let editable: Bool
 	let explicit: Bool
-	let audioQuality: String?
+	let audioQuality: AudioQuality?
 	let surroundTypes: [String]?
 	let artist: Artist?
 	let artists: [Artist]
@@ -179,7 +198,7 @@ struct Video: Decodable {
 	let imagePath: String? // As far as I know always null
 	let imageId: String
 	let duration: Int
-	let quality: String
+	let quality: String // Careful as video quality is different to audio quality
 	let streamReady: Bool
 	let streamStartDate: Date
 	let allowStreaming: Bool
@@ -262,6 +281,38 @@ struct Genre: Decodable {
 	let image: String
 }
 
+struct Featured: Decodable {
+	let limit: Int
+	let offset: Int
+	let totalNumberOfItems: Int
+	let items: [FeaturedItem]
+}
+
+enum FeaturedType: String, Decodable {
+	case CATEGORY_PAGES
+	case EXTURL
+	case VIDEO
+	case PLAYLIST
+	// maybe ALBUM, but haven't seen it yet
+}
+
+struct FeaturedItem: Decodable {
+	let imageURL: URL
+	let artifactId: String
+	let type: FeaturedType
+	let text: String
+	let created: Date
+	let header: String
+	let subHeader: String
+	let group: String
+	let shortHeader: String
+	let shortSubHeader: String
+	let persistSessionId: Bool
+	let standaloneHeader: String
+	let imageId: String
+	let featured: Bool
+	let openExternal: Bool
+}
 
 // Date
 

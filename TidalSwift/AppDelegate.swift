@@ -18,7 +18,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 //		let loginInfo = readDemoLoginInformation()
 //		let config = Config(loginInformation: loginInfo)
-//		let session = Session(config: nil)
+//		let session = Session(config: config)
+//		session.saveConfig()
 //
 //		session.loadSession()
 //
