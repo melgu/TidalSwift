@@ -187,9 +187,14 @@ class Session {
 			}
 		}
 		
+		guard let content = response.content else {
+			displayError(title: "Login failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return false
+		}
+		
 		var loginResponse: LoginResponse
 		do {
-			loginResponse = try JSONDecoder().decode(LoginResponse.self, from: response.content!)
+			loginResponse = try JSONDecoder().decode(LoginResponse.self, from: content)
 		} catch {
 			displayError(title: "Login failed (JSON Parse Error)", content: "\(error)")
 			return false
@@ -222,9 +227,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)users/\(userId)/subscription")!
 		let response = get(url: url, parameters: sessionParameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Subscription Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var searchResultResponse: Subscription?
 		do {
-			searchResultResponse = try customJSONDecoder().decode(Subscription.self, from: response.content!)
+			searchResultResponse = try customJSONDecoder().decode(Subscription.self, from: content)
 		} catch {
 			displayError(title: "Subscription Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -239,9 +249,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/streamUrl")!
 		let response = get(url: url, parameters: parameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Couldn't get media URL (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var mediaUrlResponse: MediaUrl?
 		do {
-			mediaUrlResponse = try JSONDecoder().decode(MediaUrl.self, from: response.content!)
+			mediaUrlResponse = try JSONDecoder().decode(MediaUrl.self, from: content)
 		} catch {
 			displayError(title: "Couldn't get media URL (JSON Parse Error)", content: "\(error)")
 		}
@@ -264,11 +279,15 @@ class Session {
 		
 		let url = URL(string: "\(config.apiLocation)search/")!
 		let response = get(url: url, parameters: parameters)
-//		print(String(data: response.content!, encoding: String.Encoding.utf8))
+		
+		guard let content = response.content else {
+			displayError(title: "Search failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
 		
 		var searchResultResponse: SearchResult?
 		do {
-			searchResultResponse = try customJSONDecoder().decode(SearchResult.self, from: response.content!)
+			searchResultResponse = try customJSONDecoder().decode(SearchResult.self, from: content)
 		} catch {
 			displayError(title: "Search failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -280,9 +299,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)playlists/\(playlistId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Playlist Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var playlistResponse: Playlist?
 		do {
-			playlistResponse = try customJSONDecoder().decode(Playlist.self, from: response.content!)
+			playlistResponse = try customJSONDecoder().decode(Playlist.self, from: content)
 		} catch {
 			displayError(title: "Playlist Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -294,9 +318,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)playlists/\(playlistId)/tracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Playlist Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var playlistTracksResponse: Tracks?
 		do {
-			playlistTracksResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
+			playlistTracksResponse = try customJSONDecoder().decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Playlist Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -308,9 +337,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)albums/\(albumId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Album Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var albumResponse: Album?
 		do {
-			albumResponse = try customJSONDecoder().decode(Album.self, from: response.content!)
+			albumResponse = try customJSONDecoder().decode(Album.self, from: content)
 		} catch {
 			displayError(title: "Album Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -322,9 +356,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)albums/\(albumId)/tracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Album Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var albumTracksResponse: Tracks?
 		do {
-			albumTracksResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
+			albumTracksResponse = try customJSONDecoder().decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Album Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -336,9 +375,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)artists/\(artistId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Artist Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var artistResponse: Artist?
 		do {
-			artistResponse = try customJSONDecoder().decode(Artist.self, from: response.content!)
+			artistResponse = try customJSONDecoder().decode(Artist.self, from: content)
 		} catch {
 			displayError(title: "Artist Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -360,9 +404,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/albums")!
 		let response = get(url: url, parameters: parameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Artist Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var artistAlbumsResponse: Albums?
 		do {
-			artistAlbumsResponse = try customJSONDecoder().decode(Albums.self, from: response.content!)
+			artistAlbumsResponse = try customJSONDecoder().decode(Albums.self, from: content)
 		} catch {
 			displayError(title: "Artist Albums failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -373,10 +422,15 @@ class Session {
 	func getArtistTopTracks(artistId: Int) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
 		let response = get(url: url, parameters: sessionParameters)
+
+		guard let content = response.content else {
+			displayError(title: "Artist Top Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
 		
 		var artistTopTracksResponse: Tracks?
 		do {
-			artistTopTracksResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
+			artistTopTracksResponse = try customJSONDecoder().decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Artist Top Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -388,9 +442,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/bio")!
 		let response = get(url: url, parameters: sessionParameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Artist Bio failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var artistBio: ArtistBio?
 		do {
-			artistBio = try customJSONDecoder().decode(ArtistBio.self, from: response.content!)
+			artistBio = try customJSONDecoder().decode(ArtistBio.self, from: content)
 		} catch {
 			displayError(title: "Artist Bio failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -399,12 +458,17 @@ class Session {
 	}
 	
 	func getArtistSimilar(artistId: Int) -> [Artist]? {
-		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
+		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/similar")!
 		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Similar Artists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
 		
 		var similarArtistsResponse: Artists?
 		do {
-			similarArtistsResponse = try customJSONDecoder().decode(Artists.self, from: response.content!)
+			similarArtistsResponse = try customJSONDecoder().decode(Artists.self, from: content)
 		} catch {
 			displayError(title: "Similar Artists failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -413,12 +477,17 @@ class Session {
 	}
 	
 	func getArtistRadio(artistId: Int) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
+		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/radio")!
 		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Artist Radio failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
 		
 		var artistRadioResponse: Tracks?
 		do {
-			artistRadioResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
+			artistRadioResponse = try customJSONDecoder().decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Artist Radio failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -434,9 +503,14 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/radio")!
 		let response = get(url: url, parameters: parameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Track Radio (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var trackRadioResponse: Tracks?
 		do {
-			trackRadioResponse = try customJSONDecoder().decode(Tracks.self, from: response.content!)
+			trackRadioResponse = try customJSONDecoder().decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Track Radio failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -445,26 +519,36 @@ class Session {
 	}
 	
 	func getUser(userId: Int) -> User? {
-		let url = URL(string: "\(config.apiLocation)user/\(userId)")!
+		let url = URL(string: "\(config.apiLocation)users/\(userId)")!
 		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "User Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
 		
 		var user: User?
 		do {
-			user = try customJSONDecoder().decode(User.self, from: response.content!)
+			user = try customJSONDecoder().decode(User.self, from: content)
 		} catch {
-			displayError(title: "User failed (JSON Parse Error)", content: "\(error)")
+			displayError(title: "User Info failed (JSON Parse Error)", content: "\(error)")
 		}
 		
 		return user
 	}
 	
 	func getUserPlaylists(userId: Int) -> [Playlist]? {
-		let url = URL(string: "\(config.apiLocation)user/\(userId)/playlists")!
+		let url = URL(string: "\(config.apiLocation)users/\(userId)/playlists")!
 		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "User Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
 		
 		var userPlaylistResponse: Playlists?
 		do {
-			userPlaylistResponse = try customJSONDecoder().decode(Playlists.self, from: response.content!)
+			userPlaylistResponse = try customJSONDecoder().decode(Playlists.self, from: content)
 		} catch {
 			displayError(title: "User Playlists failed (JSON Parse Error)", content: "\(error)")
 		}

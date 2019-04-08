@@ -637,9 +637,6 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(artistTopTracks[0].explicit, false)
 		XCTAssertEqual(artistTopTracks[0].audioQuality, "LOSSLESS") // Master
 		
-		XCTAssertEqual(artistTopTracks[1].id, 17690644)
-		XCTAssertEqual(artistTopTracks[1].title, "Wir sind da (Giraffenaffensong)")
-		
 		// Artists
 		XCTAssertEqual(artistTopTracks[0].artists.count, 1)
 		XCTAssertEqual(artistTopTracks[0].artists[0].id, 16579)
@@ -649,6 +646,12 @@ class TidalSwiftTests: XCTestCase {
 		// Album
 		XCTAssertEqual(artistTopTracks[0].album.id, 8414609)
 		XCTAssertEqual(artistTopTracks[0].album.title, "In diesem Moment")
+		
+		// More Tracks
+		XCTAssertEqual(artistTopTracks[1].id, 17690644)
+		XCTAssertEqual(artistTopTracks[1].title, "Wir sind da (Giraffenaffensong)")
+		XCTAssertEqual(artistTopTracks[2].id, 17690654)
+		XCTAssertEqual(artistTopTracks[2].title, "Die Affen rasen durch den Wald")
 	}
 
 	func testGetArtistBio() {
@@ -663,13 +666,84 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(artistBio?.text, "A Grammy-winning crossover jazz vocalist and multi-instrumentalist with a flair for harmony and arranging, [wimpLink artistId=\"7553669\"]Jacob Collier[/wimpLink] became an Internet sensation in the early 2010s with his layered performances, achieving a one-man harmony vocal group, often with accompanying video takes. A mix of original songs and heavily stylized covers, his debut album, 2016\'s [wimpLink albumId=\"59978881\"]In My Room[/wimpLink], reached the Top Three of the Billboard jazz chart.<br/>Raised in North London, England in a family of musicians, [wimpLink artistId=\"7553669\"]Collier[/wimpLink] began sharing music videos of his slick, multi-track performances from his home music-room as a 17-year-old in late 2011. Presenting most of the videos in a grid layout so that each vocal and instrumental take was visible, he would often arrange and perform up to eight-part vocal harmonies, with accompaniment ranging from keyboards and stringed instruments to varied percussion. His early songs included original tunes such as \"Serendipity,\" and covers of songwriters spanning the Gershwins, [wimpLink artistId=\"28796\"]Burt Bacharach[/wimpLink], and [wimpLink artistId=\"239\"]Stevie Wonder[/wimpLink]. While enrolled as a jazz piano performance major at the Royal Academy of Music, he developed a method of solo, multimedia live performance with the Massachusetts Institute of Technology\'s Media Lab, which he debuted at the 2015 Montreux Jazz Festival, where he opened for [wimpLink artistId=\"209\"]Herbie Hancock[/wimpLink] and [wimpLink artistId=\"10957\"]Chick Corea[/wimpLink]. Soon in demand for his arranging skills as well as performing, he began collaborating with other musicians, including an appearance on [wimpLink artistId=\"6316418\"]Snarky Puppy[/wimpLink]\'s early-2016 release [wimpLink albumId=\"56746563\"]Family Dinner, Vol. 2[/wimpLink]. [wimpLink artistId=\"7553669\"]Collier[/wimpLink]\'s first official single from an album of his own, \"Hideaway\" appeared in April 2016. His debut LP, [wimpLink albumId=\"59978881\"]In My Room[/wimpLink], followed mid-year on the Membran label and charted in Switzerland and the Netherlands in addition to reaching number three on Billboard\'s Jazz Albums chart. In 2017, [wimpLink artistId=\"7553669\"]Collier[/wimpLink] won two Grammy Awards for his arranging: one for his version of [wimpLink artistId=\"239\"]Stevie Wonder[/wimpLink]\'s \"You and I\" (Best Arrangement, Instrumental or A Cappella) and one for his cover of The Flintstones theme song (Best Arrangement, Instrumental and Vocals). <br/>By the time he returned to the studio to work on his second album in 2018, he\'d been touring internationally for over two years. <br/>Described as the first of a four-volume project, [wimpLink albumId=\"100006868\"]Djesse, Vol. 1[/wimpLink] arrived on Decca in December of 2018. It featured the [wimpLink artistId=\"4631340\"]Metropole Orkest[/wimpLink], conducted by [wimpLink artistId=\"4374293\"]Jules Buckley[/wimpLink] as well as collaborations with [wimpLink artistId=\"4770170\"]Laura Mvula[/wimpLink], Moroccan singer Hamid El Kasri, the a cappella groups [wimpLink artistId=\"13928\"]Take 6[/wimpLink] and [wimpLink artistId=\"4236852\"]Voces8[/wimpLink], and Suzie Collier, [wimpLink artistId=\"7553669\"]Jacob[/wimpLink]\'s mother. ~ Marcy Donelson")
 	}
 
-//	func testGetArtistSimilar() {
-//		<#function body#>
-//	}
-//
-//	func testGetArtistRadio() {
-//		<#function body#>
-//	}
+	func testGetArtistSimilar() {
+		let optionalSimilarArtists = session.getArtistSimilar(artistId: 7553669)
+		XCTAssertNotNil(optionalSimilarArtists)
+		guard let similarArtists = optionalSimilarArtists else {
+			return
+		}
+		
+		XCTAssertEqual(similarArtists.count, 7)
+		
+		// Not necessarely in the same order as on website
+		XCTAssertEqual(similarArtists[0].id, 10695)
+		XCTAssertEqual(similarArtists[0].name, "Jamie Cullum")
+		XCTAssertEqual(similarArtists[0].url, URL(string:
+			"http://www.tidal.com/artist/10695"))
+		// Interestingly the resulting URL is HTTP instead of HTTPS
+		XCTAssertEqual(similarArtists[0].picture,
+					   "bcb0f0ce-3473-4140-af59-bdcce400a795")
+		XCTAssertNotNil(similarArtists[0].popularity)
+		XCTAssertNil(similarArtists[0].type)
+		XCTAssertNil(similarArtists[0].banner)
+		XCTAssertEqual(similarArtists[0].relationType, "SIMILAR_ARTIST")
+		
+		XCTAssertEqual(similarArtists[1].id, 3513667)
+		XCTAssertEqual(similarArtists[1].name, "Holly Cole")
+	}
+
+	func testGetArtistRadio() {
+		// Probably needs to be updated once in a while as it can change
+		
+		let optionalArtistRadio = session.getArtistRadio(artistId: 16579)
+		XCTAssertNotNil(optionalArtistRadio)
+		guard let artistRadio = optionalArtistRadio else {
+			return
+		}
+		
+		XCTAssertEqual(artistRadio.count, 100)
+		
+		XCTAssertEqual(artistRadio[0].id, 8414613)
+		XCTAssertEqual(artistRadio[0].title, "In diesem Moment")
+		XCTAssertEqual(artistRadio[0].duration, 226)
+		XCTAssertEqual(artistRadio[0].replayGain, -9.8)
+		XCTAssertEqual(artistRadio[0].peak, 0.980865)
+		XCTAssertEqual(artistRadio[0].allowStreaming, true)
+		XCTAssertEqual(artistRadio[0].streamReady, true)
+		XCTAssertEqual(artistRadio[0].streamStartDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2016-06-05"))
+		XCTAssertEqual(artistRadio[0].trackNumber, 4)
+		XCTAssertEqual(artistRadio[0].volumeNumber, 1)
+		//		print(artistTopTracks[0].popularity)
+		XCTAssertEqual(artistRadio[0].copyright,
+					   "2011 Starwatch Music Under Exclusive License To Warner Music Group Germany Holding GmbH / A Warner Music Group Company")
+		XCTAssertEqual(artistRadio[0].url,
+					   URL(string: "http://www.tidal.com/track/8414613"))
+		XCTAssertEqual(artistRadio[0].isrc, "DEA621100465")
+		XCTAssertEqual(artistRadio[0].editable, false)
+		XCTAssertEqual(artistRadio[0].explicit, false)
+		XCTAssertEqual(artistRadio[0].audioQuality, "LOSSLESS") // Master
+		
+		// Artists
+		XCTAssertEqual(artistRadio[0].artists.count, 1)
+		XCTAssertEqual(artistRadio[0].artists[0].id, 16579)
+		XCTAssertEqual(artistRadio[0].artists[0].name, "Roger Cicero")
+		XCTAssertEqual(artistRadio[0].artists[0].type, "MAIN")
+		
+		// Album
+		XCTAssertEqual(artistRadio[0].album.id, 8414609)
+		XCTAssertEqual(artistRadio[0].album.title, "In diesem Moment")
+		
+		// More Tracks
+		XCTAssertEqual(artistRadio[1].id, 58965655)
+		XCTAssertEqual(artistRadio[1].title, "Du erinnerst mich an Liebe")
+		XCTAssertEqual(artistRadio[1].artists[0].id, 3673052)
+		XCTAssertEqual(artistRadio[1].artists[0].name, "Ich + Ich")
+		XCTAssertEqual(artistRadio[2].id, 36309894)
+		XCTAssertEqual(artistRadio[2].title, "Symphonie (On Stage)")
+		XCTAssertEqual(artistRadio[2].artists[0].id, 2771)
+		XCTAssertEqual(artistRadio[2].artists[0].name, "Silbermond")
+	}
 	
 	func testTrackRadio() {
 		let optionalTrackRadio = session.getTrackRadio(trackId: 59978883)
@@ -682,13 +756,51 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(trackRadio[0].title, "In My Room")
 	}
 	
-//	func testGetUser() {
-//		<#function body#>
-//	}
-//	
-//	func testGetUserPlaylists() {
-//		<#function body#>
-//	}
+	func testGetUser() {
+		XCTAssertNotNil(session.userId)
+		guard let userId = session.userId else {
+			return
+		}
+		let user = session.getUser(userId: userId)
+		// For privacy reasons only testing userId of current logged in user
+		XCTAssertEqual(user?.id, userId)
+//		print(user?.username as Any)
+//		print(user?.firstName as Any)
+//		print(user?.lastName as Any)
+//		print(user?.email as Any)
+//		print(user?.countryCode as Any)
+//		print(user?.created as Any)
+//		print(user?.picture as Any)
+//		print(user?.newsletter as Any)
+//		print(user?.acceptedEULA as Any)
+//		print(user?.gender as Any)
+//		print(user?.dateOfBirth as Any)
+//		print(user?.facebookUid as Any)
+	}
+	
+	func testGetUserPlaylists() {
+		XCTAssertNotNil(session.userId)
+		guard let userId = session.userId else {
+			return
+		}
+		let optionalPlaylists = session.getUserPlaylists(userId: userId)
+		XCTAssertNotNil(optionalPlaylists)
+		guard let playlists = optionalPlaylists else {
+			return
+		}
+		
+		// Hard to test as different for every user
+		// Needs to be changed by tester
+		XCTAssertEqual(playlists[16].uuid, "825a0e70-c918-40b8-89c6-247dfbac04b4")
+		// Testing the handling of "" in Strings & JSON
+		XCTAssertEqual(playlists[16].title, #"Schlechte "Musik""#)
+		XCTAssertEqual(playlists[16].type, "USER")
+		XCTAssertEqual(playlists[16].creator.id, userId)
+		XCTAssertNil(playlists[16].creator.name)
+		XCTAssertNil(playlists[16].creator.url)
+		XCTAssertNil(playlists[16].creator.picture)
+		XCTAssertNil(playlists[16].creator.popularity)
+	}
 	
 	func testGetGenres() { // Overview over all Genres
 		let optionalGenres = session.getGenres()
