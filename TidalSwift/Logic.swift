@@ -20,27 +20,15 @@ struct PersistentInformation {
 	var userId: Int
 }
 
-enum Quality {
-	case LOSSLESS
-	case HIGH
-	case LOW
-}
-
-enum Codec {
-	case FLAC
-	case ALAC
-	case AAC
-}
-
 class Config {
-	var quality: Quality
+	var quality: AudioQuality
 	var apiLocation: String
 	var apiToken: String
 	var imageUrl: String
 	var imageSize: Int
 	var loginInformation: LoginCredentials
 	
-	init(quality: Quality = .LOSSLESS,
+	init(quality: AudioQuality = .hifi,
 		 apiLocation: String = "https://api.tidalhifi.com/v1/",
 		 apiToken: String? = nil,
 		 imageUrl: String = "http://images.osl.wimpmusic.com/im/im/",
@@ -50,7 +38,7 @@ class Config {
 		self.apiLocation = apiLocation
 		
 		if apiToken == nil {
-			if quality == .LOSSLESS {
+			if quality == .hifi {
 				self.apiToken = "P5Xbeo5LFvESeDy6"
 			} else {
 				self.apiToken = "wdgaB1CilGA-S_s2"
@@ -93,31 +81,20 @@ class Session {
 				return nil
 			}
 			
-			var quality: Quality?
-			switch persistentInformation["quality"] {
-			case "LOSSLESS":
-				quality = .LOSSLESS
-			case "HIGH":
-				quality = .HIGH
-			case "LOW":
-				quality = .LOW
-			default:
-				quality = .LOSSLESS
-			}
-			
-			return Config(quality: quality!,
+			return Config(quality: AudioQuality(rawValue: persistentInformation["quality"]!)!,
 						  apiLocation: persistentInformation["apiLocation"]!,
 						  apiToken: persistentInformation["apiToken"]!,
 						  imageUrl: persistentInformation["imageUrl"]!,
 						  imageSize: Int(persistentInformation["imageSize"]!)!,
 						  loginInformation: LoginCredentials(username: persistentInformation["username"]!,
 															 password: persistentInformation["password"]!))
+			// TODO: Lot's of force-unwrapping happening
 		}
 		
 		if let config = config {
 			self.config = config
 		} else {
-			self.config = loadConfig()!
+			self.config = loadConfig()! // TODO: Do something about the force-unwrapping
 		}
 		
 	}
@@ -151,7 +128,7 @@ class Session {
 	}
 	
 	func saveConfig() {
-		let persistentInformation: [String: String] = ["quality": "\(config.quality)",
+		let persistentInformation: [String: String] = ["quality": config.quality.rawValue,
 													   "apiLocation": config.apiLocation,
 													   "apiToken": config.apiToken,
 													   "imageUrl": config.imageUrl,
@@ -262,7 +239,7 @@ class Session {
 		}
 		print("""
 			Track ID: \(mediaUrlResponse?.trackId ?? -1),
-			Quality: \(mediaUrlResponse?.soundQuality ?? ""),
+			Quality: \(mediaUrlResponse?.soundQuality.rawValue ?? ""),
 			Codec: \(mediaUrlResponse?.codec ?? "")
 			""")
 		

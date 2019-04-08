@@ -11,7 +11,7 @@ import XCTest
 
 class TidalSwiftTests: XCTestCase {
 	
-	var session: Session = Session(config: Config(quality: .LOSSLESS, loginInformation: readDemoLoginInformation()))
+	var session: Session = Session(config: Config(quality: .hifi, loginInformation: readDemoLoginInformation()))
 	
 	var tempConfig: Config?
 	var tempSession: Session?
@@ -24,7 +24,7 @@ class TidalSwiftTests: XCTestCase {
 		tempSession?.loadSession()
 		
 		// Now, we are free to mess around
-		let config = Config(quality: .LOSSLESS, loginInformation: readDemoLoginInformation())
+		let config = Config(quality: .hifi, loginInformation: readDemoLoginInformation())
 		session = Session(config: config)
 		
 		session.loadSession()
@@ -97,7 +97,7 @@ class TidalSwiftTests: XCTestCase {
 	func testCheckLogin() {
 		XCTAssert(session.checkLogin())
 		
-		let config = Config(quality: .LOSSLESS, loginInformation: readDemoLoginInformation())
+		let config = Config(quality: .hifi, loginInformation: readDemoLoginInformation())
 		session = Session(config: config)
 		
 		XCTAssertFalse(session.checkLogin())
@@ -112,7 +112,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(info?.status, "ACTIVE")
 		XCTAssertEqual(info?.subscription.type, "HIFI")
 		XCTAssertEqual(info?.subscription.offlineGracePeriod, 30)
-		XCTAssertEqual(info?.highestSoundQuality, "LOSSLESS")
+		XCTAssertEqual(info?.highestSoundQuality, .hifi) // "LOSSLESS" although Master is possible
 		XCTAssertEqual(info?.premiumAccess, true)
 		XCTAssertEqual(info?.canGetTrial, false)
 		XCTAssertEqual(info?.paymentType, "PARENT")
@@ -168,10 +168,10 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResult?.albums.items[0].copyright,
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
 		XCTAssertNotNil(searchResult?.albums.items[0].popularity)
-		XCTAssertEqual(searchResult?.albums.items[0].audioQuality, "HI_RES")
+		XCTAssertEqual(searchResult?.albums.items[0].audioQuality, .master)
 		
 		// HiFi Version
-		XCTAssertEqual(searchResult?.albums.items[1].audioQuality, "LOSSLESS")
+		XCTAssertEqual(searchResult?.albums.items[1].audioQuality, .hifi)
 		
 		// Album Artists
 		XCTAssertEqual(searchResult?.albums.items[0].artists?.count, 3)
@@ -215,7 +215,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResult?.playlists.items[0].created,
 					   DateFormatter.iso8601OptionalTime.date(from:
 						"2018-01-19T17:56:03.125GMT"))
-		XCTAssertEqual(searchResult?.playlists.items[0].type, "EDITORIAL")
+		XCTAssertEqual(searchResult?.playlists.items[0].type, .editorial)
 		// Here it's false, but in the Playlist test it's true. No idea, why.
 		XCTAssertEqual(searchResult?.playlists.items[0].publicPlaylist, false)
 		XCTAssertEqual(searchResult?.playlists.items[0].url, URL(string:
@@ -249,7 +249,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResult?.tracks.items[0].isrc, "US23A1500084")
 		XCTAssertEqual(searchResult?.tracks.items[0].editable, true)
 		XCTAssertEqual(searchResult?.tracks.items[0].explicit, false)
-		XCTAssertEqual(searchResult?.tracks.items[0].audioQuality, "LOSSLESS")
+		XCTAssertEqual(searchResult?.tracks.items[0].audioQuality, .hifi)
 		
 		// Artists
 		XCTAssertEqual(searchResult?.tracks.items[0].artists.count, 1)
@@ -394,7 +394,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(playlist?.created,
 					   DateFormatter.iso8601OptionalTime.date(from:
 						"2018-01-19T17:56:03.125GMT"))
-		XCTAssertEqual(playlist?.type, "EDITORIAL")
+		XCTAssertEqual(playlist?.type, .editorial)
 		XCTAssertEqual(playlist?.publicPlaylist, true)
 		// Here it's true, but in the Search test it's false. No idea, why.
 		XCTAssertEqual(playlist?.url, URL(string:
@@ -433,7 +433,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(playlistTracks[0].isrc, "USA560912799")
 		XCTAssertEqual(playlistTracks[0].editable, true)
 		XCTAssertEqual(playlistTracks[0].explicit, false)
-		XCTAssertEqual(playlistTracks[0].audioQuality, "LOSSLESS")
+		XCTAssertEqual(playlistTracks[0].audioQuality, .hifi)
 		XCTAssertEqual(playlistTracks[0].surroundTypes, [])
 		XCTAssertEqual(playlistTracks[0].artist?.id, 3969810)
 		XCTAssertEqual(playlistTracks[0].artist?.name, "Barack Obama")
@@ -463,7 +463,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(album?.copyright,
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
 		XCTAssertNotNil(album?.popularity)
-		XCTAssertEqual(album?.audioQuality, "HI_RES") // Master
+		XCTAssertEqual(album?.audioQuality, .master)
 		
 		// Album Artists
 		XCTAssertEqual(album?.artists?.count, 3)
@@ -517,7 +517,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(albumTracks[0].isrc, "GBUM71807062")
 		XCTAssertEqual(albumTracks[0].editable, false)
 		XCTAssertEqual(albumTracks[0].explicit, false)
-		XCTAssertEqual(albumTracks[0].audioQuality, "HI_RES") // Master
+		XCTAssertEqual(albumTracks[0].audioQuality, .master)
 		
 		XCTAssertEqual(albumTracks[8].id, 100006880)
 		XCTAssertEqual(albumTracks[8].title, "All Night Long")
@@ -575,7 +575,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(artistAlbums[0].copyright,
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
 		XCTAssertNotNil(artistAlbums[0].popularity)
-		XCTAssertEqual(artistAlbums[0].audioQuality, "HI_RES") // Master
+		XCTAssertEqual(artistAlbums[0].audioQuality, .master)
 		
 		// Album Artists
 		XCTAssertEqual(artistAlbums[0].artists?.count, 3)
@@ -602,7 +602,7 @@ class TidalSwiftTests: XCTestCase {
 		
 		XCTAssertEqual(artistAlbums[1].id, 100006800)
 		XCTAssertEqual(artistAlbums[1].title, "Djesse (Vol. 1)")
-		XCTAssertEqual(artistAlbums[1].audioQuality, "LOSSLESS") // HiFi
+		XCTAssertEqual(artistAlbums[1].audioQuality, .hifi)
 	}
 
 	func testGetArtistTopTracks() {
@@ -635,7 +635,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(artistTopTracks[0].isrc, "DEA621100465")
 		XCTAssertEqual(artistTopTracks[0].editable, false)
 		XCTAssertEqual(artistTopTracks[0].explicit, false)
-		XCTAssertEqual(artistTopTracks[0].audioQuality, "LOSSLESS") // Master
+		XCTAssertEqual(artistTopTracks[0].audioQuality, .hifi)
 		
 		// Artists
 		XCTAssertEqual(artistTopTracks[0].artists.count, 1)
@@ -722,7 +722,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(artistRadio[0].isrc, "DEA621100465")
 		XCTAssertEqual(artistRadio[0].editable, false)
 		XCTAssertEqual(artistRadio[0].explicit, false)
-		XCTAssertEqual(artistRadio[0].audioQuality, "LOSSLESS") // Master
+		XCTAssertEqual(artistRadio[0].audioQuality, .hifi)
 		
 		// Artists
 		XCTAssertEqual(artistRadio[0].artists.count, 1)
@@ -735,14 +735,15 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(artistRadio[0].album.title, "In diesem Moment")
 		
 		// More Tracks
-		XCTAssertEqual(artistRadio[1].id, 58965655)
-		XCTAssertEqual(artistRadio[1].title, "Du erinnerst mich an Liebe")
-		XCTAssertEqual(artistRadio[1].artists[0].id, 3673052)
-		XCTAssertEqual(artistRadio[1].artists[0].name, "Ich + Ich")
-		XCTAssertEqual(artistRadio[2].id, 36309894)
-		XCTAssertEqual(artistRadio[2].title, "Symphonie (On Stage)")
-		XCTAssertEqual(artistRadio[2].artists[0].id, 2771)
-		XCTAssertEqual(artistRadio[2].artists[0].name, "Silbermond")
+		// Impossible to write consistent tests as the tracks are constantly changing
+//		XCTAssertEqual(artistRadio[1].id, 58965655)
+//		XCTAssertEqual(artistRadio[1].title, "Du erinnerst mich an Liebe")
+//		XCTAssertEqual(artistRadio[1].artists[0].id, 3673052)
+//		XCTAssertEqual(artistRadio[1].artists[0].name, "Ich + Ich")
+//		XCTAssertEqual(artistRadio[2].id, 36309894)
+//		XCTAssertEqual(artistRadio[2].title, "Symphonie (On Stage)")
+//		XCTAssertEqual(artistRadio[2].artists[0].id, 2771)
+//		XCTAssertEqual(artistRadio[2].artists[0].name, "Silbermond")
 	}
 	
 	func testTrackRadio() {
@@ -794,7 +795,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(playlists[16].uuid, "825a0e70-c918-40b8-89c6-247dfbac04b4")
 		// Testing the handling of "" in Strings & JSON
 		XCTAssertEqual(playlists[16].title, #"Schlechte "Musik""#)
-		XCTAssertEqual(playlists[16].type, "USER")
+		XCTAssertEqual(playlists[16].type, .user)
 		XCTAssertEqual(playlists[16].creator.id, userId)
 		XCTAssertNil(playlists[16].creator.name)
 		XCTAssertNil(playlists[16].creator.url)
