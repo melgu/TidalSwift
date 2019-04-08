@@ -224,7 +224,7 @@ struct FavoritesResponse: Decodable {
 
 struct User: Decodable {
 	let id: Int
-	let userName: String
+	let username: String
 	let firstName: String
 	let lastName: String
 	let email: String
