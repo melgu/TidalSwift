@@ -556,6 +556,10 @@ class Session {
 		return userPlaylistResponse?.items
 	}
 	
+//	func getMixes() -> <#return type#> {
+//		<#function body#>
+//	}
+//
 //	func getFeatured() -> <#return type#> {
 //		<#function body#>
 //	}
@@ -576,19 +580,79 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)genres")!
 		let response = get(url: url, parameters: sessionParameters)
 		
+		guard let content = response.content else {
+			displayError(title: "Genre Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
 		var genresResponse: Genres?
 		do {
-			genresResponse = try customJSONDecoder().decode(Genres.self, from: response.content!)
+			genresResponse = try customJSONDecoder().decode(Genres.self, from: content)
 		} catch {
-			displayError(title: "Genres failed (JSON Parse Error)", content: "\(error)")
+			displayError(title: "Genre Overview failed (JSON Parse Error)", content: "\(error)")
 		}
 		
 		return genresResponse?.items
 	}
 	
-//	func getGenreItems(genreId: Int, contentType: String) -> <#return type#> {
-//		<#function body#>
-//	}
+	// Haven't found Artists in there yet, so only Tracks, Albums & Playlists
+	
+	func getGenreTracks(genreId: Int) -> [Track]? {
+		let url = URL(string: "\(config.apiLocation)genres/\(genreId)/tracks")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Genre Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var genreTracks: Tracks?
+		do {
+			genreTracks = try customJSONDecoder().decode(Tracks.self, from: content)
+		} catch {
+			displayError(title: "Genre Tracks failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return genreTracks?.items
+	}
+	
+	func getGenreAlbums(genreId: Int) -> [Album]? {
+		let url = URL(string: "\(config.apiLocation)genres/\(genreId)/albums")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Genre Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var genresAlbums: Albums?
+		do {
+			genresAlbums = try customJSONDecoder().decode(Albums.self, from: content)
+		} catch {
+			displayError(title: "Genre Albums failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return genresAlbums?.items
+	}
+	
+	func getGenrePlaylists(genreId: Int) -> [Playlist]? {
+		let url = URL(string: "\(config.apiLocation)genres/\(genreId)/playlists")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Genre Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var genresPlaylists: Playlists?
+		do {
+			genresPlaylists = try customJSONDecoder().decode(Playlists.self, from: content)
+		} catch {
+			displayError(title: "Genre Playlists failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return genresPlaylists?.items
+	}
 }
 
 func displayError(title: String, content: String) {
