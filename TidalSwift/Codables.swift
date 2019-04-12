@@ -281,7 +281,7 @@ struct Genre: Decodable {
 	let image: String
 }
 
-struct Featured: Decodable {
+struct FeaturedItems: Decodable {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
@@ -289,11 +289,11 @@ struct Featured: Decodable {
 }
 
 enum FeaturedType: String, Decodable {
-	case CATEGORY_PAGES
-	case EXTURL
-	case VIDEO
-	case PLAYLIST
-	// maybe ALBUM, but haven't seen it yet
+	case categoryPages = "CATEGORY_PAGES"
+	case extUrl = "EXTURL"
+	case video = "VIDEO"
+	case playlist = "PLAYLIST"
+	case album = "ALBUM"
 }
 
 struct FeaturedItem: Decodable {
@@ -314,7 +314,7 @@ struct FeaturedItem: Decodable {
 	let openExternal: Bool
 }
 
-// Date
+// MARK: - Date
 
 func customJSONDecoder() -> JSONDecoder {
 	let decoder = JSONDecoder()
