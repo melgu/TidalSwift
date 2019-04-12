@@ -853,6 +853,16 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssert(genrePlaylists.count > 0)
 	}
 	
+	func testGetFeatured() {
+		// Hard to test because contents will change fairly often
+		let optionalFeatured = session.getFeatured()
+		XCTAssertNotNil(optionalFeatured)
+		guard let featured = optionalFeatured else {
+			return
+		}
+		XCTAssert(featured.count > 0)
+	}
+	
 	func testDateDecoder() {
 		// Tests if the DateDecoder defined at the bottom of Codable correctly decodes a date.
 		// Makes sure there is no time zone switching.

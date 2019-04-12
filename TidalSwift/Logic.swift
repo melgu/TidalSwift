@@ -536,15 +536,26 @@ class Session {
 //	func getMixes() -> <#return type#> {
 //		<#function body#>
 //	}
-//
-//	func getFeatured() -> <#return type#> {
-//		<#function body#>
-//	}
-//
-//	func getFeaturedItems() -> <#return type#> {
-//		<#function body#>
-//	}
-//
+
+	func getFeatured() -> [FeaturedItem]? {
+		let url = URL(string: "\(config.apiLocation)promotions")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Featured failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var featuredResponse: FeaturedItems?
+		do {
+			featuredResponse = try customJSONDecoder().decode(FeaturedItems.self, from: content)
+		} catch {
+			displayError(title: "Featured failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return featuredResponse?.items
+	}
+
 //	func getMoods() -> <#return type#> {
 //		<#function body#>
 //	}
