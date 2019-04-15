@@ -803,6 +803,55 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertNil(playlists[16].creator.popularity)
 	}
 	
+	func testGetMoods() {
+		let optionalMoods = session.getMoods()
+		XCTAssertNotNil(optionalMoods)
+		guard let moods = optionalMoods else {
+			return
+		}
+		
+		XCTAssertEqual(moods[0].name, "Relax")
+		XCTAssertEqual(moods[0].path, "relax")
+		XCTAssertEqual(moods[0].hasPlaylists, true)
+		XCTAssertEqual(moods[0].hasArtists, false)
+		XCTAssertEqual(moods[0].hasAlbums, false)
+		XCTAssertEqual(moods[0].hasTracks, false)
+		XCTAssertEqual(moods[0].hasVideos, false)
+		XCTAssertEqual(moods[0].image, "b589ddb1-ef3a-457e-9e00-84b475196ee2")
+		
+		XCTAssertEqual(moods[1].name, "Party")
+		XCTAssertEqual(moods[1].path, "party")
+	}
+	
+	func testGetMoodPlaylist() {
+		// Hard to test because contents will change fairly often
+		let optionalPlaylists = session.getMoodPlaylists(moodPath: "relax")
+		XCTAssertNotNil(optionalPlaylists)
+		guard let playlists = optionalPlaylists else {
+			return
+		}
+		
+		// Hard to test as different for every user
+		// Needs to be changed by tester
+		XCTAssertEqual(playlists[0].uuid, "98676f10-0aa1-4c8c-ba84-4f84e370f3d2")
+		// Testing the handling of "" in Strings & JSON
+		XCTAssertEqual(playlists[0].title, "Breathe In, Breathe Out")
+//		XCTAssertEqual(playlists[0].numberOfTracks, 64)
+		XCTAssertEqual(playlists[0].numberOfVideos, 0)
+		XCTAssertEqual(playlists[0].description,
+					   "Step onto your mat and into your zen with these meditative tracks.")
+//		XCTAssertEqual(playlists[0].duration, 18592)
+		XCTAssertEqual(playlists[0].created,
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-02-05T21:44:05.249GMT"))
+		XCTAssertEqual(playlists[0].publicPlaylist, false)
+		XCTAssertEqual(playlists[0].url, URL(string:
+			"http://www.tidal.com/playlist/98676f10-0aa1-4c8c-ba84-4f84e370f3d2"))
+		XCTAssertEqual(playlists[0].image, "b129e3dc-33c0-4b5a-b99b-9672d140c5a7")
+		XCTAssertEqual(playlists[0].squareImage, "bd101b96-2354-4dc4-b868-31a356e4679a")
+		XCTAssertEqual(playlists[0].type, .editorial)
+		XCTAssertEqual(playlists[0].creator.id, 0)
+	}
+	
 	func testGetGenres() { // Overview over all Genres
 		let optionalGenres = session.getGenres()
 		XCTAssertNotNil(optionalGenres)
@@ -825,7 +874,7 @@ class TidalSwiftTests: XCTestCase {
 	
 	func testGetGenreTracks() {
 		// Hard to test because contents will change fairly often
-		let optionalGenreTracks = session.getGenreTracks(genreName: "Pop")
+		let optionalGenreTracks = session.getGenreTracks(genrePath: "Pop")
 		XCTAssertNotNil(optionalGenreTracks)
 		guard let genreTracks = optionalGenreTracks else {
 			return

@@ -556,13 +556,43 @@ class Session {
 		return featuredResponse?.items
 	}
 
-//	func getMoods() -> <#return type#> {
-//		<#function body#>
-//	}
-//
-//	func getMoodPlaylists() -> <#return type#> {
-//		<#function body#>
-//	}
+	func getMoods() -> [Mood]? {
+		let url = URL(string: "\(config.apiLocation)moods")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Mood Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var moodsResponse: Moods?
+		do {
+			moodsResponse = try customJSONDecoder().decode(Moods.self, from: content)
+		} catch {
+			displayError(title: "Mood Overview failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return moodsResponse?.items
+	}
+
+	func getMoodPlaylists(moodPath: String) -> [Playlist]? {
+		let url = URL(string: "\(config.apiLocation)moods/\(moodPath)/playlists")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Genre Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var moodPlaylists: Playlists?
+		do {
+			moodPlaylists = try customJSONDecoder().decode(Playlists.self, from: content)
+		} catch {
+			displayError(title: "Genre Tracks failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return moodPlaylists?.items
+	}
 	
 	func getGenres() -> [Genre]? { // Overview over all Genres
 		let url = URL(string: "\(config.apiLocation)genres")!
@@ -585,8 +615,8 @@ class Session {
 	
 	// Haven't found Artists in there yet, so only Tracks, Albums & Playlists
 	
-	func getGenreTracks(genreName: String) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)genres/\(genreName)/tracks")!
+	func getGenreTracks(genrePath: String) -> [Track]? {
+		let url = URL(string: "\(config.apiLocation)genres/\(genrePath)/tracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {

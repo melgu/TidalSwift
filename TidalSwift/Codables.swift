@@ -257,7 +257,10 @@ struct User: Decodable {
 	let facebookUid: Int
 }
 
-struct Genres: Decodable {
+typealias Moods = Genres
+typealias Mood = Genre
+
+struct Genres: Decodable { // Also Moods
 	let items: [Genre]
 	
 	init(from decoder: Decoder) throws {
@@ -270,7 +273,7 @@ struct Genres: Decodable {
 	}
 }
 
-struct Genre: Decodable {
+struct Genre: Decodable { // Also Mood
 	let name: String
 	let path: String
 	let hasPlaylists: Bool
