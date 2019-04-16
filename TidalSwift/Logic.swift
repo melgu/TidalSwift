@@ -81,20 +81,33 @@ class Session {
 				return nil
 			}
 			
-			return Config(quality: AudioQuality(rawValue: persistentInformation["quality"]!)!,
-						  apiLocation: persistentInformation["apiLocation"]!,
-						  apiToken: persistentInformation["apiToken"]!,
-						  imageUrl: persistentInformation["imageUrl"]!,
-						  imageSize: Int(persistentInformation["imageSize"]!)!,
-						  loginInformation: LoginCredentials(username: persistentInformation["username"]!,
-															 password: persistentInformation["password"]!))
-			// TODO: Lot's of force-unwrapping happening
+			guard let qualityString = persistentInformation["quality"],
+				let quality = AudioQuality(rawValue: qualityString),
+				let apiLocation = persistentInformation["apiLocation"],
+				let apiToken = persistentInformation["apiToken"],
+				let imageUrl = persistentInformation["imageUrl"],
+				let imageSizeString = persistentInformation["imageSize"],
+				let imageSize = Int(imageSizeString),
+				let username = persistentInformation["username"],
+				let password = persistentInformation["password"]
+			else {
+				displayError(title: "Couldn't load Config", content: "Missing part of Persistent Config")
+				return nil
+			}
+			
+			return Config(quality: quality,
+						  apiLocation: apiLocation,
+						  apiToken: apiToken,
+						  imageUrl: imageUrl,
+						  imageSize: imageSize,
+						  loginInformation: LoginCredentials(username: username,
+															 password: password))
 		}
 		
 		if let config = config {
 			self.config = config
 		} else {
-			self.config = loadConfig()! // TODO: Do something about the force-unwrapping
+			self.config = loadConfig()! // Still don't like this force-unwrap
 		}
 		
 	}
