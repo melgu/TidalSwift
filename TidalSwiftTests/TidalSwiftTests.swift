@@ -904,7 +904,7 @@ class TidalSwiftTests: XCTestCase {
 		guard let genreTracks = optionalGenreTracks else {
 			return
 		}
-		XCTAssert(genreTracks.count > 0)
+		XCTAssertFalse(genreTracks.isEmpty)
 	}
 	
 	func testGetGenreAlbums() {
@@ -914,7 +914,7 @@ class TidalSwiftTests: XCTestCase {
 		guard let genreAlbums = optionalGenreAlbums else {
 			return
 		}
-		XCTAssert(genreAlbums.count > 0)
+		XCTAssertFalse(genreAlbums.isEmpty)
 	}
 	
 	func testGetGenrePlaylists() {
@@ -924,7 +924,7 @@ class TidalSwiftTests: XCTestCase {
 		guard let genrePlaylists = optionalGenrePlaylists else {
 			return
 		}
-		XCTAssert(genrePlaylists.count > 0)
+		XCTAssertFalse(genrePlaylists.isEmpty)
 	}
 	
 	func testGetFeatured() {
@@ -934,7 +934,7 @@ class TidalSwiftTests: XCTestCase {
 		guard let featured = optionalFeatured else {
 			return
 		}
-		XCTAssert(featured.count > 0)
+		XCTAssertFalse(featured.isEmpty)
 	}
 	
 	func testDateDecoder() {
