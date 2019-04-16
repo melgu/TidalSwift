@@ -168,7 +168,7 @@ struct Track: Decodable {
 	let title: String
 	let duration: Int
 	let replayGain: Float
-	let peak: Float
+	let peak: Float?
 	let allowStreaming: Bool
 	let streamReady: Bool
 	let streamStartDate: Date?
@@ -179,7 +179,7 @@ struct Track: Decodable {
 	let popularity: Int
 	let copyright: String?
 	let url: URL
-	let isrc: String
+	let isrc: String?
 	let editable: Bool
 	let explicit: Bool
 	let audioQuality: AudioQuality?
@@ -257,6 +257,79 @@ struct User: Decodable {
 	let facebookUid: Int
 }
 
+struct Mixes: Decodable {
+	let selfLink: URL?
+	let id: String
+	let title: String
+	let rows: [MixesModules]
+}
+
+struct MixesModules: Decodable {
+	let modules: [MixesModule]
+}
+
+struct MixesModule: Decodable {
+	let id: String
+	let width: Int
+	let title: String
+	let pagedList: MixesPagedList
+}
+
+struct MixesPagedList: Decodable {
+	let limit: Int
+	let offset: Int
+	let totalNumberOfItems: Int
+	let items: [MixesItem]
+	let dataApiPath: String
+}
+
+struct MixesItem: Decodable {
+	let id: String
+	let title: String
+	let subTitle: String
+	let graphic: MixesGraphic
+}
+
+enum MixesGraphicType: String, Decodable {
+	case squaresGrid = "SQUARES_GRID"
+}
+
+struct MixesGraphic: Decodable {
+	let type: MixesGraphicType
+	let text: String
+	let images: [MixesGraphicImage]
+}
+
+enum MixesGraphicImageType: String, Decodable {
+	case artist = "ARTIST"
+}
+
+struct MixesGraphicImage: Decodable {
+	let id: String
+	let vibrantColor: String
+	let type: MixesGraphicImageType
+}
+
+struct Mix: Decodable {
+	let selfLink: URL?
+	let id: String
+	let title: String
+	let rows: [MixModules]
+	// Aufpassen, da unterschiedliche Modules
+	// Das interessante, welche Tracks enthält, ist [1]
+}
+
+struct MixModules: Decodable {
+	let modules: [MixModule]
+}
+
+struct MixModule: Decodable {
+	let id: String
+	let width: Int
+	let title: String
+	let pagedList: Tracks?
+}
+
 typealias Moods = Genres
 typealias Mood = Genre
 
@@ -293,7 +366,7 @@ struct FeaturedItems: Decodable {
 
 enum FeaturedType: String, Decodable {
 	case categoryPages = "CATEGORY_PAGES"
-	case extUrl = "EXTURL"
+	case externalUrl = "EXTURL"
 	case video = "VIDEO"
 	case playlist = "PLAYLIST"
 	case album = "ALBUM"

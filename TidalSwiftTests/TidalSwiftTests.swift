@@ -803,6 +803,31 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertNil(playlists[16].creator.popularity)
 	}
 	
+	func testGetMixes() {
+		// No general test as mixes are different for every user
+		
+		let optionalMixse = session.getMixes()
+		XCTAssertNotNil(optionalMixse)
+		guard let mixes = optionalMixse else {
+			return
+		}
+		
+		XCTAssertEqual(mixes.count, 6)
+	}
+	
+	func testGetMixPlaylistTracks() {
+		// No general test as mixes are different for every user
+		
+		let optionalTracks = session.getMixPlaylistTracks(mixId:
+			"0029b7607aa158d2f15a0872fbb939") // Probably needs to be changed
+		XCTAssertNotNil(optionalTracks)
+		guard let tracks = optionalTracks else {
+			return
+		}
+		
+		XCTAssertEqual(tracks.count, 40)
+	}
+	
 	func testGetMoods() {
 		let optionalMoods = session.getMoods()
 		XCTAssertNotNil(optionalMoods)
