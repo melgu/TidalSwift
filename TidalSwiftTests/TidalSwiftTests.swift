@@ -118,18 +118,18 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(info?.paymentType, "PARENT")
 	}
 	
-	// Stops your music playback if you're listening in the web player or official app
+	// Stops playback if you're listening in the web player or official app
 //	func testGetMediaUrl() {
-//		// Music
-//		let trackUrl = session.getMediaUrl(trackId: 59978883)
+//		let trackUrl = session.getAudioUrl(trackId: 59978883)
 //		XCTAssertNotNil(trackUrl)
-//		print(trackUrl)
-//
-//		// Video (Fatal error at the moment:
-//		// Unexpectedly found nil while unwrapping an Optional value)
-////		let videoUrl = session.getMediaUrl(trackId: 33835599)
-////		XCTAssertNotNil(videoUrl)
-////		print(videoUrl)
+////		print(trackUrl)
+//	}
+	
+	// Stops playback if you're listening in the web player or official app
+//	func testGetVideoUrl() {
+//		let videoUrl = session.getVideoUrl(videoId: 98785108)
+//		XCTAssertNotNil(videoUrl)
+//		print(videoUrl)
 //	}
 	
 	func testSearchArtist() {
