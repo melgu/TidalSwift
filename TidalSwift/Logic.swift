@@ -29,7 +29,7 @@ class Config {
 	var loginInformation: LoginCredentials
 	
 	init(quality: AudioQuality = .hifi,
-		 apiLocation: String = "https://api.tidalhifi.com/v1/",
+		 apiLocation: String = "https://api.tidal.com/v1/", // vorher https://api.tidalhifi.com/v1/
 		 apiToken: String? = nil,
 		 imageUrl: String = "http://images.osl.wimpmusic.com/im/im/",
 		 imageSize: Int = 1280,
@@ -233,30 +233,49 @@ class Session {
 	}
 	
 	// Only works for music tracks (no videos at the moment)
-	func getMediaUrl(trackId: Int) -> URL? {
+	func getAudioUrl(trackId: Int) -> URL? {
 		var parameters = sessionParameters
-		parameters["soundQuality"] = "\(config.quality)"
+		parameters["soundQuality"] = "\(config.quality.rawValue)"
 		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/streamUrl")!
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
-			displayError(title: "Couldn't get media URL (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			displayError(title: "Couldn't get Audio URL (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
 			return nil
 		}
 		
-		var mediaUrlResponse: MediaUrl?
+		var audioUrlResponse: AudioUrl?
 		do {
-			mediaUrlResponse = try JSONDecoder().decode(MediaUrl.self, from: content)
+			audioUrlResponse = try JSONDecoder().decode(AudioUrl.self, from: content)
 		} catch {
-			displayError(title: "Couldn't get media URL (JSON Parse Error)", content: "\(error)")
+			displayError(title: "Couldn't get Audio URL (JSON Parse Error)", content: "\(error)")
 		}
-		print("""
-			Track ID: \(mediaUrlResponse?.trackId ?? -1),
-			Quality: \(mediaUrlResponse?.soundQuality.rawValue ?? ""),
-			Codec: \(mediaUrlResponse?.codec ?? "")
-			""")
+//		print("""
+//			Track ID: \(mediaUrlResponse?.trackId ?? -1),
+//			Quality: \(mediaUrlResponse?.soundQuality.rawValue ?? ""),
+//			Codec: \(mediaUrlResponse?.codec ?? "")
+//			""")
 		
-		return mediaUrlResponse?.url
+		return audioUrlResponse?.url
+	}
+	
+	func getVideoUrl(videoId: Int) -> URL? {
+		let url = URL(string: "\(config.apiLocation)videos/\(videoId)/streamUrl")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Couldn't get Video URL (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var videoUrlResponse: VideoUrl?
+		do {
+			videoUrlResponse = try JSONDecoder().decode(VideoUrl.self, from: content)
+		} catch {
+			displayError(title: "Couldn't get Video URL (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return videoUrlResponse?.url
 	}
 	
 	func search(for term: String, limit: Int = 50, offset: Int = 0) -> SearchResult? {

@@ -43,12 +43,17 @@ struct SubscriptionType: Decodable {
 	let offlineGracePeriod: Int
 }
 
-struct MediaUrl: Decodable {
+struct AudioUrl: Decodable {
 	let url: URL
 	let trackId: Int
 	let soundQuality: AudioQuality
 	let encryptionKey: String
 	let codec: String
+}
+
+struct VideoUrl: Decodable {
+	let url: URL
+	let videoQuality: String
 }
 
 struct Artists: Decodable {
