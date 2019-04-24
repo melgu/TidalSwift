@@ -402,6 +402,27 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(playlist?.image, "43f8e4db-769c-40f6-b561-99609aef0c13")
 		//		print(searchResult?.playlists.items[0].popularity)
 		XCTAssertEqual(playlist?.squareImage, "50fbe933-0049-4e0e-be82-2de70b19168e")
+		
+		// Playlist Creator (TIDAL Editorial)
+		XCTAssertEqual(playlist?.creator.id, 0)
+		XCTAssertNil(playlist?.creator.name)
+		XCTAssertNil(playlist?.creator.picture)
+		XCTAssertNil(playlist?.creator.popularity)
+		XCTAssertNil(playlist?.creator.url)
+		
+		
+		// Testing with Billboard Playlist
+		let playlist2 = session.getPlaylist(playlistId: "a6223536-93b8-4d21-b35a-59d4246bf962")
+		XCTAssertEqual(playlist2?.title, "Billboard Hot 100")
+		XCTAssertEqual(playlist2?.numberOfTracks, 100)
+		XCTAssertEqual(playlist?.type, .editorial)
+		
+		// Playlist Creator (Billboard)
+		XCTAssertEqual(playlist2?.creator.id, 0)
+		XCTAssertEqual(playlist2?.creator.name, "Billboard")
+		XCTAssertNil(playlist2?.creator.picture)
+		XCTAssertNil(playlist2?.creator.popularity)
+		XCTAssertNil(playlist2?.creator.url)
 	}
 
 	func testGetPlaylistTracks() {
