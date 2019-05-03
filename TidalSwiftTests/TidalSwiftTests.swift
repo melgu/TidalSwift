@@ -11,7 +11,7 @@ import XCTest
 
 class TidalSwiftTests: XCTestCase {
 	
-	var session: Session = Session(config: Config(quality: .hifi, loginInformation: readDemoLoginInformation()))
+	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
 	
 	var tempConfig: Config?
 	var tempSession: Session?
@@ -24,7 +24,7 @@ class TidalSwiftTests: XCTestCase {
 		tempSession?.loadSession()
 		
 		// Now, we are free to mess around
-		let config = Config(quality: .hifi, loginInformation: readDemoLoginInformation())
+		let config = Config(quality: .hifi, loginCredentials: readDemoLoginCredentials())
 		session = Session(config: config)
 		
 		session.loadSession()
@@ -71,8 +71,8 @@ class TidalSwiftTests: XCTestCase {
 	
 	// Login Testing commented out to prevent potential ban from the server if done too often
 //	func testLogin() {
-//		let loginInfo = readDemoLoginInformation()
-//		let config = Config(quality: .LOSSLESS, loginInformation: loginInfo)
+//		let loginInfo = readDemoLoginCredentials()
+//		let config = Config(quality: .hifi, loginCredentials: loginInfo)
 //		session = Session(config: config)
 //		let result = session.login()
 //		XCTAssert(result)
@@ -80,15 +80,15 @@ class TidalSwiftTests: XCTestCase {
 //
 //	func testWrongLogin() {
 //		// Wrong Login Info
-//		let loginInfo1 = LoginInformation(username: "ABC", password: "ABC")
-//		let config1 = Config(quality: .LOSSLESS, loginInformation: loginInfo1)
+//		let loginInfo1 = LoginCredentials(username: "ABC", password: "ABC")
+//		let config1 = Config(quality: .hifi, loginCredentials: loginInfo1)
 //		session = Session(config: config1)
 //		let result1 = session.login()
 //		XCTAssertFalse(result1)
 //
 //		// Empty Login Info
-//		let loginInfo2 = LoginInformation(username: "", password: "")
-//		let config2 = Config(quality: .LOSSLESS, loginInformation: loginInfo2)
+//		let loginInfo2 = LoginCredentials(username: "", password: "")
+//		let config2 = Config(quality: .hifi, loginCredentials: loginInfo2)
 //		session = Session(config: config2)
 //		let result2 = session.login()
 //		XCTAssertFalse(result2)
@@ -97,7 +97,8 @@ class TidalSwiftTests: XCTestCase {
 	func testCheckLogin() {
 		XCTAssert(session.checkLogin())
 		
-		let config = Config(quality: .hifi, loginInformation: readDemoLoginInformation())
+		let loginCredentials = LoginCredentials(username: "", password: "")
+		let config = Config(quality: .hifi, loginCredentials: loginCredentials)
 		session = Session(config: config)
 		
 		XCTAssertFalse(session.checkLogin())
@@ -122,7 +123,7 @@ class TidalSwiftTests: XCTestCase {
 //	func testGetMediaUrl() {
 //		let trackUrl = session.getAudioUrl(trackId: 59978883)
 //		XCTAssertNotNil(trackUrl)
-////		print(trackUrl)
+//		print(trackUrl)
 //	}
 	
 	// Stops playback if you're listening in the web player or official app
@@ -211,10 +212,10 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResult?.playlists.items[0].duration, 34170)
 		XCTAssertEqual(searchResult?.playlists.items[0].lastUpdated,
 					   DateFormatter.iso8601OptionalTime.date(from:
-						"2019-02-28T21:14:54.402GMT"))
+						"2019-02-28T21:14:54.000GMT"))
 		XCTAssertEqual(searchResult?.playlists.items[0].created,
 					   DateFormatter.iso8601OptionalTime.date(from:
-						"2018-01-19T17:56:03.125GMT"))
+						"2018-01-19T17:56:03.000GMT"))
 		XCTAssertEqual(searchResult?.playlists.items[0].type, .editorial)
 		// Here it's false, but in the Playlist test it's true. No idea, why.
 		XCTAssertEqual(searchResult?.playlists.items[0].publicPlaylist, false)
@@ -400,7 +401,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(playlist?.url, URL(string:
 			"http://www.tidal.com/playlist/96696a2c-b284-4dd3-8e51-5e0dae44ace0"))
 		XCTAssertEqual(playlist?.image, "43f8e4db-769c-40f6-b561-99609aef0c13")
-		//		print(searchResult?.playlists.items[0].popularity)
+//		print(searchResult?.playlists.items[0].popularity)
 		XCTAssertEqual(playlist?.squareImage, "50fbe933-0049-4e0e-be82-2de70b19168e")
 		
 		// Playlist Creator (TIDAL Editorial)
@@ -677,14 +678,16 @@ class TidalSwiftTests: XCTestCase {
 
 	func testGetArtistBio() {
 		// Probably needs to be updated once in a while as it can change
-		let artistBio = session.getArtistBio(artistId: 7553669)
+		let artistBio = session.getArtistBio(artistId: 16579)
 		
 		XCTAssertEqual(artistBio?.source, "TiVo")
 //		print(DateFormatter.iso8601OptionalTime.string(for: artistBio?.lastUpdated))
 		XCTAssertEqual(artistBio?.lastUpdated,
 					   DateFormatter.iso8601OptionalTime.date(from:
-						"2019-03-21T17:22:17.276GMT"))
-		XCTAssertEqual(artistBio?.text, "A Grammy-winning crossover jazz vocalist and multi-instrumentalist with a flair for harmony and arranging, [wimpLink artistId=\"7553669\"]Jacob Collier[/wimpLink] became an Internet sensation in the early 2010s with his layered performances, achieving a one-man harmony vocal group, often with accompanying video takes. A mix of original songs and heavily stylized covers, his debut album, 2016\'s [wimpLink albumId=\"59978881\"]In My Room[/wimpLink], reached the Top Three of the Billboard jazz chart.<br/>Raised in North London, England in a family of musicians, [wimpLink artistId=\"7553669\"]Collier[/wimpLink] began sharing music videos of his slick, multi-track performances from his home music-room as a 17-year-old in late 2011. Presenting most of the videos in a grid layout so that each vocal and instrumental take was visible, he would often arrange and perform up to eight-part vocal harmonies, with accompaniment ranging from keyboards and stringed instruments to varied percussion. His early songs included original tunes such as \"Serendipity,\" and covers of songwriters spanning the Gershwins, [wimpLink artistId=\"28796\"]Burt Bacharach[/wimpLink], and [wimpLink artistId=\"239\"]Stevie Wonder[/wimpLink]. While enrolled as a jazz piano performance major at the Royal Academy of Music, he developed a method of solo, multimedia live performance with the Massachusetts Institute of Technology\'s Media Lab, which he debuted at the 2015 Montreux Jazz Festival, where he opened for [wimpLink artistId=\"209\"]Herbie Hancock[/wimpLink] and [wimpLink artistId=\"10957\"]Chick Corea[/wimpLink]. Soon in demand for his arranging skills as well as performing, he began collaborating with other musicians, including an appearance on [wimpLink artistId=\"6316418\"]Snarky Puppy[/wimpLink]\'s early-2016 release [wimpLink albumId=\"56746563\"]Family Dinner, Vol. 2[/wimpLink]. [wimpLink artistId=\"7553669\"]Collier[/wimpLink]\'s first official single from an album of his own, \"Hideaway\" appeared in April 2016. His debut LP, [wimpLink albumId=\"59978881\"]In My Room[/wimpLink], followed mid-year on the Membran label and charted in Switzerland and the Netherlands in addition to reaching number three on Billboard\'s Jazz Albums chart. In 2017, [wimpLink artistId=\"7553669\"]Collier[/wimpLink] won two Grammy Awards for his arranging: one for his version of [wimpLink artistId=\"239\"]Stevie Wonder[/wimpLink]\'s \"You and I\" (Best Arrangement, Instrumental or A Cappella) and one for his cover of The Flintstones theme song (Best Arrangement, Instrumental and Vocals). <br/>By the time he returned to the studio to work on his second album in 2018, he\'d been touring internationally for over two years. <br/>Described as the first of a four-volume project, [wimpLink albumId=\"100006868\"]Djesse, Vol. 1[/wimpLink] arrived on Decca in December of 2018. It featured the [wimpLink artistId=\"4631340\"]Metropole Orkest[/wimpLink], conducted by [wimpLink artistId=\"4374293\"]Jules Buckley[/wimpLink] as well as collaborations with [wimpLink artistId=\"4770170\"]Laura Mvula[/wimpLink], Moroccan singer Hamid El Kasri, the a cappella groups [wimpLink artistId=\"13928\"]Take 6[/wimpLink] and [wimpLink artistId=\"4236852\"]Voces8[/wimpLink], and Suzie Collier, [wimpLink artistId=\"7553669\"]Jacob[/wimpLink]\'s mother. ~ Marcy Donelson")
+						"2019-03-09T19:22:46.937GMT"))
+		// Bio is not consistent, therefore cannot be tested properly.
+		// Sometimes some of the referenced artists or albums have a so-called wimpLink, sometimes exactly the same references don't have a wimpLink.
+//		XCTAssertEqual(artistBio?.text, "")
 	}
 
 	func testGetArtistSimilar() {
@@ -837,10 +840,14 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testGetMixPlaylistTracks() {
-		// No general test as mixes are different for every user
-		
-		let optionalTracks = session.getMixPlaylistTracks(mixId:
-			"0029b7607aa158d2f15a0872fbb939") // Probably needs to be changed
+		// Have to get a new list of mixes for each user and time
+		let optionalMixse = session.getMixes()
+		XCTAssertNotNil(optionalMixse)
+		guard let mixes = optionalMixse else {
+			return
+		}
+		let mixId = mixes[0].id
+		let optionalTracks = session.getMixPlaylistTracks(mixId: mixId)
 		XCTAssertNotNil(optionalTracks)
 		guard let tracks = optionalTracks else {
 			return
@@ -888,7 +895,7 @@ class TidalSwiftTests: XCTestCase {
 					   "Step onto your mat and into your zen with these meditative tracks.")
 //		XCTAssertEqual(playlists[0].duration, 18592)
 		XCTAssertEqual(playlists[0].created,
-					   DateFormatter.iso8601OptionalTime.date(from: "2018-02-05T21:44:05.249GMT"))
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-02-05T21:44:05.000GMT"))
 		XCTAssertEqual(playlists[0].publicPlaylist, false)
 		XCTAssertEqual(playlists[0].url, URL(string:
 			"http://www.tidal.com/playlist/98676f10-0aa1-4c8c-ba84-4f84e370f3d2"))

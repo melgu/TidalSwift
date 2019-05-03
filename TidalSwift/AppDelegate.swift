@@ -16,14 +16,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
 		
-//		let loginInfo = readDemoLoginInformation()
-//		let config = Config(loginInformation: loginInfo)
+//		let loginCredentials = readDemoLoginCredentials()
+//		let token = readDemoToken()
+//		let config = Config(loginCredentials: loginCredentials, apiToken: token)
 //		let session = Session(config: config)
+//
+//		session.deletePersistantInformation()
+//
+//		print(loginCredentials.username)
+//		print(loginCredentials.password)
+//
+//		_ = session.login()
+//		print(session.checkLogin())
+//		
 //		session.saveConfig()
+//		session.saveSession()
 //
 //		session.loadSession()
-//
-//		print(session.checkLogin())
 		
 		print("-----")
 	}
