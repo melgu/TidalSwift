@@ -308,6 +308,37 @@ class Session {
 		return searchResultResponse
 	}
 	
+	func getTrack(trackId: Int) -> Track? {
+		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Track Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var trackResponse: Track?
+		do {
+			trackResponse = try customJSONDecoder().decode(Track.self, from: content)
+		} catch {
+			displayError(title: "Track Info Info failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return trackResponse
+	}
+	
+	// Delete inexistent or unaccessable Tracks from list
+	// Detected by checking for nil values
+	func cleanTrackList(_ trackList: [Track]) -> [Track] {
+		var result = [Track]()
+		for track in trackList {
+			if !(track.streamStartDate == nil || track.audioQuality == nil || track.surroundTypes == nil) {
+				result.append(track)
+			}
+		}
+		return result
+	}
+	
 	func getPlaylist(playlistId: String) -> Playlist? {
 		let url = URL(string: "\(config.apiLocation)playlists/\(playlistId)")!
 		let response = get(url: url, parameters: sessionParameters)
