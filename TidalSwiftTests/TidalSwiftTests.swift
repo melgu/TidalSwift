@@ -108,7 +108,7 @@ class TidalSwiftTests: XCTestCase {
 		let info = session.getSubscriptionInfo()
 		XCTAssertNotNil(info)
 		
-		// Values are highly dependent on own subscription type.
+		// Values are highly dependent on one's subscription type.
 		// Values here are for an account inside a HIFI Family plan.
 		XCTAssertEqual(info?.status, "ACTIVE")
 		XCTAssertEqual(info?.subscription.type, "HIFI")
@@ -377,6 +377,64 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResultWithHighLimit?.tracks.offset, 0)
 		XCTAssertEqual(searchResultWithHighLimit?.tracks.items.count, 300)
 		XCTAssertEqual(searchResultWithHighLimit?.tracks.totalNumberOfItems, 300)
+	}
+	
+	func testGetTrack() {
+		let optionalTrack = session.getTrack(trackId: 59978883)
+		XCTAssertNotNil(optionalTrack)
+		guard let track = optionalTrack else {
+			return
+		}
+		
+		XCTAssertEqual(track.id, 59978883)
+		XCTAssertEqual(track.title, "In My Room")
+		XCTAssertEqual(track.duration, 289)
+		XCTAssertEqual(track.replayGain, -7.04)
+		XCTAssertEqual(track.peak, 0.944366)
+		XCTAssertEqual(track.allowStreaming, true)
+		XCTAssertEqual(track.streamReady, true)
+		XCTAssertEqual(track.streamStartDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2016-07-01"))
+		XCTAssertEqual(track.trackNumber, 2)
+		XCTAssertEqual(track.volumeNumber, 1)
+		//		print(track.popularity)
+		XCTAssertEqual(track.copyright, "2016 Membran")
+		XCTAssertEqual(track.url,
+					   URL(string: "http://www.tidal.com/track/59978883"))
+		XCTAssertEqual(track.isrc, "US23A1500084")
+		XCTAssertEqual(track.editable, true)
+		XCTAssertEqual(track.explicit, false)
+		XCTAssertEqual(track.audioQuality, .hifi)
+		
+		// Artists
+		XCTAssertEqual(track.artists.count, 1)
+		XCTAssertEqual(track.artists[0].id, 7553669)
+		XCTAssertEqual(track.artists[0].name, "Jacob Collier")
+		//		print(searchResult?.videos.items[0].artists[0].type) // For no reason "Index out of range"
+		//		XCTAssertEqual(searchResult?.videos.items[0].artists[0].type, "MAIN")
+		
+		// Album
+		XCTAssertEqual(track.album.id, 59978881)
+		XCTAssertEqual(track.album.title, "In My Room")
+	}
+	
+	func testCleanTracks() {
+		let optionalPlaylistTracks = session.getPlaylistTracks(playlistId: "96696a2c-b284-4dd3-8e51-5e0dae44ace0")
+		XCTAssertNotNil(optionalPlaylistTracks)
+		guard let playlistTracks = optionalPlaylistTracks else {
+			return
+		}
+		
+		XCTAssertEqual(playlistTracks.count, 20)
+		
+		// For some reason this exact track doesn't exist even though it's technically part of the playlist
+		XCTAssertEqual(playlistTracks[17].id, 16557722)
+		XCTAssertNil(playlistTracks[17].streamStartDate)
+		XCTAssertNil(playlistTracks[17].audioQuality)
+		XCTAssertNil(playlistTracks[17].surroundTypes)
+		
+		let cleanedTrackList = session.cleanTrackList(playlistTracks)
+		XCTAssertEqual(cleanedTrackList.count, 19)
 	}
 	
 	func testGetPlaylist() {
