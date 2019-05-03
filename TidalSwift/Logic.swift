@@ -26,17 +26,20 @@ class Config {
 	var apiToken: String
 	var imageUrl: String
 	var imageSize: Int
-	var loginInformation: LoginCredentials
+	var loginCredentials: LoginCredentials
 	
 	init(quality: AudioQuality = .hifi,
-		 apiLocation: String = "https://api.tidal.com/v1/", // vorher https://api.tidalhifi.com/v1/
+		 loginCredentials: LoginCredentials,
 		 apiToken: String? = nil,
+		 apiLocation: String = "https://api.tidal.com/v1/",
 		 imageUrl: String = "http://images.osl.wimpmusic.com/im/im/",
-		 imageSize: Int = 1280,
-		 loginInformation: LoginCredentials) {
+		 imageSize: Int = 1280) {
 		self.quality = quality
-		self.apiLocation = apiLocation
+		self.loginCredentials = loginCredentials
 		
+		// Custom token from web browser required to load 1080p videos
+		// Otherwise videos are limited to 720p
+		// Everything else (incl. Master) works though
 		if apiToken == nil {
 			if quality == .hifi {
 				self.apiToken = "P5Xbeo5LFvESeDy6"
@@ -47,9 +50,9 @@ class Config {
 			self.apiToken = apiToken!
 		}
 		
+		self.apiLocation = apiLocation
 		self.imageUrl = imageUrl
 		self.imageSize = imageSize
-		self.loginInformation = loginInformation
 	}
 }
 
@@ -83,25 +86,25 @@ class Session {
 			
 			guard let qualityString = persistentInformation["quality"],
 				let quality = AudioQuality(rawValue: qualityString),
-				let apiLocation = persistentInformation["apiLocation"],
+				let username = persistentInformation["username"],
+				let password = persistentInformation["password"],
 				let apiToken = persistentInformation["apiToken"],
+				let apiLocation = persistentInformation["apiLocation"],
 				let imageUrl = persistentInformation["imageUrl"],
 				let imageSizeString = persistentInformation["imageSize"],
-				let imageSize = Int(imageSizeString),
-				let username = persistentInformation["username"],
-				let password = persistentInformation["password"]
+				let imageSize = Int(imageSizeString)
 			else {
 				displayError(title: "Couldn't load Config", content: "Missing part of Persistent Config")
 				return nil
 			}
 			
 			return Config(quality: quality,
-						  apiLocation: apiLocation,
+						  loginCredentials: LoginCredentials(username: username,
+															 password: password),
 						  apiToken: apiToken,
+						  apiLocation: apiLocation,
 						  imageUrl: imageUrl,
-						  imageSize: imageSize,
-						  loginInformation: LoginCredentials(username: username,
-															 password: password))
+						  imageSize: imageSize)
 		}
 		
 		if let config = config {
@@ -142,12 +145,13 @@ class Session {
 	
 	func saveConfig() {
 		let persistentInformation: [String: String] = ["quality": config.quality.rawValue,
-													   "apiLocation": config.apiLocation,
+													   "username": config.loginCredentials.username,
+													   "password": config.loginCredentials.password,
 													   "apiToken": config.apiToken,
+													   "apiLocation": config.apiLocation,
 													   "imageUrl": config.imageUrl,
 													   "imageSize": String(config.imageSize),
-													   "username": config.loginInformation.username,
-													   "password": config.loginInformation.password]
+													   ]
 		
 		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
 	}
@@ -161,14 +165,14 @@ class Session {
 		let url = URL(string: config.apiLocation + "login/username")!
 		let parameters: [String: String] = [
 			"token": config.apiToken,
-			"username": config.loginInformation.username,
-			"password": config.loginInformation.password
+			"username": config.loginCredentials.username,
+			"password": config.loginCredentials.password
 		]
 		let response = post(url: url, parameters: parameters)
 		if !response.ok {
 			if response.statusCode == 401 { // Wrong Username / Password
 				displayError(title: "Wrong username or password",
-							 content: "The username and password combination you entered is wrong.")
+							 content: "Username, password, token, or API Location is wrong.")
 				return false
 			} else {
 				displayError(title: "Login failed (HTTP Error)",
@@ -753,7 +757,7 @@ func displayError(title: String, content: String) {
 //	appDelegate.mainViewController?.errorDialog(title: title, text: content)
 }
 
-func readDemoLoginInformation() -> LoginCredentials {
+func readDemoLoginCredentials() -> LoginCredentials {
 	let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
 	var content = ""
 	do {
@@ -764,4 +768,17 @@ func readDemoLoginInformation() -> LoginCredentials {
 	
 	let lines: [String] = content.components(separatedBy: "\n")
 	return LoginCredentials(username: lines[0], password: lines[1])
+}
+
+func readDemoToken() -> String {
+	let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
+	var content = ""
+	do {
+		content = try String(contentsOfFile: fileLocation)
+	} catch {
+		displayError(title: "Couldn't read Demo Token", content: "\(error)")
+	}
+	
+	let lines: [String] = content.components(separatedBy: "\n")
+	return lines[2]
 }

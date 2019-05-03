@@ -21,13 +21,13 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		B0E1EE972272AE110071C920 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0E582E72240869900ADAE6C /* Demo Login Information.txt */; };
 		B0E582D2223764A500ADAE6C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D1223764A500ADAE6C /* AppDelegate.swift */; };
 		B0E582D4223764A500ADAE6C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D3223764A500ADAE6C /* ViewController.swift */; };
 		B0E582D6223764A600ADAE6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0E582D5223764A600ADAE6C /* Assets.xcassets */; };
 		B0E582D9223764A600ADAE6C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E582D7223764A600ADAE6C /* Main.storyboard */; };
 		B0E582E2223764C100ADAE6C /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E1223764C100ADAE6C /* Network.swift */; };
 		B0E582E62238C84F00ADAE6C /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E52238C84F00ADAE6C /* Logic.swift */; };
-		B0E582E82240869900ADAE6C /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0E582E72240869900ADAE6C /* Demo Login Information.txt */; };
 		B0E582EA2240C00100ADAE6C /* Codables.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E92240C00100ADAE6C /* Codables.swift */; };
 		B0E582F2224329A000ADAE6C /* TidalSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582F1224329A000ADAE6C /* TidalSwiftTests.swift */; };
 /* End PBXBuildFile section */
@@ -216,7 +216,7 @@
 			files = (
 				B0E582D6223764A600ADAE6C /* Assets.xcassets in Resources */,
 				B0E582D9223764A600ADAE6C /* Main.storyboard in Resources */,
-				B0E582E82240869900ADAE6C /* Demo Login Information.txt in Resources */,
+				B0E1EE972272AE110071C920 /* Demo Login Information.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
