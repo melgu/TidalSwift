@@ -37,15 +37,8 @@ class Config {
 		self.quality = quality
 		self.loginCredentials = loginCredentials
 		
-		// Custom token from web browser required to load 1080p videos
-		// Otherwise videos are limited to 720p
-		// Everything else (incl. Master) works though
 		if apiToken == nil {
-			if quality == .hifi {
-				self.apiToken = "P5Xbeo5LFvESeDy6"
-			} else {
-				self.apiToken = "wdgaB1CilGA-S_s2"
-			}
+			self.apiToken = "_DSTon1kC8pABnTw" // Direct ALAC, 1080p Videos
 		} else {
 			self.apiToken = apiToken!
 		}

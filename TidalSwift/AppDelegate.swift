@@ -17,18 +17,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		// Insert code here to initialize your application
 		
 //		let loginCredentials = readDemoLoginCredentials()
-//		let token = readDemoToken()
-//		let config = Config(loginCredentials: loginCredentials, apiToken: token)
+//		let config = Config(quality: .hifi, loginCredentials: loginCredentials)
 //		let session = Session(config: config)
 //
 //		session.deletePersistantInformation()
 //
-//		print(loginCredentials.username)
-//		print(loginCredentials.password)
-//
 //		_ = session.login()
 //		print(session.checkLogin())
 //		
+//		print(loginCredentials.username)
+//		print(loginCredentials.password)
+//		print(config.apiToken)
+//		print(session.sessionId)
+//
 //		session.saveConfig()
 //		session.saveSession()
 //
