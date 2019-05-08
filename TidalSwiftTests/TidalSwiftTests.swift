@@ -24,8 +24,7 @@ class TidalSwiftTests: XCTestCase {
 		tempSession?.loadSession()
 		
 		// Now, we are free to mess around
-		let config = Config(quality: .hifi, loginCredentials: readDemoLoginCredentials())
-		session = Session(config: config)
+		session = Session(config: nil) // Config is loaded from persistent storage
 		
 		session.loadSession()
 		if !session.checkLogin() {
@@ -70,29 +69,29 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	// Login Testing commented out to prevent potential ban from the server if done too often
-//	func testLogin() {
-//		let loginInfo = readDemoLoginCredentials()
-//		let config = Config(quality: .hifi, loginCredentials: loginInfo)
-//		session = Session(config: config)
-//		let result = session.login()
-//		XCTAssert(result)
-//	}
-//
-//	func testWrongLogin() {
-//		// Wrong Login Info
-//		let loginInfo1 = LoginCredentials(username: "ABC", password: "ABC")
-//		let config1 = Config(quality: .hifi, loginCredentials: loginInfo1)
-//		session = Session(config: config1)
-//		let result1 = session.login()
-//		XCTAssertFalse(result1)
-//
-//		// Empty Login Info
-//		let loginInfo2 = LoginCredentials(username: "", password: "")
-//		let config2 = Config(quality: .hifi, loginCredentials: loginInfo2)
-//		session = Session(config: config2)
-//		let result2 = session.login()
-//		XCTAssertFalse(result2)
-//	}
+	func testLogin() {
+		let loginInfo = readDemoLoginCredentials()
+		let config = Config(quality: .hifi, loginCredentials: loginInfo)
+		session = Session(config: config)
+		let result = session.login()
+		XCTAssert(result)
+	}
+
+	func testWrongLogin() {
+		// Wrong Login Info
+		let loginInfo1 = LoginCredentials(username: "ABC", password: "ABC")
+		let config1 = Config(quality: .hifi, loginCredentials: loginInfo1)
+		session = Session(config: config1)
+		let result1 = session.login()
+		XCTAssertFalse(result1)
+
+		// Empty Login Info
+		let loginInfo2 = LoginCredentials(username: "", password: "")
+		let config2 = Config(quality: .hifi, loginCredentials: loginInfo2)
+		session = Session(config: config2)
+		let result2 = session.login()
+		XCTAssertFalse(result2)
+	}
 	
 	func testCheckLogin() {
 		XCTAssert(session.checkLogin())
@@ -120,18 +119,26 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	// Stops playback if you're listening in the web player or official app
-//	func testGetMediaUrl() {
-//		let trackUrl = session.getAudioUrl(trackId: 59978883)
-//		XCTAssertNotNil(trackUrl)
+	func testGetMediaUrl() {
+		let optionalTrackUrl = session.getAudioUrl(trackId: 59978883)
+		XCTAssertNotNil(optionalTrackUrl)
+		guard let trackUrl = optionalTrackUrl else {
+			return
+		}
 //		print(trackUrl)
-//	}
+		XCTAssert(trackUrl.absoluteString.contains(".m4a"))
+	}
 	
 	// Stops playback if you're listening in the web player or official app
-//	func testGetVideoUrl() {
-//		let videoUrl = session.getVideoUrl(videoId: 98785108)
-//		XCTAssertNotNil(videoUrl)
+	func testGetVideoUrl() {
+		let optionalVideoUrl = session.getVideoUrl(videoId: 98785108)
+		XCTAssertNotNil(optionalVideoUrl)
+		guard let videoUrl = optionalVideoUrl else {
+			return
+		}
 //		print(videoUrl)
-//	}
+		XCTAssert(videoUrl.absoluteString.contains(".m3u8"))
+	}
 	
 	func testSearchArtist() {
 		let searchResult = session.search(for: "Jacob Collier")
