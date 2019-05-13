@@ -142,20 +142,53 @@ class TidalSwiftTests: XCTestCase {
 //	}
 	
 	func testGetImageUrl() {
+		// General (Album)
+		let url = session.getImageUrl(imageId: "e60d7380-2a14-4011-bbc1-a3a1f0c576d6", resolution: 1280)
+		XCTAssertEqual(url, URL(string:
+			"https://resources.tidal.com/images/e60d7380/2a14/4011/bbc1/a3a1f0c576d6/1280x1280.jpg"))
+		
+		// General non-square (FeaturedItem)
+		let urlNonSquare = session.getImageUrl(imageId: "a133cb38-6ae7-44b7-9fc5-f6a9b48ee3bc", resolution: 1100, resolutionY: 800)
+		XCTAssertEqual(urlNonSquare, URL(string:
+			"https://resources.tidal.com/images/a133cb38/6ae7/44b7/9fc5/f6a9b48ee3bc/1100x800.jpg"))
+		
 		// Album
-		let albumUrl = session.getImageUrl(imageId: "e60d7380-2a14-4011-bbc1-a3a1f0c576d6", resolution: 1280)
+		let album = session.getAlbum(albumId: 100006868)
+		let albumUrl = album?.getCoverUrl(session: session, resolution: 1280)
 		XCTAssertEqual(albumUrl, URL(string:
 			"https://resources.tidal.com/images/e60d7380/2a14/4011/bbc1/a3a1f0c576d6/1280x1280.jpg"))
 		
 		// Artist
-		let artistUrl = session.getImageUrl(imageId: "daaa931c-afc0-4c63-819c-c821393b6a45", resolution: 750)
+		let artist = session.getArtist(artistId: 7553669)
+		let artistUrl = artist?.getPictureUrl(session: session, resolution: 750)
 		XCTAssertEqual(artistUrl, URL(string:
 			"https://resources.tidal.com/images/daaa931c/afc0/4c63/819c/c821393b6a45/750x750.jpg"))
 		
+		// Track (Album Cover)
+		let track = session.getTrack(trackId: 59978883)
+		let trackUrl = track?.getCoverUrl(session: session, resolution: 1280)
+		XCTAssertEqual(trackUrl, URL(string:
+			"https://resources.tidal.com/images/5439beb7/36f0/480e/bc58/99515af8709d/1280x1280.jpg"))
+		
+		// Video
+		let video = session.getVideo(videoId: 98785108)
+		let videoUrl = video?.getImageUrl(session: session, resolution: 750)
+		XCTAssertEqual(videoUrl, URL(string:
+			"https://resources.tidal.com/images/94cf59fb/2816/4c40/989d/8aff2365baf9/750x750.jpg"))
+		
 		// Playlist
-		let playlistUrl = session.getImageUrl(imageId: "ad687fd4-c635-45d9-8fa9-f636ca3e364c", resolution: 750)
+		let playlist = session.getPlaylist(playlistId: "a784a00e-8f76-4a67-8624-656a1e80f7ed")
+		let playlistUrl = playlist?.getImage(session: session, resolution: 750)
 		XCTAssertEqual(playlistUrl, URL(string:
 			"https://resources.tidal.com/images/ad687fd4/c635/45d9/8fa9/f636ca3e364c/750x750.jpg"))
+		
+		// Genres & Moods have image ID, but I can't find a fitting resolution to access it
+		
+		// FeaturedItem
+		// Not consistent, therefore hard to test
+		
+		// Mix
+		// Not consistent, therefore hard to test
 	}
 	
 	func testSearchArtist() {
@@ -474,6 +507,53 @@ class TidalSwiftTests: XCTestCase {
 		
 		let cleanedTrackList = session.cleanTrackList(playlistTracks)
 		XCTAssertEqual(cleanedTrackList.count, 19)
+	}
+	
+	func testGetVideo() {
+		let optionalVideo = session.getVideo(videoId: 98785108)
+		XCTAssertNotNil(optionalVideo)
+		guard let video = optionalVideo else {
+			return
+		}
+		
+		XCTAssertEqual(video.id, 98785108)
+		XCTAssertEqual(video.title, "With The Love In My Heart")
+		XCTAssertEqual(video.volumeNumber, 1)
+		XCTAssertEqual(video.trackNumber, 1)
+		XCTAssertEqual(video.releaseDate,
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-11-16"))
+		XCTAssertNil(video.imagePath)
+		XCTAssertEqual(video.imageId, "94cf59fb-2816-4c40-989d-8aff2365baf9")
+		XCTAssertEqual(video.duration, 406)
+		XCTAssertEqual(video.quality, "MP4_1080P")
+		XCTAssertEqual(video.streamReady, true)
+		XCTAssertEqual(video.streamStartDate,
+					   DateFormatter.iso8601OptionalTime.date(from:
+						"2018-11-16T18:00:00.000GMT"))
+		XCTAssertEqual(video.allowStreaming, true)
+		XCTAssertEqual(video.explicit, false)
+		//		print(video.popularity)
+		XCTAssertEqual(video.type, "Music Video")
+		XCTAssertNil(video.adsUrl)
+		XCTAssertEqual(video.adsPrePaywallOnly, true)
+		
+		// Artists
+		XCTAssertEqual(video.artists.count, 3)
+		
+		XCTAssertEqual(video.artists[0].id, 7553669)
+		XCTAssertEqual(video.artists[0].name, "Jacob Collier")
+		XCTAssertEqual(video.artists[0].type, "MAIN")
+		
+		XCTAssertEqual(video.artists[1].id, 4631340)
+		XCTAssertEqual(video.artists[1].name, "Metropole Orkest")
+		XCTAssertEqual(video.artists[1].type, "MAIN")
+		
+		XCTAssertEqual(video.artists[2].id, 4374293)
+		XCTAssertEqual(video.artists[2].name, "Jules Buckley")
+		XCTAssertEqual(video.artists[2].type, "MAIN")
+		
+		// Album (probably need to find a better example)
+		XCTAssertNil(video.album)
 	}
 	
 	func testGetPlaylist() {

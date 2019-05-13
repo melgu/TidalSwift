@@ -164,7 +164,7 @@ struct Playlist: Decodable {
 	let squareImage: String?
 	
 	func getImage(session: Session, resolution: Int) -> URL? {
-		return session.getImageUrl(imageId: image, resolution: resolution)
+		return session.getImageUrl(imageId: squareImage ?? image, resolution: resolution)
 	}
 }
 
@@ -429,8 +429,8 @@ struct FeaturedItem: Decodable {
 	let featured: Bool
 	let openExternal: Bool
 	
-	func getImageUrl(session: Session, resolution: Int) -> URL? {
-		return session.getImageUrl(imageId: imageId, resolution: resolution)
+	func getImageUrl(session: Session, resolution: Int, resolutionY: Int) -> URL? {
+		return session.getImageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 	}
 }
 
