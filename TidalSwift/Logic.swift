@@ -286,19 +286,26 @@ class Session {
 		return videoUrlResponse?.url
 	}
 	
-	func getImageUrl(imageId: String, resolution: Int) -> URL? {
-		// Allowed Resolutions
+	func getImageUrl(imageId: String, resolution: Int, resolutionY: Int? = nil) -> URL? {
+		// Known Sizes (allowed resolutions)
 		// Albums: 80, 160, 320, 640, 1280
 		// Artists: 160, 320, 480, 750
+		// Videos: 80, 160, 320, 640, 750, 1280
 		// Playlists: 160, 320, 480, 640, 750
 		// Users: 100, 210
+		// FeaturedItem: 1100x800, 550x400 (not square)
+		// Mixes: ???
+		// Genres: ???
 		
-		// Info for Playlists:
-		// For User Playlists, use "image" property
-		// For Curated Playlists, use "squareImage" property
+		var tempResolutionY: Int
+		if resolutionY != nil {
+			tempResolutionY = resolutionY!
+		} else {
+			tempResolutionY = resolution
+		}
 		
 		let path = imageId.replacingOccurrences(of: "-", with: "/")
-		let urlString = "\(config.imageLocation)\(path)/\(resolution)x\(resolution).jpg"
+		let urlString = "\(config.imageLocation)\(path)/\(resolution)x\(tempResolutionY).jpg"
 		return URL(string: urlString)
 	}
 	
@@ -357,6 +364,25 @@ class Session {
 			}
 		}
 		return result
+	}
+	
+	func getVideo(videoId: Int) -> Video? {
+		let url = URL(string: "\(config.apiLocation)videos/\(videoId)")!
+		let response = get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Track Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var videoResponse: Video?
+		do {
+			videoResponse = try customJSONDecoder().decode(Video.self, from: content)
+		} catch {
+			displayError(title: "Track Info Info failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return videoResponse
 	}
 	
 	func getPlaylist(playlistId: String) -> Playlist? {
