@@ -17,6 +17,7 @@ struct Response {
 enum HttpMethod {
 	case get
 	case post
+	case delete
 }
 
 func encodeParameters(_ parameters: [String: String]) -> String {
@@ -33,13 +34,18 @@ func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Resp
 	switch method {
 	case .get:
 		request.httpMethod = "GET"
-		// If GET, parameters are part of the URL
+		// If GET or DELETE, parameters are part of the URL
 		let urlString = request.url!.absoluteString + "?" + encodeParameters(parameters)
 		request.url = URL(string: urlString)
 	case .post:
 		request.httpMethod = "POST"
-		// If POST, parameters are part of the body
+		// If POST or DELETE, parameters are part of the body
 		request.httpBody = encodeParameters(parameters).data(using: String.Encoding.utf8)
+	case .delete:
+		request.httpMethod = "DELETE"
+		// If GET or DELETE, parameters are part of the URL
+		let urlString = request.url!.absoluteString + "?" + encodeParameters(parameters)
+		request.url = URL(string: urlString)
 	}
 //	print("Network Request with URL: \(request.url!.absoluteString)")
 	

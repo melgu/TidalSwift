@@ -24,7 +24,7 @@ class Config {
 	var quality: AudioQuality
 	var apiLocation: String
 	var apiToken: String
-	var imageUrl: String
+	var imageLocation: String
 	var imageSize: Int
 	var loginCredentials: LoginCredentials
 	
@@ -32,7 +32,7 @@ class Config {
 		 loginCredentials: LoginCredentials,
 		 apiToken: String? = nil,
 		 apiLocation: String = "https://api.tidal.com/v1/",
-		 imageUrl: String = "http://images.osl.wimpmusic.com/im/im/",
+		 imageLocation: String = "https://resources.tidal.com/images/",
 		 imageSize: Int = 1280) {
 		self.quality = quality
 		self.loginCredentials = loginCredentials
@@ -43,8 +43,16 @@ class Config {
 			self.apiToken = apiToken!
 		}
 		
-		self.apiLocation = apiLocation
-		self.imageUrl = imageUrl
+		self.apiLocation = apiLocation.replacingOccurrences(of: " ", with: "")
+		if apiLocation.last != "/" {
+			self.apiLocation += "/"
+		}
+		
+		self.imageLocation = imageLocation.replacingOccurrences(of: " ", with: "")
+		if imageLocation.last != "/" {
+			self.imageLocation += "/"
+		}
+		
 		self.imageSize = imageSize
 	}
 }
@@ -56,7 +64,7 @@ class Session {
 	var countryCode: String?
 	var userId: Int?
 	
-	lazy var sessionParameters: [String: String] = {
+	var sessionParameters: [String: String] {
 		if sessionId == nil || countryCode == nil {
 			return [:]
 		} else {
@@ -65,7 +73,9 @@ class Session {
 					"limit": "999"]
 		}
 		
-	}()
+	}
+	
+	var favorites: Favorites?
 	
 	init(config: Config?) {
 		func loadConfig() -> Config? {
@@ -83,7 +93,7 @@ class Session {
 				let password = persistentInformation["password"],
 				let apiToken = persistentInformation["apiToken"],
 				let apiLocation = persistentInformation["apiLocation"],
-				let imageUrl = persistentInformation["imageUrl"],
+				let imageLocation = persistentInformation["imageLocation"],
 				let imageSizeString = persistentInformation["imageSize"],
 				let imageSize = Int(imageSizeString)
 			else {
@@ -96,7 +106,7 @@ class Session {
 															 password: password),
 						  apiToken: apiToken,
 						  apiLocation: apiLocation,
-						  imageUrl: imageUrl,
+						  imageLocation: imageLocation,
 						  imageSize: imageSize)
 		}
 		
@@ -117,13 +127,16 @@ class Session {
 			return
 		}
 		
-		self.sessionId = persistentInformation["sessionId"]
-		self.countryCode = persistentInformation["countryCode"]
-		self.userId = Int(persistentInformation["userId"]!)
+		sessionId = persistentInformation["sessionId"]
+		countryCode = persistentInformation["countryCode"]
+		userId = Int(persistentInformation["userId"]!)
+		favorites = Favorites(session: self, userId: userId!)
 	}
 	
 	func saveSession() {
-		guard let sessionId = sessionId, let countryCode = countryCode, let userId = userId else {
+		guard let sessionId = sessionId,
+			  let countryCode = countryCode,
+			  let userId = userId else {
 			displayError(title: "Couldn't save Session Information",
 						 content: "Session Information wasn't set yet. You're probably not logged in.")
 			return
@@ -142,7 +155,7 @@ class Session {
 													   "password": config.loginCredentials.password,
 													   "apiToken": config.apiToken,
 													   "apiLocation": config.apiLocation,
-													   "imageUrl": config.imageUrl,
+													   "imageLocation": config.imageLocation,
 													   "imageSize": String(config.imageSize),
 													   ]
 		
@@ -190,9 +203,7 @@ class Session {
 		sessionId = loginResponse.sessionId
 		countryCode = loginResponse.countryCode
 		userId = loginResponse.userId
-//		print("Logged in as User: \(user!.id)")
-//		print("Session ID: \(sessionId!)")
-//		print("Country Code: \(countryCode!)")
+		favorites = Favorites(session: self, userId: userId!)
 		return true
 	}
 	
@@ -273,6 +284,22 @@ class Session {
 		}
 		
 		return videoUrlResponse?.url
+	}
+	
+	func getImageUrl(imageId: String, resolution: Int) -> URL? {
+		// Allowed Resolutions
+		// Albums: 80, 160, 320, 640, 1280
+		// Artists: 160, 320, 480, 750
+		// Playlists: 160, 320, 480, 640, 750
+		// Users: 100, 210
+		
+		// Info for Playlists:
+		// For User Playlists, use "image" property
+		// For Curated Playlists, use "squareImage" property
+		
+		let path = imageId.replacingOccurrences(of: "-", with: "/")
+		let urlString = "\(config.imageLocation)\(path)/\(resolution)x\(resolution).jpg"
+		return URL(string: urlString)
 	}
 	
 	func search(for term: String, limit: Int = 50, offset: Int = 0) -> SearchResult? {
@@ -771,6 +798,73 @@ class Session {
 		
 		return genresPlaylists?.items
 	}
+}
+
+class Favorites {
+	
+	let baseUrl: String
+	
+	init(session: Session, userId: Int) {
+		baseUrl = "\(session.config.apiLocation)/users/\(userId)/favorites"
+	}
+	
+	// Add
+	
+//	func addArtist(artistId: Int) -> Bool {
+//		<#function body#>
+//	}
+//
+//	func addAlbum(albumId: Int) -> Bool {
+//		<#function body#>
+//	}
+//
+//	func addTrack(trackId: Int) -> Bool {
+//		<#function body#>
+//	}
+//
+//	func addPlaylist(playlistId: String) -> Bool {
+//		<#function body#>
+//	}
+	
+	// Delete
+	
+//	func removeArtist(artistId: Int) -> Bool {
+//		<#function body#>
+//	}
+//
+//	func removeAlbum(albumId: Int) -> Bool {
+//		<#function body#>
+//	}
+//
+//	func removeTrack(trackId: Int) -> Bool {
+//		<#function body#>
+//	}
+//
+//	func removePlaylist(playlistId: String) -> Bool {
+//		<#function body#>
+//	}
+	
+	// Return
+	
+//	func artists() -> [Artist]? {
+//		<#function body#>
+//	}
+//
+//	func albums() -> [Album]? {
+//		<#function body#>
+//	}
+//
+//	func tracks() -> [Track]? {
+//		<#function body#>
+//	}
+//
+//	func playlists() -> [Playlist]? {
+//		<#function body#>
+//	}
+//
+//	func userPlaylists() -> [Playlist]? {
+//		<#function body#>
+//	}
 }
 
 func displayError(title: String, content: String) {
