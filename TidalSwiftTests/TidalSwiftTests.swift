@@ -64,34 +64,35 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(oldConfig.quality, session.config.quality)
 		XCTAssertEqual(oldConfig.apiLocation, session.config.apiLocation)
 		XCTAssertEqual(oldConfig.apiToken, session.config.apiToken)
-		XCTAssertEqual(oldConfig.imageUrl, session.config.imageUrl)
+		XCTAssertEqual(oldConfig.imageLocation, session.config.imageLocation)
 		XCTAssertEqual(oldConfig.imageSize, session.config.imageSize)
 	}
 	
 	// Login Testing commented out to prevent potential ban from the server if done too often
-	func testLogin() {
-		let loginInfo = readDemoLoginCredentials()
-		let config = Config(quality: .hifi, loginCredentials: loginInfo)
-		session = Session(config: config)
-		let result = session.login()
-		XCTAssert(result)
-	}
+//	func testLogin() {
+//		let loginInfo = readDemoLoginCredentials()
+//		let config = Config(quality: .hifi, loginCredentials: loginInfo)
+//		session = Session(config: config)
+//		let result = session.login()
+//		XCTAssert(result)
+//	}
 
-	func testWrongLogin() {
-		// Wrong Login Info
-		let loginInfo1 = LoginCredentials(username: "ABC", password: "ABC")
-		let config1 = Config(quality: .hifi, loginCredentials: loginInfo1)
-		session = Session(config: config1)
-		let result1 = session.login()
-		XCTAssertFalse(result1)
-
-		// Empty Login Info
-		let loginInfo2 = LoginCredentials(username: "", password: "")
-		let config2 = Config(quality: .hifi, loginCredentials: loginInfo2)
-		session = Session(config: config2)
-		let result2 = session.login()
-		XCTAssertFalse(result2)
-	}
+	// Login Testing commented out to prevent potential ban from the server if done too often
+//	func testWrongLogin() {
+//		// Wrong Login Info
+//		let loginInfo1 = LoginCredentials(username: "ABC", password: "ABC")
+//		let config1 = Config(quality: .hifi, loginCredentials: loginInfo1)
+//		session = Session(config: config1)
+//		let result1 = session.login()
+//		XCTAssertFalse(result1)
+//
+//		// Empty Login Info
+//		let loginInfo2 = LoginCredentials(username: "", password: "")
+//		let config2 = Config(quality: .hifi, loginCredentials: loginInfo2)
+//		session = Session(config: config2)
+//		let result2 = session.login()
+//		XCTAssertFalse(result2)
+//	}
 	
 	func testCheckLogin() {
 		XCTAssert(session.checkLogin())
@@ -119,25 +120,42 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	// Stops playback if you're listening in the web player or official app
-	func testGetMediaUrl() {
-		let optionalTrackUrl = session.getAudioUrl(trackId: 59978883)
-		XCTAssertNotNil(optionalTrackUrl)
-		guard let trackUrl = optionalTrackUrl else {
-			return
-		}
-//		print(trackUrl)
-		XCTAssert(trackUrl.absoluteString.contains(".m4a"))
-	}
+//	func testGetMediaUrl() {
+//		let optionalTrackUrl = session.getAudioUrl(trackId: 59978883)
+//		XCTAssertNotNil(optionalTrackUrl)
+//		guard let trackUrl = optionalTrackUrl else {
+//			return
+//		}
+////		print(trackUrl)
+//		XCTAssert(trackUrl.absoluteString.contains(".m4a"))
+//	}
 	
 	// Stops playback if you're listening in the web player or official app
-	func testGetVideoUrl() {
-		let optionalVideoUrl = session.getVideoUrl(videoId: 98785108)
-		XCTAssertNotNil(optionalVideoUrl)
-		guard let videoUrl = optionalVideoUrl else {
-			return
-		}
-//		print(videoUrl)
-		XCTAssert(videoUrl.absoluteString.contains(".m3u8"))
+//	func testGetVideoUrl() {
+//		let optionalVideoUrl = session.getVideoUrl(videoId: 98785108)
+//		XCTAssertNotNil(optionalVideoUrl)
+//		guard let videoUrl = optionalVideoUrl else {
+//			return
+//		}
+////		print(videoUrl)
+//		XCTAssert(videoUrl.absoluteString.contains(".m3u8"))
+//	}
+	
+	func testGetImageUrl() {
+		// Album
+		let albumUrl = session.getImageUrl(imageId: "e60d7380-2a14-4011-bbc1-a3a1f0c576d6", resolution: 1280)
+		XCTAssertEqual(albumUrl, URL(string:
+			"https://resources.tidal.com/images/e60d7380/2a14/4011/bbc1/a3a1f0c576d6/1280x1280.jpg"))
+		
+		// Artist
+		let artistUrl = session.getImageUrl(imageId: "daaa931c-afc0-4c63-819c-c821393b6a45", resolution: 750)
+		XCTAssertEqual(artistUrl, URL(string:
+			"https://resources.tidal.com/images/daaa931c/afc0/4c63/819c/c821393b6a45/750x750.jpg"))
+		
+		// Playlist
+		let playlistUrl = session.getImageUrl(imageId: "ad687fd4-c635-45d9-8fa9-f636ca3e364c", resolution: 750)
+		XCTAssertEqual(playlistUrl, URL(string:
+			"https://resources.tidal.com/images/ad687fd4/c635/45d9/8fa9/f636ca3e364c/750x750.jpg"))
 	}
 	
 	func testSearchArtist() {
@@ -168,6 +186,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResult?.albums.items[0].streamStartDate,
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
 		XCTAssertEqual(searchResult?.albums.items[0].allowStreaming, true)
+		XCTAssertEqual(searchResult?.albums.items[0].premiumStreamingOnly, false)
 		XCTAssertEqual(searchResult?.albums.items[0].numberOfTracks, 9)
 		XCTAssertEqual(searchResult?.albums.items[0].numberOfVideos, 0)
 		XCTAssertEqual(searchResult?.albums.items[0].numberOfVolumes, 1)
@@ -175,11 +194,24 @@ class TidalSwiftTests: XCTestCase {
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
 		XCTAssertEqual(searchResult?.albums.items[0].copyright,
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
+		XCTAssertEqual(searchResult?.albums.items[0].type, "ALBUM")
+		XCTAssertEqual(searchResult?.albums.items[0].url,
+					   URL(string: "http://www.tidal.com/album/100006868"))
+		XCTAssertEqual(searchResult?.albums.items[0].cover,
+					   "e60d7380-2a14-4011-bbc1-a3a1f0c576d6")
+		XCTAssertNil(searchResult?.albums.items[0].videoCover)
+		XCTAssertEqual(searchResult?.albums.items[0].explicit, false)
+		XCTAssertEqual(searchResult?.albums.items[0].upc, "00602577265037")
+		
 		XCTAssertNotNil(searchResult?.albums.items[0].popularity)
-		XCTAssertEqual(searchResult?.albums.items[0].audioQuality, .master)
+		XCTAssertEqual(searchResult?.albums.items[0].audioQuality, .master) // Master Version
+		XCTAssertEqual(searchResult?.albums.items[0].surroundTypes, [])
 		
 		// HiFi Version
 		XCTAssertEqual(searchResult?.albums.items[1].audioQuality, .hifi)
+		
+		// Album Artist
+		XCTAssertNil(searchResult?.albums.items[0].artist)
 		
 		// Album Artists
 		XCTAssertEqual(searchResult?.albums.items[0].artists?.count, 3)
@@ -552,6 +584,14 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertNotNil(album?.popularity)
 		XCTAssertEqual(album?.audioQuality, .master)
 		
+		// Album Artist
+		XCTAssertEqual(album?.artist?.id, 7553669)
+		XCTAssertEqual(album?.artist?.name, "Jacob Collier")
+		XCTAssertNil(album?.artist?.url)
+		XCTAssertNil(album?.artist?.picture)
+		XCTAssertNil(album?.artist?.popularity)
+		XCTAssertEqual(album?.artist?.type, "MAIN")
+		
 		// Album Artists
 		XCTAssertEqual(album?.artists?.count, 3)
 		XCTAssertEqual(album?.artists?[0].id, 7553669)
@@ -881,15 +921,15 @@ class TidalSwiftTests: XCTestCase {
 		
 		// Hard to test as different for every user
 		// Needs to be changed by tester
-		XCTAssertEqual(playlists[16].uuid, "825a0e70-c918-40b8-89c6-247dfbac04b4")
+		XCTAssertEqual(playlists[17].uuid, "825a0e70-c918-40b8-89c6-247dfbac04b4")
 		// Testing the handling of "" in Strings & JSON
-		XCTAssertEqual(playlists[16].title, #"Schlechte "Musik""#)
-		XCTAssertEqual(playlists[16].type, .user)
-		XCTAssertEqual(playlists[16].creator.id, userId)
-		XCTAssertNil(playlists[16].creator.name)
-		XCTAssertNil(playlists[16].creator.url)
-		XCTAssertNil(playlists[16].creator.picture)
-		XCTAssertNil(playlists[16].creator.popularity)
+		XCTAssertEqual(playlists[17].title, #"Schlechte "Musik""#)
+		XCTAssertEqual(playlists[17].type, .user)
+		XCTAssertEqual(playlists[17].creator.id, userId)
+		XCTAssertNil(playlists[17].creator.name)
+		XCTAssertNil(playlists[17].creator.url)
+		XCTAssertNil(playlists[17].creator.picture)
+		XCTAssertNil(playlists[17].creator.popularity)
 	}
 	
 	func testGetMixes() {

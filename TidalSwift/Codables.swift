@@ -15,13 +15,6 @@ enum AudioQuality: String, Decodable {
 	case low = "LOW"
 }
 
-// Currently unneeded
-//enum Codec {
-//	case FLAC
-//	case ALAC
-//	case AAC
-//}
-
 struct LoginResponse: Decodable {
 	let userId: Int
 	let sessionId: String
@@ -100,6 +93,13 @@ struct Artist: Decodable {
 	let type: String? // What role he/she played
 	let banner: String?
 	let relationType: String? // e.g. SIMILAR_ARTIST
+	
+	func getPictureUrl(session: Session, resolution: Int) -> URL? {
+		guard let picture = picture else {
+			return nil
+		}
+		return session.getImageUrl(imageId: picture, resolution: resolution)
+	}
 }
 
 struct ArtistBio: Decodable {
@@ -133,6 +133,10 @@ struct Album: Decodable {
 	let surroundTypes: [String]?
 	let artist: Artist?
 	let artists: [Artist]?
+	
+	func getCoverUrl(session: Session, resolution: Int) -> URL? {
+		return session.getImageUrl(imageId: cover, resolution: resolution)
+	}
 }
 
 enum PlaylistType: String, Decodable {
@@ -158,6 +162,10 @@ struct Playlist: Decodable {
 	let image: String
 	let popularity: Int
 	let squareImage: String?
+	
+	func getImage(session: Session, resolution: Int) -> URL? {
+		return session.getImageUrl(imageId: image, resolution: resolution)
+	}
 }
 
 struct PlaylistCreator: Decodable {
@@ -166,6 +174,13 @@ struct PlaylistCreator: Decodable {
 	let url: URL?
 	let picture: String?
 	let popularity: Int?
+	
+	func getPictureUrl(session: Session, resolution: Int) -> URL? {
+		guard let picture = picture else {
+			return nil
+		}
+		return session.getImageUrl(imageId: picture, resolution: resolution)
+	}
 }
 
 struct Track: Decodable {
@@ -192,6 +207,10 @@ struct Track: Decodable {
 	let artist: Artist?
 	let artists: [Artist]
 	let album: Album
+	
+	func getCoverUrl(session: Session, resolution: Int) -> URL? {
+		return album.getCoverUrl(session: session, resolution: resolution)
+	}
 }
 
 struct Video: Decodable {
@@ -214,6 +233,10 @@ struct Video: Decodable {
 	let adsPrePaywallOnly: Bool
 	let artists: [Artist]
 	let album: Album?
+	
+	func getImageUrl(session: Session, resolution: Int) -> URL? {
+		return session.getImageUrl(imageId: imageId, resolution: resolution)
+	}
 }
 
 struct TopHit: Decodable {
@@ -260,6 +283,10 @@ struct User: Decodable {
 	let gender: String
 	let dateOfBirth: Date
 	let facebookUid: Int
+	
+	func getPictureUrl(session: Session, resolution: Int) -> URL? {
+		return session.getImageUrl(imageId: picture, resolution: resolution)
+	}
 }
 
 struct Mixes: Decodable {
@@ -313,6 +340,10 @@ struct MixesGraphicImage: Decodable {
 	let id: String
 	let vibrantColor: String
 	let type: MixesGraphicImageType
+	
+	func getImageUrl(session: Session, resolution: Int) -> URL? {
+		return session.getImageUrl(imageId: id, resolution: resolution)
+	}
 }
 
 struct Mix: Decodable {
@@ -360,6 +391,10 @@ struct Genre: Decodable { // Also Mood
 	let hasTracks: Bool
 	let hasVideos: Bool
 	let image: String
+	
+	func getImageUrl(session: Session, resolution: Int) -> URL? {
+		return session.getImageUrl(imageId: image, resolution: resolution)
+	}
 }
 
 struct FeaturedItems: Decodable {
@@ -393,6 +428,10 @@ struct FeaturedItem: Decodable {
 	let imageId: String
 	let featured: Bool
 	let openExternal: Bool
+	
+	func getImageUrl(session: Session, resolution: Int) -> URL? {
+		return session.getImageUrl(imageId: imageId, resolution: resolution)
+	}
 }
 
 // MARK: - Date
