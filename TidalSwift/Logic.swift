@@ -834,6 +834,28 @@ class Favorites {
 		baseUrl = "\(session.config.apiLocation)/users/\(userId)/favorites"
 	}
 	
+	// Return
+	
+//	func artists() -> [Artist]? {
+//		<#function body#>
+//	}
+//
+//	func albums() -> [Album]? {
+//		<#function body#>
+//	}
+//
+//	func tracks() -> [Track]? {
+//		<#function body#>
+//	}
+//
+//	func playlists() -> [Playlist]? {
+//		<#function body#>
+//	}
+//
+//	func userPlaylists() -> [Playlist]? {
+//		<#function body#>
+//	}
+	
 	// Add
 	
 //	func addArtist(artistId: Int) -> Bool {
@@ -867,28 +889,6 @@ class Favorites {
 //	}
 //
 //	func removePlaylist(playlistId: String) -> Bool {
-//		<#function body#>
-//	}
-	
-	// Return
-	
-//	func artists() -> [Artist]? {
-//		<#function body#>
-//	}
-//
-//	func albums() -> [Album]? {
-//		<#function body#>
-//	}
-//
-//	func tracks() -> [Track]? {
-//		<#function body#>
-//	}
-//
-//	func playlists() -> [Playlist]? {
-//		<#function body#>
-//	}
-//
-//	func userPlaylists() -> [Playlist]? {
 //		<#function body#>
 //	}
 }

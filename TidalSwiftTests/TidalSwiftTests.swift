@@ -873,6 +873,12 @@ class TidalSwiftTests: XCTestCase {
 		// Bio is not consistent, therefore cannot be tested properly.
 		// Sometimes some of the referenced artists or albums have a so-called wimpLink, sometimes exactly the same references don't have a wimpLink.
 //		XCTAssertEqual(artistBio?.text, "")
+		
+		let missingArtistBio = session.getArtistBio(artistId: 4001778)
+		
+		XCTAssertNil(missingArtistBio?.source)
+		XCTAssertNil(missingArtistBio?.lastUpdated)
+		XCTAssertNil(missingArtistBio?.text)
 	}
 
 	func testGetArtistSimilar() {
