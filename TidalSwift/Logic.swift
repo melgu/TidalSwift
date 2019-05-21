@@ -839,9 +839,12 @@ class Favorites {
 	
 	// Return
 	
-	func artists() -> [FavoriteArtist]? {
+	func artists(limit: Int = 999, offset: Int = 0) -> [FavoriteArtist]? {
 		let url = URL(string: "\(baseUrl)/artists")!
-		let response = get(url: url, parameters: session.sessionParameters)
+		var parameters = session.sessionParameters
+		parameters["limit"] = String(limit)
+		parameters["offset"] = String(offset)
+		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Artist failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -858,9 +861,12 @@ class Favorites {
 		return artists?.items
 	}
 
-	func albums() -> [FavoriteAlbum]? {
+	func albums(limit: Int = 999, offset: Int = 0) -> [FavoriteAlbum]? {
 		let url = URL(string: "\(baseUrl)/albums")!
-		let response = get(url: url, parameters: session.sessionParameters)
+		var parameters = session.sessionParameters
+		parameters["limit"] = String(limit)
+		parameters["offset"] = String(offset)
+		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -877,9 +883,12 @@ class Favorites {
 		return albums?.items
 	}
 
-	func tracks() -> [FavoriteTrack]? {
+	func tracks(limit: Int = 999, offset: Int = 0) -> [FavoriteTrack]? {
 		let url = URL(string: "\(baseUrl)/tracks")!
-		let response = get(url: url, parameters: session.sessionParameters)
+		var parameters = session.sessionParameters
+		parameters["limit"] = String(limit)
+		parameters["offset"] = String(offset)
+		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -896,10 +905,16 @@ class Favorites {
 		return tracks?.items
 	}
 	
-	func videos() -> [FavoriteVideo]? {
+	func videos(limit: Int = 100, offset: Int = 0) -> [FavoriteVideo]? {
+		guard limit <= 100 else {
+			displayError(title: "Favorite Videos failed (Limit too high)", content: "The limit has to be 100 or below.")
+			return nil
+		}
+		
 		let url = URL(string: "\(baseUrl)/videos")!
 		var parameters = session.sessionParameters
-		parameters["limit"] = "\(100)" // Unlike the rest, here a maximum limit of 100 exists
+		parameters["limit"] = String(limit) // Unlike the rest, here a maximum limit of 100 exists. Error if higher.
+		parameters["offset"] = String(offset)
 		
 		let response = get(url: url, parameters: parameters)
 		
@@ -918,9 +933,12 @@ class Favorites {
 		return videos?.items
 	}
 
-	func playlists() -> [FavoritePlaylist]? { // Includes User Playlists
+	func playlists(limit: Int = 999, offset: Int = 0) -> [FavoritePlaylist]? { // Includes User Playlists
 		let url = URL(string: "\(baseUrl)/playlists")!
-		let response = get(url: url, parameters: session.sessionParameters)
+		var parameters = session.sessionParameters
+		parameters["limit"] = String(limit)
+		parameters["offset"] = String(offset)
+		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
