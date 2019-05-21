@@ -43,6 +43,8 @@ class TidalSwiftTests: XCTestCase {
 		tempSession?.saveSession()
     }
 	
+	// MARK: - Session
+	
 	func testSaveAndLoadSession() {
 		let tempSessionId = session.sessionId
 		let tempCountryCode = session.countryCode
@@ -190,6 +192,8 @@ class TidalSwiftTests: XCTestCase {
 		// Mix
 		// Not consistent, therefore hard to test
 	}
+	
+	// MARK: - Search
 	
 	func testSearchArtist() {
 		let searchResult = session.search(for: "Jacob Collier")
@@ -450,6 +454,8 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(searchResultWithHighLimit?.tracks.items.count, 300)
 		XCTAssertEqual(searchResultWithHighLimit?.tracks.totalNumberOfItems, 300)
 	}
+	
+	// MARK: - Get
 	
 	func testGetTrack() {
 		let optionalTrack = session.getTrack(trackId: 59978883)
@@ -961,7 +967,7 @@ class TidalSwiftTests: XCTestCase {
 //		XCTAssertEqual(artistRadio[2].artists[0].name, "Silbermond")
 	}
 	
-	func testTrackRadio() {
+	func testGetTrackRadio() {
 		let optionalTrackRadio = session.getTrackRadio(trackId: 59978883)
 		XCTAssertNotNil(optionalTrackRadio)
 		guard let trackRadio = optionalTrackRadio else {
@@ -1155,6 +1161,192 @@ class TidalSwiftTests: XCTestCase {
 		}
 		XCTAssertFalse(featured.isEmpty)
 	}
+	
+	// MARK: - Favorites
+	
+	// Return
+	
+	func testArtists() {
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		let optionalArtists = favorites.artists()
+		XCTAssertNotNil(optionalArtists)
+		guard let artists = optionalArtists else {
+			return
+		}
+		XCTAssertFalse(artists.isEmpty)
+	}
+	
+	func testAlbums() {
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		let optionalAlbums = favorites.albums()
+		XCTAssertNotNil(optionalAlbums)
+		guard let albums = optionalAlbums else {
+			return
+		}
+		XCTAssertFalse(albums.isEmpty)
+	}
+	
+	func testTracks() {
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		let optionalTracks = favorites.tracks()
+		XCTAssertNotNil(optionalTracks)
+		guard let tracks = optionalTracks else {
+			return
+		}
+		XCTAssertFalse(tracks.isEmpty)
+	}
+	
+	func testVideos() {
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		let optionalVideos = favorites.videos()
+		XCTAssertNotNil(optionalVideos)
+		guard let videos = optionalVideos else {
+			return
+		}
+		XCTAssertFalse(videos.isEmpty)
+	}
+	
+	func testPlaylists() {
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		let optionalPlaylists = favorites.artists()
+		XCTAssertNotNil(optionalPlaylists)
+		guard let playlists = optionalPlaylists else {
+			return
+		}
+		XCTAssertFalse(playlists.isEmpty)
+	}
+	
+	func testUserPlaylists() {
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		let optionalUserPlaylists = favorites.artists()
+		XCTAssertNotNil(optionalUserPlaylists)
+		guard let userPlaylists = optionalUserPlaylists else {
+			return
+		}
+		XCTAssertFalse(userPlaylists.isEmpty)
+	}
+	
+	// Add & Delete
+	// Make sure you don't have the chosen artist, album etc. in your favorites
+	// The respective artist, album etc. will be gone after the tests
+	
+	func testArtistAddAndDelete() {
+		let demoArtistId = 7771771
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertFalse((favorites.artists()?.contains { (artist) -> Bool in
+			return artist.item.id == demoArtistId
+		})!)
+		
+		let r1 = favorites.addArtist(artistId: demoArtistId)
+		XCTAssert(r1)
+		
+		XCTAssert((favorites.artists()?.contains { (artist) -> Bool in
+			return artist.item.id == demoArtistId
+		})!)
+		
+		let r2 = favorites.removeArtist(artistId: demoArtistId)
+		XCTAssert(r2)
+		
+		XCTAssertFalse((favorites.artists()?.contains { (artist) -> Bool in
+			return artist.item.id == demoArtistId
+		})!)
+	}
+	
+	func testAlbumAddAndDelete() {
+		let demoAlbumId = 65929420
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertFalse((favorites.albums()?.contains { (album) -> Bool in
+			return album.item.id == demoAlbumId
+		})!)
+		
+		let r1 = favorites.addAlbum(albumId: demoAlbumId)
+		XCTAssert(r1)
+		
+		XCTAssert((favorites.albums()?.contains { (album) -> Bool in
+			return album.item.id == demoAlbumId
+		})!)
+		
+		let r2 = favorites.removeAlbum(albumId: demoAlbumId)
+		XCTAssert(r2)
+		
+		XCTAssertFalse((favorites.albums()?.contains { (album) -> Bool in
+			return album.item.id == demoAlbumId
+		})!)
+	}
+	
+	func testTrackAddAndDelete() {
+		let demoTrackId = 65929421
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertFalse((favorites.tracks()?.contains { (track) -> Bool in
+			return track.item.id == demoTrackId
+		})!)
+		
+		let r1 = favorites.addTrack(trackId: demoTrackId)
+		XCTAssert(r1)
+		
+		XCTAssert((favorites.tracks()?.contains { (track) -> Bool in
+			return track.item.id == demoTrackId
+		})!)
+		
+		let r2 = favorites.removeTrack(trackId: demoTrackId)
+		XCTAssert(r2)
+		
+		XCTAssertFalse((favorites.tracks()?.contains { (track) -> Bool in
+			return track.item.id == demoTrackId
+		})!)
+	}
+	
+	func testVideoAddAndDelete() {
+		let demoVideoId = 104569734
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertFalse((favorites.videos()?.contains { (video) -> Bool in
+			return video.item.id == demoVideoId
+		})!)
+		
+		let r1 = favorites.addVideo(videoId: demoVideoId)
+		XCTAssert(r1)
+		
+		XCTAssert((favorites.videos()?.contains { (video) -> Bool in
+			return video.item.id == demoVideoId
+		})!)
+		
+		let r2 = favorites.removeVideo(videoId: demoVideoId)
+		XCTAssert(r2)
+
+		XCTAssertFalse((favorites.videos()?.contains { (video) -> Bool in
+			return video.item.id == demoVideoId
+		})!)
+	}
+	
+	func testPlaylistAddAndDelete() {
+		let demoPlaylistId = "627c2039-ef15-46b2-9891-3773dd3d5aa5"
+		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
+			return playlist.item.uuid == demoPlaylistId
+		})!)
+		
+		let r1 = favorites.addPlaylist(playlistId: demoPlaylistId)
+		XCTAssert(r1)
+		
+		XCTAssert((favorites.playlists()?.contains { (playlist) -> Bool in
+			return playlist.item.uuid == demoPlaylistId
+		})!)
+		
+		let r2 = favorites.removePlaylist(playlistId: demoPlaylistId)
+		XCTAssert(r2)
+		
+		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
+			return playlist.item.uuid == demoPlaylistId
+		})!)
+	}
+	
+	
+	// MARK: - Date
 	
 	func testDateDecoder() {
 		// Tests if the DateDecoder defined at the bottom of Codable correctly decodes a date.

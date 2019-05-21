@@ -20,14 +20,14 @@ enum HttpMethod {
 	case delete
 }
 
-func encodeParameters(_ parameters: [String: String]) -> String {
+private func encodeParameters(_ parameters: [String: String]) -> String {
 	let queryItems = parameters.map { URLQueryItem(name: $0, value: $1) }
 	var components = URLComponents()
 	components.queryItems = queryItems
 	return components.percentEncodedQuery ?? ""
 }
 
-func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Response {
+private func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Response {
 	var request = URLRequest(url: url)
 	request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 	
@@ -87,6 +87,10 @@ func post(url: URL, parameters: [String: String]) -> Response {
 	return request(method: .post, url: url, parameters: parameters)
 }
 
+func delete(url: URL, parameters: [String: String]) -> Response {
+	return request(method: .delete, url: url, parameters: parameters)
+}
+
 func asyncGet(url: URL, parameters: [String: String],
 			  completionHandler: @escaping (Response) -> Void) {
 	DispatchQueue.global(qos: .userInitiated).async {
@@ -99,6 +103,14 @@ func asyncPost(url: URL, parameters: [String: String],
 			   completionHandler: @escaping (Response) -> Void) {
 	DispatchQueue.global(qos: .userInitiated).async {
 		let response = request(method: .post, url: url, parameters: parameters)
+		completionHandler(response)
+	}
+}
+
+func asyncDelete(url: URL, parameters: [String: String],
+			   completionHandler: @escaping (Response) -> Void) {
+	DispatchQueue.global(qos: .userInitiated).async {
+		let response = request(method: .delete, url: url, parameters: parameters)
 		completionHandler(response)
 	}
 }

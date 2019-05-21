@@ -84,7 +84,7 @@ struct Videos: Decodable {
 	let items: [Video]
 }
 
-struct Artist: Decodable {
+struct Artist: Decodable, Equatable {
 	let id: Int
 	let name: String
 	let url: URL?
@@ -100,6 +100,10 @@ struct Artist: Decodable {
 		}
 		return session.getImageUrl(imageId: picture, resolution: resolution)
 	}
+	
+	static func == (lhs: Artist, rhs: Artist) -> Bool {
+		return lhs.id == rhs.id
+	}
 }
 
 struct ArtistBio: Decodable {
@@ -108,7 +112,7 @@ struct ArtistBio: Decodable {
 	let text: String
 }
 
-struct Album: Decodable {
+struct Album: Decodable, Equatable {
 	let id: Int
 	let title: String
 	let duration: Int? // In Seconds
@@ -137,6 +141,10 @@ struct Album: Decodable {
 	func getCoverUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: cover, resolution: resolution)
 	}
+	
+	static func == (lhs: Album, rhs: Album) -> Bool {
+		return lhs.id == rhs.id
+	}
 }
 
 enum PlaylistType: String, Decodable {
@@ -146,7 +154,7 @@ enum PlaylistType: String, Decodable {
 	// Haven't seen others yet
 }
 
-struct Playlist: Decodable {
+struct Playlist: Decodable, Equatable {
 	let uuid: String
 	let title: String
 	let numberOfTracks: Int
@@ -166,6 +174,10 @@ struct Playlist: Decodable {
 	func getImage(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: squareImage ?? image, resolution: resolution)
 	}
+	
+	static func == (lhs: Playlist, rhs: Playlist) -> Bool {
+		return lhs.uuid == rhs.uuid
+	}
 }
 
 struct PlaylistCreator: Decodable {
@@ -183,7 +195,7 @@ struct PlaylistCreator: Decodable {
 	}
 }
 
-struct Track: Decodable {
+struct Track: Decodable, Equatable {
 	let id: Int
 	let title: String
 	let duration: Int
@@ -211,6 +223,10 @@ struct Track: Decodable {
 	func getCoverUrl(session: Session, resolution: Int) -> URL? {
 		return album.getCoverUrl(session: session, resolution: resolution)
 	}
+	
+	static func == (lhs: Track, rhs: Track) -> Bool {
+		return lhs.id == rhs.id
+	}
 }
 
 struct Video: Decodable {
@@ -236,6 +252,10 @@ struct Video: Decodable {
 	
 	func getImageUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: imageId, resolution: resolution)
+	}
+	
+	static func == (lhs: Video, rhs: Video) -> Bool {
+		return lhs.id == rhs.id
 	}
 }
 
@@ -431,6 +451,128 @@ struct FeaturedItem: Decodable {
 	
 	func getImageUrl(session: Session, resolution: Int, resolutionY: Int) -> URL? {
 		return session.getImageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
+	}
+}
+
+// MARK: - Favorites
+
+struct FavoriteArtists: Decodable {
+	let limit: Int
+	let offset: Int
+	let totalNumberOfItems: Int
+	let items: [FavoriteArtist]
+}
+
+struct FavoriteArtist: Decodable, Equatable {
+	let created: Date
+	let item: Artist
+	
+	static func == (lhs: FavoriteArtist, rhs: FavoriteArtist) -> Bool {
+		return lhs.item.id == rhs.item.id
+	}
+	
+	static func == (lhs: FavoriteArtist, rhs: Artist) -> Bool {
+		return lhs.item.id == rhs.id
+	}
+	
+	static func == (lhs: Artist, rhs: FavoriteArtist) -> Bool {
+		return lhs.id == rhs.item.id
+	}
+}
+
+struct FavoriteAlbums: Decodable {
+	let limit: Int
+	let offset: Int
+	let totalNumberOfItems: Int
+	let items: [FavoriteAlbum]
+}
+
+struct FavoriteAlbum: Decodable {
+	let created: Date
+	let item: Album
+	
+	static func == (lhs: FavoriteAlbum, rhs: FavoriteAlbum) -> Bool {
+		return lhs.item.id == rhs.item.id
+	}
+	
+	static func == (lhs: FavoriteAlbum, rhs: Album) -> Bool {
+		return lhs.item.id == rhs.id
+	}
+	
+	static func == (lhs: Album, rhs: FavoriteAlbum) -> Bool {
+		return lhs.id == rhs.item.id
+	}
+}
+
+struct FavoriteTracks: Decodable {
+	let limit: Int
+	let offset: Int
+	let totalNumberOfItems: Int
+	let items: [FavoriteTrack]
+}
+
+struct FavoriteTrack: Decodable {
+	let created: Date
+	let item: Track
+	
+	static func == (lhs: FavoriteTrack, rhs: FavoriteTrack) -> Bool {
+		return lhs.item.id == rhs.item.id
+	}
+	
+	static func == (lhs: FavoriteTrack, rhs: Track) -> Bool {
+		return lhs.item.id == rhs.id
+	}
+	
+	static func == (lhs: Track, rhs: FavoriteTrack) -> Bool {
+		return lhs.id == rhs.item.id
+	}
+}
+
+struct FavoriteVideos: Decodable {
+	let limit: Int
+	let offset: Int
+	let totalNumberOfItems: Int
+	let items: [FavoriteVideo]
+}
+
+struct FavoriteVideo: Decodable {
+	let created: Date
+	let item: Video
+	
+	static func == (lhs: FavoriteVideo, rhs: FavoriteVideo) -> Bool {
+		return lhs.item.id == rhs.item.id
+	}
+	
+	static func == (lhs: FavoriteVideo, rhs: Video) -> Bool {
+		return lhs.item.id == rhs.id
+	}
+	
+	static func == (lhs: Video, rhs: FavoriteVideo) -> Bool {
+		return lhs.id == rhs.item.id
+	}
+}
+
+struct FavoritePlaylists: Decodable {
+	let limit: Int
+	let offset: Int
+	let totalNumberOfItems: Int
+	let items: [FavoritePlaylist]
+}
+
+struct FavoritePlaylist: Decodable {
+	let created: Date
+	let item: Playlist
+	
+	static func == (lhs: FavoritePlaylist, rhs: FavoritePlaylist) -> Bool {
+		return lhs.item.uuid == rhs.item.uuid
+	}
+	
+	static func == (lhs: FavoritePlaylist, rhs: Playlist) -> Bool {
+		return lhs.item.uuid == rhs.uuid
+	}
+	
+	static func == (lhs: Playlist, rhs: FavoritePlaylist) -> Bool {
+		return lhs.uuid == rhs.item.uuid
 	}
 }
 
