@@ -44,13 +44,13 @@ class Config {
 		}
 		
 		self.apiLocation = apiLocation.replacingOccurrences(of: " ", with: "")
-		if apiLocation.last != "/" {
-			self.apiLocation += "/"
+		if apiLocation.last == "/" {
+			self.apiLocation = String(apiLocation.dropLast())
 		}
 		
 		self.imageLocation = imageLocation.replacingOccurrences(of: " ", with: "")
-		if imageLocation.last != "/" {
-			self.imageLocation += "/"
+		if imageLocation.last == "/" {
+			self.imageLocation = String(imageLocation.dropLast())
 		}
 		
 		self.imageSize = imageSize
@@ -168,7 +168,7 @@ class Session {
 	}
 	
 	func login() -> Bool {
-		let url = URL(string: config.apiLocation + "login/username")!
+		let url = URL(string: "\(config.apiLocation)/login/username")!
 		let parameters: [String: String] = [
 			"token": config.apiToken,
 			"username": config.loginCredentials.username,
@@ -212,7 +212,7 @@ class Session {
 			return false
 		}
 		
-		let url = URL(string: "\(config.apiLocation)users/\(userId)/subscription")!
+		let url = URL(string: "\(config.apiLocation)/users/\(userId)/subscription")!
 //		print(sessionParameters)
 		return get(url: url, parameters: sessionParameters).ok
 	}
@@ -222,7 +222,7 @@ class Session {
 			return nil
 		}
 		
-		let url = URL(string: "\(config.apiLocation)users/\(userId)/subscription")!
+		let url = URL(string: "\(config.apiLocation)/users/\(userId)/subscription")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -244,7 +244,7 @@ class Session {
 	func getAudioUrl(trackId: Int) -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(config.quality.rawValue)"
-		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/streamUrl")!
+		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/streamUrl")!
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -268,7 +268,7 @@ class Session {
 	}
 	
 	func getVideoUrl(videoId: Int) -> URL? {
-		let url = URL(string: "\(config.apiLocation)videos/\(videoId)/streamUrl")!
+		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/streamUrl")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -305,7 +305,7 @@ class Session {
 		}
 		
 		let path = imageId.replacingOccurrences(of: "-", with: "/")
-		let urlString = "\(config.imageLocation)\(path)/\(resolution)x\(tempResolutionY).jpg"
+		let urlString = "\(config.imageLocation)/\(path)/\(resolution)x\(tempResolutionY).jpg"
 		return URL(string: urlString)
 	}
 	
@@ -317,7 +317,7 @@ class Session {
 		// Server-side limit of 300. Doesn't go higher (also limits totalNumberOfItems to 300.
 		// Can potentially go higher using offset.
 		
-		let url = URL(string: "\(config.apiLocation)search/")!
+		let url = URL(string: "\(config.apiLocation)/search/")!
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -336,7 +336,7 @@ class Session {
 	}
 	
 	func getTrack(trackId: Int) -> Track? {
-		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)")!
+		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -367,7 +367,7 @@ class Session {
 	}
 	
 	func getVideo(videoId: Int) -> Video? {
-		let url = URL(string: "\(config.apiLocation)videos/\(videoId)")!
+		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -386,7 +386,7 @@ class Session {
 	}
 	
 	func getPlaylist(playlistId: String) -> Playlist? {
-		let url = URL(string: "\(config.apiLocation)playlists/\(playlistId)")!
+		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -405,7 +405,7 @@ class Session {
 	}
 	
 	func getPlaylistTracks(playlistId: String) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)playlists/\(playlistId)/tracks")!
+		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/tracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -424,7 +424,7 @@ class Session {
 	}
 	
 	func getAlbum(albumId: Int) -> Album? {
-		let url = URL(string: "\(config.apiLocation)albums/\(albumId)")!
+		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -443,7 +443,7 @@ class Session {
 	}
 	
 	func getAlbumTracks(albumId: Int) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)albums/\(albumId)/tracks")!
+		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)/tracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -462,7 +462,7 @@ class Session {
 	}
 	
 	func getArtist(artistId: Int) -> Artist? {
-		let url = URL(string: "\(config.apiLocation)artists/\(artistId)")!
+		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -491,7 +491,7 @@ class Session {
 			parameters["filter"] = "\(filter)"
 		}
 		
-		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/albums")!
+		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/albums")!
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -510,7 +510,7 @@ class Session {
 	}
 	
 	func getArtistTopTracks(artistId: Int) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/toptracks")!
+		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/toptracks")!
 		let response = get(url: url, parameters: sessionParameters)
 
 		guard let content = response.content else {
@@ -529,7 +529,7 @@ class Session {
 	}
 	
 	func getArtistBio(artistId: Int) -> ArtistBio? {
-		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/bio")!
+		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/bio")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -548,7 +548,7 @@ class Session {
 	}
 	
 	func getArtistSimilar(artistId: Int) -> [Artist]? {
-		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/similar")!
+		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/similar")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -567,7 +567,7 @@ class Session {
 	}
 	
 	func getArtistRadio(artistId: Int) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)artists/\(artistId)/radio")!
+		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/radio")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -590,7 +590,7 @@ class Session {
 		parameters["limit"] = String(limit)
 		parameters["offset"] = String(offset)
 		
-		let url = URL(string: "\(config.apiLocation)tracks/\(trackId)/radio")!
+		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/radio")!
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -609,7 +609,7 @@ class Session {
 	}
 	
 	func getUser(userId: Int) -> User? {
-		let url = URL(string: "\(config.apiLocation)users/\(userId)")!
+		let url = URL(string: "\(config.apiLocation)/users/\(userId)")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -628,7 +628,7 @@ class Session {
 	}
 	
 	func getUserPlaylists(userId: Int) -> [Playlist]? {
-		let url = URL(string: "\(config.apiLocation)users/\(userId)/playlists")!
+		let url = URL(string: "\(config.apiLocation)/users/\(userId)/playlists")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -649,7 +649,7 @@ class Session {
 	func getMixes() -> [MixesItem]? {
 		var parameters = sessionParameters
 		parameters["deviceType"] = "DESKTOP"
-		let url = URL(string: "\(config.apiLocation)pages/my_collection_my_mixes")!
+		let url = URL(string: "\(config.apiLocation)/pages/my_collection_my_mixes")!
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -672,7 +672,8 @@ class Session {
 		parameters["mixId"] = "\(mixId)"
 		parameters["deviceType"] = "DESKTOP"
 		parameters["token"] = "\(config.apiToken)"
-		let url = URL(string: "\(config.apiLocation)pages/mix")!
+		
+		let url = URL(string: "\(config.apiLocation)/pages/mix")!
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -691,7 +692,7 @@ class Session {
 	}
 
 	func getFeatured() -> [FeaturedItem]? {
-		let url = URL(string: "\(config.apiLocation)promotions")!
+		let url = URL(string: "\(config.apiLocation)/promotions")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -710,7 +711,7 @@ class Session {
 	}
 
 	func getMoods() -> [Mood]? {
-		let url = URL(string: "\(config.apiLocation)moods")!
+		let url = URL(string: "\(config.apiLocation)/moods")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -729,7 +730,7 @@ class Session {
 	}
 
 	func getMoodPlaylists(moodPath: String) -> [Playlist]? {
-		let url = URL(string: "\(config.apiLocation)moods/\(moodPath)/playlists")!
+		let url = URL(string: "\(config.apiLocation)/moods/\(moodPath)/playlists")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -748,7 +749,7 @@ class Session {
 	}
 	
 	func getGenres() -> [Genre]? { // Overview over all Genres
-		let url = URL(string: "\(config.apiLocation)genres")!
+		let url = URL(string: "\(config.apiLocation)/genres")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -769,7 +770,7 @@ class Session {
 	// Haven't found Artists in there yet, so only Tracks, Albums & Playlists
 	
 	func getGenreTracks(genrePath: String) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)genres/\(genrePath)/tracks")!
+		let url = URL(string: "\(config.apiLocation)/genres/\(genrePath)/tracks")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -788,7 +789,7 @@ class Session {
 	}
 	
 	func getGenreAlbums(genreName: String) -> [Album]? {
-		let url = URL(string: "\(config.apiLocation)genres/\(genreName)/albums")!
+		let url = URL(string: "\(config.apiLocation)/genres/\(genreName)/albums")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -807,7 +808,7 @@ class Session {
 	}
 	
 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
-		let url = URL(string: "\(config.apiLocation)genres/\(genreName)/playlists")!
+		let url = URL(string: "\(config.apiLocation)/genres/\(genreName)/playlists")!
 		let response = get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
@@ -828,69 +829,211 @@ class Session {
 
 class Favorites {
 	
+	let session: Session
 	let baseUrl: String
 	
 	init(session: Session, userId: Int) {
-		baseUrl = "\(session.config.apiLocation)/users/\(userId)/favorites"
+		self.session = session
+		self.baseUrl = "\(session.config.apiLocation)/users/\(userId)/favorites"
 	}
 	
 	// Return
 	
-//	func artists() -> [Artist]? {
-//		<#function body#>
-//	}
-//
-//	func albums() -> [Album]? {
-//		<#function body#>
-//	}
-//
-//	func tracks() -> [Track]? {
-//		<#function body#>
-//	}
-//
-//	func playlists() -> [Playlist]? {
-//		<#function body#>
-//	}
-//
-//	func userPlaylists() -> [Playlist]? {
-//		<#function body#>
-//	}
+	func artists() -> [FavoriteArtist]? {
+		let url = URL(string: "\(baseUrl)/artists")!
+		let response = get(url: url, parameters: session.sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Favorite Artist failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var artists: FavoriteArtists?
+		do {
+			artists = try customJSONDecoder().decode(FavoriteArtists.self, from: content)
+		} catch {
+			displayError(title: "Favorite Artist failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return artists?.items
+	}
+
+	func albums() -> [FavoriteAlbum]? {
+		let url = URL(string: "\(baseUrl)/albums")!
+		let response = get(url: url, parameters: session.sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Favorite Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var albums: FavoriteAlbums?
+		do {
+			albums = try customJSONDecoder().decode(FavoriteAlbums.self, from: content)
+		} catch {
+			displayError(title: "Favorite Albums failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return albums?.items
+	}
+
+	func tracks() -> [FavoriteTrack]? {
+		let url = URL(string: "\(baseUrl)/tracks")!
+		let response = get(url: url, parameters: session.sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Favorite Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var tracks: FavoriteTracks?
+		do {
+			tracks = try customJSONDecoder().decode(FavoriteTracks.self, from: content)
+		} catch {
+			displayError(title: "Favorite Tracks failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return tracks?.items
+	}
+	
+	func videos() -> [FavoriteVideo]? {
+		let url = URL(string: "\(baseUrl)/videos")!
+		var parameters = session.sessionParameters
+		parameters["limit"] = "\(100)" // Unlike the rest, here a maximum limit of 100 exists
+		
+		let response = get(url: url, parameters: parameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Favorite Videos failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var videos: FavoriteVideos?
+		do {
+			videos = try customJSONDecoder().decode(FavoriteVideos.self, from: content)
+		} catch {
+			displayError(title: "Favorite Videos failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return videos?.items
+	}
+
+	func playlists() -> [FavoritePlaylist]? { // Includes User Playlists
+		let url = URL(string: "\(baseUrl)/playlists")!
+		let response = get(url: url, parameters: session.sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Favorite Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var playlists: FavoritePlaylists?
+		do {
+			playlists = try customJSONDecoder().decode(FavoritePlaylists.self, from: content)
+		} catch {
+			displayError(title: "Favorite Playlists failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return playlists?.items
+	}
+
+	func userPlaylists() -> [Playlist]? {
+		guard let userId = session.userId else {
+			displayError(title: "User Playlists failed", content: "User ID not set yet.")
+			return nil
+		}
+		
+		return session.getUserPlaylists(userId: userId)
+	}
 	
 	// Add
 	
-//	func addArtist(artistId: Int) -> Bool {
-//		<#function body#>
-//	}
-//
-//	func addAlbum(albumId: Int) -> Bool {
-//		<#function body#>
-//	}
-//
-//	func addTrack(trackId: Int) -> Bool {
-//		<#function body#>
-//	}
-//
-//	func addPlaylist(playlistId: String) -> Bool {
-//		<#function body#>
-//	}
+	func addArtist(artistId: Int) -> Bool {
+		let url = URL(string: "\(baseUrl)/artists")!
+		
+		var parameters = session.sessionParameters
+		parameters["artistIds"] = "\(artistId)"
+		
+		let response = post(url: url, parameters: parameters)
+		return response.ok
+	}
+
+	func addAlbum(albumId: Int) -> Bool {
+		let url = URL(string: "\(baseUrl)/albums")!
+		
+		var parameters = session.sessionParameters
+		parameters["albumIds"] = "\(albumId)"
+		
+		let response = post(url: url, parameters: parameters)
+		return response.ok
+	}
+
+	func addTrack(trackId: Int) -> Bool {
+		let url = URL(string: "\(baseUrl)/tracks")!
+		
+		var parameters = session.sessionParameters
+		parameters["trackIds"] = "\(trackId)"
+		
+		let response = post(url: url, parameters: parameters)
+		return response.ok
+	}
+	
+	func addVideo(videoId: Int) -> Bool {
+		let url = URL(string: "\(baseUrl)/videos")!
+		
+		var parameters = session.sessionParameters
+		parameters["videoIds"] = "\(videoId)"
+		
+		let response = post(url: url, parameters: parameters)
+		return response.ok
+	}
+
+	func addPlaylist(playlistId: String) -> Bool {
+		let url = URL(string: "\(baseUrl)/playlists")!
+		
+		var parameters = session.sessionParameters
+		parameters["uuids"] = playlistId
+		
+		let response = post(url: url, parameters: parameters)
+		return response.ok
+	}
 	
 	// Delete
 	
-//	func removeArtist(artistId: Int) -> Bool {
-//		<#function body#>
-//	}
-//
-//	func removeAlbum(albumId: Int) -> Bool {
-//		<#function body#>
-//	}
-//
-//	func removeTrack(trackId: Int) -> Bool {
-//		<#function body#>
-//	}
-//
-//	func removePlaylist(playlistId: String) -> Bool {
-//		<#function body#>
-//	}
+	func removeArtist(artistId: Int) -> Bool {
+		let url = URL(string: "\(baseUrl)/artists/\(artistId)")!
+		
+		let response = delete(url: url, parameters: session.sessionParameters)
+		return response.ok
+	}
+
+	func removeAlbum(albumId: Int) -> Bool {
+		let url = URL(string: "\(baseUrl)/albums/\(albumId)")!
+		
+		let response = delete(url: url, parameters: session.sessionParameters)
+		return response.ok
+	}
+
+	func removeTrack(trackId: Int) -> Bool {
+		let url = URL(string: "\(baseUrl)/tracks/\(trackId)")!
+		
+		let response = delete(url: url, parameters: session.sessionParameters)
+		return response.ok
+	}
+	
+	func removeVideo(videoId: Int) -> Bool {
+		let url = URL(string: "\(baseUrl)/videos/\(videoId)")!
+		
+		let response = delete(url: url, parameters: session.sessionParameters)
+		return response.ok
+	}
+
+	func removePlaylist(playlistId: String) -> Bool {
+		let url = URL(string: "\(baseUrl)/playlists/\(playlistId)")!
+		
+		let response = delete(url: url, parameters: session.sessionParameters)
+		return response.ok
+	}
 }
 
 func displayError(title: String, content: String) {
