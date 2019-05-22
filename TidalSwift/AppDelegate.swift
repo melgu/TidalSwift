@@ -32,8 +32,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //
 //		session.saveConfig()
 //		session.saveSession()
-//
+		
+		
+//		let session = Session(config: nil)
 //		session.loadSession()
+//
+//		print(session.sessionId)
+//		session.getPlaylist(playlistId: "9542ded2-e5cd-45fc-ae42-6c9c5d811687")
 		
 		print("-----")
 	}

@@ -825,11 +825,86 @@ class Session {
 		
 		return genresPlaylists?.items
 	}
+	
+	
+	// Playlist editing
+	
+	func etag(for playlistId: String) -> Int {
+		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
+		let response = get(url: url, parameters: sessionParameters)
+		return response.etag!
+	}
+	
+	func addTrack(_ trackId: Int, to playlistId: String, duplicate: Bool) -> Bool {
+		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/items")!
+		var parameters = sessionParameters
+		parameters["trackIds"] = "\(trackId)"
+		parameters["onDupes"] = duplicate ? "ADD" : "FAIL"
+		let response = post(url: url, parameters: parameters, etag: etag(for: playlistId))
+		return response.ok
+	}
+	
+	func removeTrack(index: Int, from playlistId: String) -> Bool {
+		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/items/\(index)")!
+		var parameters = sessionParameters
+		parameters["order"] = "INDEX"
+		parameters["orderDirection"] = "ASC"
+		let response = delete(url: url, parameters: parameters, etag: etag(for: playlistId))
+		return response.ok
+	}
+	
+	func moveTrack(from fromIndex: Int, to toIndex: Int, in playlistId: String) -> Bool {
+		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/items/\(fromIndex)")!
+		var parameters = sessionParameters
+		parameters["toIndex"] = "\(toIndex)"
+		let response = post(url: url, parameters: parameters, etag: etag(for: playlistId))
+		return response.ok
+	}
+	
+	func createPlaylist(title: String, description: String) -> Playlist? {
+		guard let userId = userId else {
+			return nil
+		}
+		let url = URL(string: "\(config.apiLocation)/users/\(userId)/playlists")!
+		var parameters = sessionParameters
+		parameters["title"] = "\(title)"
+		parameters["description"] = "\(description)"
+		let response = post(url: url, parameters: parameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Playlist Creation failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var playlistResponse: Playlist?
+		do {
+			playlistResponse = try customJSONDecoder().decode(Playlist.self, from: content)
+		} catch {
+			displayError(title: "Playlist Creation failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return playlistResponse
+	}
+	
+	func editPlaylist(playlistId: String, title: String, description: String) -> Bool {
+		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
+		var parameters = sessionParameters
+		parameters["title"] = "\(title)"
+		parameters["description"] = "\(description)"
+		let response = post(url: url, parameters: parameters)
+		return response.ok
+	}
+	
+	func deletePlaylist(playlistId: String) -> Bool {
+		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
+		let response = delete(url: url, parameters: sessionParameters, etag: etag(for: playlistId))
+		return response.ok
+	}
 }
 
 class Favorites {
 	
-	let session: Session
+	unowned let session: Session
 	let baseUrl: String
 	
 	init(session: Session, userId: Int) {
