@@ -1168,7 +1168,10 @@ class TidalSwiftTests: XCTestCase {
 	// Return
 	
 	func testArtists() {
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		let optionalArtists = favorites.artists()
 		XCTAssertNotNil(optionalArtists)
 		guard let artists = optionalArtists else {
@@ -1178,7 +1181,10 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testAlbums() {
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		let optionalAlbums = favorites.albums()
 		XCTAssertNotNil(optionalAlbums)
 		guard let albums = optionalAlbums else {
@@ -1188,7 +1194,10 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testTracks() {
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		let optionalTracks = favorites.tracks()
 		XCTAssertNotNil(optionalTracks)
 		guard let tracks = optionalTracks else {
@@ -1198,7 +1207,10 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testVideos() {
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		let optionalVideos = favorites.videos()
 		XCTAssertNotNil(optionalVideos)
 		guard let videos = optionalVideos else {
@@ -1208,7 +1220,10 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testPlaylists() {
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		let optionalPlaylists = favorites.artists()
 		XCTAssertNotNil(optionalPlaylists)
 		guard let playlists = optionalPlaylists else {
@@ -1218,7 +1233,10 @@ class TidalSwiftTests: XCTestCase {
 	}
 	
 	func testUserPlaylists() {
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		let optionalUserPlaylists = favorites.artists()
 		XCTAssertNotNil(optionalUserPlaylists)
 		guard let userPlaylists = optionalUserPlaylists else {
@@ -1233,7 +1251,11 @@ class TidalSwiftTests: XCTestCase {
 	
 	func testArtistAddAndDelete() {
 		let demoArtistId = 7771771
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		
 		XCTAssertFalse((favorites.artists()?.contains { (artist) -> Bool in
 			return artist.item.id == demoArtistId
@@ -1256,7 +1278,11 @@ class TidalSwiftTests: XCTestCase {
 	
 	func testAlbumAddAndDelete() {
 		let demoAlbumId = 65929420
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		
 		XCTAssertFalse((favorites.albums()?.contains { (album) -> Bool in
 			return album.item.id == demoAlbumId
@@ -1279,7 +1305,11 @@ class TidalSwiftTests: XCTestCase {
 	
 	func testTrackAddAndDelete() {
 		let demoTrackId = 65929421
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		
 		XCTAssertFalse((favorites.tracks()?.contains { (track) -> Bool in
 			return track.item.id == demoTrackId
@@ -1302,7 +1332,11 @@ class TidalSwiftTests: XCTestCase {
 	
 	func testVideoAddAndDelete() {
 		let demoVideoId = 104569734
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		
 		XCTAssertFalse((favorites.videos()?.contains { (video) -> Bool in
 			return video.item.id == demoVideoId
@@ -1325,7 +1359,11 @@ class TidalSwiftTests: XCTestCase {
 	
 	func testPlaylistAddAndDelete() {
 		let demoPlaylistId = "627c2039-ef15-46b2-9891-3773dd3d5aa5"
-		let favorites = Favorites(session: session, userId: session.userId ?? -1)
+		
+		XCTAssertNotNil(session.favorites)
+		guard let favorites = session.favorites else {
+			return
+		}
 		
 		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
 			return playlist.item.uuid == demoPlaylistId
