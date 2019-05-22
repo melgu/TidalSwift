@@ -10,6 +10,7 @@ import Foundation
 
 struct Response {
 	var statusCode: Int?
+	var etag: Int?
 	var content: Data?
 	var ok: Bool
 }
@@ -27,9 +28,12 @@ private func encodeParameters(_ parameters: [String: String]) -> String {
 	return components.percentEncodedQuery ?? ""
 }
 
-private func request(method: HttpMethod, url: URL, parameters: [String: String]) -> Response {
+private func request(method: HttpMethod, url: URL, parameters: [String: String], etag: Int? = nil) -> Response {
 	var request = URLRequest(url: url)
 	request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+	if let etag = etag {
+		request.setValue(#""\#(etag)""#, forHTTPHeaderField: "If-None-Match")
+	}
 	
 	switch method {
 	case .get:
@@ -47,9 +51,15 @@ private func request(method: HttpMethod, url: URL, parameters: [String: String])
 		let urlString = request.url!.absoluteString + "?" + encodeParameters(parameters)
 		request.url = URL(string: urlString)
 	}
-//	print("Network Request with URL: \(request.url!.absoluteString)")
+//	print("=== Network Request ===")
+//	print("\(request.httpMethod!) Request with URL: \(request.url!.absoluteString)")
+//	print("Headers: \(request.allHTTPHeaderFields!)")
+//	if request.httpBody != nil {
+//		print("Body: \(String(data: request.httpBody!, encoding: String.Encoding.utf8)!)")
+//	}
+//	print("=======================")
 	
-	var networkResponse = Response(statusCode: nil, content: nil, ok: false)
+	var networkResponse = Response(statusCode: nil, etag: nil, content: nil, ok: false)
 	
 	let semaphore = DispatchSemaphore(value: 0)
 	let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -69,8 +79,16 @@ private func request(method: HttpMethod, url: URL, parameters: [String: String])
 			return
 		}
 		
+		// Getting the Etag if it exists
+		var etag: Int?
+		if let etagString = response.allHeaderFields["Etag"] as? String {
+			var etagSubString = etagString.dropFirst()
+			etagSubString = etagSubString.dropLast()
+			etag = Int(String(etagSubString))
+		}
+		
 //		print("responseString = \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
-		networkResponse = Response(statusCode: response.statusCode, content: data, ok: true)
+		networkResponse = Response(statusCode: response.statusCode, etag: etag, content: data, ok: true)
 		semaphore.signal()
 	}
 	task.resume()
@@ -83,12 +101,12 @@ func get(url: URL, parameters: [String: String]) -> Response {
 	return request(method: .get, url: url, parameters: parameters)
 }
 
-func post(url: URL, parameters: [String: String]) -> Response {
-	return request(method: .post, url: url, parameters: parameters)
+func post(url: URL, parameters: [String: String], etag: Int? = nil) -> Response {
+	return request(method: .post, url: url, parameters: parameters, etag: etag)
 }
 
-func delete(url: URL, parameters: [String: String]) -> Response {
-	return request(method: .delete, url: url, parameters: parameters)
+func delete(url: URL, parameters: [String: String], etag: Int? = nil) -> Response {
+	return request(method: .delete, url: url, parameters: parameters, etag: etag)
 }
 
 func asyncGet(url: URL, parameters: [String: String],
@@ -99,18 +117,18 @@ func asyncGet(url: URL, parameters: [String: String],
 	}
 }
 
-func asyncPost(url: URL, parameters: [String: String],
+func asyncPost(url: URL, parameters: [String: String], etag: Int? = nil,
 			   completionHandler: @escaping (Response) -> Void) {
 	DispatchQueue.global(qos: .userInitiated).async {
-		let response = request(method: .post, url: url, parameters: parameters)
+		let response = request(method: .post, url: url, parameters: parameters, etag: etag)
 		completionHandler(response)
 	}
 }
 
-func asyncDelete(url: URL, parameters: [String: String],
+func asyncDelete(url: URL, parameters: [String: String], etag: Int? = nil,
 			   completionHandler: @escaping (Response) -> Void) {
 	DispatchQueue.global(qos: .userInitiated).async {
-		let response = request(method: .delete, url: url, parameters: parameters)
+		let response = request(method: .delete, url: url, parameters: parameters, etag: etag)
 		completionHandler(response)
 	}
 }

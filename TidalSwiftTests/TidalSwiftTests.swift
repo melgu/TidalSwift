@@ -1162,6 +1162,7 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertFalse(featured.isEmpty)
 	}
 	
+	
 	// MARK: - Favorites
 	
 	// Return
@@ -1343,6 +1344,138 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
 			return playlist.item.uuid == demoPlaylistId
 		})!)
+	}
+	
+	
+	// MARK: - Playlist Editing
+	
+	func testPlaylistEditing() {
+		let demoTrackId = 59978883
+		let demoVideoId = 98785108
+		
+		XCTAssertNotNil(session.userId)
+		guard let userId = session.userId else {
+			return
+		}
+		
+		// Before
+		
+		let userPlaylistCountBefore = session.getUserPlaylists(userId: userId)?.count
+		
+		// Create Playlist
+		
+		let optionalTestPlaylist1 = session.createPlaylist(title: "Test", description: "Test Description")
+		XCTAssertNotNil(optionalTestPlaylist1)
+		guard let testPlaylist1 = optionalTestPlaylist1 else {
+			return
+		}
+		
+		XCTAssertEqual(testPlaylist1.title, "Test")
+		XCTAssertEqual(testPlaylist1.description, "Test Description")
+		XCTAssertEqual(testPlaylist1.creator.id, session.userId)
+		XCTAssertEqual(testPlaylist1.numberOfTracks, 0)
+		XCTAssertEqual(testPlaylist1.numberOfVideos, 0)
+
+		// Add Track
+		
+		let r1 = session.addTrack(demoTrackId, to: testPlaylist1.uuid, duplicate: false)
+		XCTAssert(r1)
+
+		let optionalTestPlaylist2 = session.getPlaylist(playlistId: testPlaylist1.uuid)
+		XCTAssertNotNil(optionalTestPlaylist2)
+		guard let testPlaylist2 = optionalTestPlaylist2 else {
+			return
+		}
+
+		XCTAssertEqual(testPlaylist2.numberOfTracks, 1)
+		XCTAssertEqual(testPlaylist2.numberOfVideos, 0)
+		
+		let optionalTestPlaylist2Tracks = session.getPlaylistTracks(playlistId: testPlaylist1.uuid)
+		XCTAssertNotNil(optionalTestPlaylist2Tracks)
+		guard let testPlaylist2Tracks = optionalTestPlaylist2Tracks else {
+			return
+		}
+		
+		XCTAssertEqual(testPlaylist2Tracks[0].id, 59978883) // Track
+		
+		// Add Video
+		
+		let r2 = session.addTrack(demoVideoId, to: testPlaylist1.uuid, duplicate: false)
+		XCTAssert(r2)
+
+		let optionalTestPlaylist3 = session.getPlaylist(playlistId: testPlaylist1.uuid)
+		XCTAssertNotNil(optionalTestPlaylist3)
+		guard let testPlaylist3 = optionalTestPlaylist3 else {
+			return
+		}
+
+		XCTAssertEqual(testPlaylist3.numberOfTracks, 1)
+		XCTAssertEqual(testPlaylist3.numberOfVideos, 1)
+		
+		let optionalTestPlaylist3Tracks = session.getPlaylistTracks(playlistId: testPlaylist1.uuid)
+		XCTAssertNotNil(optionalTestPlaylist3Tracks)
+		guard let testPlaylist3Tracks = optionalTestPlaylist3Tracks else {
+			return
+		}
+		
+		XCTAssertEqual(testPlaylist3Tracks[0].id, 59978883) // Track
+//		XCTAssertEqual(testPlaylist3Tracks[1].id, 98785108) // Video
+		XCTAssertEqual(testPlaylist3Tracks[1].id, 98785110) // Video
+		// For some reason after adding it, the Video ID changes. Possibly has something to do with regions:
+		// https://github.com/jackfagner/OpenTidl/issues/5
+		// 98785110 is actually a track when I try to add it.
+		// When adding 98785108 the resulting 98785110 in the playlist is a video (and is counted as such).
+		
+		// Move Video from position 1 to 0 (effectively switch places)
+		
+		let r3 = session.moveTrack(from: 1, to: 0, in: testPlaylist1.uuid)
+		XCTAssert(r3)
+		
+		let optionalTestPlaylist4Tracks = session.getPlaylistTracks(playlistId: testPlaylist1.uuid)
+		XCTAssertNotNil(optionalTestPlaylist4Tracks)
+		guard let testPlaylist4Tracks = optionalTestPlaylist4Tracks else {
+			return
+		}
+		
+//		XCTAssertEqual(testPlaylist4Tracks[0].id, 98785108) // Video (same problem as above)
+		XCTAssertEqual(testPlaylist4Tracks[0].id, 98785110) // Video
+		XCTAssertEqual(testPlaylist4Tracks[1].id, 59978883) // Track
+		
+		// Remove Track
+
+		let r4 = session.removeTrack(index: 1, from: testPlaylist1.uuid)
+		XCTAssert(r4)
+
+		let optionalTestPlaylist5 = session.getPlaylist(playlistId: testPlaylist1.uuid)
+		XCTAssertNotNil(optionalTestPlaylist5)
+		guard let testPlaylist5 = optionalTestPlaylist5 else {
+			return
+		}
+
+		XCTAssertEqual(testPlaylist5.numberOfTracks, 0)
+		XCTAssertEqual(testPlaylist5.numberOfVideos, 1)
+		
+		// Edit Playlist name and description
+		
+		let r5 = session.editPlaylist(playlistId: testPlaylist1.uuid, title: "Changed Test", description: "Changed Description")
+		XCTAssert(r5)
+
+		let optionalTestPlaylist6 = session.getPlaylist(playlistId: testPlaylist1.uuid)
+		XCTAssertNotNil(optionalTestPlaylist6)
+		guard let testPlaylist6 = optionalTestPlaylist6 else {
+			return
+		}
+
+		XCTAssertEqual(testPlaylist6.title, "Changed Test")
+		XCTAssertEqual(testPlaylist6.description, "Changed Description")
+		
+		// Delete Playlist
+		
+		let r6 = session.deletePlaylist(playlistId: testPlaylist1.uuid)
+		XCTAssert(r6)
+
+		let userPlaylistCountAfter = session.getUserPlaylists(userId: userId)?.count
+		XCTAssertEqual(userPlaylistCountBefore, userPlaylistCountAfter)
 	}
 	
 	
