@@ -487,7 +487,7 @@ struct FavoriteAlbums: Decodable {
 	let items: [FavoriteAlbum]
 }
 
-struct FavoriteAlbum: Decodable {
+struct FavoriteAlbum: Decodable, Equatable {
 	let created: Date
 	let item: Album
 	
@@ -511,7 +511,7 @@ struct FavoriteTracks: Decodable {
 	let items: [FavoriteTrack]
 }
 
-struct FavoriteTrack: Decodable {
+struct FavoriteTrack: Decodable, Equatable {
 	let created: Date
 	let item: Track
 	
@@ -535,7 +535,7 @@ struct FavoriteVideos: Decodable {
 	let items: [FavoriteVideo]
 }
 
-struct FavoriteVideo: Decodable {
+struct FavoriteVideo: Decodable, Equatable {
 	let created: Date
 	let item: Video
 	
@@ -559,7 +559,7 @@ struct FavoritePlaylists: Decodable {
 	let items: [FavoritePlaylist]
 }
 
-struct FavoritePlaylist: Decodable {
+struct FavoritePlaylist: Decodable, Equatable {
 	let created: Date
 	let item: Playlist
 	

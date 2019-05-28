@@ -772,50 +772,71 @@ class TidalSwiftTests: XCTestCase {
 		guard let artistAlbums = optionalArtistAlbums else {
 			return
 		}
+		// Djesse (Vol. 1) exists in two versions, Master and Hifi..
+		// It's the second album released and therefore the second and third to last
+		let album1 = artistAlbums[artistAlbums.count - 3] // Hifi
+		let album2 = artistAlbums[artistAlbums.count - 2] // Master
 		
-		XCTAssertEqual(artistAlbums[0].id, 100006868)
-		XCTAssertEqual(artistAlbums[0].title, "Djesse (Vol. 1)")
-		XCTAssertEqual(artistAlbums[0].duration, 3196)
-		XCTAssertEqual(artistAlbums[0].streamReady, true)
-		XCTAssertEqual(artistAlbums[0].streamStartDate,
+		XCTAssertEqual(album1.id, 100006868)
+		XCTAssertEqual(album1.title, "Djesse (Vol. 1)")
+		XCTAssertEqual(album1.duration, 3196)
+		XCTAssertEqual(album1.streamReady, true)
+		XCTAssertEqual(album1.streamStartDate,
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
-		XCTAssertEqual(artistAlbums[0].allowStreaming, true)
-		XCTAssertEqual(artistAlbums[0].numberOfTracks, 9)
-		XCTAssertEqual(artistAlbums[0].numberOfVideos, 0)
-		XCTAssertEqual(artistAlbums[0].numberOfVolumes, 1)
-		XCTAssertEqual(artistAlbums[0].releaseDate,
+		XCTAssertEqual(album1.allowStreaming, true)
+		XCTAssertEqual(album1.numberOfTracks, 9)
+		XCTAssertEqual(album1.numberOfVideos, 0)
+		XCTAssertEqual(album1.numberOfVolumes, 1)
+		XCTAssertEqual(album1.releaseDate,
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
-		XCTAssertEqual(artistAlbums[0].copyright,
+		XCTAssertEqual(album1.copyright,
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
-		XCTAssertNotNil(artistAlbums[0].popularity)
-		XCTAssertEqual(artistAlbums[0].audioQuality, .master)
+		XCTAssertNotNil(album1.popularity)
+		XCTAssertEqual(album1.audioQuality, .master)
 		
 		// Album Artists
-		XCTAssertEqual(artistAlbums[0].artists?.count, 3)
-		XCTAssertEqual(artistAlbums[0].artists?[0].id, 7553669)
-		XCTAssertEqual(artistAlbums[0].artists?[0].name, "Jacob Collier")
-		XCTAssertNil(artistAlbums[0].artists?[0].url)
-		XCTAssertNil(artistAlbums[0].artists?[0].picture)
-		XCTAssertNil(artistAlbums[0].artists?[0].popularity)
-		XCTAssertEqual(artistAlbums[0].artists?[0].type, "MAIN")
+		XCTAssertEqual(album1.artists?.count, 3)
+		XCTAssertEqual(album1.artists?[0].id, 7553669)
+		XCTAssertEqual(album1.artists?[0].name, "Jacob Collier")
+		XCTAssertNil(album1.artists?[0].url)
+		XCTAssertNil(album1.artists?[0].picture)
+		XCTAssertNil(album1.artists?[0].popularity)
+		XCTAssertEqual(album1.artists?[0].type, "MAIN")
 		
-		XCTAssertEqual(artistAlbums[0].artists?[1].id, 4631340)
-		XCTAssertEqual(artistAlbums[0].artists?[1].name, "Metropole Orkest")
-		XCTAssertNil(artistAlbums[0].artists?[1].url)
-		XCTAssertNil(artistAlbums[0].artists?[1].picture)
-		XCTAssertNil(artistAlbums[0].artists?[1].popularity)
-		XCTAssertEqual(artistAlbums[0].artists?[1].type, "MAIN")
+		XCTAssertEqual(album1.artists?[1].id, 4631340)
+		XCTAssertEqual(album1.artists?[1].name, "Metropole Orkest")
+		XCTAssertNil(album1.artists?[1].url)
+		XCTAssertNil(album1.artists?[1].picture)
+		XCTAssertNil(album1.artists?[1].popularity)
+		XCTAssertEqual(album1.artists?[1].type, "MAIN")
 		
-		XCTAssertEqual(artistAlbums[0].artists?[2].id, 4374293)
-		XCTAssertEqual(artistAlbums[0].artists?[2].name, "Jules Buckley")
-		XCTAssertNil(artistAlbums[0].artists?[2].url)
-		XCTAssertNil(artistAlbums[0].artists?[2].picture)
-		XCTAssertNil(artistAlbums[0].artists?[2].popularity)
-		XCTAssertEqual(artistAlbums[0].artists?[2].type, "MAIN")
+		XCTAssertEqual(album1.artists?[2].id, 4374293)
+		XCTAssertEqual(album1.artists?[2].name, "Jules Buckley")
+		XCTAssertNil(album1.artists?[2].url)
+		XCTAssertNil(album1.artists?[2].picture)
+		XCTAssertNil(album1.artists?[2].popularity)
+		XCTAssertEqual(album1.artists?[2].type, "MAIN")
 		
-		XCTAssertEqual(artistAlbums[1].id, 100006800)
-		XCTAssertEqual(artistAlbums[1].title, "Djesse (Vol. 1)")
-		XCTAssertEqual(artistAlbums[1].audioQuality, .hifi)
+		XCTAssertEqual(album2.id, 100006800)
+		XCTAssertEqual(album2.title, "Djesse (Vol. 1)")
+		XCTAssertEqual(album2.audioQuality, .hifi)
+		
+		// Test Filters
+		let optionalArtistAlbumsFilterEPs = session.getArtistAlbums(artistId: 7553669, filter: .epsAndSingles)
+		XCTAssertNotNil(optionalArtistAlbumsFilterEPs)
+		guard let artistAlbumsFilterEPs = optionalArtistAlbumsFilterEPs else {
+			return
+		}
+		let ep = artistAlbumsFilterEPs[artistAlbumsFilterEPs.count - 1]
+		XCTAssertEqual(ep.id, 84439848)
+		XCTAssertEqual(ep.title, "One Day")
+		
+		let optionalArtistAlbumsFilterAppearances = session.getArtistAlbums(artistId: 7553669, filter: .appearances)
+		XCTAssertNotNil(optionalArtistAlbumsFilterAppearances)
+		guard let artistAlbumsFilterAppearances = optionalArtistAlbumsFilterAppearances else {
+			return
+		}
+		XCTAssertEqual(artistAlbumsFilterAppearances.count, 9) // Probably going to be more in the future
 	}
 
 	func testGetArtistTopTracks() {
@@ -924,23 +945,25 @@ class TidalSwiftTests: XCTestCase {
 		
 		XCTAssertEqual(artistRadio.count, 100)
 		
-		XCTAssertEqual(artistRadio[0].id, 8414613)
-		XCTAssertEqual(artistRadio[0].title, "In diesem Moment")
-		XCTAssertEqual(artistRadio[0].duration, 226)
-		XCTAssertEqual(artistRadio[0].replayGain, -9.8)
-		XCTAssertEqual(artistRadio[0].peak, 0.980865)
+		// Impossible to write consistent tests as the tracks are regularly changing
+		
+		XCTAssertEqual(artistRadio[0].id, 70974091)
+		XCTAssertEqual(artistRadio[0].title, "Ich atme ein")
+		XCTAssertEqual(artistRadio[0].duration, 209)
+		XCTAssertEqual(artistRadio[0].replayGain, -11.04)
+		XCTAssertEqual(artistRadio[0].peak, 0.978058)
 		XCTAssertEqual(artistRadio[0].allowStreaming, true)
 		XCTAssertEqual(artistRadio[0].streamReady, true)
 		XCTAssertEqual(artistRadio[0].streamStartDate,
-					   DateFormatter.iso8601OptionalTime.date(from: "2016-06-05"))
-		XCTAssertEqual(artistRadio[0].trackNumber, 4)
+					   DateFormatter.iso8601OptionalTime.date(from: "2017-03-17"))
+		XCTAssertEqual(artistRadio[0].trackNumber, 5)
 		XCTAssertEqual(artistRadio[0].volumeNumber, 1)
 		//		print(artistTopTracks[0].popularity)
 		XCTAssertEqual(artistRadio[0].copyright,
-					   "2011 Starwatch Music Under Exclusive License To Warner Music Group Germany Holding GmbH / A Warner Music Group Company")
+					   "(P) 2006 CICEU/HDW/RAMOND/HASS")
 		XCTAssertEqual(artistRadio[0].url,
-					   URL(string: "http://www.tidal.com/track/8414613"))
-		XCTAssertEqual(artistRadio[0].isrc, "DEA621100465")
+					   URL(string: "http://www.tidal.com/track/70974091"))
+		XCTAssertEqual(artistRadio[0].isrc, "DEA620600145")
 		XCTAssertEqual(artistRadio[0].editable, false)
 		XCTAssertEqual(artistRadio[0].explicit, false)
 		XCTAssertEqual(artistRadio[0].audioQuality, .hifi)
@@ -952,11 +975,10 @@ class TidalSwiftTests: XCTestCase {
 		XCTAssertEqual(artistRadio[0].artists[0].type, "MAIN")
 		
 		// Album
-		XCTAssertEqual(artistRadio[0].album.id, 8414609)
-		XCTAssertEqual(artistRadio[0].album.title, "In diesem Moment")
+		XCTAssertEqual(artistRadio[0].album.id, 70974086)
+		XCTAssertEqual(artistRadio[0].album.title, "Glück ist leicht - Das Beste von 2006 - 2016")
 		
 		// More Tracks
-		// Impossible to write consistent tests as the tracks are constantly changing
 //		XCTAssertEqual(artistRadio[1].id, 58965655)
 //		XCTAssertEqual(artistRadio[1].title, "Du erinnerst mich an Liebe")
 //		XCTAssertEqual(artistRadio[1].artists[0].id, 3673052)
@@ -1167,6 +1189,8 @@ class TidalSwiftTests: XCTestCase {
 	
 	// Return
 	
+	// TODO: Test Order and Order Direction
+	
 	func testArtists() {
 		XCTAssertNotNil(session.favorites)
 		guard let favorites = session.favorites else {
@@ -1178,6 +1202,19 @@ class TidalSwiftTests: XCTestCase {
 			return
 		}
 		XCTAssertFalse(artists.isEmpty)
+		
+		// Test order
+		let dateAsc = favorites.artists(order: .date, orderDirection: .ascending)
+		let dateDesc = favorites.artists(order: .date, orderDirection: .descending)
+		XCTAssertNotNil(dateAsc)
+		XCTAssertNotNil(dateDesc)
+		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
+		
+		let nameAsc = favorites.artists(order: .name, orderDirection: .ascending)
+		let nameDesc = favorites.artists(order: .name, orderDirection: .descending)
+		XCTAssertNotNil(nameAsc)
+		XCTAssertNotNil(nameDesc)
+		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
 	}
 	
 	func testAlbums() {
@@ -1191,6 +1228,43 @@ class TidalSwiftTests: XCTestCase {
 			return
 		}
 		XCTAssertFalse(albums.isEmpty)
+		
+		// Test order
+		let dateAsc = favorites.albums(order: .date, orderDirection: .ascending)
+		let dateDesc = favorites.albums(order: .date, orderDirection: .descending)
+		XCTAssertNotNil(dateAsc)
+		XCTAssertNotNil(dateDesc)
+		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
+
+		let nameAsc = favorites.albums(order: .name, orderDirection: .ascending)
+		let nameDesc = favorites.albums(order: .name, orderDirection: .descending)
+		XCTAssertNotNil(nameAsc)
+		XCTAssertNotNil(nameDesc)
+		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
+
+		let artistAsc = favorites.albums(order: .artist, orderDirection: .ascending)
+		let artistDesc = favorites.albums(order: .artist, orderDirection: .descending)
+		XCTAssertNotNil(artistAsc)
+		XCTAssertNotNil(artistDesc)
+		XCTAssertEqual(artistAsc?.reversed(), artistDesc)
+
+		let releaseAsc = favorites.albums(order: .releaseDate, orderDirection: .ascending)
+		let releaseDesc = favorites.albums(order: .releaseDate, orderDirection: .descending)
+		XCTAssertNotNil(releaseAsc)
+		XCTAssertNotNil(releaseDesc)
+		
+		// Have to compare the dates instead of the IDs, because when two items are released at
+		// the same moment, those items are sorted alphabetically
+		let nilDate = DateFormatter.iso8601OptionalTime.date(from: "2000-01-01T00:00:00.000GMT")!
+		var releaseAscDates = [Date]()
+		for item in releaseAsc ?? [FavoriteAlbum]() {
+			releaseAscDates.append(item.item.releaseDate ?? nilDate)
+		}
+		var releaseDescDates = [Date]()
+		for item in releaseDesc ?? [FavoriteAlbum]() {
+			releaseDescDates.append(item.item.releaseDate ?? nilDate)
+		}
+		XCTAssertEqual(releaseAscDates.reversed(), releaseDescDates)
 	}
 	
 	func testTracks() {
@@ -1204,6 +1278,36 @@ class TidalSwiftTests: XCTestCase {
 			return
 		}
 		XCTAssertFalse(tracks.isEmpty)
+		
+		// Test order
+		let nameAsc = favorites.tracks(order: .name, orderDirection: .ascending)
+		let nameDesc = favorites.tracks(order: .name, orderDirection: .descending)
+		XCTAssertNotNil(nameAsc)
+		XCTAssertNotNil(nameDesc)
+		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
+		
+		let artistAsc = favorites.tracks(order: .artist, orderDirection: .ascending)
+		let artistDesc = favorites.tracks(order: .artist, orderDirection: .descending)
+		XCTAssertNotNil(artistAsc)
+		XCTAssertNotNil(artistDesc)
+		XCTAssertEqual(artistAsc?.reversed(), artistDesc)
+		
+		let albumAsc = favorites.tracks(order: .album, orderDirection: .ascending)
+		let albumDesc = favorites.tracks(order: .album, orderDirection: .descending)
+		XCTAssertNotNil(albumAsc)
+		XCTAssertNotNil(albumDesc)
+		XCTAssertEqual(albumAsc?.reversed(), albumDesc)
+		
+		let dateAsc = favorites.tracks(order: .date, orderDirection: .ascending)
+		let dateDesc = favorites.tracks(order: .date, orderDirection: .descending)
+		XCTAssertNotNil(dateAsc)
+		XCTAssertNotNil(dateDesc)
+		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
+		
+		let lengthAsc = favorites.tracks(order: .length, orderDirection: .ascending)
+		let lengthDesc = favorites.tracks(order: .length, orderDirection: .descending)
+		XCTAssertNotNil(lengthAsc)
+		XCTAssertNotNil(lengthDesc)
 	}
 	
 	func testVideos() {
@@ -1217,6 +1321,30 @@ class TidalSwiftTests: XCTestCase {
 			return
 		}
 		XCTAssertFalse(videos.isEmpty)
+		
+		// Test order
+		let nameAsc = favorites.videos(order: .name, orderDirection: .ascending)
+		let nameDesc = favorites.videos(order: .name, orderDirection: .descending)
+		XCTAssertNotNil(nameAsc)
+		XCTAssertNotNil(nameDesc)
+		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
+		
+		let artistAsc = favorites.videos(order: .artist, orderDirection: .ascending)
+		let artistDesc = favorites.videos(order: .artist, orderDirection: .descending)
+		XCTAssertNotNil(artistAsc)
+		XCTAssertNotNil(artistDesc)
+		XCTAssertEqual(artistAsc?.reversed(), artistDesc)
+		
+		let dateAsc = favorites.videos(order: .date, orderDirection: .ascending)
+		let dateDesc = favorites.videos(order: .date, orderDirection: .descending)
+		XCTAssertNotNil(dateAsc)
+		XCTAssertNotNil(dateDesc)
+		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
+		
+		let lengthAsc = favorites.videos(order: .length, orderDirection: .ascending)
+		let lengthDesc = favorites.videos(order: .length, orderDirection: .descending)
+		XCTAssertNotNil(lengthAsc)
+		XCTAssertNotNil(lengthDesc)
 	}
 	
 	func testPlaylists() {
@@ -1230,6 +1358,19 @@ class TidalSwiftTests: XCTestCase {
 			return
 		}
 		XCTAssertFalse(playlists.isEmpty)
+		
+		// Test order
+		let dateAsc = favorites.playlists(order: .date, orderDirection: .ascending)
+		let dateDesc = favorites.playlists(order: .date, orderDirection: .descending)
+		XCTAssertNotNil(dateAsc)
+		XCTAssertNotNil(dateDesc)
+		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
+		
+		let nameAsc = favorites.playlists(order: .name, orderDirection: .ascending)
+		let nameDesc = favorites.playlists(order: .name, orderDirection: .descending)
+		XCTAssertNotNil(nameAsc)
+		XCTAssertNotNil(nameDesc)
+		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
 	}
 	
 	func testUserPlaylists() {
