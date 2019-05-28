@@ -9,6 +9,44 @@
 import Foundation
 import Cocoa
 
+// Order
+
+enum PlaylistOrder: String {
+	case date = "DATE"
+	case name = "NAME"
+}
+
+typealias ArtistOrder = PlaylistOrder
+
+enum AlbumOrder: String {
+	case date = "DATE"
+	case name = "NAME"
+	case artist = "ARTIST"
+	case releaseDate = "RELEASE_DATE"
+}
+
+enum TrackOrder: String {
+	case name = "NAME"
+	case artist = "ARTIST"
+	case album = "ALBUM"
+	case date = "DATE"
+	case length = "LENGTH"
+}
+
+enum VideoOrder: String {
+	case name = "NAME"
+	case artist = "ARTIST"
+	case date = "DATE"
+	case length = "LENGTH"
+}
+
+enum OrderDirection: String {
+	case ascending = "ASC"
+	case descending = "DESC"
+}
+
+// Login
+
 struct LoginCredentials {
 	var username: String
 	var password: String
@@ -480,15 +518,21 @@ class Session {
 		return artistResponse
 	}
 	
-	enum artistAlbumFilter {
-		case EPSANDSINGLES
-		case COMPILATIONS
+	enum ArtistAlbumFilter: String {
+		case epsAndSingles = "EPSANDSINGLES"
+		case appearances = "COMPILATIONS" // No idea, why Tidal has wrong names
 	}
 	
-	func getArtistAlbums(artistId: Int, filter: artistAlbumFilter? = nil) -> [Album]? {
+	func getArtistAlbums(artistId: Int, filter: ArtistAlbumFilter? = nil, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) -> [Album]? {
 		var parameters = sessionParameters
 		if let filter = filter {
-			parameters["filter"] = "\(filter)"
+			parameters["filter"] = "\(filter.rawValue)"
+		}
+		if let order = order {
+			parameters["order"] = "\(order)"
+		}
+		if let orderDirection = orderDirection {
+			parameters["orderDirection"] = "\(orderDirection)"
 		}
 		
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/albums")!
@@ -627,9 +671,16 @@ class Session {
 		return user
 	}
 	
-	func getUserPlaylists(userId: Int) -> [Playlist]? {
+	func getUserPlaylists(userId: Int, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) -> [Playlist]? {
 		let url = URL(string: "\(config.apiLocation)/users/\(userId)/playlists")!
-		let response = get(url: url, parameters: sessionParameters)
+		var parameters = sessionParameters
+		if let order = order {
+			parameters["order"] = "\(order)"
+		}
+		if let orderDirection = orderDirection {
+			parameters["orderDirection"] = "\(orderDirection)"
+		}
+		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "User Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -747,6 +798,8 @@ class Session {
 		
 		return moodPlaylists?.items
 	}
+	
+	// TODO: There's more to moods and/or genres than playlists
 	
 	func getGenres() -> [Genre]? { // Overview over all Genres
 		let url = URL(string: "\(config.apiLocation)/genres")!
@@ -914,11 +967,17 @@ class Favorites {
 	
 	// Return
 	
-	func artists(limit: Int = 999, offset: Int = 0) -> [FavoriteArtist]? {
+	func artists(limit: Int = 999, offset: Int = 0, order: ArtistOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoriteArtist]? {
 		let url = URL(string: "\(baseUrl)/artists")!
 		var parameters = session.sessionParameters
-		parameters["limit"] = String(limit)
-		parameters["offset"] = String(offset)
+		parameters["limit"] = "\(limit)"
+		parameters["offset"] = "\(offset)"
+		if let order = order {
+			parameters["order"] = "\(order.rawValue)"
+		}
+		if let orderDirection = orderDirection {
+			parameters["orderDirection"] = "\(orderDirection.rawValue)"
+		}
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -936,11 +995,17 @@ class Favorites {
 		return artists?.items
 	}
 
-	func albums(limit: Int = 999, offset: Int = 0) -> [FavoriteAlbum]? {
+	func albums(limit: Int = 999, offset: Int = 0, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoriteAlbum]? {
 		let url = URL(string: "\(baseUrl)/albums")!
 		var parameters = session.sessionParameters
-		parameters["limit"] = String(limit)
-		parameters["offset"] = String(offset)
+		parameters["limit"] = "\(limit)"
+		parameters["offset"] = "\(offset)"
+		if let order = order {
+			parameters["order"] = "\(order.rawValue)"
+		}
+		if let orderDirection = orderDirection {
+			parameters["orderDirection"] = "\(orderDirection.rawValue)"
+		}
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -958,11 +1023,17 @@ class Favorites {
 		return albums?.items
 	}
 
-	func tracks(limit: Int = 999, offset: Int = 0) -> [FavoriteTrack]? {
+	func tracks(limit: Int = 999, offset: Int = 0, order: TrackOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoriteTrack]? {
 		let url = URL(string: "\(baseUrl)/tracks")!
 		var parameters = session.sessionParameters
-		parameters["limit"] = String(limit)
-		parameters["offset"] = String(offset)
+		parameters["limit"] = "\(limit)"
+		parameters["offset"] = "\(offset)"
+		if let order = order {
+			parameters["order"] = "\(order.rawValue)"
+		}
+		if let orderDirection = orderDirection {
+			parameters["orderDirection"] = "\(orderDirection.rawValue)"
+		}
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -980,7 +1051,7 @@ class Favorites {
 		return tracks?.items
 	}
 	
-	func videos(limit: Int = 100, offset: Int = 0) -> [FavoriteVideo]? {
+	func videos(limit: Int = 100, offset: Int = 0, order: VideoOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoriteVideo]? {
 		guard limit <= 100 else {
 			displayError(title: "Favorite Videos failed (Limit too high)", content: "The limit has to be 100 or below.")
 			return nil
@@ -988,9 +1059,14 @@ class Favorites {
 		
 		let url = URL(string: "\(baseUrl)/videos")!
 		var parameters = session.sessionParameters
-		parameters["limit"] = String(limit) // Unlike the rest, here a maximum limit of 100 exists. Error if higher.
-		parameters["offset"] = String(offset)
-		
+		parameters["limit"] = "\(limit)" // Unlike the rest, here a maximum limit of 100 exists. Error if higher.
+		parameters["offset"] = "\(offset)"
+		if let order = order {
+			parameters["order"] = "\(order.rawValue)"
+		}
+		if let orderDirection = orderDirection {
+			parameters["orderDirection"] = "\(orderDirection.rawValue)"
+		}
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -1007,12 +1083,19 @@ class Favorites {
 		
 		return videos?.items
 	}
-
-	func playlists(limit: Int = 999, offset: Int = 0) -> [FavoritePlaylist]? { // Includes User Playlists
+	
+	// Includes User Playlists
+	func playlists(limit: Int = 999, offset: Int = 0, order: PlaylistOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoritePlaylist]? {
 		let url = URL(string: "\(baseUrl)/playlists")!
 		var parameters = session.sessionParameters
-		parameters["limit"] = String(limit)
-		parameters["offset"] = String(offset)
+		parameters["limit"] = "\(limit)"
+		parameters["offset"] = "\(offset)"
+		if let order = order {
+			parameters["order"] = "\(order.rawValue)"
+		}
+		if let orderDirection = orderDirection {
+			parameters["orderDirection"] = "\(orderDirection.rawValue)"
+		}
 		let response = get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {

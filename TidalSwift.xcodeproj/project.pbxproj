@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		B0DAFDDA2296417500BA669F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDD92296417500BA669F /* Helpers.swift */; };
 		B0E1EE972272AE110071C920 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0E582E72240869900ADAE6C /* Demo Login Information.txt */; };
 		B0E582D2223764A500ADAE6C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D1223764A500ADAE6C /* AppDelegate.swift */; };
 		B0E582D4223764A500ADAE6C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D3223764A500ADAE6C /* ViewController.swift */; };
@@ -43,6 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B0DAFDD92296417500BA669F /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		B0E582CE223764A500ADAE6C /* TidalSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TidalSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E582D1223764A500ADAE6C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0E582D3223764A500ADAE6C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				B0E582E72240869900ADAE6C /* Demo Login Information.txt */,
 				B0E582E1223764C100ADAE6C /* Network.swift */,
 				B0E582E52238C84F00ADAE6C /* Logic.swift */,
+				B0DAFDD92296417500BA669F /* Helpers.swift */,
 				B0E582E92240C00100ADAE6C /* Codables.swift */,
 				B0E582D3223764A500ADAE6C /* ViewController.swift */,
 				B0E582D5223764A600ADAE6C /* Assets.xcassets */,
@@ -255,6 +258,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0E582D4223764A500ADAE6C /* ViewController.swift in Sources */,
+				B0DAFDDA2296417500BA669F /* Helpers.swift in Sources */,
 				B0E582E62238C84F00ADAE6C /* Logic.swift in Sources */,
 				B0E582D2223764A500ADAE6C /* AppDelegate.swift in Sources */,
 				B0E582E2223764C100ADAE6C /* Network.swift in Sources */,
