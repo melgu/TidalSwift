@@ -523,16 +523,18 @@ class Session {
 		case appearances = "COMPILATIONS" // No idea, why Tidal has wrong names
 	}
 	
-	func getArtistAlbums(artistId: Int, filter: ArtistAlbumFilter? = nil, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) -> [Album]? {
+	func getArtistAlbums(artistId: Int, filter: ArtistAlbumFilter? = nil, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil, limit: Int = 999, offset: Int = 0) -> [Album]? {
 		var parameters = sessionParameters
+		parameters["limit"] = "\(limit)"
+		parameters["offset"] = "\(offset)"
 		if let filter = filter {
 			parameters["filter"] = "\(filter.rawValue)"
 		}
 		if let order = order {
-			parameters["order"] = "\(order)"
+			parameters["order"] = "\(order.rawValue)"
 		}
 		if let orderDirection = orderDirection {
-			parameters["orderDirection"] = "\(orderDirection)"
+			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
 		
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/albums")!
@@ -631,8 +633,8 @@ class Session {
 	
 	func getTrackRadio(trackId: Int, limit: Int = 100, offset: Int = 0) -> [Track]? {
 		var parameters = sessionParameters
-		parameters["limit"] = String(limit)
-		parameters["offset"] = String(offset)
+		parameters["limit"] = "\(limit)"
+		parameters["offset"] = "\(offset)"
 		
 		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/radio")!
 		let response = get(url: url, parameters: parameters)
@@ -675,10 +677,10 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)/users/\(userId)/playlists")!
 		var parameters = sessionParameters
 		if let order = order {
-			parameters["order"] = "\(order)"
+			parameters["order"] = "\(order.rawValue)"
 		}
 		if let orderDirection = orderDirection {
-			parameters["orderDirection"] = "\(orderDirection)"
+			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
 		let response = get(url: url, parameters: parameters)
 		

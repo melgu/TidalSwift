@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		B0DAFDDA2296417500BA669F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDD92296417500BA669F /* Helpers.swift */; };
+		B0DAFDDC229CDBEE00BA669F /* HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */; };
 		B0E1EE972272AE110071C920 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0E582E72240869900ADAE6C /* Demo Login Information.txt */; };
 		B0E582D2223764A500ADAE6C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D1223764A500ADAE6C /* AppDelegate.swift */; };
 		B0E582D4223764A500ADAE6C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D3223764A500ADAE6C /* ViewController.swift */; };
@@ -30,7 +31,7 @@
 		B0E582E2223764C100ADAE6C /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E1223764C100ADAE6C /* Network.swift */; };
 		B0E582E62238C84F00ADAE6C /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E52238C84F00ADAE6C /* Logic.swift */; };
 		B0E582EA2240C00100ADAE6C /* Codables.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E92240C00100ADAE6C /* Codables.swift */; };
-		B0E582F2224329A000ADAE6C /* TidalSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582F1224329A000ADAE6C /* TidalSwiftTests.swift */; };
+		B0E582F2224329A000ADAE6C /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582F1224329A000ADAE6C /* LogicTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 
 /* Begin PBXFileReference section */
 		B0DAFDD92296417500BA669F /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpersTests.swift; sourceTree = "<group>"; };
 		B0E582CE223764A500ADAE6C /* TidalSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TidalSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E582D1223764A500ADAE6C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0E582D3223764A500ADAE6C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -57,7 +59,7 @@
 		B0E582E72240869900ADAE6C /* Demo Login Information.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Demo Login Information.txt"; sourceTree = "<group>"; };
 		B0E582E92240C00100ADAE6C /* Codables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codables.swift; sourceTree = "<group>"; };
 		B0E582EF224329A000ADAE6C /* TidalSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TidalSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0E582F1224329A000ADAE6C /* TidalSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TidalSwiftTests.swift; sourceTree = "<group>"; };
+		B0E582F1224329A000ADAE6C /* LogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicTests.swift; sourceTree = "<group>"; };
 		B0E582F3224329A000ADAE6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0E6AED72255AEBE00D7DA7B /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -120,7 +122,8 @@
 		B0E582F0224329A000ADAE6C /* TidalSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
-				B0E582F1224329A000ADAE6C /* TidalSwiftTests.swift */,
+				B0E582F1224329A000ADAE6C /* LogicTests.swift */,
+				B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */,
 				B0E582F3224329A000ADAE6C /* Info.plist */,
 			);
 			path = TidalSwiftTests;
@@ -270,7 +273,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0E582F2224329A000ADAE6C /* TidalSwiftTests.swift in Sources */,
+				B0E582F2224329A000ADAE6C /* LogicTests.swift in Sources */,
+				B0DAFDDC229CDBEE00BA669F /* HelpersTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

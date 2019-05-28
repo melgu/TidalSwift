@@ -9,7 +9,7 @@
 import XCTest
 @testable import TidalSwift
 
-class TidalSwiftTests: XCTestCase {
+class LogicTests: XCTestCase {
 	
 	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
 	
