@@ -894,11 +894,12 @@ class LogicTests: XCTestCase {
 		
 		XCTAssertEqual(artistBio?.source, "TiVo")
 //		print(DateFormatter.iso8601OptionalTime.string(for: artistBio?.lastUpdated))
-		XCTAssertEqual(artistBio?.lastUpdated,
-					   DateFormatter.iso8601OptionalTime.date(from:
-						"2019-03-09T19:22:46.937GMT"))
 		// Bio is not consistent, therefore cannot be tested properly.
 		// Sometimes some of the referenced artists or albums have a so-called wimpLink, sometimes exactly the same references don't have a wimpLink.
+//		XCTAssertEqual(artistBio?.lastUpdated,
+//					   DateFormatter.iso8601OptionalTime.date(from:
+//						"2019-03-09T19:22:46.937GMT"))
+		XCTAssertFalse(artistBio?.text.isEmpty ?? true)
 //		XCTAssertEqual(artistBio?.text, "")
 		
 		let missingArtistBio = session.getArtistBio(artistId: 4001778)
@@ -909,29 +910,29 @@ class LogicTests: XCTestCase {
 	}
 
 	func testGetArtistSimilar() {
-		let optionalSimilarArtists = session.getArtistSimilar(artistId: 7553669)
+		let optionalSimilarArtists = session.getArtistSimilar(artistId: 16579)
 		XCTAssertNotNil(optionalSimilarArtists)
 		guard let similarArtists = optionalSimilarArtists else {
 			return
 		}
 		
-		XCTAssertEqual(similarArtists.count, 7)
+		XCTAssertEqual(similarArtists.count, 49)
 		
 		// Not necessarely in the same order as on website
-		XCTAssertEqual(similarArtists[0].id, 10695)
-		XCTAssertEqual(similarArtists[0].name, "Jamie Cullum")
+		XCTAssertEqual(similarArtists[0].id, 10249)
+		XCTAssertEqual(similarArtists[0].name, "Norah Jones")
 		XCTAssertEqual(similarArtists[0].url, URL(string:
-			"http://www.tidal.com/artist/10695"))
+			"http://www.tidal.com/artist/10249"))
 		// Interestingly the resulting URL is HTTP instead of HTTPS
 		XCTAssertEqual(similarArtists[0].picture,
-					   "bcb0f0ce-3473-4140-af59-bdcce400a795")
+					   "70d5fe37-2326-4208-961b-7984e6605483")
 		XCTAssertNotNil(similarArtists[0].popularity)
 		XCTAssertNil(similarArtists[0].type)
 		XCTAssertNil(similarArtists[0].banner)
 		XCTAssertEqual(similarArtists[0].relationType, "SIMILAR_ARTIST")
 		
-		XCTAssertEqual(similarArtists[1].id, 3513667)
-		XCTAssertEqual(similarArtists[1].name, "Holly Cole")
+		XCTAssertEqual(similarArtists[1].id, 10666)
+		XCTAssertEqual(similarArtists[1].name, "Nelly Furtado")
 	}
 
 	func testGetArtistRadio() {
@@ -1118,8 +1119,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlists[0].publicPlaylist, false)
 		XCTAssertEqual(playlists[0].url, URL(string:
 			"http://www.tidal.com/playlist/98676f10-0aa1-4c8c-ba84-4f84e370f3d2"))
-		XCTAssertEqual(playlists[0].image, "b129e3dc-33c0-4b5a-b99b-9672d140c5a7")
-		XCTAssertEqual(playlists[0].squareImage, "bd101b96-2354-4dc4-b868-31a356e4679a")
+		XCTAssertEqual(playlists[0].image, "8eaace51-981c-41a1-9ff5-6a1a149e3818")
+		XCTAssertEqual(playlists[0].squareImage, "305fff79-a8c2-413f-afe9-edf87720fa81")
 		XCTAssertEqual(playlists[0].type, .editorial)
 		XCTAssertEqual(playlists[0].creator.id, 0)
 	}
@@ -1296,7 +1297,8 @@ class LogicTests: XCTestCase {
 		let albumDesc = favorites.tracks(order: .album, orderDirection: .descending)
 		XCTAssertNotNil(albumAsc)
 		XCTAssertNotNil(albumDesc)
-		XCTAssertEqual(albumAsc?.reversed(), albumDesc)
+//		XCTAssertEqual(albumAsc?.reversed(), albumDesc)
+		// When sorting by album, the above test fails when there are two tracks from the same album, because those tracks are in the same order no matter if sorted by ascending or descending
 		
 		let dateAsc = favorites.tracks(order: .date, orderDirection: .ascending)
 		let dateDesc = favorites.tracks(order: .date, orderDirection: .descending)
@@ -1352,12 +1354,11 @@ class LogicTests: XCTestCase {
 		guard let favorites = session.favorites else {
 			return
 		}
-		let optionalPlaylists = favorites.artists()
+		let optionalPlaylists = favorites.playlists()
 		XCTAssertNotNil(optionalPlaylists)
-		guard let playlists = optionalPlaylists else {
-			return
+		if let playlists = optionalPlaylists {
+			XCTAssertFalse(playlists.isEmpty)
 		}
-		XCTAssertFalse(playlists.isEmpty)
 		
 		// Test order
 		let dateAsc = favorites.playlists(order: .date, orderDirection: .ascending)
@@ -1500,26 +1501,26 @@ class LogicTests: XCTestCase {
 	
 	func testPlaylistAddAndDelete() {
 		let demoPlaylistId = "627c2039-ef15-46b2-9891-3773dd3d5aa5"
-		
+
 		XCTAssertNotNil(session.favorites)
 		guard let favorites = session.favorites else {
 			return
 		}
-		
+
 		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
 			return playlist.item.uuid == demoPlaylistId
 		})!)
-		
+
 		let r1 = favorites.addPlaylist(playlistId: demoPlaylistId)
 		XCTAssert(r1)
-		
+
 		XCTAssert((favorites.playlists()?.contains { (playlist) -> Bool in
 			return playlist.item.uuid == demoPlaylistId
 		})!)
-		
+
 		let r2 = favorites.removePlaylist(playlistId: demoPlaylistId)
 		XCTAssert(r2)
-		
+
 		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
 			return playlist.item.uuid == demoPlaylistId
 		})!)

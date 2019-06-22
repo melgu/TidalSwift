@@ -36,10 +36,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 //		let session = Session(config: nil)
 //		session.loadSession()
+//		print(session.checkLogin())
 //
-//		print(session.sessionId)
-//		session.getPlaylist(playlistId: "9542ded2-e5cd-45fc-ae42-6c9c5d811687")
-		
+//		let helpers = Helpers(session: session)
+//		let albums = helpers.newReleasesFromFavoriteArtists(number: 100)!
+//		for album in albums {
+//			print("\(album.artist!.name) - \(album.title) - \(album.releaseDate!)")
+//		}
+//
 		print("-----")
 	}
 
