@@ -174,7 +174,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = "Melvin Gundlach";
 				TargetAttributes = {
 					B0E582CD223764A500ADAE6C = {
@@ -426,6 +426,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = V7E5P7292M;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = TidalSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -447,6 +448,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = V7E5P7292M;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = TidalSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
