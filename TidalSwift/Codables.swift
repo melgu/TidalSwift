@@ -160,7 +160,7 @@ struct Playlist: Decodable, Equatable {
 	let numberOfTracks: Int
 	let numberOfVideos: Int
 	let creator: PlaylistCreator
-	let description: String
+	let description: String?
 	let duration: Int
 	let lastUpdated: Date
 	let created: Date
