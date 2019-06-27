@@ -45,7 +45,7 @@ class NetworkTests: XCTestCase {
     }
 	
 	func testGet() {
-		let response = get(url: demoUrl, parameters: [:])
+		let response = Network.get(url: demoUrl, parameters: [:])
 		XCTAssert(response.ok)
 		XCTAssertNotNil(response.statusCode)
 		XCTAssertNotNil(response.content)
@@ -57,7 +57,7 @@ class NetworkTests: XCTestCase {
 	}
 
 	func testDownload() {
-		let response = download(demoUrl,
+		let response = Network.download(demoUrl,
 								baseLocation: .downloads,
 								targetPath: demoFolderName,
 								name: demoName)

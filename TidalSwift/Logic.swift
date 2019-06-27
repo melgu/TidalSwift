@@ -212,7 +212,7 @@ class Session {
 			"username": config.loginCredentials.username,
 			"password": config.loginCredentials.password
 		]
-		let response = post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters)
 		if !response.ok {
 			if response.statusCode == 401 { // Wrong Username / Password
 				displayError(title: "Wrong username or password",
@@ -252,7 +252,7 @@ class Session {
 		
 		let url = URL(string: "\(config.apiLocation)/users/\(userId)/subscription")!
 //		print(sessionParameters)
-		return get(url: url, parameters: sessionParameters).ok
+		return Network.get(url: url, parameters: sessionParameters).ok
 	}
 	
 	func getSubscriptionInfo() -> Subscription? {
@@ -261,7 +261,7 @@ class Session {
 		}
 		
 		let url = URL(string: "\(config.apiLocation)/users/\(userId)/subscription")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Subscription Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -283,7 +283,7 @@ class Session {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(config.quality.rawValue)"
 		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/streamUrl")!
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Couldn't get Audio URL (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -307,7 +307,7 @@ class Session {
 	
 	func getVideoUrl(videoId: Int) -> URL? {
 		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/streamUrl")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Couldn't get Video URL (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -356,7 +356,7 @@ class Session {
 		// Can potentially go higher using offset.
 		
 		let url = URL(string: "\(config.apiLocation)/search/")!
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Search failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -375,7 +375,7 @@ class Session {
 	
 	func getTrack(trackId: Int) -> Track? {
 		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Track Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -406,7 +406,7 @@ class Session {
 	
 	func getVideo(videoId: Int) -> Video? {
 		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Track Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -425,7 +425,7 @@ class Session {
 	
 	func getPlaylist(playlistId: String) -> Playlist? {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Playlist Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -444,7 +444,7 @@ class Session {
 	
 	func getPlaylistTracks(playlistId: String) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/tracks")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Playlist Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -463,7 +463,7 @@ class Session {
 	
 	func getAlbum(albumId: Int) -> Album? {
 		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Album Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -482,7 +482,7 @@ class Session {
 	
 	func getAlbumTracks(albumId: Int) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)/tracks")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Album Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -501,7 +501,7 @@ class Session {
 	
 	func getArtist(artistId: Int) -> Artist? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Artist Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -538,7 +538,7 @@ class Session {
 		}
 		
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/albums")!
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Artist Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -557,7 +557,7 @@ class Session {
 	
 	func getArtistTopTracks(artistId: Int) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/toptracks")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 
 		guard let content = response.content else {
 			displayError(title: "Artist Top Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -576,7 +576,7 @@ class Session {
 	
 	func getArtistBio(artistId: Int) -> ArtistBio? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/bio")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Artist Bio failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -595,7 +595,7 @@ class Session {
 	
 	func getArtistSimilar(artistId: Int) -> [Artist]? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/similar")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Similar Artists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -614,7 +614,7 @@ class Session {
 	
 	func getArtistRadio(artistId: Int) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/radio")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Artist Radio failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -637,7 +637,7 @@ class Session {
 		parameters["offset"] = "\(offset)"
 		
 		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/radio")!
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Track Radio (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -656,7 +656,7 @@ class Session {
 	
 	func getUser(userId: Int) -> User? {
 		let url = URL(string: "\(config.apiLocation)/users/\(userId)")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "User Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -682,7 +682,7 @@ class Session {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "User Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -703,7 +703,7 @@ class Session {
 		var parameters = sessionParameters
 		parameters["deviceType"] = "DESKTOP"
 		let url = URL(string: "\(config.apiLocation)/pages/my_collection_my_mixes")!
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Mixes Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -727,7 +727,7 @@ class Session {
 		parameters["token"] = "\(config.apiToken)"
 		
 		let url = URL(string: "\(config.apiLocation)/pages/mix")!
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Mix Playlist Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -746,7 +746,7 @@ class Session {
 
 	func getFeatured() -> [FeaturedItem]? {
 		let url = URL(string: "\(config.apiLocation)/promotions")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Featured failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -765,7 +765,7 @@ class Session {
 
 	func getMoods() -> [Mood]? {
 		let url = URL(string: "\(config.apiLocation)/moods")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Mood Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -784,7 +784,7 @@ class Session {
 
 	func getMoodPlaylists(moodPath: String) -> [Playlist]? {
 		let url = URL(string: "\(config.apiLocation)/moods/\(moodPath)/playlists")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -805,7 +805,7 @@ class Session {
 	
 	func getGenres() -> [Genre]? { // Overview over all Genres
 		let url = URL(string: "\(config.apiLocation)/genres")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -826,7 +826,7 @@ class Session {
 	
 	func getGenreTracks(genrePath: String) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)/genres/\(genrePath)/tracks")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -845,7 +845,7 @@ class Session {
 	
 	func getGenreAlbums(genreName: String) -> [Album]? {
 		let url = URL(string: "\(config.apiLocation)/genres/\(genreName)/albums")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -864,7 +864,7 @@ class Session {
 	
 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
 		let url = URL(string: "\(config.apiLocation)/genres/\(genreName)/playlists")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -886,7 +886,7 @@ class Session {
 	
 	func etag(for playlistId: String) -> Int {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
-		let response = get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters)
 		return response.etag!
 	}
 	
@@ -895,7 +895,7 @@ class Session {
 		var parameters = sessionParameters
 		parameters["trackIds"] = "\(trackId)"
 		parameters["onDupes"] = duplicate ? "ADD" : "FAIL"
-		let response = post(url: url, parameters: parameters, etag: etag(for: playlistId))
+		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId))
 		return response.ok
 	}
 	
@@ -904,7 +904,7 @@ class Session {
 		var parameters = sessionParameters
 		parameters["order"] = "INDEX"
 		parameters["orderDirection"] = "ASC"
-		let response = delete(url: url, parameters: parameters, etag: etag(for: playlistId))
+		let response = Network.delete(url: url, parameters: parameters, etag: etag(for: playlistId))
 		return response.ok
 	}
 	
@@ -912,7 +912,7 @@ class Session {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/items/\(fromIndex)")!
 		var parameters = sessionParameters
 		parameters["toIndex"] = "\(toIndex)"
-		let response = post(url: url, parameters: parameters, etag: etag(for: playlistId))
+		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId))
 		return response.ok
 	}
 	
@@ -924,7 +924,7 @@ class Session {
 		var parameters = sessionParameters
 		parameters["title"] = "\(title)"
 		parameters["description"] = "\(description)"
-		let response = post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Playlist Creation failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -946,13 +946,13 @@ class Session {
 		var parameters = sessionParameters
 		parameters["title"] = "\(title)"
 		parameters["description"] = "\(description)"
-		let response = post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters)
 		return response.ok
 	}
 	
 	func deletePlaylist(playlistId: String) -> Bool {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
-		let response = delete(url: url, parameters: sessionParameters, etag: etag(for: playlistId))
+		let response = Network.delete(url: url, parameters: sessionParameters, etag: etag(for: playlistId))
 		return response.ok
 	}
 }
@@ -980,7 +980,7 @@ class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Artist failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -1008,7 +1008,7 @@ class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -1036,7 +1036,7 @@ class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -1069,7 +1069,7 @@ class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Videos failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -1098,7 +1098,7 @@ class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -1132,7 +1132,7 @@ class Favorites {
 		var parameters = session.sessionParameters
 		parameters["artistIds"] = "\(artistId)"
 		
-		let response = post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters)
 		return response.ok
 	}
 
@@ -1142,7 +1142,7 @@ class Favorites {
 		var parameters = session.sessionParameters
 		parameters["albumIds"] = "\(albumId)"
 		
-		let response = post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters)
 		return response.ok
 	}
 
@@ -1152,7 +1152,7 @@ class Favorites {
 		var parameters = session.sessionParameters
 		parameters["trackIds"] = "\(trackId)"
 		
-		let response = post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters)
 		return response.ok
 	}
 	
@@ -1162,7 +1162,7 @@ class Favorites {
 		var parameters = session.sessionParameters
 		parameters["videoIds"] = "\(videoId)"
 		
-		let response = post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters)
 		return response.ok
 	}
 
@@ -1172,7 +1172,7 @@ class Favorites {
 		var parameters = session.sessionParameters
 		parameters["uuids"] = playlistId
 		
-		let response = post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters)
 		return response.ok
 	}
 	
@@ -1181,35 +1181,35 @@ class Favorites {
 	func removeArtist(artistId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/artists/\(artistId)")!
 		
-		let response = delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters)
 		return response.ok
 	}
 
 	func removeAlbum(albumId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/albums/\(albumId)")!
 		
-		let response = delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters)
 		return response.ok
 	}
 
 	func removeTrack(trackId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/tracks/\(trackId)")!
 		
-		let response = delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters)
 		return response.ok
 	}
 	
 	func removeVideo(videoId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/videos/\(videoId)")!
 		
-		let response = delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters)
 		return response.ok
 	}
 
 	func removePlaylist(playlistId: String) -> Bool {
 		let url = URL(string: "\(baseUrl)/playlists/\(playlistId)")!
 		
-		let response = delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters)
 		return response.ok
 	}
 }
