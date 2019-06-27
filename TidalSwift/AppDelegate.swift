@@ -43,7 +43,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //		for album in albums {
 //			print("\(album.artist!.name) - \(album.title) - \(album.releaseDate!)")
 //		}
-//
+		
+//		let r = download(URL(string: "http://captive.apple.com")!,
+//						 baseLocation: .downloads, targetPath: "", name: "Ladida.html")
+//		print(r.ok)
+		
 		print("-----")
 	}
 

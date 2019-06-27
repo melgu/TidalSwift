@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		B0B49A8D22C46DB700F07B34 /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B49A8C22C46DB700F07B34 /* NetworkTests.swift */; };
 		B0DAFDDA2296417500BA669F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDD92296417500BA669F /* Helpers.swift */; };
 		B0DAFDDC229CDBEE00BA669F /* HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */; };
 		B0E1EE972272AE110071C920 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0E582E72240869900ADAE6C /* Demo Login Information.txt */; };
@@ -45,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B0B49A8C22C46DB700F07B34 /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
 		B0DAFDD92296417500BA669F /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpersTests.swift; sourceTree = "<group>"; };
 		B0E582CE223764A500ADAE6C /* TidalSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TidalSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -124,6 +126,7 @@
 			children = (
 				B0E582F1224329A000ADAE6C /* LogicTests.swift */,
 				B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */,
+				B0B49A8C22C46DB700F07B34 /* NetworkTests.swift */,
 				B0E582F3224329A000ADAE6C /* Info.plist */,
 			);
 			path = TidalSwiftTests;
@@ -273,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0B49A8D22C46DB700F07B34 /* NetworkTests.swift in Sources */,
 				B0E582F2224329A000ADAE6C /* LogicTests.swift in Sources */,
 				B0DAFDDC229CDBEE00BA669F /* HelpersTests.swift in Sources */,
 			);
@@ -432,6 +436,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -454,6 +459,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -475,6 +481,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwiftTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -497,6 +504,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwiftTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
