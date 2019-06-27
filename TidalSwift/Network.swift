@@ -15,6 +15,8 @@ struct Response {
 	var ok: Bool
 }
 
+// MARK: - Queries
+
 enum HttpMethod {
 	case get
 	case post
@@ -65,13 +67,13 @@ private func request(method: HttpMethod, url: URL, parameters: [String: String],
 	let task = URLSession.shared.dataTask(with: request) { data, response, error in
 		guard let data = data,
 			let response = response as? HTTPURLResponse,
-			error == nil else {								// check for fundamental networking error
+			error == nil else { // check for fundamental networking error
 //				print("error", error ?? "Unknown error")
 				semaphore.signal()
 				return
 		}
 		
-		guard (200 ... 299) ~= response.statusCode else {	// check for http errors
+		guard (200..<299) ~= response.statusCode else {	// check for http errors
 //			print("statusCode should be 2xx, but is \(response.statusCode)")
 //			print("response = \(response)")
 			networkResponse.statusCode = response.statusCode
@@ -132,3 +134,95 @@ func asyncDelete(url: URL, parameters: [String: String], etag: Int? = nil,
 		completionHandler(response)
 	}
 }
+
+// MARK: - Downloads
+
+enum DownloadLocation {
+	case downloads
+	case music
+}
+
+// Path Structure example: path/to/file -> [path, to, file]. Cannot be empty
+func download(_ url: URL, baseLocation: DownloadLocation, targetPath: String, name: String) -> Response {
+	var networkResponse = Response(statusCode: nil, ok: false)
+	
+	if !targetPath.isEmpty {
+		if URL(string: targetPath) == nil {
+			displayError(title: "Download Error", content: "Target Path '\(targetPath)' is not valid")
+			return networkResponse
+		}
+	}
+	if URL(string: name) == nil {
+		displayError(title: "Download Error", content: "Name '\(name)' is not valid")
+		return networkResponse
+	}
+	
+	let semaphore = DispatchSemaphore(value: 0)
+	
+	let downloadTask = URLSession.shared.downloadTask(with: url) {
+		dataUrlOrNil, responseOrNil, error in
+		
+		guard let dataUrl = dataUrlOrNil,
+			let response = responseOrNil as? HTTPURLResponse,
+			error == nil else { // check for fundamental networking error
+//				print("error", error ?? "Unknown error")
+				semaphore.signal()
+				return
+		}
+		
+		guard (200..<299) ~= response.statusCode else {	// check for http errors
+//			print("statusCode should be 2xx, but is \(response.statusCode)")
+//			print("response = \(response)")
+			networkResponse.statusCode = response.statusCode
+			semaphore.signal()
+			return
+		}
+		
+		do {
+			var path: URL
+			switch baseLocation {
+			case .downloads:
+				path = try FileManager.default.url(for: .downloadsDirectory,
+														   in: .userDomainMask,
+														   appropriateFor: nil,
+														   create: false)
+			case .music:
+				path = try FileManager.default.url(for: .musicDirectory,
+														   in: .userDomainMask,
+														   appropriateFor: nil,
+														   create: false)
+			@unknown default:
+				return
+			}
+			
+			path.appendPathComponent(targetPath)
+			
+//			print("=== Network Download ===")
+//			print("Download URL: \(url)")
+//			print("Temp Local URL: \(dataUrl)")
+//			print("Final Local URL: \(path)")
+//			print("=======================")
+			
+			try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
+			path.appendPathComponent(name)
+			try FileManager.default.moveItem(at: dataUrl, to: path)
+		} catch {
+			displayError(title: "Download Error", content: "File Error: \(error)")
+		}
+		networkResponse = Response(statusCode: response.statusCode, ok: true)
+		semaphore.signal()
+	}
+	downloadTask.resume()
+	_ = semaphore.wait(timeout: DispatchTime.distantFuture)
+	
+	return networkResponse
+}
+
+func asyncDownload(_ url: URL, baseLocation: DownloadLocation, targetPath: String, name: String,
+				   completionHandler: @escaping (Response) -> Void) {
+	DispatchQueue.global(qos: .background).async {
+		let response = download(url, baseLocation: baseLocation, targetPath: targetPath, name: name)
+		completionHandler(response)
+	}
+}
+
