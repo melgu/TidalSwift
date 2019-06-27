@@ -193,8 +193,6 @@ class Network {
 													   in: .userDomainMask,
 													   appropriateFor: nil,
 													   create: false)
-				@unknown default:
-					return
 				}
 				
 				path.appendPathComponent(targetPath)
