@@ -36,17 +36,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 //		let session = Session(config: nil)
 //		session.loadSession()
-//		print(session.checkLogin())
+//		print("Login: \(session.checkLogin())")
 //
 //		let helpers = Helpers(session: session)
+		
 //		let albums = helpers.newReleasesFromFavoriteArtists(number: 100)!
 //		for album in albums {
 //			print("\(album.artist!.name) - \(album.title) - \(album.releaseDate!)")
 //		}
 		
-//		let r = download(URL(string: "http://captive.apple.com")!,
-//						 baseLocation: .downloads, targetPath: "", name: "Ladida.html")
-//		print(r.ok)
+//		let r = helpers.downloadTrack(track: session.getTrack(trackId: 110386812)!)
+//		let r = helpers.downloadAlbum(album: session.getAlbum(albumId: 59978881)!)
+//		print(r)
+		
 		
 		print("-----")
 	}

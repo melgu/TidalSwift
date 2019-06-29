@@ -1061,9 +1061,9 @@ class LogicTests: XCTestCase {
 	
 	func testGetMixPlaylistTracks() {
 		// Have to get a new list of mixes for each user and time
-		let optionalMixse = session.getMixes()
-		XCTAssertNotNil(optionalMixse)
-		guard let mixes = optionalMixse else {
+		let optionalMixes = session.getMixes()
+		XCTAssertNotNil(optionalMixes)
+		guard let mixes = optionalMixes else {
 			return
 		}
 		let mixId = mixes[0].id

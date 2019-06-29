@@ -282,7 +282,7 @@ class Session {
 	func getAudioUrl(trackId: Int) -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(config.quality.rawValue)"
-		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/streamUrl")!
+		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/offlineUrl")!
 		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -306,7 +306,7 @@ class Session {
 	}
 	
 	func getVideoUrl(videoId: Int) -> URL? {
-		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/streamUrl")!
+		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/offlineUrl")!
 		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
