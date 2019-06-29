@@ -180,7 +180,7 @@ class LogicTests: XCTestCase {
 		
 		// Playlist
 		let playlist = session.getPlaylist(playlistId: "a784a00e-8f76-4a67-8624-656a1e80f7ed")
-		let playlistUrl = playlist?.getImage(session: session, resolution: 750)
+		let playlistUrl = playlist?.getImageUrl(session: session, resolution: 750)
 		XCTAssertEqual(playlistUrl, URL(string:
 			"https://resources.tidal.com/images/ad687fd4/c635/45d9/8fa9/f636ca3e364c/750x750.jpg"))
 		
@@ -836,7 +836,7 @@ class LogicTests: XCTestCase {
 		guard let artistAlbumsFilterAppearances = optionalArtistAlbumsFilterAppearances else {
 			return
 		}
-		XCTAssertEqual(artistAlbumsFilterAppearances.count, 9) // Probably going to be more in the future
+		XCTAssert(artistAlbumsFilterAppearances.count >= 10) // Probably going to be more in the future
 	}
 
 	func testGetArtistTopTracks() {

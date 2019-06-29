@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum AudioQuality: String, Decodable {
 	case master = "HI_RES" // Master
@@ -101,6 +102,13 @@ struct Artist: Decodable, Equatable {
 		return session.getImageUrl(imageId: picture, resolution: resolution)
 	}
 	
+	func getPicture(session: Session, resolution: Int) -> NSImage? {
+		guard let picture = picture else {
+			return nil
+		}
+		return session.getImage(imageId: picture, resolution: resolution)
+	}
+	
 	static func == (lhs: Artist, rhs: Artist) -> Bool {
 		return lhs.id == rhs.id
 	}
@@ -142,6 +150,10 @@ struct Album: Decodable, Equatable {
 		return session.getImageUrl(imageId: cover, resolution: resolution)
 	}
 	
+	func getCover(session: Session, resolution: Int) -> NSImage? {
+		return session.getImage(imageId: cover, resolution: resolution)
+	}
+	
 	static func == (lhs: Album, rhs: Album) -> Bool {
 		return lhs.id == rhs.id
 	}
@@ -171,8 +183,12 @@ struct Playlist: Decodable, Equatable {
 	let popularity: Int
 	let squareImage: String?
 	
-	func getImage(session: Session, resolution: Int) -> URL? {
+	func getImageUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: squareImage ?? image, resolution: resolution)
+	}
+	
+	func getImage(session: Session, resolution: Int) -> NSImage? {
+		return session.getImage(imageId: squareImage ?? image, resolution: resolution)
 	}
 	
 	static func == (lhs: Playlist, rhs: Playlist) -> Bool {
@@ -192,6 +208,13 @@ struct PlaylistCreator: Decodable {
 			return nil
 		}
 		return session.getImageUrl(imageId: picture, resolution: resolution)
+	}
+	
+	func getPicture(session: Session, resolution: Int) -> NSImage? {
+		guard let picture = picture else {
+			return nil
+		}
+		return session.getImage(imageId: picture, resolution: resolution)
 	}
 }
 
@@ -224,6 +247,10 @@ struct Track: Decodable, Equatable {
 		return album.getCoverUrl(session: session, resolution: resolution)
 	}
 	
+	func getCover(session: Session, resolution: Int) -> NSImage? {
+		return album.getCover(session: session, resolution: resolution)
+	}
+	
 	static func == (lhs: Track, rhs: Track) -> Bool {
 		return lhs.id == rhs.id
 	}
@@ -252,6 +279,10 @@ struct Video: Decodable {
 	
 	func getImageUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: imageId, resolution: resolution)
+	}
+	
+	func getImage(session: Session, resolution: Int) -> NSImage? {
+		return session.getImage(imageId: imageId, resolution: resolution)
 	}
 	
 	static func == (lhs: Video, rhs: Video) -> Bool {
@@ -306,6 +337,10 @@ struct User: Decodable {
 	
 	func getPictureUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: picture, resolution: resolution)
+	}
+	
+	func getPicture(session: Session, resolution: Int) -> NSImage? {
+		return session.getImage(imageId: picture, resolution: resolution)
 	}
 }
 
@@ -364,6 +399,10 @@ struct MixesGraphicImage: Decodable {
 	func getImageUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: id, resolution: resolution)
 	}
+	
+	func getImage(session: Session, resolution: Int) -> NSImage? {
+		return session.getImage(imageId: id, resolution: resolution)
+	}
 }
 
 struct Mix: Decodable {
@@ -415,6 +454,10 @@ struct Genre: Decodable { // Also Mood
 	func getImageUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: image, resolution: resolution)
 	}
+	
+	func getImage(session: Session, resolution: Int) -> NSImage? {
+		return session.getImage(imageId: image, resolution: resolution)
+	}
 }
 
 struct FeaturedItems: Decodable {
@@ -451,6 +494,10 @@ struct FeaturedItem: Decodable {
 	
 	func getImageUrl(session: Session, resolution: Int, resolutionY: Int) -> URL? {
 		return session.getImageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
+	}
+	
+	func getImage(session: Session, resolution: Int, resolutionY: Int) -> NSImage? {
+		return session.getImage(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 	}
 }
 
