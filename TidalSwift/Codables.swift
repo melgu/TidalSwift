@@ -136,7 +136,7 @@ struct Album: Decodable, Equatable {
 	let type: String?
 	let version: String?
 	let url: URL?
-	let cover: String
+	let cover: String?
 	let videoCover: String?
 	let explicit: Bool?
 	let upc: String?
@@ -147,10 +147,12 @@ struct Album: Decodable, Equatable {
 	let artists: [Artist]?
 	
 	func getCoverUrl(session: Session, resolution: Int) -> URL? {
+		guard let cover = cover else { return nil }
 		return session.getImageUrl(imageId: cover, resolution: resolution)
 	}
 	
 	func getCover(session: Session, resolution: Int) -> NSImage? {
+		guard let cover = cover else { return nil }
 		return session.getImage(imageId: cover, resolution: resolution)
 	}
 	
