@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Cocoa
+import SwiftUI
 
 // Order
 
@@ -345,6 +345,14 @@ class Session {
 		let path = imageId.replacingOccurrences(of: "-", with: "/")
 		let urlString = "\(config.imageLocation)/\(path)/\(resolution)x\(tempResolutionY).jpg"
 		return URL(string: urlString)
+	}
+	
+	func getImage(imageId: String, resolution: Int, resolutionY: Int? = nil) -> NSImage? {
+		let urlOrNil = getImageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
+		guard let url = urlOrNil else {
+			return nil
+		}
+		return NSImage(byReferencing: url)
 	}
 	
 	func search(for term: String, limit: Int = 50, offset: Int = 0) -> SearchResult? {
