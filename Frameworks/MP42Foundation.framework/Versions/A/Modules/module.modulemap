@@ -1,0 +1,6 @@
+framework module MP42Foundation {
+  umbrella header "MP42Foundation.h"
+
+  export *
+  module * { export * }
+}

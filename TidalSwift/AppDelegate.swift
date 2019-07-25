@@ -34,20 +34,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //		session.saveSession()
 		
 		
-//		let session = Session(config: nil)
-//		session.loadSession()
-//		print("Login: \(session.checkLogin())")
-//
-//		let helpers = Helpers(session: session)
+		let session = Session(config: nil)
+		session.loadSession()
+		print("Login Status: \(session.checkLogin())")
+
+		let helpers = Helpers(session: session)
 		
 //		let albums = helpers.newReleasesFromFavoriteArtists(number: 100)!
 //		for album in albums {
 //			print("\(album.artist!.name) - \(album.title) - \(album.releaseDate!)")
 //		}
 		
-//		let r = helpers.downloadTrack(track: session.getTrack(trackId: 110386812)!)
-//		let r = helpers.downloadAlbum(album: session.getAlbum(albumId: 59978881)!)
-//		print(r)
+//		let r = helpers.downloadTrack(track: session.getTrack(trackId: 100006880)!)
+		let r = helpers.downloadAlbum(album: session.getAlbum(albumId: 113133545)!)
+		print("r: \(r)")
 		
 		
 		print("-----")

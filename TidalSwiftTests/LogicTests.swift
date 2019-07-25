@@ -182,7 +182,8 @@ class LogicTests: XCTestCase {
 		let playlist = session.getPlaylist(playlistId: "a784a00e-8f76-4a67-8624-656a1e80f7ed")
 		let playlistUrl = playlist?.getImageUrl(session: session, resolution: 750)
 		XCTAssertEqual(playlistUrl, URL(string:
-			"https://resources.tidal.com/images/ad687fd4/c635/45d9/8fa9/f636ca3e364c/750x750.jpg"))
+			"https://resources.tidal.com/images/f14453e2/88f8/4de4/a934/cb05414d9561/750x750.jpg"))
+		// Changes periodically
 		
 		// Genres & Moods have image ID, but I can't find a fitting resolution to access it
 		
@@ -217,7 +218,7 @@ class LogicTests: XCTestCase {
 		
 		// Master Version
 		XCTAssertEqual(searchResult?.albums.items[0].id, 100006868)
-		XCTAssertEqual(searchResult?.albums.items[0].title, "Djesse (Vol. 1)")
+		XCTAssertEqual(searchResult?.albums.items[0].title, "Djesse Vol. 1")
 		XCTAssertEqual(searchResult?.albums.items[0].duration, 3196)
 		XCTAssertEqual(searchResult?.albums.items[0].streamReady, true)
 		XCTAssertEqual(searchResult?.albums.items[0].streamStartDate,
@@ -654,7 +655,7 @@ class LogicTests: XCTestCase {
 		let album = session.getAlbum(albumId: 100006868)
 		
 		XCTAssertEqual(album?.id, 100006868)
-		XCTAssertEqual(album?.title, "Djesse (Vol. 1)")
+		XCTAssertEqual(album?.title, "Djesse Vol. 1")
 		XCTAssertEqual(album?.duration, 3196)
 		XCTAssertEqual(album?.streamReady, true)
 		XCTAssertEqual(album?.streamStartDate,
@@ -747,7 +748,7 @@ class LogicTests: XCTestCase {
 
 		// Album
 		XCTAssertEqual(albumTracks[0].album.id, 100006868)
-		XCTAssertEqual(albumTracks[0].album.title, "Djesse (Vol. 1)")
+		XCTAssertEqual(albumTracks[0].album.title, "Djesse Vol. 1")
 	}
 
 	func testGetArtist() {
@@ -778,7 +779,7 @@ class LogicTests: XCTestCase {
 		let album2 = artistAlbums[artistAlbums.count - 2] // Master
 		
 		XCTAssertEqual(album1.id, 100006868)
-		XCTAssertEqual(album1.title, "Djesse (Vol. 1)")
+		XCTAssertEqual(album1.title, "Djesse Vol. 1")
 		XCTAssertEqual(album1.duration, 3196)
 		XCTAssertEqual(album1.streamReady, true)
 		XCTAssertEqual(album1.streamStartDate,
@@ -818,7 +819,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(album1.artists?[2].type, "MAIN")
 		
 		XCTAssertEqual(album2.id, 100006800)
-		XCTAssertEqual(album2.title, "Djesse (Vol. 1)")
+		XCTAssertEqual(album2.title, "Djesse Vol. 1")
 		XCTAssertEqual(album2.audioQuality, .hifi)
 		
 		// Test Filters
@@ -1660,6 +1661,25 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(userPlaylistCountBefore, userPlaylistCountAfter)
 	}
 	
+	// MARK: - Artist String
+	
+	func testFormArtistString() {
+		let artist1 = session.getArtist(artistId: 7553669)!
+		let artist2 = session.getArtist(artistId: 4631340)!
+		let artist3 = session.getArtist(artistId: 4374293)!
+		
+		let noArtist = [Artist]()
+		XCTAssertEqual(formArtistString(artists: noArtist), "")
+		
+		let oneArtist = [artist1]
+		XCTAssertEqual(formArtistString(artists: oneArtist), "Jacob Collier")
+		
+		let twoArtists = [artist1, artist2]
+		XCTAssertEqual(formArtistString(artists: twoArtists), "Jacob Collier & Metropole Orkest")
+		
+		let threeArtists = [artist1, artist2, artist3]
+		XCTAssertEqual(formArtistString(artists: threeArtists), "Jacob Collier, Metropole Orkest & Jules Buckley")
+	}
 	
 	// MARK: - Date
 	

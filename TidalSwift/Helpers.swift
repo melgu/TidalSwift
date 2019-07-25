@@ -18,10 +18,12 @@ struct DownloadError {
 class Helpers {
 	unowned let session: Session
 	let offline: Offline
+	let metadataHandler: MetadataHandler
 	
 	init(session: Session) {
 		self.session = session
 		self.offline = Offline(session: session)
+		self.metadataHandler = MetadataHandler(session: session)
 	}
 	
 	func newReleasesFromFavoriteArtists(number: Int = 30) -> [Album]? {
@@ -49,25 +51,36 @@ class Helpers {
 	// TODO: Currently everything is done on the main thread synchronously
 	
 	func formFileName(_ track: Track) -> String {
-		return "\(track.trackNumber) \(track.title) - \(track.artists.map({ $0.name }).joined(separator: ", ")).m4a"
+		return "\(track.trackNumber) \(track.title) - \(formArtistString(artists: track.artists)).m4a"
 	}
 	
 	func formFileName(_ video: Video) -> String {
-		return "\(video.trackNumber) \(video.title) - \(video.artists.map({ $0.name }).joined(separator: ", ")).mp4"
+		return "\(video.trackNumber) \(video.title) - \(formArtistString(artists: video.artists)).mp4"
 	}
 	
 	func downloadTrack(track: Track, parentFolder: String = "") -> Bool {
 		guard let url = session.getAudioUrl(trackId: track.id) else { return false }
 		print("Downloading \(track.title)")
-		let response = Network.download(url, baseLocation: .downloads, targetPath: parentFolder, name: formFileName(track))
-		// TODO: Name should include all artists, not just the first
+		let fileName = formFileName(track)
+		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: fileName)
+		guard let path = optionalPath else {
+			return false
+		}
+		let response = Network.download(url, path: path, overwrite: true)
+		convertToALAC(path: path)
+		metadataHandler.setMetadata(for: track, at: path)
 		return response.ok
 	}
 	
 	func downloadVideo(video: Video, parentFolder: String = "") -> Bool {
 		guard let url = session.getVideoUrl(videoId: video.id) else { return false }
-		let response = Network.download(url, baseLocation: .downloads, targetPath: parentFolder, name: formFileName(video))
-		// TODO: Name should include all artists, not just the first
+		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: formFileName(video))
+		guard let path = optionalPath else {
+			return false
+		}
+		let response = Network.download(url, path: path, overwrite: true)
+//		metadataHandler.setMetadata(for: video, at: path)
+		// TODO: Metadata for Videos
 		return response.ok
 	}
 	
@@ -107,6 +120,93 @@ class Helpers {
 	}
 }
 
+enum DownloadLocation {
+	case downloads
+	case music
+}
+
+func buildPath(baseLocation: DownloadLocation, parentFolder: String, name: String) -> URL? {
+	
+//	if !parentFolder.isEmpty {
+//		if URL(string: parentFolder) == nil {
+//			displayError(title: "Download Error", content: "Target Path '\(targetPath)' is not valid")
+//			return nil
+//		}
+//	}
+//	if URL(string: name) == nil {
+//		displayError(title: "Download Error", content: "Name '\(name)' is not valid")
+//		return nil
+//	}
+	// TODO: Doesn't work as intended, because URL doesn't allow whitespace, but should
+	
+	var path: URL
+	do {
+		switch baseLocation {
+		case .downloads:
+			path = try FileManager.default.url(for: .downloadsDirectory,
+											   in: .userDomainMask,
+											   appropriateFor: nil,
+											   create: false)
+		case .music:
+			path = try FileManager.default.url(for: .musicDirectory,
+											   in: .userDomainMask,
+											   appropriateFor: nil,
+											   create: false)
+		}
+		path.appendPathComponent(parentFolder)
+		path.appendPathComponent(name)
+	} catch {
+		displayError(title: "Path Building Error", content: "File Error: \(error)")
+		return nil
+	}
+	return path
+}
+
+func convertToALAC(path: URL) {
+	
+	let tempPathString = path.deletingPathExtension().relativeString + "-temp." + path.pathExtension
+	let optionalTempPath = URL(string: tempPathString)
+	
+	guard let tempPath = optionalTempPath else {
+		displayError(title: "ALAC: Error creating path for temporary file", content: "Path: \(tempPathString)")
+		return
+	}
+	
+	do {
+		if FileManager.default.fileExists(atPath: tempPath.relativeString) {
+			try FileManager.default.removeItem(at: tempPath)
+		}
+		try FileManager.default.moveItem(at: path, to: tempPath)
+	} catch {
+		displayError(title: "ALAC: Error creating temporary file", content: "Error: \(error)")
+	}
+	
+	let avAsset = AVAsset(url: tempPath)
+	let optionalEncoder = SDAVAssetExportSession(asset: avAsset)
+	guard let encoder = optionalEncoder else {
+		displayError(title: "ALAC: Couldn't create Export Session", content: "Path: \(path)")
+		return
+	}
+	encoder.outputFileType = AVFileType.m4a.rawValue
+	encoder.outputURL = path
+	encoder.audioSettings = [AVFormatIDKey: kAudioFormatAppleLossless,
+							 AVEncoderBitDepthHintKey: 16,
+							 AVSampleRateKey: 44100,
+							 AVNumberOfChannelsKey: 2]
+	
+	let semaphore = DispatchSemaphore(value: 0)
+	encoder.exportAsynchronously {
+		semaphore.signal()
+	}
+	_ = semaphore.wait(timeout: DispatchTime.distantFuture)
+	
+	do {
+		try FileManager.default.removeItem(at: tempPath)
+	} catch {
+		displayError(title: "ALAC: Error deleting temporary file after conversion", content: "Error: \(error)")
+	}
+}
+
 // MARK: - Offline
 
 class Offline {
@@ -133,7 +233,11 @@ class Offline {
 		guard let url = session.getAudioUrl(trackId: trackId) else {
 			return false
 		}
-		let response = Network.download(url, baseLocation: .music, targetPath: mainPath, name: String(trackId))
+		let optionalPath = buildPath(baseLocation: .music, parentFolder: mainPath, name: String(trackId))
+		guard let path = optionalPath else {
+			return false
+		}
+		let response = Network.download(url, path: path)
 		return response.ok
 	}
 	
