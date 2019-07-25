@@ -15,11 +15,6 @@ struct Response {
 	var ok: Bool
 }
 
-enum DownloadLocation {
-	case downloads
-	case music
-}
-
 class Network {
 	
 	// MARK: - Queries
@@ -145,47 +140,17 @@ class Network {
 	// MARK: - Downloads
 	
 	// Path Structure example: path/to/file -> [path, to, file]. Cannot be empty
-	class func download(_ url: URL, baseLocation: DownloadLocation, targetPath: String, name: String, overwrite: Bool = false) -> Response {
+	class func download(_ url: URL, path: URL, overwrite: Bool = false) -> Response {
 		var networkResponse = Response(statusCode: nil, ok: false)
 		
-//		if !targetPath.isEmpty {
-//			if URL(string: targetPath) == nil {
-//				displayError(title: "Download Error", content: "Target Path '\(targetPath)' is not valid")
-//				return networkResponse
-//			}
-//		}
-//		if URL(string: name) == nil {
-//			displayError(title: "Download Error", content: "Name '\(name)' is not valid")
-//			return networkResponse
-//		}
-		// TODO: Doesn't work as intended, because URL doesn't allow whitespace, but should
-		
-		// Path building
-		var path: URL
 		do {
-			switch baseLocation {
-			case .downloads:
-				path = try FileManager.default.url(for: .downloadsDirectory,
-												   in: .userDomainMask,
-												   appropriateFor: nil,
-												   create: false)
-			case .music:
-				path = try FileManager.default.url(for: .musicDirectory,
-												   in: .userDomainMask,
-												   appropriateFor: nil,
-												   create: false)
-			}
+//						print("=== Network Download ===")
+//						print("Download URL: \(url)")
+//						print("Temp Local URL: \(dataUrl)")
+//						print("Final Local URL: \(path)")
+//						print("=======================")
 			
-			path.appendPathComponent(targetPath)
-			
-			//			print("=== Network Download ===")
-			//			print("Download URL: \(url)")
-			//			print("Temp Local URL: \(dataUrl)")
-			//			print("Final Local URL: \(path)")
-			//			print("=======================")
-			
-			try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
-			path.appendPathComponent(name)
+			try FileManager.default.createDirectory(at: path.deletingLastPathComponent(), withIntermediateDirectories: true)
 			
 			// No need to download if we're not overwriting and file exists
 			if !overwrite && FileManager.default.fileExists(atPath: path.relativePath) {
@@ -225,7 +190,7 @@ class Network {
 				try FileManager.default.moveItem(at: dataUrl, to: path)
 //				print("Path: \(path)")
 			} catch {
-				displayError(title: "Download Error", content: "File Error: \(error)")
+				displayError(title: "Download Error", content: "Failed to move file from \(dataUrl) to \(path). File Error: \(error).")
 			}
 			networkResponse = Response(statusCode: response.statusCode, ok: true)
 			semaphore.signal()
@@ -236,10 +201,9 @@ class Network {
 		return networkResponse
 	}
 	
-	class func asyncDownload(_ url: URL, baseLocation: DownloadLocation, targetPath: String, name: String,
-					   completionHandler: @escaping (Response) -> Void) {
+	class func asyncDownload(_ url: URL, path: URL, completionHandler: @escaping (Response) -> Void) {
 		DispatchQueue.global(qos: .background).async {
-			let response = self.download(url, baseLocation: baseLocation, targetPath: targetPath, name: name)
+			let response = self.download(url, path: path)
 			completionHandler(response)
 		}
 	}

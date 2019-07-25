@@ -57,10 +57,12 @@ class NetworkTests: XCTestCase {
 	}
 
 	func testDownload() {
-		let response = Network.download(demoUrl,
-								baseLocation: .downloads,
-								targetPath: demoFolderName,
-								name: demoName)
+		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: demoFolderName, name: demoName)
+		XCTAssertNotNil(optionalPath)
+		guard let path = optionalPath else {
+			return
+		}
+		let response = Network.download(demoUrl, path: path)
 		XCTAssert(response.ok)
 		XCTAssertNotNil(response.statusCode)
 		XCTAssertNil(response.content)

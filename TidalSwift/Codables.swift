@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 enum AudioQuality: String, Decodable {
-	case master = "HI_RES" // Master
+	case master = "HI_RES"
 	case hifi = "LOSSLESS"
 	case high = "HIGH"
 	case low = "LOW"
@@ -154,6 +154,10 @@ struct Album: Decodable, Equatable {
 	func getCover(session: Session, resolution: Int) -> NSImage? {
 		guard let cover = cover else { return nil }
 		return session.getImage(imageId: cover, resolution: resolution)
+	}
+	
+	func isCompilation(session: Session) -> Bool {
+		return session.isAlbumCompilation(albumId: id)
 	}
 	
 	static func == (lhs: Album, rhs: Album) -> Bool {
@@ -623,6 +627,35 @@ struct FavoritePlaylist: Decodable, Equatable {
 	static func == (lhs: Playlist, rhs: FavoritePlaylist) -> Bool {
 		return lhs.uuid == rhs.item.uuid
 	}
+}
+
+// MARK: - Artist String
+
+func formArtistString(artists: [Artist]) -> String {
+	var artistString: String = ""
+	
+	guard artists.count > 0 else {
+		return artistString
+	}
+	
+	// First
+	artistString += artists[0].name
+	
+	guard artists.count > 1 else {
+		return artistString
+	}
+	
+	// Middles
+	if artists.count > 2 {
+		for i in 1 ..< artists.count - 1 {
+			artistString += ", \(artists[i].name)"
+		}
+	}
+	
+	// Last
+	artistString += " & \(artists.last!.name)"
+	
+	return artistString
 }
 
 // MARK: - Date

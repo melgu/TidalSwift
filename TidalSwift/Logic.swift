@@ -507,6 +507,20 @@ class Session {
 		return albumTracksResponse?.items
 	}
 	
+	func isAlbumCompilation(albumId: Int) -> Bool {
+		let optionalTracks = getAlbumTracks(albumId: albumId)
+		guard let tracks = optionalTracks else {
+			return false
+		}
+		
+		for track in tracks {
+			if track.artists != tracks.first?.artists {
+				return true
+			}
+		}
+		return false
+	}
+	
 	func getArtist(artistId: Int) -> Artist? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)")!
 		let response = Network.get(url: url, parameters: sessionParameters)
@@ -1225,7 +1239,7 @@ class Favorites {
 func displayError(title: String, content: String) {
 	// Comment out while unit testing to prevent pop-ups
 	
-	print("Error info: \(content)")
+	print("\(title). \(content)")
 //	let appDelegate = NSApplication.shared.delegate as! AppDelegate
 //	appDelegate.mainViewController?.errorDialog(title: title, text: content)
 }
