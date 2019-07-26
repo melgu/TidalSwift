@@ -37,5 +37,8 @@ trailing_whitespace:
   ignores_comments: true
 vertical_whitespace:
   max_empty_lines: 2
+function_body_length:
+ - 60
+ - 100
 
 reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown)

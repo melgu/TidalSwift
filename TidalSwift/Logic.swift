@@ -194,7 +194,7 @@ class Session {
 													   "apiToken": config.apiToken,
 													   "apiLocation": config.apiLocation,
 													   "imageLocation": config.imageLocation,
-													   "imageSize": String(config.imageSize),
+													   "imageSize": String(config.imageSize)
 													   ]
 		
 		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
@@ -513,10 +513,8 @@ class Session {
 			return false
 		}
 		
-		for track in tracks {
-			if track.artists != tracks.first?.artists {
-				return true
-			}
+		for track in tracks where track.artists != tracks.first?.artists {
+			return true
 		}
 		return false
 	}
@@ -545,7 +543,8 @@ class Session {
 		case appearances = "COMPILATIONS" // No idea, why Tidal has wrong names
 	}
 	
-	func getArtistAlbums(artistId: Int, filter: ArtistAlbumFilter? = nil, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil, limit: Int = 999, offset: Int = 0) -> [Album]? {
+	func getArtistAlbums(artistId: Int, filter: ArtistAlbumFilter? = nil, order: AlbumOrder? = nil,
+						 orderDirection: OrderDirection? = nil, limit: Int = 999, offset: Int = 0) -> [Album]? {
 		var parameters = sessionParameters
 		parameters["limit"] = "\(limit)"
 		parameters["offset"] = "\(offset)"
@@ -991,7 +990,8 @@ class Favorites {
 	
 	// Return
 	
-	func artists(limit: Int = 999, offset: Int = 0, order: ArtistOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoriteArtist]? {
+	func artists(limit: Int = 999, offset: Int = 0, order: ArtistOrder? = nil,
+				 orderDirection: OrderDirection? = nil) -> [FavoriteArtist]? {
 		let url = URL(string: "\(baseUrl)/artists")!
 		var parameters = session.sessionParameters
 		parameters["limit"] = "\(limit)"
@@ -1019,7 +1019,8 @@ class Favorites {
 		return artists?.items
 	}
 
-	func albums(limit: Int = 999, offset: Int = 0, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoriteAlbum]? {
+	func albums(limit: Int = 999, offset: Int = 0, order: AlbumOrder? = nil,
+				orderDirection: OrderDirection? = nil) -> [FavoriteAlbum]? {
 		let url = URL(string: "\(baseUrl)/albums")!
 		var parameters = session.sessionParameters
 		parameters["limit"] = "\(limit)"
@@ -1047,7 +1048,8 @@ class Favorites {
 		return albums?.items
 	}
 
-	func tracks(limit: Int = 999, offset: Int = 0, order: TrackOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoriteTrack]? {
+	func tracks(limit: Int = 999, offset: Int = 0, order: TrackOrder? = nil,
+				orderDirection: OrderDirection? = nil) -> [FavoriteTrack]? {
 		let url = URL(string: "\(baseUrl)/tracks")!
 		var parameters = session.sessionParameters
 		parameters["limit"] = "\(limit)"
@@ -1075,7 +1077,8 @@ class Favorites {
 		return tracks?.items
 	}
 	
-	func videos(limit: Int = 100, offset: Int = 0, order: VideoOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoriteVideo]? {
+	func videos(limit: Int = 100, offset: Int = 0, order: VideoOrder? = nil,
+				orderDirection: OrderDirection? = nil) -> [FavoriteVideo]? {
 		guard limit <= 100 else {
 			displayError(title: "Favorite Videos failed (Limit too high)", content: "The limit has to be 100 or below.")
 			return nil
@@ -1109,7 +1112,8 @@ class Favorites {
 	}
 	
 	// Includes User Playlists
-	func playlists(limit: Int = 999, offset: Int = 0, order: PlaylistOrder? = nil, orderDirection: OrderDirection? = nil) -> [FavoritePlaylist]? {
+	func playlists(limit: Int = 999, offset: Int = 0, order: PlaylistOrder? = nil,
+				   orderDirection: OrderDirection? = nil) -> [FavoritePlaylist]? {
 		let url = URL(string: "\(baseUrl)/playlists")!
 		var parameters = session.sessionParameters
 		parameters["limit"] = "\(limit)"
