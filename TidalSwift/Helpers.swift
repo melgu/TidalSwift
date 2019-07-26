@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct DownloadError {
+struct DownloadErrors {
 	var affectedTracks = [Track]()
 	var affectedAlbums = [Album]()
 	var affectedArtists = [Artist]()
@@ -18,12 +18,12 @@ struct DownloadError {
 class Helpers {
 	unowned let session: Session
 	let offline: Offline
-	let metadataHandler: MetadataHandler
+	let metadata: Metadata
 	
 	init(session: Session) {
 		self.session = session
 		self.offline = Offline(session: session)
-		self.metadataHandler = MetadataHandler(session: session)
+		self.metadata = Metadata(session: session)
 	}
 	
 	func newReleasesFromFavoriteArtists(number: Int = 30) -> [Album]? {
@@ -68,7 +68,7 @@ class Helpers {
 		}
 		let response = Network.download(url, path: path, overwrite: true)
 		convertToALAC(path: path)
-		metadataHandler.setMetadata(for: track, at: path)
+		metadata.setMetadata(for: track, at: path)
 		return response.ok
 	}
 	
@@ -84,9 +84,9 @@ class Helpers {
 		return response.ok
 	}
 	
-	func downloadAlbum(album: Album, parentFolder: String = "") -> DownloadError {
-		guard let tracks = session.getAlbumTracks(albumId: album.id) else { return DownloadError(affectedAlbums: [album]) }
-		var error = DownloadError()
+	func downloadAlbum(album: Album, parentFolder: String = "") -> DownloadErrors {
+		guard let tracks = session.getAlbumTracks(albumId: album.id) else { return DownloadErrors(affectedAlbums: [album]) }
+		var error = DownloadErrors()
 		for track in tracks {
 			let r = downloadTrack(track: track, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title)")
 			if !r {
@@ -96,9 +96,11 @@ class Helpers {
 		return error
 	}
 	
-	func downloadAllAlbumsFromArtist(artist: Artist, parentFolder: String = "") -> DownloadError {
-		guard let albums = session.getArtistAlbums(artistId: artist.id) else { return DownloadError(affectedArtists: [artist]) }
-		var error = DownloadError()
+	func downloadAllAlbumsFromArtist(artist: Artist, parentFolder: String = "") -> DownloadErrors {
+		guard let albums = session.getArtistAlbums(artistId: artist.id) else {
+			return DownloadErrors(affectedArtists: [artist])
+		}
+		var error = DownloadErrors()
 		for album in albums {
 			let r = downloadAlbum(album: album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)")
 			error.affectedAlbums.append(contentsOf: r.affectedAlbums)
@@ -107,11 +109,14 @@ class Helpers {
 		return error
 	}
 	
-	func downloadPlaylist(playlist: Playlist, parentFolder: String = "") -> DownloadError {
-		guard let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) else { return DownloadError(affectedPlaylists: [playlist]) }
-		var error = DownloadError()
+	func downloadPlaylist(playlist: Playlist, parentFolder: String = "") -> DownloadErrors {
+		guard let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) else {
+			return DownloadErrors(affectedPlaylists: [playlist])
+		}
+		var error = DownloadErrors()
 		for track in tracks {
-			let r = downloadTrack(track: track, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
+			let r = downloadTrack(track: track,
+								  parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
 			if !r {
 				error.affectedTracks.append(track)
 			}

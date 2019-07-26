@@ -9,7 +9,7 @@
 import Foundation
 import MP42Foundation
 
-class MetadataHandler {
+class Metadata {
 	
 	unowned let session: Session
 	
@@ -107,10 +107,8 @@ class MetadataHandler {
 //					 .integer))
 		
 		// Remove previous artwork
-		for item in m4aFile.metadata.items {
-			if item.imageValue != nil {
-				m4aFile.metadata.removeItem(item)
-			}
+		for item in m4aFile.metadata.items where item.imageValue != nil {
+			m4aFile.metadata.removeItem(item)
 		}
 
 		for metadatum in metadata {
@@ -123,7 +121,7 @@ class MetadataHandler {
 		m4aFile.optimize()
 		
 		do {
-			let options = [:] as [String : Any]
+			let options = [:] as [String: Any]
 //				options[MP42DontUpdateBitrate] = true
 			try m4aFile.update(options: options)
 		} catch {

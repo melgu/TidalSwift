@@ -150,7 +150,8 @@ class LogicTests: XCTestCase {
 			"https://resources.tidal.com/images/e60d7380/2a14/4011/bbc1/a3a1f0c576d6/1280x1280.jpg"))
 		
 		// General non-square (FeaturedItem)
-		let urlNonSquare = session.getImageUrl(imageId: "a133cb38-6ae7-44b7-9fc5-f6a9b48ee3bc", resolution: 1100, resolutionY: 800)
+		let urlNonSquare = session.getImageUrl(imageId: "a133cb38-6ae7-44b7-9fc5-f6a9b48ee3bc",
+											   resolution: 1100, resolutionY: 800)
 		XCTAssertEqual(urlNonSquare, URL(string:
 			"https://resources.tidal.com/images/a133cb38/6ae7/44b7/9fc5/f6a9b48ee3bc/1100x800.jpg"))
 		
@@ -896,7 +897,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(artistBio?.source, "TiVo")
 //		print(DateFormatter.iso8601OptionalTime.string(for: artistBio?.lastUpdated))
 		// Bio is not consistent, therefore cannot be tested properly.
-		// Sometimes some of the referenced artists or albums have a so-called wimpLink, sometimes exactly the same references don't have a wimpLink.
+		// Sometimes some of the referenced artists or albums have a so-called wimpLink,
+		// sometimes exactly the same references don't have a wimpLink.
 //		XCTAssertEqual(artistBio?.lastUpdated,
 //					   DateFormatter.iso8601OptionalTime.date(from:
 //						"2019-03-09T19:22:46.937GMT"))
@@ -1299,7 +1301,8 @@ class LogicTests: XCTestCase {
 		XCTAssertNotNil(albumAsc)
 		XCTAssertNotNil(albumDesc)
 //		XCTAssertEqual(albumAsc?.reversed(), albumDesc)
-		// When sorting by album, the above test fails when there are two tracks from the same album, because those tracks are in the same order no matter if sorted by ascending or descending
+		// When sorting by album, the above test fails when there are two tracks from the same album,
+		// because those tracks are in the same order no matter if sorted by ascending or descending
 		
 		let dateAsc = favorites.tracks(order: .date, orderDirection: .ascending)
 		let dateDesc = favorites.tracks(order: .date, orderDirection: .descending)
@@ -1401,21 +1404,21 @@ class LogicTests: XCTestCase {
 		}
 		
 		XCTAssertFalse((favorites.artists()?.contains { (artist) -> Bool in
-			return artist.item.id == demoArtistId
+			artist.item.id == demoArtistId
 		})!)
 		
 		let r1 = favorites.addArtist(artistId: demoArtistId)
 		XCTAssert(r1)
 		
 		XCTAssert((favorites.artists()?.contains { (artist) -> Bool in
-			return artist.item.id == demoArtistId
+			artist.item.id == demoArtistId
 		})!)
 		
 		let r2 = favorites.removeArtist(artistId: demoArtistId)
 		XCTAssert(r2)
 		
 		XCTAssertFalse((favorites.artists()?.contains { (artist) -> Bool in
-			return artist.item.id == demoArtistId
+			artist.item.id == demoArtistId
 		})!)
 	}
 	
@@ -1428,21 +1431,21 @@ class LogicTests: XCTestCase {
 		}
 		
 		XCTAssertFalse((favorites.albums()?.contains { (album) -> Bool in
-			return album.item.id == demoAlbumId
+			album.item.id == demoAlbumId
 		})!)
 		
 		let r1 = favorites.addAlbum(albumId: demoAlbumId)
 		XCTAssert(r1)
 		
 		XCTAssert((favorites.albums()?.contains { (album) -> Bool in
-			return album.item.id == demoAlbumId
+			album.item.id == demoAlbumId
 		})!)
 		
 		let r2 = favorites.removeAlbum(albumId: demoAlbumId)
 		XCTAssert(r2)
 		
 		XCTAssertFalse((favorites.albums()?.contains { (album) -> Bool in
-			return album.item.id == demoAlbumId
+			album.item.id == demoAlbumId
 		})!)
 	}
 	
@@ -1455,21 +1458,21 @@ class LogicTests: XCTestCase {
 		}
 		
 		XCTAssertFalse((favorites.tracks()?.contains { (track) -> Bool in
-			return track.item.id == demoTrackId
+			track.item.id == demoTrackId
 		})!)
 		
 		let r1 = favorites.addTrack(trackId: demoTrackId)
 		XCTAssert(r1)
 		
 		XCTAssert((favorites.tracks()?.contains { (track) -> Bool in
-			return track.item.id == demoTrackId
+			track.item.id == demoTrackId
 		})!)
 		
 		let r2 = favorites.removeTrack(trackId: demoTrackId)
 		XCTAssert(r2)
 		
 		XCTAssertFalse((favorites.tracks()?.contains { (track) -> Bool in
-			return track.item.id == demoTrackId
+			track.item.id == demoTrackId
 		})!)
 	}
 	
@@ -1482,21 +1485,21 @@ class LogicTests: XCTestCase {
 		}
 		
 		XCTAssertFalse((favorites.videos()?.contains { (video) -> Bool in
-			return video.item.id == demoVideoId
+			video.item.id == demoVideoId
 		})!)
 		
 		let r1 = favorites.addVideo(videoId: demoVideoId)
 		XCTAssert(r1)
 		
 		XCTAssert((favorites.videos()?.contains { (video) -> Bool in
-			return video.item.id == demoVideoId
+			video.item.id == demoVideoId
 		})!)
 		
 		let r2 = favorites.removeVideo(videoId: demoVideoId)
 		XCTAssert(r2)
 
 		XCTAssertFalse((favorites.videos()?.contains { (video) -> Bool in
-			return video.item.id == demoVideoId
+			video.item.id == demoVideoId
 		})!)
 	}
 	
@@ -1509,21 +1512,21 @@ class LogicTests: XCTestCase {
 		}
 
 		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
-			return playlist.item.uuid == demoPlaylistId
+			playlist.item.uuid == demoPlaylistId
 		})!)
 
 		let r1 = favorites.addPlaylist(playlistId: demoPlaylistId)
 		XCTAssert(r1)
 
 		XCTAssert((favorites.playlists()?.contains { (playlist) -> Bool in
-			return playlist.item.uuid == demoPlaylistId
+			playlist.item.uuid == demoPlaylistId
 		})!)
 
 		let r2 = favorites.removePlaylist(playlistId: demoPlaylistId)
 		XCTAssert(r2)
 
 		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
-			return playlist.item.uuid == demoPlaylistId
+			playlist.item.uuid == demoPlaylistId
 		})!)
 	}
 	

@@ -634,7 +634,7 @@ struct FavoritePlaylist: Decodable, Equatable {
 func formArtistString(artists: [Artist]) -> String {
 	var artistString: String = ""
 	
-	guard artists.count > 0 else {
+	guard !artists.isEmpty else {
 		return artistString
 	}
 	

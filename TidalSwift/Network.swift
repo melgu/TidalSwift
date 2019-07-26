@@ -163,8 +163,7 @@ class Network {
 		
 		let semaphore = DispatchSemaphore(value: 0)
 		
-		let downloadTask = URLSession.shared.downloadTask(with: url) {
-			dataUrlOrNil, responseOrNil, error in
+		let downloadTask = URLSession.shared.downloadTask(with: url) { dataUrlOrNil, responseOrNil, error in
 			
 			guard let dataUrl = dataUrlOrNil,
 				let response = responseOrNil as? HTTPURLResponse,
@@ -190,7 +189,8 @@ class Network {
 				try FileManager.default.moveItem(at: dataUrl, to: path)
 //				print("Path: \(path)")
 			} catch {
-				displayError(title: "Download Error", content: "Failed to move file from \(dataUrl) to \(path). File Error: \(error).")
+				displayError(title: "Download Error",
+							 content: "Failed to move file from \(dataUrl) to \(path). File Error: \(error).")
 			}
 			networkResponse = Response(statusCode: response.statusCode, ok: true)
 			semaphore.signal()
