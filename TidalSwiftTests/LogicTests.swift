@@ -162,10 +162,10 @@ class LogicTests: XCTestCase {
 			"https://resources.tidal.com/images/e60d7380/2a14/4011/bbc1/a3a1f0c576d6/1280x1280.jpg"))
 		
 		// Artist
-		let artist = session.getArtist(artistId: 7553669)
+		let artist = session.getArtist(artistId: 16579)
 		let artistUrl = artist?.getPictureUrl(session: session, resolution: 750)
 		XCTAssertEqual(artistUrl, URL(string:
-			"https://resources.tidal.com/images/daaa931c/afc0/4c63/819c/c821393b6a45/750x750.jpg"))
+			"https://resources.tidal.com/images/2fb1902b/7216/407b/b674/5edb93d00a84/750x750.jpg"))
 		
 		// Track (Album Cover)
 		let track = session.getTrack(trackId: 59978883)
@@ -198,15 +198,15 @@ class LogicTests: XCTestCase {
 	// MARK: - Search
 	
 	func testSearchArtist() {
-		let searchResult = session.search(for: "Jacob Collier")
-		XCTAssertEqual(searchResult?.artists.totalNumberOfItems, 1)
-		XCTAssertEqual(searchResult?.artists.items[0].id, 7553669)
-		XCTAssertEqual(searchResult?.artists.items[0].name, "Jacob Collier")
+		let searchResult = session.search(for: "Roger Cicero")
+		XCTAssertEqual(searchResult?.artists.totalNumberOfItems, 2)
+		XCTAssertEqual(searchResult?.artists.items[0].id, 16579)
+		XCTAssertEqual(searchResult?.artists.items[0].name, "Roger Cicero")
 		XCTAssertEqual(searchResult?.artists.items[0].url,
-					   URL(string: "http://www.tidal.com/artist/7553669"))
+					   URL(string: "http://www.tidal.com/artist/16579"))
 		// Interestingly the resulting URL is HTTP instead of HTTPS
 		XCTAssertEqual(searchResult?.artists.items[0].picture,
-					   "daaa931c-afc0-4c63-819c-c821393b6a45")
+					   "2fb1902b-7216-407b-b674-5edb93d00a84")
 		XCTAssertNotNil(searchResult?.artists.items[0].popularity)
 		XCTAssertNil(searchResult?.artists.items[0].type)
 		XCTAssertNil(searchResult?.artists.items[0].banner)
@@ -296,7 +296,7 @@ class LogicTests: XCTestCase {
 						"2018-01-19T17:56:03.000GMT"))
 		XCTAssertEqual(searchResult?.playlists.items[0].type, .editorial)
 		// Here it's false, but in the Playlist test it's true. No idea, why.
-		XCTAssertEqual(searchResult?.playlists.items[0].publicPlaylist, false)
+		XCTAssertEqual(searchResult?.playlists.items[0].publicPlaylist, true)
 		XCTAssertEqual(searchResult?.playlists.items[0].url, URL(string:
 			"http://www.tidal.com/playlist/96696a2c-b284-4dd3-8e51-5e0dae44ace0"))
 		XCTAssertEqual(searchResult?.playlists.items[0].image,
@@ -508,9 +508,10 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlistTracks.count, 20)
 		
 		// For some reason this exact track doesn't exist even though it's technically part of the playlist
+		// And for some reason it just gained audioQuality, but not streamStartDate or surroundTypes
 		XCTAssertEqual(playlistTracks[17].id, 16557722)
 		XCTAssertNil(playlistTracks[17].streamStartDate)
-		XCTAssertNil(playlistTracks[17].audioQuality)
+//		XCTAssertNil(playlistTracks[17].audioQuality)
 		XCTAssertNil(playlistTracks[17].surroundTypes)
 		
 		let cleanedTrackList = session.cleanTrackList(playlistTracks)
@@ -753,15 +754,15 @@ class LogicTests: XCTestCase {
 	}
 
 	func testGetArtist() {
-		let artist = session.getArtist(artistId: 7553669)
+		let artist = session.getArtist(artistId: 16579)
 		
-		XCTAssertEqual(artist?.id, 7553669)
-		XCTAssertEqual(artist?.name, "Jacob Collier")
+		XCTAssertEqual(artist?.id, 16579)
+		XCTAssertEqual(artist?.name, "Roger Cicero")
 		XCTAssertEqual(artist?.url, URL(string:
-			"http://www.tidal.com/artist/7553669"))
+			"http://www.tidal.com/artist/16579"))
 		// Interestingly the resulting URL is HTTP instead of HTTPS
 		XCTAssertEqual(artist?.picture,
-					   "daaa931c-afc0-4c63-819c-c821393b6a45")
+					   "2fb1902b-7216-407b-b674-5edb93d00a84")
 		XCTAssertNotNil(artist?.popularity)
 		XCTAssertNil(artist?.type)
 		XCTAssertNil(artist?.banner)
@@ -1039,15 +1040,15 @@ class LogicTests: XCTestCase {
 		
 		// Hard to test as different for every user
 		// Needs to be changed by tester
-		XCTAssertEqual(playlists[17].uuid, "825a0e70-c918-40b8-89c6-247dfbac04b4")
+		XCTAssertEqual(playlists[18].uuid, "825a0e70-c918-40b8-89c6-247dfbac04b4")
 		// Testing the handling of "" in Strings & JSON
-		XCTAssertEqual(playlists[17].title, #"Schlechte "Musik""#)
-		XCTAssertEqual(playlists[17].type, .user)
-		XCTAssertEqual(playlists[17].creator.id, userId)
-		XCTAssertNil(playlists[17].creator.name)
-		XCTAssertNil(playlists[17].creator.url)
-		XCTAssertNil(playlists[17].creator.picture)
-		XCTAssertNil(playlists[17].creator.popularity)
+		XCTAssertEqual(playlists[18].title, #"Schlechte "Musik""#)
+		XCTAssertEqual(playlists[18].type, .user)
+		XCTAssertEqual(playlists[18].creator.id, userId)
+		XCTAssertNil(playlists[18].creator.name)
+		XCTAssertNil(playlists[18].creator.url)
+		XCTAssertNil(playlists[18].creator.picture)
+		XCTAssertNil(playlists[18].creator.popularity)
 	}
 	
 	func testGetMixes() {
@@ -1118,8 +1119,8 @@ class LogicTests: XCTestCase {
 					   "Step onto your mat and into your zen with these meditative tracks.")
 //		XCTAssertEqual(playlists[0].duration, 18592)
 		XCTAssertEqual(playlists[0].created,
-					   DateFormatter.iso8601OptionalTime.date(from: "2018-02-05T21:44:05.000GMT"))
-		XCTAssertEqual(playlists[0].publicPlaylist, false)
+					   DateFormatter.iso8601OptionalTime.date(from: "2018-02-05T21:44:05.249GMT"))
+		XCTAssertEqual(playlists[0].publicPlaylist, true)
 		XCTAssertEqual(playlists[0].url, URL(string:
 			"http://www.tidal.com/playlist/98676f10-0aa1-4c8c-ba84-4f84e370f3d2"))
 		XCTAssertEqual(playlists[0].image, "8eaace51-981c-41a1-9ff5-6a1a149e3818")
