@@ -21,13 +21,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		B073660322E9C5C000758E5E /* .gitattributes in Resources */ = {isa = PBXBuildFile; fileRef = B073660222E9C5C000758E5E /* .gitattributes */; };
 		B07C5EF622C8797A00710752 /* Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07C5EF522C8797A00710752 /* Metadata.swift */; };
 		B0A42FEE22E97317006421A8 /* MetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A42FED22E97317006421A8 /* MetadataTests.swift */; };
 		B0A42FEF22E98BC7006421A8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B0A42FF022E98BC7006421A8 /* MP42Foundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B0B2A3FB22E9AF3F0005E411 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B0B2A3F822E9AF3F0005E411 /* LICENSE */; };
-		B0B2A3FC22E9AF3F0005E411 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B0B2A3F922E9AF3F0005E411 /* README.md */; };
 		B0B2A3FD22E9AF3F0005E411 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */; };
 		B0B49A8D22C46DB700F07B34 /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B49A8C22C46DB700F07B34 /* NetworkTests.swift */; };
 		B0DAFDDA2296417500BA669F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDD92296417500BA669F /* Helpers.swift */; };
@@ -283,10 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0E582D6223764A600ADAE6C /* Assets.xcassets in Resources */,
-				B073660322E9C5C000758E5E /* .gitattributes in Resources */,
 				B0E582D9223764A600ADAE6C /* Main.storyboard in Resources */,
-				B0B2A3FC22E9AF3F0005E411 /* README.md in Resources */,
-				B0B2A3FB22E9AF3F0005E411 /* LICENSE in Resources */,
 				B0E1EE972272AE110071C920 /* Demo Login Information.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
