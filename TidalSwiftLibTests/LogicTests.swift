@@ -71,30 +71,30 @@ class LogicTests: XCTestCase {
 	}
 	
 	// Login Testing commented out to prevent potential ban from the server if done too often
-//	func testLogin() {
-//		let loginInfo = readDemoLoginCredentials()
-//		let config = Config(quality: .hifi, loginCredentials: loginInfo)
-//		session = Session(config: config)
-//		let result = session.login()
-//		XCTAssert(result)
-//	}
+	func testLogin() {
+		let loginInfo = readDemoLoginCredentials()
+		let config = Config(quality: .hifi, loginCredentials: loginInfo)
+		session = Session(config: config)
+		let result = session.login()
+		XCTAssert(result)
+	}
 
 	// Login Testing commented out to prevent potential ban from the server if done too often
-//	func testWrongLogin() {
-//		// Wrong Login Info
-//		let loginInfo1 = LoginCredentials(username: "ABC", password: "ABC")
-//		let config1 = Config(quality: .hifi, loginCredentials: loginInfo1)
-//		session = Session(config: config1)
-//		let result1 = session.login()
-//		XCTAssertFalse(result1)
-//
-//		// Empty Login Info
-//		let loginInfo2 = LoginCredentials(username: "", password: "")
-//		let config2 = Config(quality: .hifi, loginCredentials: loginInfo2)
-//		session = Session(config: config2)
-//		let result2 = session.login()
-//		XCTAssertFalse(result2)
-//	}
+	func testWrongLogin() {
+		// Wrong Login Info
+		let loginInfo1 = LoginCredentials(username: "ABC", password: "ABC")
+		let config1 = Config(quality: .hifi, loginCredentials: loginInfo1)
+		session = Session(config: config1)
+		let result1 = session.login()
+		XCTAssertFalse(result1)
+
+		// Empty Login Info
+		let loginInfo2 = LoginCredentials(username: "", password: "")
+		let config2 = Config(quality: .hifi, loginCredentials: loginInfo2)
+		session = Session(config: config2)
+		let result2 = session.login()
+		XCTAssertFalse(result2)
+	}
 	
 	func testCheckLogin() {
 		XCTAssert(session.checkLogin())
@@ -121,27 +121,26 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(info?.paymentType, "PARENT")
 	}
 	
-	// Stops playback if you're listening in the web player or official app
-//	func testGetMediaUrl() {
-//		let optionalTrackUrl = session.getAudioUrl(trackId: 59978883)
-//		XCTAssertNotNil(optionalTrackUrl)
-//		guard let trackUrl = optionalTrackUrl else {
-//			return
-//		}
-////		print(trackUrl)
-//		XCTAssert(trackUrl.absoluteString.contains(".m4a"))
-//	}
+	func testGetMediaUrl() {
+		let optionalTrackUrl = session.getAudioUrl(trackId: 59978883)
+		XCTAssertNotNil(optionalTrackUrl)
+		guard let trackUrl = optionalTrackUrl else {
+			return
+		}
+//		print(trackUrl)
+		XCTAssert(trackUrl.absoluteString.contains(".m4a"))
+	}
 	
 	// Stops playback if you're listening in the web player or official app
-//	func testGetVideoUrl() {
-//		let optionalVideoUrl = session.getVideoUrl(videoId: 98785108)
-//		XCTAssertNotNil(optionalVideoUrl)
-//		guard let videoUrl = optionalVideoUrl else {
-//			return
-//		}
-////		print(videoUrl)
-//		XCTAssert(videoUrl.absoluteString.contains(".m3u8"))
-//	}
+	func testGetVideoUrl() {
+		let optionalVideoUrl = session.getVideoUrl(videoId: 98785108)
+		XCTAssertNotNil(optionalVideoUrl)
+		guard let videoUrl = optionalVideoUrl else {
+			return
+		}
+//		print(videoUrl)
+		XCTAssert(videoUrl.absoluteString.contains(".m3u8"))
+	}
 	
 	func testGetImageUrl() {
 		// General (Album)
