@@ -39,17 +39,6 @@
       </MacroExpansion>
       <Testables>
          <TestableReference
-            skipped = "NO"
-            testExecutionOrdering = "random">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B0E582EE224329A000ADAE6C"
-               BuildableName = "TidalSwiftTests.xctest"
-               BlueprintName = "TidalSwiftTests"
-               ReferencedContainer = "container:TidalSwift.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
@@ -58,6 +47,23 @@
                BlueprintName = "TidalSwiftLibTests"
                ReferencedContainer = "container:TidalSwift.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "LogicTests/testGetMediaUrl()">
+               </Test>
+               <Test
+                  Identifier = "LogicTests/testGetVideoUrl()">
+               </Test>
+               <Test
+                  Identifier = "LogicTests/testLogin()">
+               </Test>
+               <Test
+                  Identifier = "LogicTests/testWrongLogin()">
+               </Test>
+               <Test
+                  Identifier = "TidalSwiftLibTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
