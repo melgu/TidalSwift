@@ -49,6 +49,16 @@
                ReferencedContainer = "container:TidalSwift.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B0443FF22305F7250019D0D8"
+               BuildableName = "TidalSwiftLibTests.xctest"
+               BlueprintName = "TidalSwiftLibTests"
+               ReferencedContainer = "container:TidalSwift.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

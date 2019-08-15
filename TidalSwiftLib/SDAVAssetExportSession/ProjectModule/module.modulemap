@@ -1,0 +1,6 @@
+
+module SDAVAssetExportSession {
+  header "../SDAVAssetExportSession.h"
+  export *
+}
+
