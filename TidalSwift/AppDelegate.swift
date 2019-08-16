@@ -2,62 +2,71 @@
 //  AppDelegate.swift
 //  TidalSwift
 //
-//  Created by Melvin Gundlach on 12.03.19.
+//  Created by Melvin Gundlach on 16.08.19.
 //  Copyright © 2019 Melvin Gundlach. All rights reserved.
 //
 
 import Cocoa
+import SwiftUI
+import TidalSwiftLib
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
+
+	var window: NSWindow!
 	
-	var mainViewController: ViewController?
+	var session: Session?
+
 
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
 		
-//		let loginCredentials = readDemoLoginCredentials()
-//		let config = Config(quality: .hifi, loginCredentials: loginCredentials)
-//		let session = Session(config: config)
-//
-//		session.deletePersistantInformation()
-//
-//		_ = session.login()
-//		print(session.checkLogin())
-//		
-//		print(loginCredentials.username)
-//		print(loginCredentials.password)
-//		print(config.apiToken)
-//		print(session.sessionId)
-//
-//		session.saveConfig()
-//		session.saveSession()
+		// My Stuff
+		let config = Config(quality: .hifi,
+							loginCredentials: readDemoLoginCredentials(),
+							apiToken: nil)
+		session = Session(config: config)
 		
+//		session?.login()
+//		session?.saveConfig()
+//		session?.saveSession()
 		
-//		let session = Session(config: nil)
-//		session.loadSession()
-//		print("Login Status: \(session.checkLogin())")
-//
-//		let helpers = Helpers(session: session)
+		session?.loadSession()
 		
-//		let albums = helpers.newReleasesFromFavoriteArtists(number: 100)!
-//		for album in albums {
-//			print("\(album.artist!.name) - \(album.title) - \(album.releaseDate!)")
-//		}
-		
-//		let r = helpers.downloadTrack(track: session.getTrack(trackId: 100006880)!)
-//		let r = helpers.downloadAlbum(album: session.getAlbum(albumId: 113133545)!)
-//		print("r: \(r)")
-		
+		let demoAlbum = session!.getAlbum(albumId: 100006868)!
 		
 		print("-----")
+		
+		// Swift UI Stuff
+		window = NSWindow(
+		    contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
+		    styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
+		    backing: .buffered, defer: false)
+		window.center()
+		window.setFrameAutosaveName("Main Window")
+
+		window.contentView = NSHostingView(rootView: ContentView())
+
+		window.makeKeyAndOrderFront(nil)
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
 		// Insert code here to tear down your application
-		
-		UserDefaults.standard.synchronize()
 	}
+	
+	
+	func readDemoLoginCredentials() -> LoginCredentials {
+		let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
+		var content = ""
+		do {
+			content = try String(contentsOfFile: fileLocation)
+		} catch {
+			print("I'm unhappy in AppDelegate")
+		}
 
-
+		let lines: [String] = content.components(separatedBy: "\n")
+		return LoginCredentials(username: lines[0], password: lines[1])
+	}
+	
 }
+

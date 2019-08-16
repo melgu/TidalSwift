@@ -1,8 +1,8 @@
 //
-//  TidalSwiftLibTests.swift
-//  TidalSwiftLibTests
+//  TidalSwiftTests.swift
+//  TidalSwiftTests
 //
-//  Created by Melvin Gundlach on 15.08.19.
+//  Created by Melvin Gundlach on 16.08.19.
 //  Copyright © 2019 Melvin Gundlach. All rights reserved.
 //
 

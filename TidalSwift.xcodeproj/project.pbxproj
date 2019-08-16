@@ -21,17 +21,20 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
+		B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B010113F23063BC200DE13C8 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B010113E23063BC200DE13C8 /* Demo Login Information.txt */; };
 		B0443FF42305F7250019D0D8 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
 		B0443FFB2305F7250019D0D8 /* TidalSwiftLibTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0443FFA2305F7250019D0D8 /* TidalSwiftLibTests.swift */; };
 		B0443FFD2305F7250019D0D8 /* TidalSwiftLib.h in Headers */ = {isa = PBXBuildFile; fileRef = B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B04440002305F7250019D0D8 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
-		B04440012305F7250019D0D8 /* TidalSwiftLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B04440082305F7390019D0D8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B04440102305F7820019D0D8 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */; };
 		B0755F802305F86900CD2387 /* SDAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */; };
-		B0A42FEF22E98BC7006421A8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
-		B0A42FF022E98BC7006421A8 /* MP42Foundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B0D7DD992305FA93004391AD /* TidalSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D7DD982305FA93004391AD /* TidalSwiftTests.swift */; };
+		B0C3E6AA23061FDB006CABED /* LoadingSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C3E6A523061FDA006CABED /* LoadingSpinner.swift */; };
+		B0C3E6AB23061FDB006CABED /* AlbumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C3E6A623061FDA006CABED /* AlbumView.swift */; };
+		B0C3E6AC23061FDB006CABED /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C3E6A723061FDA006CABED /* ImageLoader.swift */; };
+		B0C3E6AD23061FDB006CABED /* TrackRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C3E6A823061FDA006CABED /* TrackRow.swift */; };
+		B0C3E6AE23061FDB006CABED /* PlaylistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C3E6A923061FDA006CABED /* PlaylistView.swift */; };
 		B0D7DD9F2305FB2E004391AD /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDD92296417500BA669F /* Helpers.swift */; };
 		B0D7DDA02305FB2E004391AD /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E1223764C100ADAE6C /* Network.swift */; };
 		B0D7DDA12305FB2E004391AD /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E52238C84F00ADAE6C /* Logic.swift */; };
@@ -41,11 +44,12 @@
 		B0D7DDAD2305FC45004391AD /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582F1224329A000ADAE6C /* LogicTests.swift */; };
 		B0D7DDAE2305FC45004391AD /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B49A8C22C46DB700F07B34 /* NetworkTests.swift */; };
 		B0D7DDAF2305FC45004391AD /* HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */; };
-		B0E1EE972272AE110071C920 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0E582E72240869900ADAE6C /* Demo Login Information.txt */; };
-		B0E582D2223764A500ADAE6C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D1223764A500ADAE6C /* AppDelegate.swift */; };
-		B0E582D4223764A500ADAE6C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582D3223764A500ADAE6C /* ViewController.swift */; };
-		B0E582D6223764A600ADAE6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0E582D5223764A600ADAE6C /* Assets.xcassets */; };
-		B0E582D9223764A600ADAE6C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E582D7223764A600ADAE6C /* Main.storyboard */; };
+		B0E8078C230615AD00E43B5D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E8078B230615AD00E43B5D /* AppDelegate.swift */; };
+		B0E8078E230615AD00E43B5D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E8078D230615AD00E43B5D /* ContentView.swift */; };
+		B0E80790230615AE00E43B5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0E8078F230615AE00E43B5D /* Assets.xcassets */; };
+		B0E80793230615AE00E43B5D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0E80792230615AE00E43B5D /* Preview Assets.xcassets */; };
+		B0E80796230615AE00E43B5D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E80794230615AE00E43B5D /* Main.storyboard */; };
+		B0E807A2230615AF00E43B5D /* TidalSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E807A1230615AF00E43B5D /* TidalSwiftTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,38 +60,23 @@
 			remoteGlobalIDString = B0443FEA2305F7250019D0D8;
 			remoteInfo = TidalSwiftLib;
 		};
-		B0443FF72305F7250019D0D8 /* PBXContainerItemProxy */ = {
+		B0E8079E230615AF00E43B5D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B0E582C6223764A400ADAE6C /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = B0E582CD223764A500ADAE6C;
-			remoteInfo = TidalSwift;
-		};
-		B0443FFE2305F7250019D0D8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B0E582C6223764A400ADAE6C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B0443FEA2305F7250019D0D8;
-			remoteInfo = TidalSwiftLib;
-		};
-		B0E582F4224329A000ADAE6C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B0E582C6223764A400ADAE6C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B0E582CD223764A500ADAE6C;
+			remoteGlobalIDString = B0E80788230615AD00E43B5D;
 			remoteInfo = TidalSwift;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		B0A42FF122E98BC7006421A8 /* Embed Frameworks */ = {
+		B010113D23063BA400DE13C8 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B0A42FF022E98BC7006421A8 /* MP42Foundation.framework in Embed Frameworks */,
-				B04440012305F7250019D0D8 /* TidalSwiftLib.framework in Embed Frameworks */,
+				B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,6 +84,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B010113E23063BC200DE13C8 /* Demo Login Information.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Demo Login Information.txt"; sourceTree = "<group>"; };
 		B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TidalSwiftLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TidalSwiftLib.h; sourceTree = "<group>"; };
 		B0443FEE2305F7250019D0D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -110,25 +100,30 @@
 		B0B2A3F922E9AF3F0005E411 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDAVAssetExportSession.m; sourceTree = "<group>"; };
 		B0B49A8C22C46DB700F07B34 /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
+		B0C3E6A523061FDA006CABED /* LoadingSpinner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingSpinner.swift; sourceTree = "<group>"; };
+		B0C3E6A623061FDA006CABED /* AlbumView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumView.swift; sourceTree = "<group>"; };
+		B0C3E6A723061FDA006CABED /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
+		B0C3E6A823061FDA006CABED /* TrackRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackRow.swift; sourceTree = "<group>"; };
+		B0C3E6A923061FDA006CABED /* PlaylistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistView.swift; sourceTree = "<group>"; };
 		B0D7DD962305FA76004391AD /* MetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataTests.swift; sourceTree = "<group>"; };
-		B0D7DD982305FA93004391AD /* TidalSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TidalSwiftTests.swift; sourceTree = "<group>"; };
 		B0DAFDD92296417500BA669F /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpersTests.swift; sourceTree = "<group>"; };
-		B0E582CE223764A500ADAE6C /* TidalSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TidalSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0E582D1223764A500ADAE6C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B0E582D3223764A500ADAE6C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B0E582D5223764A600ADAE6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B0E582D8223764A600ADAE6C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		B0E582DA223764A600ADAE6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B0E582DB223764A600ADAE6C /* TidalSwift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TidalSwift.entitlements; sourceTree = "<group>"; };
 		B0E582E1223764C100ADAE6C /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		B0E582E52238C84F00ADAE6C /* Logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logic.swift; sourceTree = "<group>"; };
-		B0E582E72240869900ADAE6C /* Demo Login Information.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Demo Login Information.txt"; sourceTree = "<group>"; };
 		B0E582E92240C00100ADAE6C /* Codables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codables.swift; sourceTree = "<group>"; };
-		B0E582EF224329A000ADAE6C /* TidalSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TidalSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E582F1224329A000ADAE6C /* LogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicTests.swift; sourceTree = "<group>"; };
-		B0E582F3224329A000ADAE6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0E6AED72255AEBE00D7DA7B /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
+		B0E80789230615AD00E43B5D /* TidalSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TidalSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0E8078B230615AD00E43B5D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B0E8078D230615AD00E43B5D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B0E8078F230615AE00E43B5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B0E80792230615AE00E43B5D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		B0E80795230615AE00E43B5D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B0E80797230615AE00E43B5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B0E80798230615AE00E43B5D /* TidalSwift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TidalSwift.entitlements; sourceTree = "<group>"; };
+		B0E8079D230615AF00E43B5D /* TidalSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TidalSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0E807A1230615AF00E43B5D /* TidalSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TidalSwiftTests.swift; sourceTree = "<group>"; };
+		B0E807A3230615AF00E43B5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,16 +143,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B0E582CB223764A500ADAE6C /* Frameworks */ = {
+		B0E80786230615AD00E43B5D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0A42FEF22E98BC7006421A8 /* MP42Foundation.framework in Frameworks */,
-				B04440002305F7250019D0D8 /* TidalSwiftLib.framework in Frameworks */,
+				B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B0E582EC224329A000ADAE6C /* Frameworks */ = {
+		B0E8079A230615AF00E43B5D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -174,9 +168,9 @@
 				B0443FEE2305F7250019D0D8 /* Info.plist */,
 				B0E582E1223764C100ADAE6C /* Network.swift */,
 				B0E582E52238C84F00ADAE6C /* Logic.swift */,
-				B07C5EF522C8797A00710752 /* Metadata.swift */,
-				B0DAFDD92296417500BA669F /* Helpers.swift */,
 				B0E582E92240C00100ADAE6C /* Codables.swift */,
+				B0DAFDD92296417500BA669F /* Helpers.swift */,
+				B07C5EF522C8797A00710752 /* Metadata.swift */,
 				B0B2A3F522E9AF1F0005E411 /* SDAVAssetExportSession */,
 			);
 			path = TidalSwiftLib;
@@ -228,8 +222,8 @@
 			children = (
 				B073660222E9C5C000758E5E /* .gitattributes */,
 				B0E6AED72255AEBE00D7DA7B /* .swiftlint.yml */,
-				B0E582D0223764A500ADAE6C /* TidalSwift */,
-				B0E582F0224329A000ADAE6C /* TidalSwiftTests */,
+				B0E8078A230615AD00E43B5D /* TidalSwift */,
+				B0E807A0230615AF00E43B5D /* TidalSwiftTests */,
 				B0443FEC2305F7250019D0D8 /* TidalSwiftLib */,
 				B0443FF92305F7250019D0D8 /* TidalSwiftLibTests */,
 				B0A42FEA22E972B4006421A8 /* Frameworks */,
@@ -240,33 +234,47 @@
 		B0E582CF223764A500ADAE6C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B0E582CE223764A500ADAE6C /* TidalSwift.app */,
-				B0E582EF224329A000ADAE6C /* TidalSwiftTests.xctest */,
 				B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */,
 				B0443FF32305F7250019D0D8 /* TidalSwiftLibTests.xctest */,
+				B0E80789230615AD00E43B5D /* TidalSwift.app */,
+				B0E8079D230615AF00E43B5D /* TidalSwiftTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B0E582D0223764A500ADAE6C /* TidalSwift */ = {
+		B0E8078A230615AD00E43B5D /* TidalSwift */ = {
 			isa = PBXGroup;
 			children = (
-				B0E582D1223764A500ADAE6C /* AppDelegate.swift */,
-				B0E582E72240869900ADAE6C /* Demo Login Information.txt */,
-				B0E582D3223764A500ADAE6C /* ViewController.swift */,
-				B0E582D5223764A600ADAE6C /* Assets.xcassets */,
-				B0E582D7223764A600ADAE6C /* Main.storyboard */,
-				B0E582DA223764A600ADAE6C /* Info.plist */,
-				B0E582DB223764A600ADAE6C /* TidalSwift.entitlements */,
+				B0E8078B230615AD00E43B5D /* AppDelegate.swift */,
+				B0E8078D230615AD00E43B5D /* ContentView.swift */,
+				B0C3E6A623061FDA006CABED /* AlbumView.swift */,
+				B0C3E6A723061FDA006CABED /* ImageLoader.swift */,
+				B0C3E6A523061FDA006CABED /* LoadingSpinner.swift */,
+				B0C3E6A923061FDA006CABED /* PlaylistView.swift */,
+				B0C3E6A823061FDA006CABED /* TrackRow.swift */,
+				B0E8078F230615AE00E43B5D /* Assets.xcassets */,
+				B0E80794230615AE00E43B5D /* Main.storyboard */,
+				B0E80797230615AE00E43B5D /* Info.plist */,
+				B0E80798230615AE00E43B5D /* TidalSwift.entitlements */,
+				B010113E23063BC200DE13C8 /* Demo Login Information.txt */,
+				B0E80791230615AE00E43B5D /* Preview Content */,
 			);
 			path = TidalSwift;
 			sourceTree = "<group>";
 		};
-		B0E582F0224329A000ADAE6C /* TidalSwiftTests */ = {
+		B0E80791230615AE00E43B5D /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				B0E582F3224329A000ADAE6C /* Info.plist */,
-				B0D7DD982305FA93004391AD /* TidalSwiftTests.swift */,
+				B0E80792230615AE00E43B5D /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		B0E807A0230615AF00E43B5D /* TidalSwiftTests */ = {
+			isa = PBXGroup;
+			children = (
+				B0E807A1230615AF00E43B5D /* TidalSwiftTests.swift */,
+				B0E807A3230615AF00E43B5D /* Info.plist */,
 			);
 			path = TidalSwiftTests;
 			sourceTree = "<group>";
@@ -316,48 +324,46 @@
 			);
 			dependencies = (
 				B0443FF62305F7250019D0D8 /* PBXTargetDependency */,
-				B0443FF82305F7250019D0D8 /* PBXTargetDependency */,
 			);
 			name = TidalSwiftLibTests;
 			productName = TidalSwiftLibTests;
 			productReference = B0443FF32305F7250019D0D8 /* TidalSwiftLibTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B0E582CD223764A500ADAE6C /* TidalSwift */ = {
+		B0E80788230615AD00E43B5D /* TidalSwift */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B0E582DE223764A600ADAE6C /* Build configuration list for PBXNativeTarget "TidalSwift" */;
+			buildConfigurationList = B0E807A4230615AF00E43B5D /* Build configuration list for PBXNativeTarget "TidalSwift" */;
 			buildPhases = (
-				B0E582CA223764A500ADAE6C /* Sources */,
-				B0E582CB223764A500ADAE6C /* Frameworks */,
-				B0E582CC223764A500ADAE6C /* Resources */,
-				B0A42FF122E98BC7006421A8 /* Embed Frameworks */,
+				B0E80785230615AD00E43B5D /* Sources */,
+				B0E80786230615AD00E43B5D /* Frameworks */,
+				B0E80787230615AD00E43B5D /* Resources */,
+				B010113D23063BA400DE13C8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				B0443FFF2305F7250019D0D8 /* PBXTargetDependency */,
 			);
 			name = TidalSwift;
 			productName = TidalSwift;
-			productReference = B0E582CE223764A500ADAE6C /* TidalSwift.app */;
+			productReference = B0E80789230615AD00E43B5D /* TidalSwift.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B0E582EE224329A000ADAE6C /* TidalSwiftTests */ = {
+		B0E8079C230615AF00E43B5D /* TidalSwiftTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B0E582F6224329A000ADAE6C /* Build configuration list for PBXNativeTarget "TidalSwiftTests" */;
+			buildConfigurationList = B0E807A7230615AF00E43B5D /* Build configuration list for PBXNativeTarget "TidalSwiftTests" */;
 			buildPhases = (
-				B0E582EB224329A000ADAE6C /* Sources */,
-				B0E582EC224329A000ADAE6C /* Frameworks */,
-				B0E582ED224329A000ADAE6C /* Resources */,
+				B0E80799230615AF00E43B5D /* Sources */,
+				B0E8079A230615AF00E43B5D /* Frameworks */,
+				B0E8079B230615AF00E43B5D /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				B0E582F5224329A000ADAE6C /* PBXTargetDependency */,
+				B0E8079F230615AF00E43B5D /* PBXTargetDependency */,
 			);
 			name = TidalSwiftTests;
 			productName = TidalSwiftTests;
-			productReference = B0E582EF224329A000ADAE6C /* TidalSwiftTests.xctest */;
+			productReference = B0E8079D230615AF00E43B5D /* TidalSwiftTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -377,22 +383,15 @@
 						CreatedOnToolsVersion = 11.0;
 						TestTargetID = B0E582CD223764A500ADAE6C;
 					};
-					B0E582CD223764A500ADAE6C = {
-						CreatedOnToolsVersion = 10.1;
-						LastSwiftMigration = 1100;
-						SystemCapabilities = {
-							com.apple.Sandbox = {
-								enabled = 1;
-							};
-						};
-					};
-					B0E582EE224329A000ADAE6C = {
-						CreatedOnToolsVersion = 10.1;
-						LastSwiftMigration = 1020;
-						TestTargetID = B0E582CD223764A500ADAE6C;
-					};
 					B0E6AED22255ADE200D7DA7B = {
 						CreatedOnToolsVersion = 10.2;
+					};
+					B0E80788230615AD00E43B5D = {
+						CreatedOnToolsVersion = 11.0;
+					};
+					B0E8079C230615AF00E43B5D = {
+						CreatedOnToolsVersion = 11.0;
+						TestTargetID = B0E80788230615AD00E43B5D;
 					};
 				};
 			};
@@ -409,11 +408,11 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B0E582CD223764A500ADAE6C /* TidalSwift */,
-				B0E582EE224329A000ADAE6C /* TidalSwiftTests */,
-				B0E6AED22255ADE200D7DA7B /* SwiftLint */,
+				B0E80788230615AD00E43B5D /* TidalSwift */,
+				B0E8079C230615AF00E43B5D /* TidalSwiftTests */,
 				B0443FEA2305F7250019D0D8 /* TidalSwiftLib */,
 				B0443FF22305F7250019D0D8 /* TidalSwiftLibTests */,
+				B0E6AED22255ADE200D7DA7B /* SwiftLint */,
 			);
 		};
 /* End PBXProject section */
@@ -433,17 +432,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B0E582CC223764A500ADAE6C /* Resources */ = {
+		B0E80787230615AD00E43B5D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0E582D6223764A600ADAE6C /* Assets.xcassets in Resources */,
-				B0E582D9223764A600ADAE6C /* Main.storyboard in Resources */,
-				B0E1EE972272AE110071C920 /* Demo Login Information.txt in Resources */,
+				B010113F23063BC200DE13C8 /* Demo Login Information.txt in Resources */,
+				B0E80796230615AE00E43B5D /* Main.storyboard in Resources */,
+				B0E80793230615AE00E43B5D /* Preview Assets.xcassets in Resources */,
+				B0E80790230615AE00E43B5D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B0E582ED224329A000ADAE6C /* Resources */ = {
+		B0E8079B230615AF00E43B5D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -498,20 +498,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B0E582CA223764A500ADAE6C /* Sources */ = {
+		B0E80785230615AD00E43B5D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0E582D4223764A500ADAE6C /* ViewController.swift in Sources */,
-				B0E582D2223764A500ADAE6C /* AppDelegate.swift in Sources */,
+				B0C3E6AD23061FDB006CABED /* TrackRow.swift in Sources */,
+				B0C3E6AE23061FDB006CABED /* PlaylistView.swift in Sources */,
+				B0E8078E230615AD00E43B5D /* ContentView.swift in Sources */,
+				B0E8078C230615AD00E43B5D /* AppDelegate.swift in Sources */,
+				B0C3E6AC23061FDB006CABED /* ImageLoader.swift in Sources */,
+				B0C3E6AB23061FDB006CABED /* AlbumView.swift in Sources */,
+				B0C3E6AA23061FDB006CABED /* LoadingSpinner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B0E582EB224329A000ADAE6C /* Sources */ = {
+		B0E80799230615AF00E43B5D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0D7DD992305FA93004391AD /* TidalSwiftTests.swift in Sources */,
+				B0E807A2230615AF00E43B5D /* TidalSwiftTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,28 +528,18 @@
 			target = B0443FEA2305F7250019D0D8 /* TidalSwiftLib */;
 			targetProxy = B0443FF52305F7250019D0D8 /* PBXContainerItemProxy */;
 		};
-		B0443FF82305F7250019D0D8 /* PBXTargetDependency */ = {
+		B0E8079F230615AF00E43B5D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B0E582CD223764A500ADAE6C /* TidalSwift */;
-			targetProxy = B0443FF72305F7250019D0D8 /* PBXContainerItemProxy */;
-		};
-		B0443FFF2305F7250019D0D8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B0443FEA2305F7250019D0D8 /* TidalSwiftLib */;
-			targetProxy = B0443FFE2305F7250019D0D8 /* PBXContainerItemProxy */;
-		};
-		B0E582F5224329A000ADAE6C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B0E582CD223764A500ADAE6C /* TidalSwift */;
-			targetProxy = B0E582F4224329A000ADAE6C /* PBXContainerItemProxy */;
+			target = B0E80788230615AD00E43B5D /* TidalSwift */;
+			targetProxy = B0E8079E230615AF00E43B5D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		B0E582D7223764A600ADAE6C /* Main.storyboard */ = {
+		B0E80794230615AE00E43B5D /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				B0E582D8223764A600ADAE6C /* Base */,
+				B0E80795230615AE00E43B5D /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -623,7 +618,6 @@
 		B04440042305F7250019D0D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -645,7 +639,6 @@
 		B04440052305F7250019D0D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -781,121 +774,6 @@
 			};
 			name = Release;
 		};
-		B0E582DF223764A600ADAE6C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = TidalSwift/TidalSwift.entitlements;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = V7E5P7292M;
-				ENABLE_HARDENED_RUNTIME = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
-				INFOPLIST_FILE = TidalSwift/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwift;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		B0E582E0223764A600ADAE6C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = TidalSwift/TidalSwift.entitlements;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = V7E5P7292M;
-				ENABLE_HARDENED_RUNTIME = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
-				INFOPLIST_FILE = TidalSwift/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwift;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		B0E582F7224329A000ADAE6C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = V7E5P7292M;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
-				INFOPLIST_FILE = TidalSwiftTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwiftTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TidalSwift.app/Contents/MacOS/TidalSwift";
-			};
-			name = Debug;
-		};
-		B0E582F8224329A000ADAE6C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = V7E5P7292M;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
-				INFOPLIST_FILE = TidalSwiftTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwiftTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TidalSwift.app/Contents/MacOS/TidalSwift";
-			};
-			name = Release;
-		};
 		B0E6AED42255ADE200D7DA7B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -911,6 +789,108 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		B0E807A5230615AF00E43B5D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TidalSwift/TidalSwift.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
+				DEVELOPMENT_TEAM = V7E5P7292M;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = TidalSwift/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwift;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B0E807A6230615AF00E43B5D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TidalSwift/TidalSwift.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
+				DEVELOPMENT_TEAM = V7E5P7292M;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = TidalSwift/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwift;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B0E807A8230615AF00E43B5D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = V7E5P7292M;
+				INFOPLIST_FILE = TidalSwiftTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwiftTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TidalSwift.app/Contents/MacOS/TidalSwift";
+			};
+			name = Debug;
+		};
+		B0E807A9230615AF00E43B5D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = V7E5P7292M;
+				INFOPLIST_FILE = TidalSwiftTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = melgu.TidalSwiftTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TidalSwift.app/Contents/MacOS/TidalSwift";
 			};
 			name = Release;
 		};
@@ -944,29 +924,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B0E582DE223764A600ADAE6C /* Build configuration list for PBXNativeTarget "TidalSwift" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B0E582DF223764A600ADAE6C /* Debug */,
-				B0E582E0223764A600ADAE6C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B0E582F6224329A000ADAE6C /* Build configuration list for PBXNativeTarget "TidalSwiftTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B0E582F7224329A000ADAE6C /* Debug */,
-				B0E582F8224329A000ADAE6C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		B0E6AED32255ADE200D7DA7B /* Build configuration list for PBXAggregateTarget "SwiftLint" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0E6AED42255ADE200D7DA7B /* Debug */,
 				B0E6AED52255ADE200D7DA7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0E807A4230615AF00E43B5D /* Build configuration list for PBXNativeTarget "TidalSwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0E807A5230615AF00E43B5D /* Debug */,
+				B0E807A6230615AF00E43B5D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0E807A7230615AF00E43B5D /* Build configuration list for PBXNativeTarget "TidalSwiftTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0E807A8230615AF00E43B5D /* Debug */,
+				B0E807A9230615AF00E43B5D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

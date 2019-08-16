@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-enum AudioQuality: String, Decodable {
+public enum AudioQuality: String, Decodable {
 	case master = "HI_RES"
 	case hifi = "LOSSLESS"
 	case high = "HIGH"
@@ -22,17 +22,17 @@ struct LoginResponse: Decodable {
 	let countryCode: String
 }
 
-struct Subscription: Decodable {
-	let validUntil: Date
-	let status: String
-	let subscription: SubscriptionType
-	let highestSoundQuality: AudioQuality
-	let premiumAccess: Bool
-	let canGetTrial: Bool
-	let paymentType: String
+public struct Subscription: Decodable {
+	public let validUntil: Date
+	public let status: String
+	public let subscription: SubscriptionType
+	public let highestSoundQuality: AudioQuality
+	public let premiumAccess: Bool
+	public let canGetTrial: Bool
+	public let paymentType: String
 }
 
-struct SubscriptionType: Decodable {
+public struct SubscriptionType: Decodable {
 	let type: String
 	let offlineGracePeriod: Int
 }
@@ -85,138 +85,138 @@ struct Videos: Decodable {
 	let items: [Video]
 }
 
-struct Artist: Decodable, Equatable {
-	let id: Int
-	let name: String
-	let url: URL?
-	let picture: String?
-	let popularity: Int?
-	let type: String? // What role he/she played
-	let banner: String?
-	let relationType: String? // e.g. SIMILAR_ARTIST
+public struct Artist: Decodable, Equatable {
+	public let id: Int
+	public let name: String
+	public let url: URL?
+	public let picture: String?
+	public let popularity: Int?
+	public let type: String? // What role he/she played
+	public let banner: String?
+	public let relationType: String? // e.g. SIMILAR_ARTIST
 	
-	func getPictureUrl(session: Session, resolution: Int) -> URL? {
+	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
 		guard let picture = picture else {
 			return nil
 		}
 		return session.getImageUrl(imageId: picture, resolution: resolution)
 	}
 	
-	func getPicture(session: Session, resolution: Int) -> NSImage? {
+	public func getPicture(session: Session, resolution: Int) -> NSImage? {
 		guard let picture = picture else {
 			return nil
 		}
 		return session.getImage(imageId: picture, resolution: resolution)
 	}
 	
-	static func == (lhs: Artist, rhs: Artist) -> Bool {
+	public static func == (lhs: Artist, rhs: Artist) -> Bool {
 		return lhs.id == rhs.id
 	}
 }
 
-struct ArtistBio: Decodable {
-	let source: String
-	let lastUpdated: Date
-	let text: String
+public struct ArtistBio: Decodable {
+	public let source: String
+	public let lastUpdated: Date
+	public let text: String
 }
 
-struct Album: Decodable, Equatable {
-	let id: Int
-	let title: String
-	let duration: Int? // In Seconds
-	let streamReady: Bool?
-	let streamStartDate: Date?
-	let allowStreaming: Bool?
-	let premiumStreamingOnly: Bool?
-	let numberOfTracks: Int?
-	let numberOfVideos: Int?
-	let numberOfVolumes: Int?
-	let releaseDate: Date?
-	let copyright: String?
-	let type: String?
-	let version: String?
-	let url: URL?
-	let cover: String?
-	let videoCover: String?
-	let explicit: Bool?
-	let upc: String?
-	let popularity: Int?
-	let audioQuality: AudioQuality?
-	let surroundTypes: [String]?
-	let artist: Artist?
-	let artists: [Artist]?
+public struct Album: Decodable, Equatable {
+	public let id: Int
+	public let title: String
+	public let duration: Int? // In Seconds
+	public let streamReady: Bool?
+	public let streamStartDate: Date?
+	public let allowStreaming: Bool?
+	public let premiumStreamingOnly: Bool?
+	public let numberOfTracks: Int?
+	public let numberOfVideos: Int?
+	public let numberOfVolumes: Int?
+	public let releaseDate: Date?
+	public let copyright: String?
+	public let type: String?
+	public let version: String?
+	public let url: URL?
+	public let cover: String?
+	public let videoCover: String?
+	public let explicit: Bool?
+	public let upc: String?
+	public let popularity: Int?
+	public let audioQuality: AudioQuality?
+	public let surroundTypes: [String]?
+	public let artist: Artist?
+	public let artists: [Artist]?
 	
-	func getCoverUrl(session: Session, resolution: Int) -> URL? {
+	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
 		guard let cover = cover else { return nil }
 		return session.getImageUrl(imageId: cover, resolution: resolution)
 	}
 	
-	func getCover(session: Session, resolution: Int) -> NSImage? {
+	public func getCover(session: Session, resolution: Int) -> NSImage? {
 		guard let cover = cover else { return nil }
 		return session.getImage(imageId: cover, resolution: resolution)
 	}
 	
-	func isCompilation(session: Session) -> Bool {
+	public func isCompilation(session: Session) -> Bool {
 		return session.isAlbumCompilation(albumId: id)
 	}
 	
-	static func == (lhs: Album, rhs: Album) -> Bool {
+	public static func == (lhs: Album, rhs: Album) -> Bool {
 		return lhs.id == rhs.id
 	}
 }
 
-enum PlaylistType: String, Decodable {
+public enum PlaylistType: String, Decodable {
 	case user = "USER"
 	case editorial = "EDITORIAL"
 	case artist = "ARTIST"
 	// Haven't seen others yet
 }
 
-struct Playlist: Decodable, Equatable {
-	let uuid: String
-	let title: String
-	let numberOfTracks: Int
-	let numberOfVideos: Int
-	let creator: PlaylistCreator
-	let description: String?
-	let duration: Int
-	let lastUpdated: Date
-	let created: Date
-	let type: PlaylistType
-	let publicPlaylist: Bool
-	let url: URL
-	let image: String
-	let popularity: Int
-	let squareImage: String?
+public struct Playlist: Decodable, Equatable {
+	public let uuid: String
+	public let title: String
+	public let numberOfTracks: Int
+	public let numberOfVideos: Int
+	public let creator: PlaylistCreator
+	public let description: String?
+	public let duration: Int
+	public let lastUpdated: Date
+	public let created: Date
+	public let type: PlaylistType
+	public let publicPlaylist: Bool
+	public let url: URL
+	public let image: String
+	public let popularity: Int
+	public let squareImage: String?
 	
-	func getImageUrl(session: Session, resolution: Int) -> URL? {
+	public func getImageUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: squareImage ?? image, resolution: resolution)
 	}
 	
-	func getImage(session: Session, resolution: Int) -> NSImage? {
+	public func getImage(session: Session, resolution: Int) -> NSImage? {
 		return session.getImage(imageId: squareImage ?? image, resolution: resolution)
 	}
 	
-	static func == (lhs: Playlist, rhs: Playlist) -> Bool {
+	public static func == (lhs: Playlist, rhs: Playlist) -> Bool {
 		return lhs.uuid == rhs.uuid
 	}
 }
 
-struct PlaylistCreator: Decodable {
+public struct PlaylistCreator: Decodable {
 	let id: Int?
 	let name: String?
 	let url: URL?
 	let picture: String?
 	let popularity: Int?
 	
-	func getPictureUrl(session: Session, resolution: Int) -> URL? {
+	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
 		guard let picture = picture else {
 			return nil
 		}
 		return session.getImageUrl(imageId: picture, resolution: resolution)
 	}
 	
-	func getPicture(session: Session, resolution: Int) -> NSImage? {
+	public func getPicture(session: Session, resolution: Int) -> NSImage? {
 		guard let picture = picture else {
 			return nil
 		}
@@ -224,45 +224,45 @@ struct PlaylistCreator: Decodable {
 	}
 }
 
-struct Track: Decodable, Equatable {
-	let id: Int
-	let title: String
-	let duration: Int
-	let replayGain: Float
-	let peak: Float?
-	let allowStreaming: Bool
-	let streamReady: Bool
-	let streamStartDate: Date?
-	let premiumStreamingOnly: Bool?
-	let trackNumber: Int
-	let volumeNumber: Int
-	let version: String?
-	let popularity: Int
-	let copyright: String?
-	let url: URL
-	let isrc: String?
-	let editable: Bool
-	let explicit: Bool
-	let audioQuality: AudioQuality?
-	let surroundTypes: [String]?
-	let artist: Artist?
-	let artists: [Artist]
-	let album: Album
+public struct Track: Decodable, Equatable {
+	public let id: Int
+	public let title: String
+	public let duration: Int
+	public let replayGain: Float
+	public let peak: Float?
+	public let allowStreaming: Bool
+	public let streamReady: Bool
+	public let streamStartDate: Date?
+	public let premiumStreamingOnly: Bool?
+	public let trackNumber: Int
+	public let volumeNumber: Int
+	public let version: String?
+	public let popularity: Int
+	public let copyright: String?
+	public let url: URL
+	public let isrc: String?
+	public let editable: Bool
+	public let explicit: Bool
+	public let audioQuality: AudioQuality?
+	public let surroundTypes: [String]?
+	public let artist: Artist?
+	public let artists: [Artist]
+	public let album: Album
 	
-	func getCoverUrl(session: Session, resolution: Int) -> URL? {
+	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
 		return album.getCoverUrl(session: session, resolution: resolution)
 	}
 	
-	func getCover(session: Session, resolution: Int) -> NSImage? {
+	public func getCover(session: Session, resolution: Int) -> NSImage? {
 		return album.getCover(session: session, resolution: resolution)
 	}
 	
-	static func == (lhs: Track, rhs: Track) -> Bool {
+	public static func == (lhs: Track, rhs: Track) -> Bool {
 		return lhs.id == rhs.id
 	}
 }
 
-struct Video: Decodable {
+public struct Video: Decodable {
 	let id: Int
 	let title: String
 	let volumeNumber: Int
@@ -283,28 +283,28 @@ struct Video: Decodable {
 	let artists: [Artist]
 	let album: Album?
 	
-	func getImageUrl(session: Session, resolution: Int) -> URL? {
+	public func getImageUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: imageId, resolution: resolution)
 	}
 	
-	func getImage(session: Session, resolution: Int) -> NSImage? {
+	public func getImage(session: Session, resolution: Int) -> NSImage? {
 		return session.getImage(imageId: imageId, resolution: resolution)
 	}
 	
-	static func == (lhs: Video, rhs: Video) -> Bool {
+	public static func == (lhs: Video, rhs: Video) -> Bool {
 		return lhs.id == rhs.id
 	}
 }
 
-struct TopHit: Decodable {
-	let value: TopHitValue
-	let type: String
+public struct TopHit: Decodable {
+	public let value: TopHitValue
+	public let type: String
 }
 
-struct TopHitValue: Decodable {
-	let id: Int?
-	let uuid: String?
-	let popularity: Int
+public struct TopHitValue: Decodable {
+	public let id: Int?
+	public let uuid: String?
+	public let popularity: Int
 }
 
 struct SearchResult: Decodable {
@@ -326,26 +326,26 @@ struct FavoritesResponse: Decodable {
 	let updatedFavoriteVideos: Date?
 }
 
-struct User: Decodable {
-	let id: Int
-	let username: String
-	let firstName: String
-	let lastName: String
-	let email: String
-	let countryCode: String
-	let created: Date
-	let picture: String
-	let newsletter: Bool
-	let acceptedEULA: Bool
-	let gender: String
-	let dateOfBirth: Date
-	let facebookUid: Int
+public struct User: Decodable {
+	public let id: Int
+	public let username: String
+	public let firstName: String
+	public let lastName: String
+	public let email: String
+	public let countryCode: String
+	public let created: Date
+	public let picture: String
+	public let newsletter: Bool
+	public let acceptedEULA: Bool
+	public let gender: String
+	public let dateOfBirth: Date
+	public let facebookUid: Int
 	
-	func getPictureUrl(session: Session, resolution: Int) -> URL? {
+	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: picture, resolution: resolution)
 	}
 	
-	func getPicture(session: Session, resolution: Int) -> NSImage? {
+	public func getPicture(session: Session, resolution: Int) -> NSImage? {
 		return session.getImage(imageId: picture, resolution: resolution)
 	}
 }
@@ -376,37 +376,37 @@ struct MixesPagedList: Decodable {
 	let dataApiPath: String
 }
 
-struct MixesItem: Decodable {
-	let id: String
-	let title: String
-	let subTitle: String
-	let graphic: MixesGraphic
+public struct MixesItem: Decodable {
+	public let id: String
+	public let title: String
+	public let subTitle: String
+	public let graphic: MixesGraphic
 }
 
-enum MixesGraphicType: String, Decodable {
+public enum MixesGraphicType: String, Decodable {
 	case squaresGrid = "SQUARES_GRID"
 }
 
-struct MixesGraphic: Decodable {
-	let type: MixesGraphicType
-	let text: String
-	let images: [MixesGraphicImage]
+public struct MixesGraphic: Decodable {
+	public let type: MixesGraphicType
+	public let text: String
+	public let images: [MixesGraphicImage]
 }
 
-enum MixesGraphicImageType: String, Decodable {
+public enum MixesGraphicImageType: String, Decodable {
 	case artist = "ARTIST"
 }
 
-struct MixesGraphicImage: Decodable {
-	let id: String
-	let vibrantColor: String
-	let type: MixesGraphicImageType
+public struct MixesGraphicImage: Decodable {
+	public let id: String
+	public let vibrantColor: String
+	public let type: MixesGraphicImageType
 	
-	func getImageUrl(session: Session, resolution: Int) -> URL? {
+	public func getImageUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: id, resolution: resolution)
 	}
 	
-	func getImage(session: Session, resolution: Int) -> NSImage? {
+	public func getImage(session: Session, resolution: Int) -> NSImage? {
 		return session.getImage(imageId: id, resolution: resolution)
 	}
 }
@@ -432,7 +432,7 @@ struct MixModule: Decodable {
 }
 
 typealias Moods = Genres
-typealias Mood = Genre
+public typealias Mood = Genre
 
 struct Genres: Decodable { // Also Moods
 	let items: [Genre]
@@ -447,7 +447,7 @@ struct Genres: Decodable { // Also Moods
 	}
 }
 
-struct Genre: Decodable { // Also Mood
+public struct Genre: Decodable { // Also Mood
 	let name: String
 	let path: String
 	let hasPlaylists: Bool
@@ -457,11 +457,11 @@ struct Genre: Decodable { // Also Mood
 	let hasVideos: Bool
 	let image: String
 	
-	func getImageUrl(session: Session, resolution: Int) -> URL? {
+	public func getImageUrl(session: Session, resolution: Int) -> URL? {
 		return session.getImageUrl(imageId: image, resolution: resolution)
 	}
 	
-	func getImage(session: Session, resolution: Int) -> NSImage? {
+	public func getImage(session: Session, resolution: Int) -> NSImage? {
 		return session.getImage(imageId: image, resolution: resolution)
 	}
 }
@@ -473,7 +473,7 @@ struct FeaturedItems: Decodable {
 	let items: [FeaturedItem]
 }
 
-enum FeaturedType: String, Decodable {
+public enum FeaturedType: String, Decodable {
 	case categoryPages = "CATEGORY_PAGES"
 	case externalUrl = "EXTURL"
 	case video = "VIDEO"
@@ -481,7 +481,7 @@ enum FeaturedType: String, Decodable {
 	case album = "ALBUM"
 }
 
-struct FeaturedItem: Decodable {
+public struct FeaturedItem: Decodable {
 	let imageURL: URL
 	let artifactId: String
 	let type: FeaturedType
@@ -498,11 +498,11 @@ struct FeaturedItem: Decodable {
 	let featured: Bool
 	let openExternal: Bool
 	
-	func getImageUrl(session: Session, resolution: Int, resolutionY: Int) -> URL? {
+	public func getImageUrl(session: Session, resolution: Int, resolutionY: Int) -> URL? {
 		return session.getImageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 	}
 	
-	func getImage(session: Session, resolution: Int, resolutionY: Int) -> NSImage? {
+	public func getImage(session: Session, resolution: Int, resolutionY: Int) -> NSImage? {
 		return session.getImage(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 	}
 }
@@ -516,19 +516,19 @@ struct FavoriteArtists: Decodable {
 	let items: [FavoriteArtist]
 }
 
-struct FavoriteArtist: Decodable, Equatable {
+public struct FavoriteArtist: Decodable, Equatable {
 	let created: Date
 	let item: Artist
 	
-	static func == (lhs: FavoriteArtist, rhs: FavoriteArtist) -> Bool {
+	public static func == (lhs: FavoriteArtist, rhs: FavoriteArtist) -> Bool {
 		return lhs.item.id == rhs.item.id
 	}
 	
-	static func == (lhs: FavoriteArtist, rhs: Artist) -> Bool {
+	public static func == (lhs: FavoriteArtist, rhs: Artist) -> Bool {
 		return lhs.item.id == rhs.id
 	}
 	
-	static func == (lhs: Artist, rhs: FavoriteArtist) -> Bool {
+	public static func == (lhs: Artist, rhs: FavoriteArtist) -> Bool {
 		return lhs.id == rhs.item.id
 	}
 }
@@ -540,19 +540,19 @@ struct FavoriteAlbums: Decodable {
 	let items: [FavoriteAlbum]
 }
 
-struct FavoriteAlbum: Decodable, Equatable {
+public struct FavoriteAlbum: Decodable, Equatable {
 	let created: Date
 	let item: Album
 	
-	static func == (lhs: FavoriteAlbum, rhs: FavoriteAlbum) -> Bool {
+	public static func == (lhs: FavoriteAlbum, rhs: FavoriteAlbum) -> Bool {
 		return lhs.item.id == rhs.item.id
 	}
 	
-	static func == (lhs: FavoriteAlbum, rhs: Album) -> Bool {
+	public static func == (lhs: FavoriteAlbum, rhs: Album) -> Bool {
 		return lhs.item.id == rhs.id
 	}
 	
-	static func == (lhs: Album, rhs: FavoriteAlbum) -> Bool {
+	public static func == (lhs: Album, rhs: FavoriteAlbum) -> Bool {
 		return lhs.id == rhs.item.id
 	}
 }
@@ -564,19 +564,19 @@ struct FavoriteTracks: Decodable {
 	let items: [FavoriteTrack]
 }
 
-struct FavoriteTrack: Decodable, Equatable {
+public struct FavoriteTrack: Decodable, Equatable {
 	let created: Date
 	let item: Track
 	
-	static func == (lhs: FavoriteTrack, rhs: FavoriteTrack) -> Bool {
+	public static func == (lhs: FavoriteTrack, rhs: FavoriteTrack) -> Bool {
 		return lhs.item.id == rhs.item.id
 	}
 	
-	static func == (lhs: FavoriteTrack, rhs: Track) -> Bool {
+	public static func == (lhs: FavoriteTrack, rhs: Track) -> Bool {
 		return lhs.item.id == rhs.id
 	}
 	
-	static func == (lhs: Track, rhs: FavoriteTrack) -> Bool {
+	public static func == (lhs: Track, rhs: FavoriteTrack) -> Bool {
 		return lhs.id == rhs.item.id
 	}
 }
@@ -588,19 +588,19 @@ struct FavoriteVideos: Decodable {
 	let items: [FavoriteVideo]
 }
 
-struct FavoriteVideo: Decodable, Equatable {
+public struct FavoriteVideo: Decodable, Equatable {
 	let created: Date
 	let item: Video
 	
-	static func == (lhs: FavoriteVideo, rhs: FavoriteVideo) -> Bool {
+	public static func == (lhs: FavoriteVideo, rhs: FavoriteVideo) -> Bool {
 		return lhs.item.id == rhs.item.id
 	}
 	
-	static func == (lhs: FavoriteVideo, rhs: Video) -> Bool {
+	public static func == (lhs: FavoriteVideo, rhs: Video) -> Bool {
 		return lhs.item.id == rhs.id
 	}
 	
-	static func == (lhs: Video, rhs: FavoriteVideo) -> Bool {
+	public static func == (lhs: Video, rhs: FavoriteVideo) -> Bool {
 		return lhs.id == rhs.item.id
 	}
 }
@@ -612,50 +612,53 @@ struct FavoritePlaylists: Decodable {
 	let items: [FavoritePlaylist]
 }
 
-struct FavoritePlaylist: Decodable, Equatable {
+public struct FavoritePlaylist: Decodable, Equatable {
 	let created: Date
 	let item: Playlist
 	
-	static func == (lhs: FavoritePlaylist, rhs: FavoritePlaylist) -> Bool {
+	public static func == (lhs: FavoritePlaylist, rhs: FavoritePlaylist) -> Bool {
 		return lhs.item.uuid == rhs.item.uuid
 	}
 	
-	static func == (lhs: FavoritePlaylist, rhs: Playlist) -> Bool {
+	public static func == (lhs: FavoritePlaylist, rhs: Playlist) -> Bool {
 		return lhs.item.uuid == rhs.uuid
 	}
 	
-	static func == (lhs: Playlist, rhs: FavoritePlaylist) -> Bool {
+	public static func == (lhs: Playlist, rhs: FavoritePlaylist) -> Bool {
 		return lhs.uuid == rhs.item.uuid
 	}
 }
 
 // MARK: - Artist String
 
-func formArtistString(artists: [Artist]) -> String {
-	var artistString: String = ""
-	
-	guard !artists.isEmpty else {
-		return artistString
-	}
-	
-	// First
-	artistString += artists[0].name
-	
-	guard artists.count > 1 else {
-		return artistString
-	}
-	
-	// Middles
-	if artists.count > 2 {
-		for i in 1 ..< artists.count - 1 {
-			artistString += ", \(artists[i].name)"
+extension Array where Element == Artist {
+	public func formArtistString() -> String {
+		var artistString: String = ""
+		let artists = self
+		
+		guard !artists.isEmpty else {
+			return artistString
 		}
+		
+		// First
+		artistString += artists[0].name
+		
+		guard artists.count > 1 else {
+			return artistString
+		}
+		
+		// Middles
+		if artists.count > 2 {
+			for i in 1 ..< artists.count - 1 {
+				artistString += ", \(artists[i].name)"
+			}
+		}
+		
+		// Last
+		artistString += " & \(artists.last!.name)"
+		
+		return artistString
 	}
-	
-	// Last
-	artistString += " & \(artists.last!.name)"
-	
-	return artistString
 }
 
 // MARK: - Date

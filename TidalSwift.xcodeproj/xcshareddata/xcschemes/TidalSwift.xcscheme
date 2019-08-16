@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B0E582CD223764A500ADAE6C"
+               BlueprintIdentifier = "B0E80788230615AD00E43B5D"
                BuildableName = "TidalSwift.app"
                BlueprintName = "TidalSwift"
                ReferencedContainer = "container:TidalSwift.xcodeproj">
@@ -31,7 +31,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B0E582CD223764A500ADAE6C"
+            BlueprintIdentifier = "B0E80788230615AD00E43B5D"
             BuildableName = "TidalSwift.app"
             BlueprintName = "TidalSwift"
             ReferencedContainer = "container:TidalSwift.xcodeproj">
@@ -65,6 +65,16 @@
                </Test>
             </SkippedTests>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B0E8079C230615AF00E43B5D"
+               BuildableName = "TidalSwiftTests.xctest"
+               BlueprintName = "TidalSwiftTests"
+               ReferencedContainer = "container:TidalSwift.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -81,7 +91,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B0E582CD223764A500ADAE6C"
+            BlueprintIdentifier = "B0E80788230615AD00E43B5D"
             BuildableName = "TidalSwift.app"
             BlueprintName = "TidalSwift"
             ReferencedContainer = "container:TidalSwift.xcodeproj">
@@ -98,7 +108,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B0E582CD223764A500ADAE6C"
+            BlueprintIdentifier = "B0E80788230615AD00E43B5D"
             BuildableName = "TidalSwift.app"
             BlueprintName = "TidalSwift"
             ReferencedContainer = "container:TidalSwift.xcodeproj">
