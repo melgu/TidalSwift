@@ -9,25 +9,26 @@
 import Foundation
 import SDAVAssetExportSession
 
-struct DownloadErrors {
+// TODO: Maybe present a textform or something other than this
+public struct DownloadErrors {
 	var affectedTracks = [Track]()
 	var affectedAlbums = [Album]()
 	var affectedArtists = [Artist]()
 	var affectedPlaylists = [Playlist]()
 }
 
-class Helpers {
+public class Helpers {
 	unowned let session: Session
 	let offline: Offline
 	let metadata: Metadata
 	
-	init(session: Session) {
+	public init(session: Session) {
 		self.session = session
 		self.offline = Offline(session: session)
 		self.metadata = Metadata(session: session)
 	}
 	
-	func newReleasesFromFavoriteArtists(number: Int = 30) -> [Album]? {
+	public func newReleasesFromFavoriteArtists(number: Int = 30) -> [Album]? {
 		let optionalFavoriteArtists = session.favorites?.artists()
 		guard let favoriteArtists = optionalFavoriteArtists else {
 			return nil
@@ -52,14 +53,14 @@ class Helpers {
 	// TODO: Currently everything is done on the main thread synchronously
 	
 	func formFileName(_ track: Track) -> String {
-		return "\(track.trackNumber) \(track.title) - \(formArtistString(artists: track.artists)).m4a"
+		return "\(track.trackNumber) \(track.title) - \(track.artists.formArtistString()).m4a"
 	}
 	
 	func formFileName(_ video: Video) -> String {
-		return "\(video.trackNumber) \(video.title) - \(formArtistString(artists: video.artists)).mp4"
+		return "\(video.trackNumber) \(video.title) - \(video.artists.formArtistString()).mp4"
 	}
 	
-	func downloadTrack(track: Track, parentFolder: String = "") -> Bool {
+	public func downloadTrack(track: Track, parentFolder: String = "") -> Bool {
 		guard let url = session.getAudioUrl(trackId: track.id) else { return false }
 		print("Downloading \(track.title)")
 		let fileName = formFileName(track)
@@ -73,7 +74,7 @@ class Helpers {
 		return response.ok
 	}
 	
-	func downloadVideo(video: Video, parentFolder: String = "") -> Bool {
+	public func downloadVideo(video: Video, parentFolder: String = "") -> Bool {
 		guard let url = session.getVideoUrl(videoId: video.id) else { return false }
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: formFileName(video))
 		guard let path = optionalPath else {
@@ -85,7 +86,7 @@ class Helpers {
 		return response.ok
 	}
 	
-	func downloadAlbum(album: Album, parentFolder: String = "") -> DownloadErrors {
+	public func downloadAlbum(album: Album, parentFolder: String = "") -> DownloadErrors {
 		guard let tracks = session.getAlbumTracks(albumId: album.id) else { return DownloadErrors(affectedAlbums: [album]) }
 		var error = DownloadErrors()
 		for track in tracks {
@@ -97,7 +98,7 @@ class Helpers {
 		return error
 	}
 	
-	func downloadAllAlbumsFromArtist(artist: Artist, parentFolder: String = "") -> DownloadErrors {
+	public func downloadAllAlbumsFromArtist(artist: Artist, parentFolder: String = "") -> DownloadErrors {
 		guard let albums = session.getArtistAlbums(artistId: artist.id) else {
 			return DownloadErrors(affectedArtists: [artist])
 		}
@@ -110,7 +111,7 @@ class Helpers {
 		return error
 	}
 	
-	func downloadPlaylist(playlist: Playlist, parentFolder: String = "") -> DownloadErrors {
+	public func downloadPlaylist(playlist: Playlist, parentFolder: String = "") -> DownloadErrors {
 		guard let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) else {
 			return DownloadErrors(affectedPlaylists: [playlist])
 		}
@@ -126,7 +127,7 @@ class Helpers {
 	}
 }
 
-enum DownloadLocation {
+public enum DownloadLocation {
 	case downloads
 	case music
 }
@@ -215,11 +216,13 @@ func convertToALAC(path: URL) {
 
 // MARK: - Offline
 
-class Offline {
+// TODO: Database to keep track which files are needed multiple times
+// Abstract that from the library user.
+public class Offline {
 	unowned let session: Session
 	let mainPath = "TidalSwift Offline Library"
 	
-	init(session: Session) {
+	public init(session: Session) {
 		self.session = session
 		
 		// Create main folder if it doesn't exist
@@ -235,7 +238,7 @@ class Offline {
 		}
 	}
 	
-	func addTrack(trackId: Int) -> Bool {
+	public func addTrack(trackId: Int) -> Bool {
 		guard let url = session.getAudioUrl(trackId: trackId) else {
 			return false
 		}
@@ -248,7 +251,7 @@ class Offline {
 	}
 	
 	// Warning: Does not check if song is still needed present in other offline album, playlist or other
-	func removeTrack(trackId: Int) {
+	public func removeTrack(trackId: Int) {
 		do {
 			var path = try FileManager.default.url(for: .musicDirectory,
 												   in: .userDomainMask,
