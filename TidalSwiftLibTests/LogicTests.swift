@@ -198,193 +198,191 @@ class LogicTests: XCTestCase {
 	
 	func testSearchArtist() {
 		let searchResult = session.search(for: "Roger Cicero")
-		XCTAssertEqual(searchResult?.artists.totalNumberOfItems, 2)
-		XCTAssertEqual(searchResult?.artists.items[0].id, 16579)
-		XCTAssertEqual(searchResult?.artists.items[0].name, "Roger Cicero")
-		XCTAssertEqual(searchResult?.artists.items[0].url,
+		XCTAssertEqual(searchResult?.artists.count, 2)
+		XCTAssertEqual(searchResult?.artists[0].id, 16579)
+		XCTAssertEqual(searchResult?.artists[0].name, "Roger Cicero")
+		XCTAssertEqual(searchResult?.artists[0].url,
 					   URL(string: "http://www.tidal.com/artist/16579"))
 		// Interestingly the resulting URL is HTTP instead of HTTPS
-		XCTAssertEqual(searchResult?.artists.items[0].picture,
+		XCTAssertEqual(searchResult?.artists[0].picture,
 					   "2fb1902b-7216-407b-b674-5edb93d00a84")
-		XCTAssertNotNil(searchResult?.artists.items[0].popularity)
-		XCTAssertNil(searchResult?.artists.items[0].type)
-		XCTAssertNil(searchResult?.artists.items[0].banner)
-		XCTAssertNil(searchResult?.artists.items[0].relationType)
+		XCTAssertNotNil(searchResult?.artists[0].popularity)
+		XCTAssertNil(searchResult?.artists[0].type)
+		XCTAssertNil(searchResult?.artists[0].banner)
+		XCTAssertNil(searchResult?.artists[0].relationType)
 	}
 	
 	func testSearchAlbum() {
 		let searchResult = session.search(for: "Jacob Collier Djesse Vol. 1")
-		XCTAssertEqual(searchResult?.albums.totalNumberOfItems, 2)
+		XCTAssertEqual(searchResult?.albums.count, 2)
 		
 		// Master Version
-		XCTAssertEqual(searchResult?.albums.items[0].id, 100006868)
-		XCTAssertEqual(searchResult?.albums.items[0].title, "Djesse Vol. 1")
-		XCTAssertEqual(searchResult?.albums.items[0].duration, 3196)
-		XCTAssertEqual(searchResult?.albums.items[0].streamReady, true)
-		XCTAssertEqual(searchResult?.albums.items[0].streamStartDate,
+		XCTAssertEqual(searchResult?.albums[0].id, 100006868)
+		XCTAssertEqual(searchResult?.albums[0].title, "Djesse Vol. 1")
+		XCTAssertEqual(searchResult?.albums[0].duration, 3196)
+		XCTAssertEqual(searchResult?.albums[0].streamReady, true)
+		XCTAssertEqual(searchResult?.albums[0].streamStartDate,
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
-		XCTAssertEqual(searchResult?.albums.items[0].allowStreaming, true)
-		XCTAssertEqual(searchResult?.albums.items[0].premiumStreamingOnly, false)
-		XCTAssertEqual(searchResult?.albums.items[0].numberOfTracks, 9)
-		XCTAssertEqual(searchResult?.albums.items[0].numberOfVideos, 0)
-		XCTAssertEqual(searchResult?.albums.items[0].numberOfVolumes, 1)
-		XCTAssertEqual(searchResult?.albums.items[0].releaseDate,
+		XCTAssertEqual(searchResult?.albums[0].allowStreaming, true)
+		XCTAssertEqual(searchResult?.albums[0].premiumStreamingOnly, false)
+		XCTAssertEqual(searchResult?.albums[0].numberOfTracks, 9)
+		XCTAssertEqual(searchResult?.albums[0].numberOfVideos, 0)
+		XCTAssertEqual(searchResult?.albums[0].numberOfVolumes, 1)
+		XCTAssertEqual(searchResult?.albums[0].releaseDate,
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-12-07"))
-		XCTAssertEqual(searchResult?.albums.items[0].copyright,
+		XCTAssertEqual(searchResult?.albums[0].copyright,
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
-		XCTAssertEqual(searchResult?.albums.items[0].type, "ALBUM")
-		XCTAssertEqual(searchResult?.albums.items[0].url,
+		XCTAssertEqual(searchResult?.albums[0].type, "ALBUM")
+		XCTAssertEqual(searchResult?.albums[0].url,
 					   URL(string: "http://www.tidal.com/album/100006868"))
-		XCTAssertEqual(searchResult?.albums.items[0].cover,
+		XCTAssertEqual(searchResult?.albums[0].cover,
 					   "e60d7380-2a14-4011-bbc1-a3a1f0c576d6")
-		XCTAssertNil(searchResult?.albums.items[0].videoCover)
-		XCTAssertEqual(searchResult?.albums.items[0].explicit, false)
-		XCTAssertEqual(searchResult?.albums.items[0].upc, "00602577265037")
+		XCTAssertNil(searchResult?.albums[0].videoCover)
+		XCTAssertEqual(searchResult?.albums[0].explicit, false)
+		XCTAssertEqual(searchResult?.albums[0].upc, "00602577265037")
 		
-		XCTAssertNotNil(searchResult?.albums.items[0].popularity)
-		XCTAssertEqual(searchResult?.albums.items[0].audioQuality, .master) // Master Version
-		XCTAssertEqual(searchResult?.albums.items[0].surroundTypes, [])
+		XCTAssertNotNil(searchResult?.albums[0].popularity)
+		XCTAssertEqual(searchResult?.albums[0].audioQuality, .master) // Master Version
+		XCTAssertEqual(searchResult?.albums[0].surroundTypes, [])
 		
 		// HiFi Version
-		XCTAssertEqual(searchResult?.albums.items[1].audioQuality, .hifi)
+		XCTAssertEqual(searchResult?.albums[1].audioQuality, .hifi)
 		
 		// Album Artist
-		XCTAssertNil(searchResult?.albums.items[0].artist)
+		XCTAssertNil(searchResult?.albums[0].artist)
 		
 		// Album Artists
-		XCTAssertEqual(searchResult?.albums.items[0].artists?.count, 3)
-		XCTAssertEqual(searchResult?.albums.items[0].artists?[0].id, 7553669)
-		XCTAssertEqual(searchResult?.albums.items[0].artists?[0].name, "Jacob Collier")
-		XCTAssertNil(searchResult?.albums.items[0].artists?[0].url)
-		XCTAssertNil(searchResult?.albums.items[0].artists?[0].picture)
-		XCTAssertNil(searchResult?.albums.items[0].artists?[0].popularity)
-		XCTAssertEqual(searchResult?.albums.items[0].artists?[0].type, "MAIN")
+		XCTAssertEqual(searchResult?.albums[0].artists?.count, 3)
+		XCTAssertEqual(searchResult?.albums[0].artists?[0].id, 7553669)
+		XCTAssertEqual(searchResult?.albums[0].artists?[0].name, "Jacob Collier")
+		XCTAssertNil(searchResult?.albums[0].artists?[0].url)
+		XCTAssertNil(searchResult?.albums[0].artists?[0].picture)
+		XCTAssertNil(searchResult?.albums[0].artists?[0].popularity)
+		XCTAssertEqual(searchResult?.albums[0].artists?[0].type, "MAIN")
 		
-		XCTAssertEqual(searchResult?.albums.items[0].artists?[1].id, 4631340)
-		XCTAssertEqual(searchResult?.albums.items[0].artists?[1].name, "Metropole Orkest")
-		XCTAssertNil(searchResult?.albums.items[0].artists?[1].url)
-		XCTAssertNil(searchResult?.albums.items[0].artists?[1].picture)
-		XCTAssertNil(searchResult?.albums.items[0].artists?[1].popularity)
-		XCTAssertEqual(searchResult?.albums.items[0].artists?[1].type, "MAIN")
+		XCTAssertEqual(searchResult?.albums[0].artists?[1].id, 4631340)
+		XCTAssertEqual(searchResult?.albums[0].artists?[1].name, "Metropole Orkest")
+		XCTAssertNil(searchResult?.albums[0].artists?[1].url)
+		XCTAssertNil(searchResult?.albums[0].artists?[1].picture)
+		XCTAssertNil(searchResult?.albums[0].artists?[1].popularity)
+		XCTAssertEqual(searchResult?.albums[0].artists?[1].type, "MAIN")
 		
-		XCTAssertEqual(searchResult?.albums.items[0].artists?[2].id, 4374293)
-		XCTAssertEqual(searchResult?.albums.items[0].artists?[2].name, "Jules Buckley")
-		XCTAssertNil(searchResult?.albums.items[0].artists?[2].url)
-		XCTAssertNil(searchResult?.albums.items[0].artists?[2].picture)
-		XCTAssertNil(searchResult?.albums.items[0].artists?[2].popularity)
-		XCTAssertEqual(searchResult?.albums.items[0].artists?[2].type, "MAIN")
+		XCTAssertEqual(searchResult?.albums[0].artists?[2].id, 4374293)
+		XCTAssertEqual(searchResult?.albums[0].artists?[2].name, "Jules Buckley")
+		XCTAssertNil(searchResult?.albums[0].artists?[2].url)
+		XCTAssertNil(searchResult?.albums[0].artists?[2].picture)
+		XCTAssertNil(searchResult?.albums[0].artists?[2].popularity)
+		XCTAssertEqual(searchResult?.albums[0].artists?[2].type, "MAIN")
 	}
 	
 	func testSearchPlaylist() {
 		let searchResult = session.search(for: "Barack Obama Speeches")
-		XCTAssertEqual(searchResult?.playlists.totalNumberOfItems, 1)
-		XCTAssertEqual(searchResult?.playlists.items.count, 1)
-		XCTAssertEqual(searchResult?.playlists.items[0].uuid,
+		XCTAssertEqual(searchResult?.playlists.count, 1)
+		XCTAssertEqual(searchResult?.playlists[0].uuid,
 					   "96696a2c-b284-4dd3-8e51-5e0dae44ace0")
-		XCTAssertEqual(searchResult?.playlists.items[0].title, "Barack Obama Speeches")
-		XCTAssertEqual(searchResult?.playlists.items[0].numberOfTracks, 19)
-		XCTAssertEqual(searchResult?.playlists.items[0].numberOfVideos, 0)
+		XCTAssertEqual(searchResult?.playlists[0].title, "Barack Obama Speeches")
+		XCTAssertEqual(searchResult?.playlists[0].numberOfTracks, 19)
+		XCTAssertEqual(searchResult?.playlists[0].numberOfVideos, 0)
 		let description = "Grab inspiration from this collection of No. 44's notable speeches. "
-		XCTAssertEqual(searchResult?.playlists.items[0].description, description)
-		XCTAssertEqual(searchResult?.playlists.items[0].duration, 34170)
-		XCTAssertEqual(searchResult?.playlists.items[0].lastUpdated,
+		XCTAssertEqual(searchResult?.playlists[0].description, description)
+		XCTAssertEqual(searchResult?.playlists[0].duration, 34170)
+		XCTAssertEqual(searchResult?.playlists[0].lastUpdated,
 					   DateFormatter.iso8601OptionalTime.date(from:
 						"2019-02-28T21:14:54.000GMT"))
-		XCTAssertEqual(searchResult?.playlists.items[0].created,
+		XCTAssertEqual(searchResult?.playlists[0].created,
 					   DateFormatter.iso8601OptionalTime.date(from:
 						"2018-01-19T17:56:03.000GMT"))
-		XCTAssertEqual(searchResult?.playlists.items[0].type, .editorial)
+		XCTAssertEqual(searchResult?.playlists[0].type, .editorial)
 		// Here it's false, but in the Playlist test it's true. No idea, why.
-		XCTAssertEqual(searchResult?.playlists.items[0].publicPlaylist, true)
-		XCTAssertEqual(searchResult?.playlists.items[0].url, URL(string:
+		XCTAssertEqual(searchResult?.playlists[0].publicPlaylist, true)
+		XCTAssertEqual(searchResult?.playlists[0].url, URL(string:
 			"http://www.tidal.com/playlist/96696a2c-b284-4dd3-8e51-5e0dae44ace0"))
-		XCTAssertEqual(searchResult?.playlists.items[0].image,
+		XCTAssertEqual(searchResult?.playlists[0].image,
 					   "43f8e4db-769c-40f6-b561-99609aef0c13")
-//		print(searchResult?.playlists.items[0].popularity)
-		XCTAssertEqual(searchResult?.playlists.items[0].squareImage,
+//		print(searchResult?.playlists[0].popularity)
+		XCTAssertEqual(searchResult?.playlists[0].squareImage,
 					   "50fbe933-0049-4e0e-be82-2de70b19168e")
 	}
 	
 	func testSearchTrack() {
 		let searchResult = session.search(for: "Jacob Collier In My Room")
-		XCTAssertEqual(searchResult?.tracks.totalNumberOfItems, 1)
-		XCTAssertEqual(searchResult?.tracks.items.count, 1)
-		XCTAssertEqual(searchResult?.tracks.items[0].id, 59978883)
-		XCTAssertEqual(searchResult?.tracks.items[0].title, "In My Room")
-		XCTAssertEqual(searchResult?.tracks.items[0].duration, 289)
-		XCTAssertEqual(searchResult?.tracks.items[0].replayGain, -7.04)
-		XCTAssertEqual(searchResult?.tracks.items[0].peak, 0.944366)
-		XCTAssertEqual(searchResult?.tracks.items[0].allowStreaming, true)
-		XCTAssertEqual(searchResult?.tracks.items[0].streamReady, true)
-		XCTAssertEqual(searchResult?.tracks.items[0].streamStartDate,
+		XCTAssertEqual(searchResult?.tracks.count, 1)
+		XCTAssertEqual(searchResult?.tracks[0].id, 59978883)
+		XCTAssertEqual(searchResult?.tracks[0].title, "In My Room")
+		XCTAssertEqual(searchResult?.tracks[0].duration, 289)
+		XCTAssertEqual(searchResult?.tracks[0].replayGain, -7.04)
+		XCTAssertEqual(searchResult?.tracks[0].peak, 0.944366)
+		XCTAssertEqual(searchResult?.tracks[0].allowStreaming, true)
+		XCTAssertEqual(searchResult?.tracks[0].streamReady, true)
+		XCTAssertEqual(searchResult?.tracks[0].streamStartDate,
 					   DateFormatter.iso8601OptionalTime.date(from: "2016-07-01"))
-		XCTAssertEqual(searchResult?.tracks.items[0].trackNumber, 2)
-		XCTAssertEqual(searchResult?.tracks.items[0].volumeNumber, 1)
-//		print(searchResult?.tracks.items[0].popularity)
-		XCTAssertEqual(searchResult?.tracks.items[0].copyright, "2016 Membran")
-		XCTAssertEqual(searchResult?.tracks.items[0].url,
+		XCTAssertEqual(searchResult?.tracks[0].trackNumber, 2)
+		XCTAssertEqual(searchResult?.tracks[0].volumeNumber, 1)
+//		print(searchResult?.tracks[0].popularity)
+		XCTAssertEqual(searchResult?.tracks[0].copyright, "2016 Membran")
+		XCTAssertEqual(searchResult?.tracks[0].url,
 					   URL(string: "http://www.tidal.com/track/59978883"))
-		XCTAssertEqual(searchResult?.tracks.items[0].isrc, "US23A1500084")
-		XCTAssertEqual(searchResult?.tracks.items[0].editable, true)
-		XCTAssertEqual(searchResult?.tracks.items[0].explicit, false)
-		XCTAssertEqual(searchResult?.tracks.items[0].audioQuality, .hifi)
+		XCTAssertEqual(searchResult?.tracks[0].isrc, "US23A1500084")
+		XCTAssertEqual(searchResult?.tracks[0].editable, true)
+		XCTAssertEqual(searchResult?.tracks[0].explicit, false)
+		XCTAssertEqual(searchResult?.tracks[0].audioQuality, .hifi)
 		
 		// Artists
-		XCTAssertEqual(searchResult?.tracks.items[0].artists.count, 1)
-		XCTAssertEqual(searchResult?.tracks.items[0].artists[0].id, 7553669)
-		XCTAssertEqual(searchResult?.tracks.items[0].artists[0].name, "Jacob Collier")
-//		print(searchResult?.videos.items[0].artists[0].type) // For no reason "Index out of range"
-//		XCTAssertEqual(searchResult?.videos.items[0].artists[0].type, "MAIN")
+		XCTAssertEqual(searchResult?.tracks[0].artists.count, 1)
+		XCTAssertEqual(searchResult?.tracks[0].artists[0].id, 7553669)
+		XCTAssertEqual(searchResult?.tracks[0].artists[0].name, "Jacob Collier")
+//		print(searchResult?.videos[0].artists[0].type) // For no reason "Index out of range"
+//		XCTAssertEqual(searchResult?.videos[0].artists[0].type, "MAIN")
 		
 		// Album
-		XCTAssertEqual(searchResult?.tracks.items[0].album.id, 59978881)
-		XCTAssertEqual(searchResult?.tracks.items[0].album.title, "In My Room")
+		XCTAssertEqual(searchResult?.tracks[0].album.id, 59978881)
+		XCTAssertEqual(searchResult?.tracks[0].album.title, "In My Room")
 	}
 	
 	func testSearchVideo() {
 		let searchResult = session.search(for:
 			"Jacob Collier With The Love In My Heart")
-		XCTAssertEqual(searchResult?.videos.totalNumberOfItems, 1)
-		XCTAssertEqual(searchResult?.videos.items[0].id, 98785108)
-		XCTAssertEqual(searchResult?.videos.items[0].title,
+		XCTAssertEqual(searchResult?.videos.count, 1)
+		XCTAssertEqual(searchResult?.videos[0].id, 98785108)
+		XCTAssertEqual(searchResult?.videos[0].title,
 					   "With The Love In My Heart")
-		XCTAssertEqual(searchResult?.videos.items[0].volumeNumber, 1)
-		XCTAssertEqual(searchResult?.videos.items[0].trackNumber, 1)
-		XCTAssertEqual(searchResult?.videos.items[0].releaseDate,
+		XCTAssertEqual(searchResult?.videos[0].volumeNumber, 1)
+		XCTAssertEqual(searchResult?.videos[0].trackNumber, 1)
+		XCTAssertEqual(searchResult?.videos[0].releaseDate,
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-11-16"))
-		XCTAssertNil(searchResult?.videos.items[0].imagePath)
-		XCTAssertEqual(searchResult?.videos.items[0].imageId,
+		XCTAssertNil(searchResult?.videos[0].imagePath)
+		XCTAssertEqual(searchResult?.videos[0].imageId,
 					   "94cf59fb-2816-4c40-989d-8aff2365baf9")
-		XCTAssertEqual(searchResult?.videos.items[0].duration, 406)
-		XCTAssertEqual(searchResult?.videos.items[0].quality, "MP4_1080P")
-		XCTAssertEqual(searchResult?.videos.items[0].streamReady, true)
-		XCTAssertEqual(searchResult?.videos.items[0].streamStartDate,
+		XCTAssertEqual(searchResult?.videos[0].duration, 406)
+		XCTAssertEqual(searchResult?.videos[0].quality, "MP4_1080P")
+		XCTAssertEqual(searchResult?.videos[0].streamReady, true)
+		XCTAssertEqual(searchResult?.videos[0].streamStartDate,
 					   DateFormatter.iso8601OptionalTime.date(from:
 						"2018-11-16T18:00:00.000GMT"))
-		XCTAssertEqual(searchResult?.videos.items[0].allowStreaming, true)
-		XCTAssertEqual(searchResult?.videos.items[0].explicit, false)
-//		print(searchResult?.videos.items[0].popularity)
-		XCTAssertEqual(searchResult?.videos.items[0].type, "Music Video")
-		XCTAssertNil(searchResult?.videos.items[0].adsUrl)
-		XCTAssertEqual(searchResult?.videos.items[0].adsPrePaywallOnly, true)
+		XCTAssertEqual(searchResult?.videos[0].allowStreaming, true)
+		XCTAssertEqual(searchResult?.videos[0].explicit, false)
+//		print(searchResult?.videos[0].popularity)
+		XCTAssertEqual(searchResult?.videos[0].type, "Music Video")
+		XCTAssertNil(searchResult?.videos[0].adsUrl)
+		XCTAssertEqual(searchResult?.videos[0].adsPrePaywallOnly, true)
 		
 		// Artists
-		XCTAssertEqual(searchResult?.tracks.items[0].artists.count, 3)
+		XCTAssertEqual(searchResult?.tracks[0].artists.count, 3)
 		
-		XCTAssertEqual(searchResult?.tracks.items[0].artists[0].id, 7553669)
-		XCTAssertEqual(searchResult?.tracks.items[0].artists[0].name, "Jacob Collier")
-		XCTAssertEqual(searchResult?.videos.items[0].artists[0].type, "MAIN")
+		XCTAssertEqual(searchResult?.tracks[0].artists[0].id, 7553669)
+		XCTAssertEqual(searchResult?.tracks[0].artists[0].name, "Jacob Collier")
+		XCTAssertEqual(searchResult?.videos[0].artists[0].type, "MAIN")
 		
-		XCTAssertEqual(searchResult?.tracks.items[0].artists[1].id, 4631340)
-		XCTAssertEqual(searchResult?.tracks.items[0].artists[1].name, "Metropole Orkest")
-		XCTAssertEqual(searchResult?.videos.items[0].artists[1].type, "MAIN")
+		XCTAssertEqual(searchResult?.tracks[0].artists[1].id, 4631340)
+		XCTAssertEqual(searchResult?.tracks[0].artists[1].name, "Metropole Orkest")
+		XCTAssertEqual(searchResult?.videos[0].artists[1].type, "MAIN")
 		
-		XCTAssertEqual(searchResult?.tracks.items[0].artists[2].id, 4374293)
-		XCTAssertEqual(searchResult?.tracks.items[0].artists[2].name, "Jules Buckley")
-		XCTAssertEqual(searchResult?.videos.items[0].artists[2].type, "MAIN")
+		XCTAssertEqual(searchResult?.tracks[0].artists[2].id, 4374293)
+		XCTAssertEqual(searchResult?.tracks[0].artists[2].name, "Jules Buckley")
+		XCTAssertEqual(searchResult?.videos[0].artists[2].type, "MAIN")
 		
 		// Album (probably need to find a better example)
-		XCTAssertNil(searchResult?.videos.items[0].album)
+		XCTAssertNil(searchResult?.videos[0].album)
 		
 	}
 	
@@ -416,44 +414,50 @@ class LogicTests: XCTestCase {
 	
 	func testSearchLimitAndOffset() {
 		let searchResult = session.search(for: "Rolf Zuckowski")
-		XCTAssertEqual(searchResult?.tracks.totalNumberOfItems, 300)
-		XCTAssertEqual(searchResult?.tracks.limit, 50)
-		XCTAssertEqual(searchResult?.tracks.items.count, 50)
-		XCTAssertEqual(searchResult?.tracks.offset, 0)
+//		XCTAssertEqual(searchResult?.tracks.totalNumberOfItems, 300)
+//		XCTAssertEqual(searchResult?.tracks.limit, 50)
+//		XCTAssertEqual(searchResult?.tracks.items.count, 50)
+//		XCTAssertEqual(searchResult?.tracks.offset, 0)
+		XCTAssertEqual(searchResult?.tracks.count, 50)
 		
 		// Test Offset
 		let searchResultWithOffset = session.search(for: "Rolf Zuckowski", offset: 1)
-		XCTAssertEqual(searchResultWithOffset?.tracks.limit, 50)
-		XCTAssertEqual(searchResultWithOffset?.tracks.offset, 1)
-		
-		XCTAssertEqual(searchResult?.tracks.totalNumberOfItems, 300)
+//		XCTAssertEqual(searchResultWithOffset?.tracks.limit, 50)
+//		XCTAssertEqual(searchResultWithOffset?.tracks.offset, 1)
+//
+//		XCTAssertEqual(searchResultWithOffset?.tracks.totalNumberOfItems, 300)
+		XCTAssertEqual(searchResultWithOffset?.tracks.count, 50)
 		
 		// Test Limit
 		let searchResultWithLimit = session.search(for: "Rolf Zuckowski", limit: 5)
-		XCTAssertEqual(searchResultWithLimit?.tracks.limit, 5)
-		XCTAssertEqual(searchResultWithLimit?.tracks.offset, 0)
-		
-		XCTAssertEqual(searchResult?.tracks.totalNumberOfItems, 300)
+//		XCTAssertEqual(searchResultWithLimit?.tracks.limit, 5)
+//		XCTAssertEqual(searchResultWithLimit?.tracks.offset, 0)
+//
+//		XCTAssertEqual(searchResultWithLimit?.tracks.totalNumberOfItems, 300)
+		XCTAssertEqual(searchResultWithLimit?.tracks.count, 5)
 		
 		// Test Big Offset
 		let searchResultWithBigOffset1 = session.search(for: "Rolf Zuckowski", offset: 301)
-		XCTAssertEqual(searchResultWithBigOffset1?.tracks.limit, 50)
-		XCTAssertEqual(searchResultWithBigOffset1?.tracks.offset, 301)
-		XCTAssertEqual(searchResultWithBigOffset1?.tracks.totalNumberOfItems, 300)
-		XCTAssertEqual(searchResultWithBigOffset1?.tracks.items.count, 0)
+//		XCTAssertEqual(searchResultWithBigOffset1?.tracks.limit, 50)
+//		XCTAssertEqual(searchResultWithBigOffset1?.tracks.offset, 301)
+//		XCTAssertEqual(searchResultWithBigOffset1?.tracks.totalNumberOfItems, 300)
+//		XCTAssertEqual(searchResultWithBigOffset1?.tracks.items.count, 0)
+		XCTAssertEqual(searchResultWithBigOffset1?.tracks.count, 0)
 		
 		let searchResultWithBigOffset2 = session.search(for: "Rolf Zuckowski", offset: 275)
-		XCTAssertEqual(searchResultWithBigOffset2?.tracks.limit, 50)
-		XCTAssertEqual(searchResultWithBigOffset2?.tracks.offset, 275)
-		XCTAssertEqual(searchResultWithBigOffset2?.tracks.totalNumberOfItems, 300)
-		XCTAssertEqual(searchResultWithBigOffset2?.tracks.items.count, 25)
+//		XCTAssertEqual(searchResultWithBigOffset2?.tracks.limit, 50)
+//		XCTAssertEqual(searchResultWithBigOffset2?.tracks.offset, 275)
+//		XCTAssertEqual(searchResultWithBigOffset2?.tracks.totalNumberOfItems, 300)
+//		XCTAssertEqual(searchResultWithBigOffset2?.tracks.items.count, 25)
+		XCTAssertEqual(searchResultWithBigOffset2?.tracks.count, 25)
 		
 		// Test High Limit
 		let searchResultWithHighLimit = session.search(for: "Rolf Zuckowski", limit: 500)
-		XCTAssertEqual(searchResultWithHighLimit?.tracks.limit, 500)
-		XCTAssertEqual(searchResultWithHighLimit?.tracks.offset, 0)
-		XCTAssertEqual(searchResultWithHighLimit?.tracks.items.count, 300)
-		XCTAssertEqual(searchResultWithHighLimit?.tracks.totalNumberOfItems, 300)
+//		XCTAssertEqual(searchResultWithHighLimit?.tracks.limit, 500)
+//		XCTAssertEqual(searchResultWithHighLimit?.tracks.offset, 0)
+//		XCTAssertEqual(searchResultWithHighLimit?.tracks.items.count, 300)
+//		XCTAssertEqual(searchResultWithHighLimit?.tracks.totalNumberOfItems, 300)
+		XCTAssertEqual(searchResultWithHighLimit?.tracks.count, 300)
 	}
 	
 	// MARK: - Get
@@ -489,8 +493,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(track.artists.count, 1)
 		XCTAssertEqual(track.artists[0].id, 7553669)
 		XCTAssertEqual(track.artists[0].name, "Jacob Collier")
-		//		print(searchResult?.videos.items[0].artists[0].type) // For no reason "Index out of range"
-		//		XCTAssertEqual(searchResult?.videos.items[0].artists[0].type, "MAIN")
+		//		print(searchResult?.videos[0].artists[0].type) // For no reason "Index out of range"
+		//		XCTAssertEqual(searchResult?.videos[0].artists[0].type, "MAIN")
 		
 		// Album
 		XCTAssertEqual(track.album.id, 59978881)
@@ -586,7 +590,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlist?.url, URL(string:
 			"http://www.tidal.com/playlist/96696a2c-b284-4dd3-8e51-5e0dae44ace0"))
 		XCTAssertEqual(playlist?.image, "43f8e4db-769c-40f6-b561-99609aef0c13")
-//		print(searchResult?.playlists.items[0].popularity)
+//		print(searchResult?.playlists[0].popularity)
 		XCTAssertEqual(playlist?.squareImage, "50fbe933-0049-4e0e-be82-2de70b19168e")
 		
 		// Playlist Creator (TIDAL Editorial)
@@ -1672,16 +1676,16 @@ class LogicTests: XCTestCase {
 		let artist3 = session.getArtist(artistId: 4374293)!
 		
 		let noArtist = [Artist]()
-		XCTAssertEqual(formArtistString(artists: noArtist), "")
+		XCTAssertEqual(noArtist.formArtistString(), "")
 		
 		let oneArtist = [artist1]
-		XCTAssertEqual(formArtistString(artists: oneArtist), "Jacob Collier")
+		XCTAssertEqual(oneArtist.formArtistString(), "Jacob Collier")
 		
 		let twoArtists = [artist1, artist2]
-		XCTAssertEqual(formArtistString(artists: twoArtists), "Jacob Collier & Metropole Orkest")
+		XCTAssertEqual(twoArtists.formArtistString(), "Jacob Collier & Metropole Orkest")
 		
 		let threeArtists = [artist1, artist2, artist3]
-		XCTAssertEqual(formArtistString(artists: threeArtists), "Jacob Collier, Metropole Orkest & Jules Buckley")
+		XCTAssertEqual(threeArtists.formArtistString(), "Jacob Collier, Metropole Orkest & Jules Buckley")
 	}
 	
 	// MARK: - Date

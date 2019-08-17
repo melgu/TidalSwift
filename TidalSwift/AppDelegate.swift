@@ -22,18 +22,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		// Insert code here to initialize your application
 		
 		// My Stuff
-		let config = Config(quality: .hifi,
-							loginCredentials: readDemoLoginCredentials(),
-							apiToken: nil)
-		session = Session(config: config)
+//		let config = Config(quality: .hifi,
+//							loginCredentials: readDemoLoginCredentials(),
+//							apiToken: nil)
+//		session = Session(config: config)
 		
 //		session?.login()
 //		session?.saveConfig()
 //		session?.saveSession()
 		
-		session?.loadSession()
-		
-		let demoAlbum = session!.getAlbum(albumId: 100006868)!
+//		session?.loadSession()
+//
+//		let demoAlbum = session!.getAlbum(albumId: 100006868)!
 		
 		print("-----")
 		

@@ -311,7 +311,8 @@ public class Session {
 	}
 	
 	public func getVideoUrl(videoId: Int) -> URL? {
-		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/offlineUrl")!
+//		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/offlineUrl")! // Only returns low quality video
+		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/streamUrl")!
 		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
