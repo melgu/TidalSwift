@@ -120,7 +120,7 @@ public struct ArtistBio: Decodable {
 	public let text: String
 }
 
-public struct Album: Decodable, Equatable {
+public struct Album: Decodable, Equatable, Identifiable {
 	public let id: Int
 	public let title: String
 	public let duration: Int? // In Seconds
@@ -172,7 +172,9 @@ public enum PlaylistType: String, Decodable {
 	// Haven't seen others yet
 }
 
-public struct Playlist: Decodable, Equatable {
+public struct Playlist: Decodable, Equatable, Identifiable {
+	public var id: String { uuid }
+	
 	public let uuid: String
 	public let title: String
 	public let numberOfTracks: Int
@@ -224,7 +226,7 @@ public struct PlaylistCreator: Decodable {
 	}
 }
 
-public struct Track: Decodable, Equatable {
+public struct Track: Decodable, Equatable, Identifiable {
 	public let id: Int
 	public let title: String
 	public let duration: Int
@@ -262,8 +264,8 @@ public struct Track: Decodable, Equatable {
 	}
 }
 
-public struct Video: Decodable {
-	let id: Int
+public struct Video: Decodable, Equatable, Identifiable {
+	public let id: Int
 	let title: String
 	let volumeNumber: Int
 	let trackNumber: Int
@@ -447,7 +449,9 @@ struct Genres: Decodable { // Also Moods
 	}
 }
 
-public struct Genre: Decodable { // Also Mood
+public struct Genre: Decodable, Identifiable { // Also Mood
+	public var id: String { name }
+	
 	let name: String
 	let path: String
 	let hasPlaylists: Bool
@@ -704,4 +708,13 @@ class OptionalTimeDateFormatter: DateFormatter {
 
 extension DateFormatter {
 	static let iso8601OptionalTime = OptionalTimeDateFormatter()
+}
+
+extension DateFormatter {
+	public static let dateOnly: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateStyle = DateFormatter.Style.long
+		formatter.timeStyle = DateFormatter.Style.none
+		return formatter
+	}()
 }

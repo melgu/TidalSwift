@@ -7,50 +7,69 @@
 //
 
 import SwiftUI
+import TidalSwiftLib
 
-struct TrackRow: View {
-	var showCover: Bool
+struct TrackRowFront: View {
+	var track: Track
+	var coverArtUrl: URL?
 	
 	@State var image = Image("Single Black Pixel")
 	
 	var body: some View {
 		HStack {
-			if showCover {
+			if coverArtUrl != nil {
 				image
 					.resizable()
 					.frame(width: 30, height: 30)
 					.onAppear {
-						let im = ImageLoader.load(url: "https://resources.tidal.com/images/e60d7380/2a14/4011/bbc1/a3a1f0c576d6/80x80.jpg")
+						let im = ImageLoader.load(url: self.coverArtUrl!)
 						self.image = im
 				}
 			}
-			Text("09")
+			Text("\(track.trackNumber)")
 				.fontWeight(.thin)
 				.foregroundColor(.gray)
-			Text("All Night Long")
-			Spacer()
-			Text("6:31")
-			Spacer()
-			Text("^")
-				.foregroundColor(.gray)
-			Text("+")
-			Text("<3")
+			Text(track.title)
 		}
-//		.foregroundColor(.white)
-		.frame(height: 30)
+//			.foregroundColor(.white)
+			.frame(height: 30)
+		
+	}
+}
+
+struct TrackRowBack: View {
+	var track: Track
+	
+	var body: some View {
+		HStack {
+			Spacer()
+//				.layoutPriority(-1)
+			Text("\(track.duration) sec")
+			Spacer()
+//				.layoutPriority(-1)
+//			Text("^")
+//				.foregroundColor(.gray)
+			Group {
+				Text("+")
+				Text("<3")
+			}
+				.layoutPriority(1)
+		}
+//			.foregroundColor(.white)
+			.frame(height: 30)
 		
 	}
 }
 
 #if DEBUG
-struct TrackRow_Previews: PreviewProvider {
-	static var previews: some View {
-		Group {
-			TrackRow(showCover: true)
-				.previewDisplayName("With Cover")
-			TrackRow(showCover: false)
-				.previewDisplayName("Without Cover")
-		}
-	}
-}
+//struct TrackRow_Previews: PreviewProvider {
+//	static var previews: some View {
+//		Group {
+//			TrackRow()
+//				.previewDisplayName("With Cover")
+//			TrackRow()
+//				.previewDisplayName("Without Cover")
+//		}
+//	}
+//}
 #endif

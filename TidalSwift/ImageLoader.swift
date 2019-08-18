@@ -11,16 +11,12 @@ import SwiftUI
 
 class ImageLoader {
 	
-	class func load(url: String, placeholder: Image = Image("Single Black Pixel")) -> Image {
+	class func load(url: URL, placeholder: Image = Image("Single Black Pixel")) -> Image {
 		
 		var downloadedImage = placeholder
 		
-		guard let imageURL = URL(string: url) else {
-			return downloadedImage
-		}
-		
 		let semaphore = DispatchSemaphore(value: 0)
-		URLSession.shared.dataTask(with: imageURL) { data, response, error in
+		URLSession.shared.dataTask(with: url) { data, response, error in
 			
 			guard let data = data, error == nil, let nsImage = NSImage(data: data) else {
 				semaphore.signal()
