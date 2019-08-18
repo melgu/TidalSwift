@@ -1706,5 +1706,12 @@ class LogicTests: XCTestCase {
 		XCTAssertNotEqual(wrongResult, subSecondResult)
 		XCTAssertEqual(subSecondString, subSecondResult)
 	}
+	
+	func testDateOnlyFormatter() {
+		let rawString = "2019-03-28T06:49:21.123GMT"
+		let date = DateFormatter.iso8601OptionalTime.date(from: rawString)!
+		let formattedDateString = DateFormatter.dateOnly.string(from: date)
+		XCTAssertEqual(formattedDateString, "28. March 2019")
+	}
 
 }

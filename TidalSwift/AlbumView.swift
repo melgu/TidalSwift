@@ -10,6 +10,9 @@ import SwiftUI
 import TidalSwiftLib
 
 struct AlbumView: View {@State var image = Image("Single Black Pixel")
+	var session: Session
+	var album: Album
+	
 	@State var bigCover = false
 	
 	var body: some View {
@@ -25,7 +28,7 @@ struct AlbumView: View {@State var image = Image("Single Black Pixel")
 					
 					VStack(alignment: .leading) {
 						HStack {
-							Text("Djesse Vol. 1")
+							Text(album.title)
 								.font(.title)
 								.lineLimit(2)
 							Text("(i)")
@@ -33,23 +36,46 @@ struct AlbumView: View {@State var image = Image("Single Black Pixel")
 							Text("<3")
 								.foregroundColor(.gray)
 						}
-						Text("Jacob Collier")
-						Text("2018")
+						Text(album.artists?.formArtistString() ?? "")
+						if album.releaseDate != nil {
+							Text(DateFormatter.dateOnly.string(from: album.releaseDate!))
+						}
 					}
 					Spacer()
+						.layoutPriority(-1)
 					VStack(alignment: .leading) {
-						Text("9 Titel")
+						if album.numberOfTracks != nil {
+							Text("\(album.numberOfTracks!) Tracks")
 							.foregroundColor(.gray)
-						Text("53:16")
+						}
+						if album.duration != nil {
+							Text("\(album.duration!) sec")
 							.foregroundColor(.gray)
+						}
 						Spacer()
 					}
 				}
 				.frame(height: 100)
 				
+//				List(session.getAlbumTracks(albumId: album.id)!) { track in
+//					TrackRow(track: track)
+//				}
+				
+
 				ScrollView {
-					ForEach(0 ..< 50) {_ in
-						TrackRow(showCover: false)
+					HStack {
+						VStack(alignment: .leading) {
+							ForEach(session.getAlbumTracks(albumId: album.id)!) {track in
+								TrackRowFront(track: track)
+							}
+						}
+//							.background(Color.red)
+						VStack(alignment: .trailing) {
+							ForEach(session.getAlbumTracks(albumId: album.id)!) {track in
+								TrackRowBack(track: track)
+							}
+						}
+//							.background(Color.green)
 					}
 				}
 				
@@ -75,8 +101,11 @@ struct AlbumView: View {@State var image = Image("Single Black Pixel")
 				.brightness(-0.5)
 				.blur(radius: 30)
 				.onAppear {
-					let im = ImageLoader.load(url: "https://resources.tidal.com/images/e60d7380/2a14/4011/bbc1/a3a1f0c576d6/1280x1280.jpg")
-					self.image = im
+					let url = self.album.getCoverUrl(session: self.session, resolution: 1280)
+					if url != nil {
+						let im = ImageLoader.load(url: url!)
+						self.image = im
+					}
 		})
 			.onTapGesture {
 				if self.bigCover {

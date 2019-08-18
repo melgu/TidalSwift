@@ -10,8 +10,11 @@ import SwiftUI
 import TidalSwiftLib
 
 struct ContentView: View {
+	var session: Session
+	var album: Album
+	
     var body: some View {
-		AlbumView()
+		AlbumView(session: session, album: album)
 //        Text("Hello World")
 //            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

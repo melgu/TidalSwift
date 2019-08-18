@@ -33,21 +33,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 //		session?.loadSession()
 //
-//		let demoAlbum = session!.getAlbum(albumId: 100006868)!
+//		let albumId = 100006868
+//		let demoAlbum = session!.getAlbum(albumId: albumId)!
 		
 		print("-----")
 		
 		// Swift UI Stuff
-		window = NSWindow(
-		    contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
-		    styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
-		    backing: .buffered, defer: false)
-		window.center()
-		window.setFrameAutosaveName("Main Window")
-
-		window.contentView = NSHostingView(rootView: ContentView())
-
-		window.makeKeyAndOrderFront(nil)
+//		window = NSWindow(
+//		    contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
+//		    styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
+//		    backing: .buffered, defer: false)
+//		window.center()
+//		window.setFrameAutosaveName("Main Window")
+//
+//		window.contentView = NSHostingView(rootView: ContentView(session: session!, album: demoAlbum))
+//
+//		window.makeKeyAndOrderFront(nil)
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
