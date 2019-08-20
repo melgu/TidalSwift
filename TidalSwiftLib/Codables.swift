@@ -544,9 +544,11 @@ struct FavoriteAlbums: Decodable {
 	let items: [FavoriteAlbum]
 }
 
-public struct FavoriteAlbum: Decodable, Equatable {
-	let created: Date
-	let item: Album
+public struct FavoriteAlbum: Decodable, Equatable, Identifiable {
+	public var id: Int { item.id }
+	
+	public let created: Date
+	public let item: Album
 	
 	public static func == (lhs: FavoriteAlbum, rhs: FavoriteAlbum) -> Bool {
 		return lhs.item.id == rhs.item.id

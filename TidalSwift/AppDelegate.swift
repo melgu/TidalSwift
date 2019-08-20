@@ -22,33 +22,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		// Insert code here to initialize your application
 		
 		// My Stuff
-//		let config = Config(quality: .hifi,
-//							loginCredentials: readDemoLoginCredentials(),
-//							apiToken: nil)
-//		session = Session(config: config)
+		let config = Config(quality: .hifi,
+							loginCredentials: readDemoLoginCredentials(),
+							apiToken: nil)
+		session = Session(config: config)
 		
 //		session?.login()
 //		session?.saveConfig()
 //		session?.saveSession()
 		
-//		session?.loadSession()
-//
+		session?.loadSession()
+
 //		let albumId = 100006868
 //		let demoAlbum = session!.getAlbum(albumId: albumId)!
 		
 		print("-----")
 		
 		// Swift UI Stuff
-//		window = NSWindow(
-//		    contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
-//		    styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
-//		    backing: .buffered, defer: false)
-//		window.center()
-//		window.setFrameAutosaveName("Main Window")
-//
-//		window.contentView = NSHostingView(rootView: ContentView(session: session!, album: demoAlbum))
-//
-//		window.makeKeyAndOrderFront(nil)
+		window = NSWindow(
+		    contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
+		    styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], // Comment out the last if issue of content being too high at launch persists
+		    backing: .buffered, defer: false)
+		window.center()
+		window.setFrameAutosaveName("Main Window")
+
+		window.contentView = NSHostingView(rootView: ContentView(session: session!))
+
+		window.makeKeyAndOrderFront(nil)
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
@@ -62,7 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		do {
 			content = try String(contentsOfFile: fileLocation)
 		} catch {
-			print("I'm unhappy in AppDelegate")
+			print("AppDelegate: readDemoLoginCredentials can't open Demo file")
 		}
 
 		let lines: [String] = content.components(separatedBy: "\n")

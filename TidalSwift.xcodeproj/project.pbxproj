@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -30,6 +30,7 @@
 		B04440082305F7390019D0D8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B04440102305F7820019D0D8 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */; };
 		B0755F802305F86900CD2387 /* SDAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */; };
+		B08AB537230ACACA004CBBE8 /* AlbumGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */; };
 		B0C3E6AA23061FDB006CABED /* LoadingSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C3E6A523061FDA006CABED /* LoadingSpinner.swift */; };
 		B0C3E6AB23061FDB006CABED /* AlbumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C3E6A623061FDA006CABED /* AlbumView.swift */; };
 		B0C3E6AC23061FDB006CABED /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C3E6A723061FDA006CABED /* ImageLoader.swift */; };
@@ -50,6 +51,8 @@
 		B0E80793230615AE00E43B5D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0E80792230615AE00E43B5D /* Preview Assets.xcassets */; };
 		B0E80796230615AE00E43B5D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E80794230615AE00E43B5D /* Main.storyboard */; };
 		B0E807A2230615AF00E43B5D /* TidalSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E807A1230615AF00E43B5D /* TidalSwiftTests.swift */; };
+		B0F20E3A230A8D21005F0576 /* ImageIOSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B0F20E39230A8D21005F0576 /* ImageIOSwiftUI */; };
+		B0F20E3D230A9771005F0576 /* Grid in Frameworks */ = {isa = PBXBuildFile; productRef = B0F20E3C230A9771005F0576 /* Grid */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +97,7 @@
 		B04440122305F7C40019D0D8 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		B073660222E9C5C000758E5E /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitattributes; path = "../../../../../System/Volumes/Data/Users/melvin/Documents/Xcode Projects/TidalSwift/.gitattributes"; sourceTree = "<group>"; };
 		B07C5EF522C8797A00710752 /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadata.swift; sourceTree = "<group>"; };
+		B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumGrid.swift; sourceTree = "<group>"; };
 		B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MP42Foundation.framework; sourceTree = "<group>"; };
 		B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAVAssetExportSession.h; sourceTree = "<group>"; };
 		B0B2A3F822E9AF3F0005E411 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -147,6 +151,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0F20E3A230A8D21005F0576 /* ImageIOSwiftUI in Frameworks */,
+				B0F20E3D230A9771005F0576 /* Grid in Frameworks */,
 				B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -181,9 +187,9 @@
 			children = (
 				B0443FFA2305F7250019D0D8 /* TidalSwiftLibTests.swift */,
 				B0443FFC2305F7250019D0D8 /* Info.plist */,
+				B0B49A8C22C46DB700F07B34 /* NetworkTests.swift */,
 				B0E582F1224329A000ADAE6C /* LogicTests.swift */,
 				B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */,
-				B0B49A8C22C46DB700F07B34 /* NetworkTests.swift */,
 				B0D7DD962305FA76004391AD /* MetadataTests.swift */,
 			);
 			path = TidalSwiftLibTests;
@@ -247,6 +253,7 @@
 			children = (
 				B0E8078B230615AD00E43B5D /* AppDelegate.swift */,
 				B0E8078D230615AD00E43B5D /* ContentView.swift */,
+				B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */,
 				B0C3E6A623061FDA006CABED /* AlbumView.swift */,
 				B0C3E6A823061FDA006CABED /* TrackRow.swift */,
 				B0C3E6A523061FDA006CABED /* LoadingSpinner.swift */,
@@ -344,6 +351,10 @@
 			dependencies = (
 			);
 			name = TidalSwift;
+			packageProductDependencies = (
+				B0F20E39230A8D21005F0576 /* ImageIOSwiftUI */,
+				B0F20E3C230A9771005F0576 /* Grid */,
+			);
 			productName = TidalSwift;
 			productReference = B0E80789230615AD00E43B5D /* TidalSwift.app */;
 			productType = "com.apple.product-type.application";
@@ -404,6 +415,10 @@
 				Base,
 			);
 			mainGroup = B0E582C5223764A400ADAE6C;
+			packageReferences = (
+				B0F20E38230A8D21005F0576 /* XCRemoteSwiftPackageReference "ImageIOSwift" */,
+				B0F20E3B230A9771005F0576 /* XCRemoteSwiftPackageReference "grid" */,
+			);
 			productRefGroup = B0E582CF223764A500ADAE6C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -503,6 +518,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0C3E6AD23061FDB006CABED /* TrackRow.swift in Sources */,
+				B08AB537230ACACA004CBBE8 /* AlbumGrid.swift in Sources */,
 				B0C3E6AE23061FDB006CABED /* PlaylistView.swift in Sources */,
 				B0E8078E230615AD00E43B5D /* ContentView.swift in Sources */,
 				B0E8078C230615AD00E43B5D /* AppDelegate.swift in Sources */,
@@ -708,7 +724,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -764,7 +780,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -952,6 +968,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B0F20E38230A8D21005F0576 /* XCRemoteSwiftPackageReference "ImageIOSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/davbeck/ImageIOSwift.git";
+			requirement = {
+				branch = 1.0.0;
+				kind = branch;
+			};
+		};
+		B0F20E3B230A9771005F0576 /* XCRemoteSwiftPackageReference "grid" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/spacenation/grid";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B0F20E39230A8D21005F0576 /* ImageIOSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0F20E38230A8D21005F0576 /* XCRemoteSwiftPackageReference "ImageIOSwift" */;
+			productName = ImageIOSwiftUI;
+		};
+		B0F20E3C230A9771005F0576 /* Grid */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0F20E3B230A9771005F0576 /* XCRemoteSwiftPackageReference "grid" */;
+			productName = Grid;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B0E582C6223764A400ADAE6C /* Project object */;
 }
