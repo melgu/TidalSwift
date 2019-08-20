@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Grid",
+        "repositoryURL": "https://github.com/spacenation/grid",
+        "state": {
+          "branch": null,
+          "revision": "0e8c927f8569c099b10b28c1edfa38fc75230092",
+          "version": "0.2.0"
+        }
+      },
+      {
+        "package": "ImageIOSwift",
+        "repositoryURL": "https://github.com/davbeck/ImageIOSwift.git",
+        "state": {
+          "branch": "1.0.0",
+          "revision": "78d8dd32e321c96bcc88902df03f20c2f129ee83",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -9,10 +9,11 @@
 import SwiftUI
 import TidalSwiftLib
 
-struct AlbumView: View {@State var image = Image("Single Black Pixel")
+struct AlbumView: View {
 	var session: Session
 	var album: Album
 	
+	@State var image = Image("Single Black Pixel")
 	@State var bigCover = false
 	
 	var body: some View {
@@ -65,13 +66,13 @@ struct AlbumView: View {@State var image = Image("Single Black Pixel")
 				ScrollView {
 					HStack {
 						VStack(alignment: .leading) {
-							ForEach(session.getAlbumTracks(albumId: album.id)!) {track in
+							ForEach(session.getAlbumTracks(albumId: album.id)!) { track in
 								TrackRowFront(track: track)
 							}
 						}
 //							.background(Color.red)
 						VStack(alignment: .trailing) {
-							ForEach(session.getAlbumTracks(albumId: album.id)!) {track in
+							ForEach(session.getAlbumTracks(albumId: album.id)!) { track in
 								TrackRowBack(track: track)
 							}
 						}
@@ -118,18 +119,18 @@ struct AlbumView: View {@State var image = Image("Single Black Pixel")
 
 #if DEBUG
 //struct AlbumView_Previews: PreviewProvider {
-//	
+//
 //	static var previews: some View {
-//		AlbumView()
+//		AlbumView(session: getSession(), album: getAlbum())
 ////		.frame(width: 500, height: 300)
-//			.environment(\.colorScheme, .light)
+////			.environment(\.colorScheme, .light)
 ////		Group {
 ////			AlbumView()
 ////				.environment(\.colorScheme, .light)
 ////			AlbumView()
 ////				.environment(\.colorScheme, .dark)
 ////		}
-//		
+//
 //	}
 //}
 #endif

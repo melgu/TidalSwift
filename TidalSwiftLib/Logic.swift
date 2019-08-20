@@ -118,7 +118,7 @@ public class Session {
 		
 	}
 	
-	var favorites: Favorites?
+	public var favorites: Favorites?
 	
 	public init(config: Config?) {
 		func loadConfig() -> Config? {
