@@ -12,12 +12,13 @@ import ImageIOSwiftUI
 import Grid
 
 struct AlbumGrid: View {
-	var session: Session
+	let session: Session
+	let albums: [Album]
 	
 	var body: some View {
 //		NavigationView {
-			Grid(session.favorites!.albums()!, minimumItemWidth: 160) { favoriteAlbum in
-				AlbumGridItem(session: self.session, album: favoriteAlbum.item)
+			Grid(albums, minimumItemWidth: 160) { album in
+				AlbumGridItem(session: self.session, album: album)
 //				NavigationLink(destination: AlbumView(session: self.session, album: favoriteAlbum.item)) {
 //					AlbumGridItem(session: self.session, album: favoriteAlbum.item)
 //				}
@@ -27,8 +28,8 @@ struct AlbumGrid: View {
 }
 
 struct AlbumGridItem: View {
-	var session: Session
-	var album: Album
+	let session: Session
+	let album: Album
 	
     var body: some View {
 		VStack {
@@ -58,10 +59,8 @@ struct AlbumGridItem: View {
     }
 }
 
-#if DEBUG
 //struct AlbumGrid_Previews: PreviewProvider {
 //	static var previews: some View {
 //		AlbumGrid()
 //	}
 //}
-#endif

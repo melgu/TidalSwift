@@ -15,26 +15,50 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 	var window: NSWindow!
 	
-	var session: Session?
+	var session: Session
+	let player: Player
+	
+	override init() {
+		func readDemoLoginCredentials() -> LoginCredentials {
+			let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
+			var content = ""
+			do {
+				content = try String(contentsOfFile: fileLocation)
+			} catch {
+				print("AppDelegate: readDemoLoginCredentials can't open Demo file")
+			}
 
-
-	func applicationDidFinishLaunching(_ aNotification: Notification) {
-		// Insert code here to initialize your application
+			let lines: [String] = content.components(separatedBy: "\n")
+			return LoginCredentials(username: lines[0], password: lines[1])
+		}
 		
-		// My Stuff
 		let config = Config(quality: .hifi,
 							loginCredentials: readDemoLoginCredentials(),
 							apiToken: nil)
 		session = Session(config: config)
+		player = Player(session: session)
+		
+		super.init()
+	}
+	
+	func applicationDidFinishLaunching(_ aNotification: Notification) {
+		// Insert code here to initialize your application
+		
+		// My Stuff
 		
 //		session?.login()
 //		session?.saveConfig()
 //		session?.saveSession()
 		
-		session?.loadSession()
-
-//		let albumId = 100006868
-//		let demoAlbum = session!.getAlbum(albumId: albumId)!
+//		session.loadSession()
+//		
+//		let demoAlbum = session.getAlbum(albumId: 100006868)!
+//		let demoTracks = session.getAlbumTracks(albumId: demoAlbum.id)!
+//		
+//		player.addNow(tracks: demoTracks)
+//		print(player.queueCount())
+//		player.play()
+		
 		
 		print("-----")
 		
@@ -46,27 +70,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		window.center()
 		window.setFrameAutosaveName("Main Window")
 
-		window.contentView = NSHostingView(rootView: ContentView(session: session!))
+		window.contentView = NSHostingView(rootView: ContentView(session: session, player: player, playbackInfo: player.playbackInfo))
 
 		window.makeKeyAndOrderFront(nil)
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
 		// Insert code here to tear down your application
-	}
-	
-	
-	func readDemoLoginCredentials() -> LoginCredentials {
-		let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
-		var content = ""
-		do {
-			content = try String(contentsOfFile: fileLocation)
-		} catch {
-			print("AppDelegate: readDemoLoginCredentials can't open Demo file")
-		}
-
-		let lines: [String] = content.components(separatedBy: "\n")
-		return LoginCredentials(username: lines[0], password: lines[1])
 	}
 	
 }

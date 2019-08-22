@@ -8,20 +8,23 @@
 
 import SwiftUI
 import TidalSwiftLib
+import ImageIOSwiftUI
 
 struct AlbumView: View {
-	var session: Session
-	var album: Album
+	let session: Session
+	let album: Album
 	
-	@State var image = Image("Single Black Pixel")
 	@State var bigCover = false
 	
 	var body: some View {
 		ZStack {
 			VStack(alignment: .leading) {
 				HStack {
-					image
-						.resizable()
+					URLImageSourceView(
+						album.getCoverUrl(session: session, resolution: 320)!,
+						isAnimationEnabled: true,
+						label: Text(album.title)
+					)
 						.frame(width: 100, height: 100)
 						.onTapGesture {
 							self.bigCover.toggle()
@@ -47,27 +50,22 @@ struct AlbumView: View {
 					VStack(alignment: .leading) {
 						if album.numberOfTracks != nil {
 							Text("\(album.numberOfTracks!) Tracks")
-							.foregroundColor(.gray)
+								.foregroundColor(.gray)
 						}
 						if album.duration != nil {
 							Text("\(album.duration!) sec")
-							.foregroundColor(.gray)
+								.foregroundColor(.gray)
 						}
 						Spacer()
 					}
 				}
 				.frame(height: 100)
 				
-//				List(session.getAlbumTracks(albumId: album.id)!) { track in
-//					TrackRow(track: track)
-//				}
-				
-
 				ScrollView {
 					HStack {
 						VStack(alignment: .leading) {
 							ForEach(session.getAlbumTracks(albumId: album.id)!) { track in
-								TrackRowFront(track: track)
+								TrackRowFront(session: self.session, track: track)
 							}
 						}
 //							.background(Color.red)
@@ -84,8 +82,11 @@ struct AlbumView: View {
 			.blur(radius: bigCover ? 4 : 0)
 			
 			if bigCover {
-				image
-					.resizable()
+				URLImageSourceView(
+					album.getCoverUrl(session: session, resolution: 1280)!,
+					isAnimationEnabled: true,
+					label: Text(album.title)
+				)
 					.scaledToFit()
 					.padding()
 			}
@@ -95,19 +96,16 @@ struct AlbumView: View {
 		.foregroundColor(.white)
 		.padding(EdgeInsets(top: 20, leading: 20, bottom: 0, trailing: 20))
 		.background(
-			image
-				.resizable()
+			URLImageSourceView(
+				album.getCoverUrl(session: session, resolution: 1280)!,
+				isAnimationEnabled: true,
+				label: Text(album.title)
+			)
 				.aspectRatio(contentMode: .fill)
 				.scaleEffect(1.2)
 				.brightness(-0.5)
 				.blur(radius: 30)
-				.onAppear {
-					let url = self.album.getCoverUrl(session: self.session, resolution: 1280)
-					if url != nil {
-						let im = ImageLoader.load(url: url!)
-						self.image = im
-					}
-		})
+		)
 			.onTapGesture {
 				if self.bigCover {
 					self.bigCover.toggle()
@@ -117,7 +115,6 @@ struct AlbumView: View {
 	
 }
 
-#if DEBUG
 //struct AlbumView_Previews: PreviewProvider {
 //
 //	static var previews: some View {
@@ -133,4 +130,3 @@ struct AlbumView: View {
 //
 //	}
 //}
-#endif

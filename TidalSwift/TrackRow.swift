@@ -8,30 +8,37 @@
 
 import SwiftUI
 import TidalSwiftLib
+import ImageIOSwiftUI
 
 struct TrackRowFront: View {
-	var track: Track
-	var coverArtUrl: URL?
+	let session: Session
+	let track: Track
+	let showCover: Bool
 	
-	@State var image = Image("Single Black Pixel")
+	init(session: Session, track: Track, trackNumber: Int? = nil, showCover: Bool = false) {
+		self.session = session
+		self.track = track
+		self.showCover = showCover
+	}
 	
 	var body: some View {
 		HStack {
-			if coverArtUrl != nil {
-				image
-					.resizable()
+			if showCover {
+				URLImageSourceView(
+					track.getCoverUrl(session: session, resolution: 80)!,
+					isAnimationEnabled: true,
+					label: Text(track.title)
+				)
 					.frame(width: 30, height: 30)
-					.onAppear {
-						let im = ImageLoader.load(url: self.coverArtUrl!)
-						self.image = im
-				}
+			} else {
+				Text("\(track.trackNumber)")
+					.fontWeight(.thin)
+					.foregroundColor(.gray)
 			}
-			Text("\(track.trackNumber)")
-				.fontWeight(.thin)
-				.foregroundColor(.gray)
 			Text(track.title)
 		}
 //			.foregroundColor(.white)
+			.padding()
 			.frame(height: 30)
 		
 	}
@@ -56,12 +63,12 @@ struct TrackRowBack: View {
 				.layoutPriority(1)
 		}
 //			.foregroundColor(.white)
+			.padding()
 			.frame(height: 30)
 		
 	}
 }
 
-#if DEBUG
 //struct TrackRow_Previews: PreviewProvider {
 //	static var previews: some View {
 //		Group {
@@ -72,4 +79,3 @@ struct TrackRowBack: View {
 //		}
 //	}
 //}
-#endif
