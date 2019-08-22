@@ -129,6 +129,14 @@ class LogicTests: XCTestCase {
 		}
 //		print(trackUrl)
 		XCTAssert(trackUrl.absoluteString.contains(".m4a"))
+		
+		let optionalTrackUrl2 = session.getAudioUrl(trackId: 59978883)
+		XCTAssertNotNil(optionalTrackUrl2)
+		guard let trackUrl2 = optionalTrackUrl2 else {
+			return
+		}
+//		print(trackUrl2)
+		XCTAssert(trackUrl2.absoluteString.contains(".m4a"))
 	}
 	
 	// Stops playback if you're listening in the web player or official app
@@ -140,6 +148,14 @@ class LogicTests: XCTestCase {
 		}
 //		print(videoUrl)
 		XCTAssert(videoUrl.absoluteString.contains(".m3u8"))
+		
+		let optionalVideoUrl2 = session.getVideoUrl(videoId: 98785108)
+		XCTAssertNotNil(optionalVideoUrl2)
+		guard let videoUrl2 = optionalVideoUrl2 else {
+			return
+		}
+//		print(videoUrl2)
+		XCTAssert(videoUrl2.absoluteString.contains(".m3u8"))
 	}
 	
 	func testGetImageUrl() {

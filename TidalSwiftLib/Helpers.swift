@@ -61,7 +61,7 @@ public class Helpers {
 	}
 	
 	public func downloadTrack(track: Track, parentFolder: String = "") -> Bool {
-		guard let url = session.getAudioUrl(trackId: track.id) else { return false }
+		guard let url = track.getAudioUrl(session: session) else { return false }
 		print("Downloading \(track.title)")
 		let fileName = formFileName(track)
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: fileName)
@@ -75,7 +75,8 @@ public class Helpers {
 	}
 	
 	public func downloadVideo(video: Video, parentFolder: String = "") -> Bool {
-		guard let url = session.getVideoUrl(videoId: video.id) else { return false }
+		guard let url = video.getVideoUrl(session: session) else { return false }
+		print("Downloading Video \(video.title)")
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: formFileName(video))
 		guard let path = optionalPath else {
 			return false
@@ -238,11 +239,11 @@ public class Offline {
 		}
 	}
 	
-	public func addTrack(trackId: Int) -> Bool {
-		guard let url = session.getAudioUrl(trackId: trackId) else {
+	public func addTrack(track: Track) -> Bool {
+		guard let url = track.getAudioUrl(session: session) else {
 			return false
 		}
-		let optionalPath = buildPath(baseLocation: .music, parentFolder: mainPath, name: String(trackId))
+		let optionalPath = buildPath(baseLocation: .music, parentFolder: mainPath, name: String(track.id))
 		guard let path = optionalPath else {
 			return false
 		}
@@ -251,14 +252,14 @@ public class Offline {
 	}
 	
 	// Warning: Does not check if song is still needed present in other offline album, playlist or other
-	public func removeTrack(trackId: Int) {
+	public func removeTrack(track: Track) {
 		do {
 			var path = try FileManager.default.url(for: .musicDirectory,
 												   in: .userDomainMask,
 												   appropriateFor: nil,
 												   create: false)
 			path.appendPathComponent(mainPath)
-			path.appendPathComponent(String(trackId))
+			path.appendPathComponent(String(track.id))
 			if FileManager.default.fileExists(atPath: path.relativePath) {
 				try FileManager.default.removeItem(at: path)
 			}

@@ -284,7 +284,7 @@ public class Session {
 	}
 	
 	// Only works for music tracks (no videos at the moment)
-	public func getAudioUrl(trackId: Int) -> URL? {
+	func getAudioUrl(trackId: Int) -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(config.quality.rawValue)"
 		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/offlineUrl")!
@@ -310,7 +310,7 @@ public class Session {
 		return audioUrlResponse?.url
 	}
 	
-	public func getVideoUrl(videoId: Int) -> URL? {
+	func getVideoUrl(videoId: Int) -> URL? {
 //		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/offlineUrl")! // Only returns low quality video
 		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/streamUrl")!
 		let response = Network.get(url: url, parameters: sessionParameters)
