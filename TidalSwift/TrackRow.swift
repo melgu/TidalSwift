@@ -11,14 +11,14 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct TrackRowFront: View {
-	let session: Session
 	let track: Track
 	let showCover: Bool
+	let session: Session
 	
-	init(session: Session, track: Track, trackNumber: Int? = nil, showCover: Bool = false) {
-		self.session = session
+	init(track: Track, trackNumber: Int? = nil, showCover: Bool = false, session: Session) {
 		self.track = track
 		self.showCover = showCover
+		self.session = session
 	}
 	
 	var body: some View {

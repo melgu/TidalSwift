@@ -12,24 +12,29 @@ import ImageIOSwiftUI
 import Grid
 
 struct AlbumGrid: View {
-	let session: Session
 	let albums: [Album]
+	let session: Session
+	let player: Player
 	
 	var body: some View {
-//		NavigationView {
-			Grid(albums, minimumItemWidth: 160) { album in
-				AlbumGridItem(session: self.session, album: album)
-//				NavigationLink(destination: AlbumView(session: self.session, album: favoriteAlbum.item)) {
-//					AlbumGridItem(session: self.session, album: favoriteAlbum.item)
-//				}
+		Grid(albums) { album in
+			AlbumGridItem(album: album, session: self.session, player: self.player)
+				.onTapGesture(count: 2) {
+					print("\(album.title)")
+					self.player.add(album: album, .now)
 			}
-//		}
+		}
+		.padding()
+		.gridStyle(
+			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 200, hSpacing: 5, vSpacing: 0)
+		)
 	}
 }
 
 struct AlbumGridItem: View {
-	let session: Session
 	let album: Album
+	let session: Session
+	let player: Player
 	
     var body: some View {
 		VStack {
@@ -47,12 +52,19 @@ struct AlbumGridItem: View {
 						.resizable()
 						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)
-					Text("Album not\nfound")
+					if album.streamReady != nil && album.streamReady! {
+						Text(album.title)
 						.multilineTextAlignment(.center)
 						.foregroundColor(.white)
+					} else {
+						Text("Album not available")
+						.multilineTextAlignment(.center)
+						.foregroundColor(.white)
+					}
 				}
 			}
 			Text(album.title)
+				.lineLimit(1)
 				.frame(width: 160)
 		}
 			.padding(5)

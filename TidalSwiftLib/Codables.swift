@@ -191,12 +191,28 @@ public struct Playlist: Decodable, Equatable, Identifiable {
 	public let popularity: Int
 	public let squareImage: String?
 	
-	public func getImageUrl(session: Session, resolution: Int) -> URL? {
-		return session.getImageUrl(imageId: squareImage ?? image, resolution: resolution)
+	public func getImageUrl(session: Session, resolution: Int, resolutionY: Int? = nil) -> URL? {
+		if let resolutionY = resolutionY {
+			return session.getImageUrl(imageId: squareImage ?? image, resolution: resolution, resolutionY: resolutionY)
+		}
+		
+		if let squareImage = squareImage {
+			return session.getImageUrl(imageId: squareImage, resolution: resolution)
+		} else {
+			return session.getImageUrl(imageId: image, resolution: 480, resolutionY: 320)
+		}
 	}
 	
-	public func getImage(session: Session, resolution: Int) -> NSImage? {
-		return session.getImage(imageId: squareImage ?? image, resolution: resolution)
+	public func getImage(session: Session, resolution: Int, resolutionY: Int? = nil) -> NSImage? {
+		if let resolutionY = resolutionY {
+			return session.getImage(imageId: squareImage ?? image, resolution: resolution, resolutionY: resolutionY)
+		}
+		
+		if let squareImage = squareImage {
+			return session.getImage(imageId: squareImage, resolution: resolution)
+		} else {
+			return session.getImage(imageId: image, resolution: 480, resolutionY: 320)
+		}
 	}
 	
 	public static func == (lhs: Playlist, rhs: Playlist) -> Bool {
