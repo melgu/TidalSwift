@@ -21,7 +21,7 @@ struct MasterDetailView: View {
 			MasterView(session: session, selection: $selection, searchText: $searchText)
 			DetailView(session: session, player: player, viewType: selection ?? "")
 		}
-		.frame(width: 1100, height: 700)
+//		.frame(width: 1100, height: 700)
 	}
 }
 
@@ -61,23 +61,22 @@ struct DetailView: View {
 //			PlayerView()
 			HStack {
 				if viewType == "Playlists" {
-					FavoritePlaylists(session: session)
-				}
-				if viewType == "Albums" {
-					FavoriteAlbums(session: session)
-				}
-				if viewType == "Tracks" {
-					FavoriteTracks(session: session)
-				}
-				if viewType == "Videos" {
-					FavoriteVideos(session: session)
-				}
-				if viewType == "Artists" {
-					FavoriteArtists(session: session)
+					FavoritePlaylists(session: session, player: player)
+				} else if viewType == "Albums" {
+					FavoriteAlbums(session: session, player: player)
+				} else if viewType == "Tracks" {
+					FavoriteTracks(session: session, player: player)
+				} else if viewType == "Videos" {
+					FavoriteVideos(session: session, player: player)
+				} else if viewType == "Artists" {
+					FavoriteArtists(session: session, player: player)
 				}
 			}
+			if viewType == "" {
+				Spacer()
+			}
 		}
-		.frame(width: 800, height: 700)
+//		.frame(width: 800, height: 700)
 	}
 }
 

@@ -16,7 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var window: NSWindow!
 	
 	var session: Session
-	let player: Player
+	var player: Player
 	
 	override init() {
 		func readDemoLoginCredentials() -> LoginCredentials {
@@ -31,13 +31,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			let lines: [String] = content.components(separatedBy: "\n")
 			return LoginCredentials(username: lines[0], password: lines[1])
 		}
-		
+
 		let config = Config(quality: .hifi,
 							loginCredentials: readDemoLoginCredentials(),
 							apiToken: nil)
 		session = Session(config: config)
 		player = Player(session: session)
-		
+
 		super.init()
 	}
 	
@@ -50,7 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //		session?.saveConfig()
 //		session?.saveSession()
 		
-//		session.loadSession()
+		session.loadSession()
 //		
 //		let demoAlbum = session.getAlbum(albumId: 100006868)!
 //		let demoTracks = session.getAlbumTracks(albumId: demoAlbum.id)!
@@ -58,7 +58,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //		player.addNow(tracks: demoTracks)
 //		print(player.queueCount())
 //		player.play()
-		
 		
 		print("-----")
 		

@@ -12,9 +12,56 @@ import ImageIOSwiftUI
 import Grid
 
 struct PlaylistGrid: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello World!"/*@END_MENU_TOKEN@*/)
-    }
+	let playlists: [Playlist]
+	let session: Session
+	let player: Player
+	
+	var body: some View {
+		Grid(playlists) { playlist in
+			PlaylistGridItem(playlist: playlist, session: self.session, player: self.player)
+				.onTapGesture(count: 2) {
+					print("\(playlist.title)")
+					self.player.add(playlist: playlist, .now)
+			}
+		}
+		.padding()
+		.gridStyle(
+			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 200, hSpacing: 5, vSpacing: 0)
+		)
+	}
+}
+
+struct PlaylistGridItem: View {
+	let playlist: Playlist
+	let session: Session
+	let player: Player
+	
+	var body: some View {
+		VStack {
+			if playlist.getImageUrl(session: session, resolution: 320) != nil {
+				URLImageSourceView(
+					playlist.getImageUrl(session: session, resolution: 320)!,
+					isAnimationEnabled: true,
+					label: Text(playlist.title)
+				)
+					.aspectRatio(contentMode: .fit)
+					.frame(width: 160, height: 160)
+			} else {
+				ZStack {
+					Image("Single Black Pixel")
+						.resizable()
+						.aspectRatio(contentMode: .fill)
+						.frame(width: 160, height: 160)
+					Text(playlist.title)
+						.multilineTextAlignment(.center)
+						.foregroundColor(.white)
+				}
+			}
+			Text(playlist.title)
+				.frame(width: 160)
+		}
+//		.padding(10)
+	}
 }
 
 //struct PlaylistGrid_Previews: PreviewProvider {

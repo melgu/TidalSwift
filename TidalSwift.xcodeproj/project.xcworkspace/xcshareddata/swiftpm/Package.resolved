@@ -5,9 +5,9 @@
         "package": "Grid",
         "repositoryURL": "https://github.com/spacenation/grid",
         "state": {
-          "branch": null,
-          "revision": "0e8c927f8569c099b10b28c1edfa38fc75230092",
-          "version": "0.2.0"
+          "branch": "master",
+          "revision": "89748807f8cfa8a1aa8996622f1afc08cd71f112",
+          "version": null
         }
       },
       {

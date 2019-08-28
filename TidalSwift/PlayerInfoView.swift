@@ -32,8 +32,7 @@ struct PlayerInfoView: View {
 						Spacer()
 						Text("🔀")
 							.onTapGesture {
-								let demoTrack2 = self.session.getTrack(trackId: 18371115)!
-								self.player.addLast(track: demoTrack2)
+								print("Random")
 						}
 						Text("⏪")
 							.onTapGesture {

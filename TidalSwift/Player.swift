@@ -12,6 +12,7 @@ import TidalSwiftLib
 
 class Player {
 	let session: Session
+	var autoplayAfterAddNow: Bool
 	
 	let avPlayer = AVPlayer()
 	public let playbackInfo = PlaybackInfo()
@@ -21,8 +22,9 @@ class Player {
 	
 	var timeObserverToken: Any?
 	
-	init(session: Session) {
+	init(session: Session, autoplayAfterAddNow: Bool = true) {
 		self.session = session
+		self.autoplayAfterAddNow = autoplayAfterAddNow
 		
 		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: nil) { [weak self] time in
 			self?.playbackInfo.fraction = CGFloat(self!.fraction())
@@ -86,21 +88,64 @@ class Player {
 		}
 	}
 	
-	func addNow(track: Track) {
-		addNow(tracks: [track])
+	func add(playlists: [Playlist], _ when: When) {
+		playlists.forEach { playlist in
+			add(playlist: playlist, when)
+		}
 	}
 	
-	func addNow(tracks: [Track]) {
+	func add(playlist: Playlist, _ when: When) {
+		if let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) {
+			add(tracks: tracks, when)
+		}
+	}
+	
+	func add(albums: [Album], _ when: When) {
+		albums.forEach { album in
+			add(album: album, when)
+		}
+	}
+	
+	func add(album: Album, _ when: When) {
+		if let tracks = session.getAlbumTracks(albumId: album.id) {
+			add(tracks: tracks, when)
+		}
+	}
+	
+	func add(artist: Artist, _ when: When) {
+		if let tracks = session.getArtistTopTracks(artistId: artist.id) {
+			add(tracks: tracks, when)
+		}
+	}
+	
+	func add(track: Track, _ when: When) {
+		add(tracks: [track], when)
+	}
+	
+	enum When {
+		case now
+		case next
+		case last
+	}
+	
+	func add(tracks: [Track], _ when: When) {
+		if when == .now {
+			addNow(tracks: tracks)
+		} else if when == .next {
+			addLast(tracks: tracks)
+		} else {
+			addLast(tracks: tracks)
+		}
+	}
+	
+	private func addNow(tracks: [Track]) {
 		clearQueue()
 		addLast(tracks: tracks)
 		print("addNow(): \(queue.count)")
+		play()
 	}
 	
-	func addNext(track: Track) {
-		addNext(tracks: [track])
-	}
-	
-	func addNext(tracks: [Track]) {
+	private func addNext(tracks: [Track]) {
 		if queue.isEmpty {
 			queue.insert(contentsOf: tracks, at: currentIndex)
 			avSetItem(from: queue[0])
@@ -110,11 +155,7 @@ class Player {
 		print("addNext(): \(queue.count)")
 	}
 	
-	func addLast(track: Track) {
-		addLast(tracks: [track])
-	}
-	
-	func addLast(tracks: [Track]) {
+	private func addLast(tracks: [Track]) {
 		let wasEmtpy = queue.isEmpty
 		
 		queue.append(contentsOf: tracks)

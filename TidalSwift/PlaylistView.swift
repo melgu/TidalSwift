@@ -11,8 +11,8 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct PlaylistView: View {
-	let session: Session
 	let playlist: Playlist
+	let session: Session
 	
 	@State var bigCover = false
 	
@@ -59,7 +59,7 @@ struct PlaylistView: View {
 					HStack {
 						VStack(alignment: .leading) {
 							ForEach(session.getPlaylistTracks(playlistId: playlist.id)!) { track in
-								TrackRowFront(session: self.session, track: track)
+								TrackRowFront(track: track, session: self.session)
 							}
 						}
 //							.background(Color.red)

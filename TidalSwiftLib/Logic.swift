@@ -336,6 +336,7 @@ public class Session {
 		// Artists: 160, 320, 480, 750
 		// Videos: 80, 160, 320, 640, 750, 1280
 		// Playlists: 160, 320, 480, 640, 750
+		// Playlists (non-square): 480x320
 		// Users: 100, 210
 		// FeaturedItem: 1100x800, 550x400 (not square)
 		// Mixes: ???
