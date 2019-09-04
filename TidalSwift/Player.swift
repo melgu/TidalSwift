@@ -45,6 +45,14 @@ class Player {
 		}
 	}
 	
+	func play(atIndex: Int) {
+		if queue.count > atIndex {
+			currentIndex = atIndex
+			avSetItem(from: queue[currentIndex])
+			play()
+		}
+	}
+	
 	func pause() {
 		avPlayer.pause()
 		playbackInfo.playing = false
@@ -81,11 +89,18 @@ class Player {
 		
 		let url = track.getAudioUrl(session: session)!
 		let item = AVPlayerItem(url: url)
+		NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(sender:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: item)
 		avPlayer.replaceCurrentItem(with: item)
 		
 		if wasPlaying {
 			play()
 		}
+	}
+	
+	@objc func playerDidFinishPlaying(sender: Notification) {
+		print("Song finished playing")
+		
+		next()
 	}
 	
 	func add(playlists: [Playlist], _ when: When) {

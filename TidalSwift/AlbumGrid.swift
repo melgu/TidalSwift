@@ -36,14 +36,15 @@ struct AlbumGridItem: View {
 	let session: Session
 	let player: Player
 	
-    var body: some View {
+	var body: some View {
 		VStack {
 			if album.getCoverUrl(session: session, resolution: 320) != nil {
-				URLImageSourceView(
-					album.getCoverUrl(session: session, resolution: 320)!,
-					isAnimationEnabled: true,
-					label: Text(album.title)
-				)
+				Rectangle()
+//				URLImageSourceView(
+//					album.getCoverUrl(session: session, resolution: 320)!,
+//					isAnimationEnabled: true,
+//					label: Text(album.title)
+//				)
 					.aspectRatio(contentMode: .fill)
 					.frame(width: 160, height: 160)
 			} else {
@@ -54,12 +55,12 @@ struct AlbumGridItem: View {
 						.frame(width: 160, height: 160)
 					if album.streamReady != nil && album.streamReady! {
 						Text(album.title)
-						.multilineTextAlignment(.center)
-						.foregroundColor(.white)
+							.multilineTextAlignment(.center)
+							.foregroundColor(.white)
 					} else {
 						Text("Album not available")
-						.multilineTextAlignment(.center)
-						.foregroundColor(.white)
+							.multilineTextAlignment(.center)
+							.foregroundColor(.white)
 					}
 				}
 			}
@@ -67,8 +68,8 @@ struct AlbumGridItem: View {
 				.lineLimit(1)
 				.frame(width: 160)
 		}
-			.padding(5)
-    }
+		.padding(5)
+	}
 }
 
 //struct AlbumGrid_Previews: PreviewProvider {

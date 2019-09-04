@@ -107,9 +107,7 @@ struct AlbumView: View {
 				.blur(radius: 30)
 		)
 			.onTapGesture {
-				if self.bigCover {
-					self.bigCover.toggle()
-				}
+				self.bigCover = false
 		}
 	}
 	

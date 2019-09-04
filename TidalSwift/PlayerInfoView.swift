@@ -8,6 +8,7 @@
 
 import SwiftUI
 import TidalSwiftLib
+import ImageIOSwiftUI
 
 struct PlayerInfoView: View {
 	let session: Session
@@ -18,15 +19,36 @@ struct PlayerInfoView: View {
 	var body: some View {
 		VStack {
 			HStack {
-				Rectangle()
-					.foregroundColor(Color.red)
-					.aspectRatio(contentMode: .fit)
-				VStack {
-					Text("Title")
-					Text("Album – Artists")
-						.foregroundColor(.gray)
+				if !player.queue.isEmpty {
+					Rectangle()
+//					URLImageSourceView(
+//						player.queue[0].getCoverUrl(session: session, resolution: 320)!,
+//						isAnimationEnabled: true,
+//						label: Text(player.queue[self.player.currentIndex].album.title)
+//					)
+						.frame(width: 30, height: 30)
+						.onTapGesture {
+							print("Big Cover")
+							// TODO: Open new window with cover
+							let controller = CoverWindowController(rootView:
+								Rectangle()
+//								URLImageSourceView(
+//									self.player.queue[0].getCoverUrl(session: self.session, resolution: 1280)!,
+//									isAnimationEnabled: true,
+//									label: Text(self.player.queue[self.player.currentIndex].album.title)
+//								)
+							)
+							controller.window?.title = self.player.queue[self.player.currentIndex].album.title
+							controller.showWindow(nil)
+					}
+					VStack(alignment: .leading) {
+						Text(player.queue[self.player.currentIndex].title)
+						Text("\(player.queue[self.player.currentIndex].artists.formArtistString()) – \(player.queue[self.player.currentIndex].album.title)")
+							.foregroundColor(.gray)
+					}
 				}
 				Spacer()
+					.layoutPriority(-1)
 				VStack {
 					HStack {
 						Spacer()
@@ -63,21 +85,22 @@ struct PlayerInfoView: View {
 				}
 				.frame(width: 200)
 				Spacer()
+					.layoutPriority(-1)
 				Text("----- 🔈")
 				Text("***")
 			}
-			.padding(.top)
+			.frame(height: 30)
+			.padding([.top, .horizontal])
 			Divider()
 		}
-		.frame(height: 50)
+		
 	}
 }
 
 struct ProgressBar : View {
 	@EnvironmentObject var playbackInfo: PlaybackInfo
-//    @Binding<CGFloat> var value: CGFloat
-
-    var body: some View {
+	
+	var body: some View {
 		Rectangle()
 			.opacity(0.3)
 			.overlay(
@@ -89,8 +112,9 @@ struct ProgressBar : View {
 						.opacity(1.0)
 				}
 		)
-		.cornerRadius(5)
-    }
+			.cornerRadius(5)
+			.frame(height: 5)
+	}
 }
 
 //struct PlayerInfoView_Previews: PreviewProvider {

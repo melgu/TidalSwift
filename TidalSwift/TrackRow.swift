@@ -24,11 +24,13 @@ struct TrackRowFront: View {
 	var body: some View {
 		HStack {
 			if showCover {
-				URLImageSourceView(
-					track.getCoverUrl(session: session, resolution: 80)!,
-					isAnimationEnabled: true,
-					label: Text(track.title)
-				)
+				Rectangle()
+//				URLImageSourceView(
+//					track.getCoverUrl(session: session, resolution: 80)!,
+//					isAnimationEnabled: true,
+//					label: Text(track.title)
+//				)
+//					.size(width: 30, height: 30)
 					.frame(width: 30, height: 30)
 			} else {
 				Text("\(track.trackNumber)")
@@ -39,7 +41,7 @@ struct TrackRowFront: View {
 		}
 //			.foregroundColor(.white)
 			.padding()
-			.frame(height: 30)
+			.frame(height: 30) // TODO: Is 40 no matter what when cover is shown. Why?
 		
 	}
 }
@@ -49,6 +51,8 @@ struct TrackRowBack: View {
 	
 	var body: some View {
 		HStack {
+//			Rectangle()
+//				.frame(width: 30, height: 30)
 			Spacer()
 //				.layoutPriority(-1)
 			Text("\(track.duration) sec")
