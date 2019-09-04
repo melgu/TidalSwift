@@ -82,6 +82,7 @@ struct FavoriteTracks: View {
 										print("\(track.title)")
 										self.player.add(track: track, .now)
 								}
+								.frame(height: 40)
 							}
 						}
 					}
@@ -89,6 +90,7 @@ struct FavoriteTracks: View {
 			} else {
 				Text("Problems fetching favorite tracks")
 				.font(.largeTitle)
+				Spacer()
 			}
 		}
 	}
@@ -107,6 +109,7 @@ struct FavoriteVideos: View {
 		Text("Favorite Videos")
 			.font(.largeTitle)
 			.padding(.horizontal)
+		Spacer()
 		}
 	}
 }

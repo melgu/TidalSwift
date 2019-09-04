@@ -20,11 +20,12 @@ struct PlaylistView: View {
 		ZStack {
 			VStack(alignment: .leading) {
 				HStack {
-					URLImageSourceView(
-						playlist.getImageUrl(session: session, resolution: 320)!,
-						isAnimationEnabled: true,
-						label: Text(playlist.title)
-					)
+					Rectangle()
+//					URLImageSourceView(
+//						playlist.getImageUrl(session: session, resolution: 320)!,
+//						isAnimationEnabled: true,
+//						label: Text(playlist.title)
+//					)
 						.frame(width: 100, height: 100)
 						.onTapGesture {
 							self.bigCover.toggle()
@@ -74,11 +75,12 @@ struct PlaylistView: View {
 			}
 			
 			if bigCover {
-				URLImageSourceView(
-					playlist.getImageUrl(session: session, resolution: 1280)!,
-					isAnimationEnabled: true,
-					label: Text(playlist.title)
-				)
+				Rectangle()
+//				URLImageSourceView(
+//					playlist.getImageUrl(session: session, resolution: 1280)!,
+//					isAnimationEnabled: true,
+//					label: Text(playlist.title)
+//				)
 					.scaledToFit()
 					.padding()
 			}

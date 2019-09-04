@@ -39,11 +39,12 @@ struct PlaylistGridItem: View {
 	var body: some View {
 		VStack {
 			if playlist.getImageUrl(session: session, resolution: 320) != nil {
-				URLImageSourceView(
-					playlist.getImageUrl(session: session, resolution: 320)!,
-					isAnimationEnabled: true,
-					label: Text(playlist.title)
-				)
+				Rectangle()
+//				URLImageSourceView(
+//					playlist.getImageUrl(session: session, resolution: 320)!,
+//					isAnimationEnabled: true,
+//					label: Text(playlist.title)
+//				)
 					.aspectRatio(contentMode: .fit)
 					.frame(width: 160, height: 160)
 			} else {
@@ -60,7 +61,7 @@ struct PlaylistGridItem: View {
 			Text(playlist.title)
 				.frame(width: 160)
 		}
-//		.padding(10)
+		.padding(5)
 	}
 }
 
