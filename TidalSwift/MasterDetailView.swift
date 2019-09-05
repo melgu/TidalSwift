@@ -15,11 +15,12 @@ struct MasterDetailView: View {
 	
 	@State var selection: String? = nil
 	@State var searchText: String = ""
+	@State var fixedSearchText: String = ""
 	
 	var body: some View {
 		NavigationView {
-			MasterView(session: session, selection: $selection, searchText: $searchText)
-			DetailView(session: session, player: player, viewType: selection ?? "")
+			MasterView(session: session, selection: $selection, searchText: $searchText, fixedSearchText: $fixedSearchText)
+			DetailView(viewType: selection ?? "", session: session, player: player, fixedSearchText: $fixedSearchText)
 		}
 //		.frame(width: 1100, height: 700)
 	}
@@ -30,12 +31,18 @@ struct MasterView: View {
 	
 	@Binding var selection: String?
 	@Binding var searchText: String
+	@Binding var fixedSearchText: String
 	
 	private let favorites = ["Playlists", "Albums", "Tracks", "Videos", "Artists"]
 	
 	var body: some View {
 		VStack {
-			TextField("Search", text: $searchText)
+			TextField("Search", text: $searchText, onCommit: {
+				print(self.searchText)
+				self.fixedSearchText = self.searchText
+				self.selection = "Search"
+			})
+//			TextField("Search", text: $searchText)
 				.textFieldStyle(RoundedBorderTextFieldStyle())
 				.padding(.top, 10)
 				.padding([.leading, .trailing], 5)
@@ -51,9 +58,11 @@ struct MasterView: View {
 }
 
 struct DetailView: View {
+	var viewType: String
 	let session: Session
 	let player: Player
-	var viewType: String
+	
+	@Binding var fixedSearchText: String
 	
 	var body: some View {
 		VStack {
@@ -70,6 +79,9 @@ struct DetailView: View {
 					FavoriteVideos(session: session, player: player)
 				} else if viewType == "Artists" {
 					FavoriteArtists(session: session, player: player)
+				} else if viewType == "Search" {
+					// TODO: Keep SearchView from redrawing with every change of searchText
+					SearchView(searchText: fixedSearchText, session: session, player: player)
 				}
 			}
 			if viewType == "" {

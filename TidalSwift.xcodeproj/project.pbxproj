@@ -32,6 +32,8 @@
 		B04440082305F7390019D0D8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B04440102305F7820019D0D8 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */; };
 		B0755F802305F86900CD2387 /* SDAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */; };
+		B07685B9232079C800538D55 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07685B8232079C800538D55 /* SearchView.swift */; };
+		B07685BD2320C12D00538D55 /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07685BC2320C12D00538D55 /* QueueView.swift */; };
 		B08AB537230ACACA004CBBE8 /* AlbumGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */; };
 		B0A85FFB230DDB28000C4C4E /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFA230DDB28000C4C4E /* Player.swift */; };
 		B0A85FFD230DE2E3000C4C4E /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFC230DE2E3000C4C4E /* PlayerView.swift */; };
@@ -71,6 +73,13 @@
 			remoteGlobalIDString = B0443FEA2305F7250019D0D8;
 			remoteInfo = TidalSwiftLib;
 		};
+		B07685B6232073C100538D55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B0E582C6223764A400ADAE6C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B0E80788230615AD00E43B5D;
+			remoteInfo = TidalSwift;
+		};
 		B0E8079E230615AF00E43B5D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B0E582C6223764A400ADAE6C /* Project object */;
@@ -106,6 +115,8 @@
 		B0443FFC2305F7250019D0D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B04440122305F7C40019D0D8 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		B073660222E9C5C000758E5E /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitattributes; path = "../../../../../System/Volumes/Data/Users/melvin/Documents/Xcode Projects/TidalSwift/.gitattributes"; sourceTree = "<group>"; };
+		B07685B8232079C800538D55 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		B07685BC2320C12D00538D55 /* QueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueView.swift; sourceTree = "<group>"; };
 		B07C5EF522C8797A00710752 /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadata.swift; sourceTree = "<group>"; };
 		B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumGrid.swift; sourceTree = "<group>"; };
 		B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MP42Foundation.framework; sourceTree = "<group>"; };
@@ -270,6 +281,7 @@
 				B0E8078B230615AD00E43B5D /* AppDelegate.swift */,
 				B0E8078D230615AD00E43B5D /* ContentView.swift */,
 				B0D974CA230C031E00695388 /* MasterDetailView.swift */,
+				B07685B8232079C800538D55 /* SearchView.swift */,
 				B0D974CC230CC1D200695388 /* Favorites.swift */,
 				B0D974D0230CC9C600695388 /* PlaylistGrid.swift */,
 				B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */,
@@ -282,6 +294,7 @@
 				B03F420A230DF66200587A4A /* PlaybackInfo.swift */,
 				B0A85FFA230DDB28000C4C4E /* Player.swift */,
 				B0D974D4230CD60D00695388 /* PlayerInfoView.swift */,
+				B07685BC2320C12D00538D55 /* QueueView.swift */,
 				B039D69E2317480C00E6784F /* CoverWindowController.swift */,
 				B0E8078F230615AE00E43B5D /* Assets.xcassets */,
 				B0E80794230615AE00E43B5D /* Main.storyboard */,
@@ -355,6 +368,7 @@
 			);
 			dependencies = (
 				B0443FF62305F7250019D0D8 /* PBXTargetDependency */,
+				B07685B7232073C100538D55 /* PBXTargetDependency */,
 			);
 			name = TidalSwiftLibTests;
 			productName = TidalSwiftLibTests;
@@ -416,7 +430,7 @@
 					};
 					B0443FF22305F7250019D0D8 = {
 						CreatedOnToolsVersion = 11.0;
-						TestTargetID = B0E582CD223764A500ADAE6C;
+						TestTargetID = B0E80788230615AD00E43B5D;
 					};
 					B0E6AED22255ADE200D7DA7B = {
 						CreatedOnToolsVersion = 10.2;
@@ -545,8 +559,10 @@
 				B08AB537230ACACA004CBBE8 /* AlbumGrid.swift in Sources */,
 				B0C3E6AE23061FDB006CABED /* PlaylistView.swift in Sources */,
 				B0D974D5230CD60D00695388 /* PlayerInfoView.swift in Sources */,
+				B07685BD2320C12D00538D55 /* QueueView.swift in Sources */,
 				B0D974CD230CC1D200695388 /* Favorites.swift in Sources */,
 				B0A85FFB230DDB28000C4C4E /* Player.swift in Sources */,
+				B07685B9232079C800538D55 /* SearchView.swift in Sources */,
 				B039D69F2317480C00E6784F /* CoverWindowController.swift in Sources */,
 				B0E8078E230615AD00E43B5D /* ContentView.swift in Sources */,
 				B0E8078C230615AD00E43B5D /* AppDelegate.swift in Sources */,
@@ -575,6 +591,11 @@
 			isa = PBXTargetDependency;
 			target = B0443FEA2305F7250019D0D8 /* TidalSwiftLib */;
 			targetProxy = B0443FF52305F7250019D0D8 /* PBXContainerItemProxy */;
+		};
+		B07685B7232073C100538D55 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B0E80788230615AD00E43B5D /* TidalSwift */;
+			targetProxy = B07685B6232073C100538D55 /* PBXContainerItemProxy */;
 		};
 		B0E8079F230615AF00E43B5D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

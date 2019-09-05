@@ -51,6 +51,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //		session?.saveSession()
 		
 		session.loadSession()
+		print("Login Succesful: \(session.checkLogin())")
 //		
 //		let demoAlbum = session.getAlbum(albumId: 100006868)!
 //		let demoTracks = session.getAlbumTracks(albumId: demoAlbum.id)!

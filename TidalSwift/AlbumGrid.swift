@@ -19,10 +19,6 @@ struct AlbumGrid: View {
 	var body: some View {
 		Grid(albums) { album in
 			AlbumGridItem(album: album, session: self.session, player: self.player)
-				.onTapGesture(count: 2) {
-					print("\(album.title)")
-					self.player.add(album: album, .now)
-			}
 		}
 		.padding()
 		.gridStyle(
@@ -55,12 +51,15 @@ struct AlbumGridItem: View {
 						.frame(width: 160, height: 160)
 					if album.streamReady != nil && album.streamReady! {
 						Text(album.title)
-							.multilineTextAlignment(.center)
 							.foregroundColor(.white)
+							.multilineTextAlignment(.center)
+							.lineLimit(5)
+							.frame(width: 160)
 					} else {
 						Text("Album not available")
-							.multilineTextAlignment(.center)
 							.foregroundColor(.white)
+							.multilineTextAlignment(.center)
+							.frame(width: 160)
 					}
 				}
 			}
@@ -69,6 +68,44 @@ struct AlbumGridItem: View {
 				.frame(width: 160)
 		}
 		.padding(5)
+		.onTapGesture(count: 2) {
+			print("\(self.album.title)")
+			self.player.add(album: self.album, .now)
+		}
+		.contextMenu {
+			Button(action: {
+				self.player.add(album: self.album, .next)
+			}) {
+				Text("Play next")
+			}
+			Button(action: {
+				self.player.add(album: self.album, .last)
+			}) {
+				Text("Play last")
+			}
+			Divider()
+			Button(action: {
+				print("Remove from Favorites")
+			}) {
+				Text("Remove from Favorites")
+			}
+			Button(action: {
+				print(" to Playlist …")
+			}) {
+				Text("Add to Playlist …")
+			}
+			Divider()
+			Button(action: {
+				print("Credits")
+			}) {
+				Text("Credits")
+			}
+			Button(action: {
+				print("Share")
+			}) {
+				Text("Share")
+			}
+		}
 	}
 }
 

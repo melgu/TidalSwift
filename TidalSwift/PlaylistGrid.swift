@@ -19,10 +19,6 @@ struct PlaylistGrid: View {
 	var body: some View {
 		Grid(playlists) { playlist in
 			PlaylistGridItem(playlist: playlist, session: self.session, player: self.player)
-				.onTapGesture(count: 2) {
-					print("\(playlist.title)")
-					self.player.add(playlist: playlist, .now)
-			}
 		}
 		.padding()
 		.gridStyle(
@@ -54,14 +50,20 @@ struct PlaylistGridItem: View {
 						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)
 					Text(playlist.title)
-						.multilineTextAlignment(.center)
 						.foregroundColor(.white)
+						.multilineTextAlignment(.center)
+						.lineLimit(2)
+						.frame(width: 160)
 				}
 			}
 			Text(playlist.title)
 				.frame(width: 160)
 		}
 		.padding(5)
+		.onTapGesture(count: 2) {
+			print("\(self.playlist.title)")
+			self.player.add(playlist: self.playlist, .now)
+		}
 	}
 }
 

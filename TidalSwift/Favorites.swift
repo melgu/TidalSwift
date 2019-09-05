@@ -40,7 +40,7 @@ struct FavoriteAlbums: View {
 				.padding(.horizontal)
 			
 			if session.favorites?.playlists() != nil {
-				AlbumGrid(albums: favoriteAlbums2Albums(favoriteAlbums: session.favorites!.albums()!), session: session, player: player)
+				AlbumGrid(albums: favoriteAlbums2Albums(favoriteAlbums: session.favorites!.albums(order: .releaseDate, orderDirection: .descending)!), session: session, player: player)
 			} else {
 				Text("Problems fetching favorite albums")
 				.font(.largeTitle)
@@ -57,32 +57,127 @@ struct FavoriteTracks: View {
 	let session: Session
 	let player: Player
 	
+	let tracks: [Track]?
+	
+	init(session: Session, player: Player) {
+		self.session = session
+		self.player = player
+		
+		if let favTracks = session.favorites?.tracks() {
+			self.tracks = favoriteTracks2Tracks(favoriteTracks: favTracks)
+		} else {
+			self.tracks = nil
+		}
+	}
+	
 	var body: some View {
 		VStack(alignment: .leading) {
 			Text("Favorite Tracks")
 				.font(.largeTitle)
 				.padding(.horizontal)
 			
-			if session.favorites?.tracks() != nil {
+			if tracks != nil {
 				ScrollView {
 					HStack {
 						VStack(alignment: .leading) {
-							ForEach(favoriteTracks2Tracks(favoriteTracks: session.favorites!.tracks()!)) { track in
-								TrackRowFront(track: track, showCover: true, session: self.session)
+							ForEach(0..<tracks!.count) { i in
+								TrackRowFront(track: self.tracks![i], showCover: true, session: self.session)
 									.onTapGesture(count: 2) {
-										print("\(track.title)")
-										self.player.add(track: track, .now)
+										print("\(self.tracks![i].title)")
+										self.player.add(tracks: self.tracks!, .now)
+										self.player.play(atIndex: i)
+									}
+									.contextMenu {
+										Button(action: {
+											self.player.add(track: self.tracks![i], .now)
+										}) {
+											Text("Play now")
+										}
+										Button(action: {
+											self.player.add(track: self.tracks![i], .next)
+										}) {
+											Text("Play next")
+										}
+										Button(action: {
+											self.player.add(track: self.tracks![i], .last)
+										}) {
+											Text("Play last")
+										}
+//										Divider()
+//										Button(action: {
+//											print("Remove from Favorites")
+//										}) {
+//											Text("Remove from Favorites")
+//										}
+//										Button(action: {
+//											print(" to Playlist …")
+//										}) {
+//											Text("Add to Playlist …")
+//										}
+//										Divider()
+//										Button(action: {
+//											print("Credits")
+//										}) {
+//											Text("Credits")
+//										}
+//										Button(action: {
+//											print("Share")
+//										}) {
+//											Text("Share")
+//										}
 								}
+								Divider()
 							}
 						}
 						VStack(alignment: .trailing) {
-							ForEach(favoriteTracks2Tracks(favoriteTracks: session.favorites!.tracks()!)) { track in
-								TrackRowBack(track: track)
+							ForEach(0..<tracks!.count) { i in
+								TrackRowBack(track: self.tracks![i])
 									.onTapGesture(count: 2) {
-										print("\(track.title)")
-										self.player.add(track: track, .now)
+										print("\(self.tracks![i].title)")
+										self.player.add(tracks: self.tracks!, .now)
+										self.player.play(atIndex: i)
+									}
+									.contextMenu {
+										Button(action: {
+											self.player.add(track: self.tracks![i], .now)
+										}) {
+											Text("Play now")
+										}
+										Button(action: {
+											self.player.add(track: self.tracks![i], .next)
+										}) {
+											Text("Play next")
+										}
+										Button(action: {
+											self.player.add(track: self.tracks![i], .last)
+										}) {
+											Text("Play last")
+										}
+//										Divider()
+//										Button(action: {
+//											print("Remove from Favorites")
+//										}) {
+//											Text("Remove from Favorites")
+//										}
+//										Button(action: {
+//											print(" to Playlist …")
+//										}) {
+//											Text("Add to Playlist …")
+//										}
+//										Divider()
+//										Button(action: {
+//											print("Credits")
+//										}) {
+//											Text("Credits")
+//										}
+//										Button(action: {
+//											print("Share")
+//										}) {
+//											Text("Share")
+//										}
 								}
-								.frame(height: 40)
+								.frame(height: 30)
+								Divider()
 							}
 						}
 					}

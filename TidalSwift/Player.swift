@@ -61,13 +61,23 @@ class Player {
 	func previous() {
 		if avPlayer.currentTime().seconds >= 3 || currentIndex == 0 {
 			avPlayer.seek(to: CMTime(seconds: 0, preferredTimescale: 1))
+			if currentIndex == 0 && !queue[currentIndex].streamReady {
+				print("Not possible to stream \(queue[currentIndex].title)")
+				pause()
+				next()
+			}
 			return
 		}
 		
 		currentIndex -= 1
-		print("previous(): \(currentIndex) - \(queue.count)")
-		avSetItem(from: queue[currentIndex])
-		print("previous() done")
+		if queue[currentIndex].streamReady {
+			print("previous(): \(currentIndex) - \(queue.count)")
+			avSetItem(from: queue[currentIndex])
+			print("previous() done")
+		} else {
+			print("Not possible to stream \(queue[currentIndex].title)")
+			previous()
+		}
 	}
 	
 	func next() {
@@ -78,8 +88,13 @@ class Player {
 			return
 		}
 		currentIndex += 1
-		print("next(): \(currentIndex) - \(queueCount())")
-		avSetItem(from: queue[currentIndex])
+		if queue[currentIndex].streamReady {
+			print("next(): \(currentIndex) - \(queueCount())")
+			avSetItem(from: queue[currentIndex])
+		} else {
+			print("Not possible to stream \(queue[currentIndex].title)")
+			next()
+		}
 	}
 	
 	private func avSetItem(from track: Track) {
@@ -87,7 +102,10 @@ class Player {
 		let wasPlaying = playbackInfo.playing
 		pause()
 		
-		let url = track.getAudioUrl(session: session)!
+		guard let url = track.getAudioUrl(session: session) else {
+			next()
+			return
+		}
 		let item = AVPlayerItem(url: url)
 		NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(sender:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: item)
 		avPlayer.replaceCurrentItem(with: item)
@@ -144,10 +162,11 @@ class Player {
 	}
 	
 	func add(tracks: [Track], _ when: When) {
+//		let ts = cleanTracks(tracks)
 		if when == .now {
 			addNow(tracks: tracks)
 		} else if when == .next {
-			addLast(tracks: tracks)
+			addNext(tracks: tracks)
 		} else {
 			addLast(tracks: tracks)
 		}
@@ -180,6 +199,12 @@ class Player {
 		print("addLast(): \(queue.count)")
 	}
 	
+//	private func cleanTracks(_ tracks: [Track]) -> [Track] {
+//		var ts = tracks
+//		ts.removeAll(where: { !$0.streamReady })
+//		return ts
+//	}
+	
 	func clearQueue() {
 		avPlayer.pause()
 		currentIndex = 0
@@ -208,7 +233,54 @@ class Player {
 		return r
 	}
 	
-//	func playerDidFinishPlaying(note: NSNotification) {
-//		// Your code here
-//	}
+	func setVolum(to volume: Float) {
+		avPlayer.volume = volume
+	}
+	
+	func currentQualityString() -> String {
+		guard !queue.isEmpty else {
+			return ""
+		}
+		guard let quality = queue[0].audioQuality else {
+			return ""
+		}
+		
+		var chosenQuality = session.sessionConfig.quality
+		
+		if chosenQuality == .master && quality != .master {
+			chosenQuality = .hifi
+		}
+		if chosenQuality == .hifi && (quality == .high || quality == .low) {
+			chosenQuality = .high
+		}
+		if chosenQuality == .high && quality == .low {
+			chosenQuality = .low
+		}
+		
+		return qualityToString(quality: quality)
+	}
+	
+	func maxQualityString() -> String {
+		guard !queue.isEmpty else {
+			return ""
+		}
+		guard let quality = queue[0].audioQuality else {
+			return ""
+		}
+		
+		return qualityToString(quality: quality)
+	}
+	
+	private func qualityToString(quality: AudioQuality) -> String {
+		switch quality {
+		case .low:
+			return "LOW"
+		case .high:
+			return "HIGH"
+		case .hifi:
+			return "HIFI"
+		case .master:
+			return "MASTER"
+		}
+	}
 }

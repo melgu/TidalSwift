@@ -19,10 +19,6 @@ struct ArtistGrid: View {
 	var body: some View {
 		Grid(artists) { artist in
 			ArtistGridItem(artist: artist, session: self.session, player: self.player)
-				.onTapGesture(count: 2) {
-					print("\(artist.name)")
-					self.player.add(artist: artist, .now)
-			}
 		}
 		.padding()
 		.gridStyle(
@@ -54,14 +50,21 @@ struct ArtistGridItem: View {
 						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)
 					Text(artist.name)
-						.multilineTextAlignment(.center)
 						.foregroundColor(.white)
+						.multilineTextAlignment(.center)
+						.lineLimit(5)
+						.frame(width: 160)
 				}
 			}
 			Text(artist.name)
+				.lineLimit(1)
 				.frame(width: 160)
 		}
 		.padding(5)
+		.onTapGesture(count: 2) {
+			print("\(self.artist.name)")
+			self.player.add(artist: self.artist, .now)
+		}
 	}
 }
 

@@ -198,7 +198,7 @@ class LogicTests: XCTestCase {
 		let playlist = session.getPlaylist(playlistId: "a784a00e-8f76-4a67-8624-656a1e80f7ed")
 		let playlistUrl = playlist?.getImageUrl(session: session, resolution: 750)
 		XCTAssertEqual(playlistUrl, URL(string:
-			"https://resources.tidal.com/images/f14453e2/88f8/4de4/a934/cb05414d9561/750x750.jpg"))
+			"https://resources.tidal.com/images/4faed9dd/8f52/4379/a4ce/a73e9cc07d33/750x750.jpg"))
 		// Changes periodically
 		
 		// Genres & Moods have image ID, but I can't find a fitting resolution to access it
@@ -335,7 +335,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(searchResult?.tracks[0].trackNumber, 2)
 		XCTAssertEqual(searchResult?.tracks[0].volumeNumber, 1)
 //		print(searchResult?.tracks[0].popularity)
-		XCTAssertEqual(searchResult?.tracks[0].copyright, "2016 Membran")
+		XCTAssertEqual(searchResult?.tracks[0].copyright, "(P) 2016 Membran")
 		XCTAssertEqual(searchResult?.tracks[0].url,
 					   URL(string: "http://www.tidal.com/track/59978883"))
 		XCTAssertEqual(searchResult?.tracks[0].isrc, "US23A1500084")
@@ -497,7 +497,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(track.trackNumber, 2)
 		XCTAssertEqual(track.volumeNumber, 1)
 		//		print(track.popularity)
-		XCTAssertEqual(track.copyright, "2016 Membran")
+		XCTAssertEqual(track.copyright, "(P) 2016 Membran")
 		XCTAssertEqual(track.url,
 					   URL(string: "http://www.tidal.com/track/59978883"))
 		XCTAssertEqual(track.isrc, "US23A1500084")
@@ -1135,7 +1135,7 @@ class LogicTests: XCTestCase {
 //		XCTAssertEqual(playlists[0].numberOfTracks, 64)
 		XCTAssertEqual(playlists[0].numberOfVideos, 0)
 		XCTAssertEqual(playlists[0].description,
-					   "Step onto your mat and into your zen with these meditative tracks.")
+					   "Step onto your mat and into your zen with these meditative tracks. (Photo: Unsplash)")
 //		XCTAssertEqual(playlists[0].duration, 18592)
 		XCTAssertEqual(playlists[0].created,
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-02-05T21:44:05.249GMT"))

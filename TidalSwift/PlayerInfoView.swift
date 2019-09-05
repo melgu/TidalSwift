@@ -15,6 +15,7 @@ struct PlayerInfoView: View {
 	let player: Player
 	
 	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@State var volumeSlider = 1.0
 	
 	var body: some View {
 		VStack {
@@ -40,9 +41,53 @@ struct PlayerInfoView: View {
 							)
 							controller.window?.title = self.player.queue[self.player.currentIndex].album.title
 							controller.showWindow(nil)
+						}
+						.contextMenu {
+							Button(action: {
+								self.player.add(track: self.player.queue[self.player.currentIndex], .next)
+							}) {
+								Text("Play next")
+							}
+							Button(action: {
+								self.player.add(track: self.player.queue[self.player.currentIndex], .last)
+							}) {
+								Text("Play last")
+							}
+							Divider()
+							Button(action: {
+								print("Remove from Favorites")
+							}) {
+								Text("Remove from Favorites")
+							}
+							Button(action: {
+								print(" to Playlist …")
+							}) {
+								Text("Add to Playlist …")
+							}
+							Divider()
+							Button(action: {
+								print("Credits")
+							}) {
+								Text("Credits")
+							}
+							Button(action: {
+								print("Share")
+							}) {
+								Text("Share")
+							}
 					}
 					VStack(alignment: .leading) {
-						Text(player.queue[self.player.currentIndex].title)
+						HStack {
+							Text(player.queue[self.player.currentIndex].title)
+							Text(player.currentQualityString())
+								.fontWeight(.light)
+								.foregroundColor(.orange)
+							Text(player.maxQualityString())
+								.fontWeight(.light)
+								.foregroundColor(.gray)
+							
+							
+						}
 						Text("\(player.queue[self.player.currentIndex].artists.formArtistString()) – \(player.queue[self.player.currentIndex].album.title)")
 							.foregroundColor(.gray)
 					}
@@ -86,7 +131,12 @@ struct PlayerInfoView: View {
 				.frame(width: 200)
 				Spacer()
 					.layoutPriority(-1)
-				Text("----- 🔈")
+				Slider(value: $volumeSlider, in: 0.0...1.0, onEditingChanged: {changed in
+					if changed {
+						self.player.setVolum(to: Float(self.volumeSlider))
+					}
+				})
+					.frame(width: 80)
 				Text("***")
 			}
 			.frame(height: 30)

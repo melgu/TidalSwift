@@ -64,7 +64,7 @@ struct PersistentInformation {
 }
 
 public class Config {
-	var quality: AudioQuality
+	public var quality: AudioQuality
 	var apiLocation: String
 	var apiToken: String
 	var imageLocation: String
@@ -102,6 +102,7 @@ public class Config {
 
 public class Session {
 	var config: Config
+	public var sessionConfig: Config { get { return config }}
 	
 	var sessionId: String?
 	var countryCode: String?
@@ -360,15 +361,6 @@ public class Session {
 			return nil
 		}
 		return NSImage(byReferencing: url)
-	}
-	
-	public struct SearchResponse {
-		let artists: [Artist]
-		let albums: [Album]
-		let playlists: [Playlist]
-		let tracks: [Track]
-		let videos: [Video]
-		let topHit: TopHit?
 	}
 	
 	public func search(for term: String, limit: Int = 50, offset: Int = 0) -> SearchResponse? {
