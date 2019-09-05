@@ -13,11 +13,13 @@ import ImageIOSwiftUI
 struct TrackRowFront: View {
 	let track: Track
 	let showCover: Bool
+	let trackNumber: Int?
 	let session: Session
 	
-	init(track: Track, trackNumber: Int? = nil, showCover: Bool = false, session: Session) {
+	init(track: Track, showCover: Bool = false, trackNumber: Int? = nil, session: Session) {
 		self.track = track
 		self.showCover = showCover
+		self.trackNumber = trackNumber
 		self.session = session
 	}
 	

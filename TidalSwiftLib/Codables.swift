@@ -85,7 +85,7 @@ struct Videos: Decodable {
 	let items: [Video]
 }
 
-public struct Artist: Decodable, Equatable {
+public struct Artist: Decodable, Equatable, Identifiable {
 	public let id: Int
 	public let name: String
 	public let url: URL?
@@ -340,6 +340,15 @@ struct SearchResult: Decodable {
 	let tracks: Tracks
 	let videos: Videos
 	let topHit: TopHit?
+}
+
+public struct SearchResponse {
+	public let artists: [Artist]
+	public let albums: [Album]
+	public let playlists: [Playlist]
+	public let tracks: [Track]
+	public let videos: [Video]
+	public let topHit: TopHit?
 }
 
 struct FavoritesResponse: Decodable {
@@ -696,6 +705,24 @@ extension Array where Element == Artist {
 		artistString += " & \(artists.last!.name)"
 		
 		return artistString
+	}
+}
+
+// MARK: - Duration String
+
+extension Int {
+	public func formatDurationString() -> String {
+		let hours = Int(self / 3600)
+		let minutes = Int((self - (hours * 60)) / 60)
+		let seconds = self % 60
+		
+		if hours > 0 {
+			return "\(hours):\(minutes):\(seconds)"
+		} else if minutes > 0 {
+			return "\(minutes):\(seconds)"
+		} else {
+			return "\(seconds)"
+		}
 	}
 }
 
