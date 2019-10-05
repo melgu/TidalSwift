@@ -9,6 +9,7 @@
 import SwiftUI
 import TidalSwiftLib
 import ImageIOSwiftUI
+import Sliders
 
 struct PlayerInfoView: View {
 	let session: Session
@@ -126,7 +127,7 @@ struct PlayerInfoView: View {
 						}
 						Spacer()
 					}
-					ProgressBar()
+					ProgressBar(player: player)
 				}
 				.frame(width: 200)
 				Spacer()
@@ -148,22 +149,25 @@ struct PlayerInfoView: View {
 }
 
 struct ProgressBar : View {
+	let player: Player
+	
 	@EnvironmentObject var playbackInfo: PlaybackInfo
 	
 	var body: some View {
-		Rectangle()
-			.opacity(0.3)
-			.overlay(
-				GeometryReader { proxy in
-					Rectangle()
-						.frame(width: proxy.size.width * self.playbackInfo.fraction)
-						.frame(width: proxy.size.width, alignment: .leading)
-						.fixedSize(horizontal: true, vertical: false)
-						.opacity(1.0)
-				}
-		)
-			.cornerRadius(5)
-			.frame(height: 5)
+		
+//		Text("Ladida")
+		
+		HorizontalValueSlider(value: $playbackInfo.fraction, onEditingChanged: {ended  in
+			if ended {
+//				print("Changed: \(self.playbackInfo.fraction)")
+				self.player.seek(to: Double(self.playbackInfo.fraction))
+			}
+		})
+		.height(5)
+		.thickness(5)
+		.valueColor(.black)
+		.trackColor(.gray)
+		.thumbSize(CGSize(width: 0, height: 0))
 	}
 }
 
