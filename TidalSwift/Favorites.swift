@@ -40,7 +40,8 @@ struct FavoriteAlbums: View {
 				.padding(.horizontal)
 			
 			if session.favorites?.playlists() != nil {
-				AlbumGrid(albums: favoriteAlbums2Albums(favoriteAlbums: session.favorites!.albums(order: .releaseDate, orderDirection: .descending)!), session: session, player: player)
+				AlbumGrid(albums: favoriteAlbums2Albums(favoriteAlbums: session.favorites!.albums(order: .releaseDate, orderDirection: .descending)!),
+						  showArtists: true, session: session, player: player)
 			} else {
 				Text("Problems fetching favorite albums")
 				.font(.largeTitle)

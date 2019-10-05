@@ -24,12 +24,12 @@ struct NewReleases: View {
 	
 	var body: some View {
 		VStack(alignment: .leading) {
-			Text("Favorite Albums")
+			Text("New Releases")
 				.font(.largeTitle)
 				.padding(.horizontal)
 			
 			if albums != nil {
-				AlbumGrid(albums: albums!, session: session, player: player)
+				AlbumGrid(albums: albums!, showArtists: true, session: session, player: player)
 			} else {
 				Text("Problems fetching favorite albums")
 				.font(.largeTitle)
