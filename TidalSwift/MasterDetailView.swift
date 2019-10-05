@@ -33,6 +33,7 @@ struct MasterView: View {
 	@Binding var searchText: String
 	@Binding var fixedSearchText: String
 	
+	private let news = ["New Releases"]
 	private let favorites = ["Playlists", "Albums", "Tracks", "Videos", "Artists"]
 	
 	var body: some View {
@@ -47,6 +48,11 @@ struct MasterView: View {
 				.padding(.top, 10)
 				.padding([.leading, .trailing], 5)
 			List(selection: $selection) {
+				Section(header: Text("News")) {
+					ForEach(news, id: \.self) { viewType in
+						Text(viewType)
+					}
+				}
 				Section(header: Text("Favorites")) {
 					ForEach(favorites, id: \.self) { viewType in
 						Text(viewType)
@@ -69,7 +75,18 @@ struct DetailView: View {
 			PlayerInfoView(session: session, player: player)
 //			PlayerView()
 			HStack {
-				if viewType == "Playlists" {
+				// Search
+				if viewType == "Search" {
+					SearchView(searchText: fixedSearchText, session: session, player: player)
+				}
+				
+				// News
+				else if viewType == "New Releases" {
+					NewReleases(session: session, player: player)
+				}
+				
+				// Favorites
+				else if viewType == "Playlists" {
 					FavoritePlaylists(session: session, player: player)
 				} else if viewType == "Albums" {
 					FavoriteAlbums(session: session, player: player)
@@ -79,9 +96,6 @@ struct DetailView: View {
 					FavoriteVideos(session: session, player: player)
 				} else if viewType == "Artists" {
 					FavoriteArtists(session: session, player: player)
-				} else if viewType == "Search" {
-					// TODO: Keep SearchView from redrawing with every change of searchText
-					SearchView(searchText: fixedSearchText, session: session, player: player)
 				}
 			}
 			if viewType == "" {
