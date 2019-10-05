@@ -246,6 +246,7 @@ class Player {
 		}
 		
 		var chosenQuality = session.sessionConfig.quality
+		print("\(chosenQuality) \(quality)")
 		
 		if chosenQuality == .master && quality != .master {
 			chosenQuality = .hifi
@@ -257,7 +258,7 @@ class Player {
 			chosenQuality = .low
 		}
 		
-		return qualityToString(quality: quality)
+		return qualityToString(quality: chosenQuality)
 	}
 	
 	func maxQualityString() -> String {
