@@ -286,24 +286,24 @@ public struct Track: Decodable, Equatable, Identifiable {
 
 public struct Video: Decodable, Equatable, Identifiable {
 	public let id: Int
-	let title: String
-	let volumeNumber: Int
-	let trackNumber: Int
-	let releaseDate: Date
-	let imagePath: String? // As far as I know always null
-	let imageId: String
-	let duration: Int
-	let quality: String // Careful as video quality is different to audio quality
-	let streamReady: Bool
-	let streamStartDate: Date
-	let allowStreaming: Bool
-	let explicit: Bool
-	let popularity: Int
-	let type: String // e.g. Music Video
-	let adsUrl: String?
-	let adsPrePaywallOnly: Bool
-	let artists: [Artist]
-	let album: Album?
+	public let title: String
+	public let volumeNumber: Int
+	public let trackNumber: Int
+	public let releaseDate: Date
+	public let imagePath: String? // As far as I know always null
+	public let imageId: String
+	public let duration: Int
+	public let quality: String // Careful as video quality is different to audio quality
+	public let streamReady: Bool
+	public let streamStartDate: Date
+	public let allowStreaming: Bool
+	public let explicit: Bool
+	public let popularity: Int
+	public let type: String // e.g. Music Video
+	public let adsUrl: String?
+	public let adsPrePaywallOnly: Bool
+	public let artists: [Artist]
+	public let album: Album?
 	
 	public func getVideoUrl(session: Session) -> URL? {
 		return session.getVideoUrl(videoId: id)
