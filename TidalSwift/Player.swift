@@ -97,6 +97,14 @@ class Player {
 		}
 	}
 	
+	func seek(to percentage: Double) {
+		guard let currentItem = avPlayer.currentItem else {
+			return
+		}
+		let seconds = percentage * currentItem.duration.seconds
+		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 1))
+	}
+	
 	private func avSetItem(from track: Track) {
 		print("avSetItem(): \(track.title)")
 		let wasPlaying = playbackInfo.playing
@@ -246,7 +254,7 @@ class Player {
 		}
 		
 		var chosenQuality = session.sessionConfig.quality
-		print("\(chosenQuality) \(quality)")
+//		print("\(chosenQuality) \(quality)")
 		
 		if chosenQuality == .master && quality != .master {
 			chosenQuality = .hifi
