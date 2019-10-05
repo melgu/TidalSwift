@@ -120,6 +120,7 @@ public class Session {
 	}
 	
 	public var favorites: Favorites?
+	public var helpers: Helpers?
 	
 	public init(config: Config?) {
 		func loadConfig() -> Config? {
@@ -175,6 +176,7 @@ public class Session {
 		countryCode = persistentInformation["countryCode"]
 		userId = Int(persistentInformation["userId"]!)
 		favorites = Favorites(session: self, userId: userId!)
+		helpers = Helpers(session: self)
 	}
 	
 	public func saveSession() {
@@ -248,6 +250,7 @@ public class Session {
 		countryCode = loginResponse.countryCode
 		userId = loginResponse.userId
 		favorites = Favorites(session: self, userId: userId!)
+		helpers = Helpers(session: self)
 		return true
 	}
 	
@@ -919,7 +922,7 @@ public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
 	
 	
 	// Playlist editing
-	// TODO: Excrat to Playlist Class (like Favorites)
+	// TODO: Extract to Playlist Class (like Favorites)
 	
 	func etag(for playlistId: String) -> Int {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!

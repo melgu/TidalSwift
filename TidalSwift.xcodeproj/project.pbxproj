@@ -24,6 +24,8 @@
 		B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B010113F23063BC200DE13C8 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B010113E23063BC200DE13C8 /* Demo Login Information.txt */; };
+		B02382452348497F00BC2B0C /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = B02382442348497F00BC2B0C /* Sliders */; };
+		B02382472348543E00BC2B0C /* NewReleases.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02382462348543E00BC2B0C /* NewReleases.swift */; };
 		B039D69F2317480C00E6784F /* CoverWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B039D69E2317480C00E6784F /* CoverWindowController.swift */; };
 		B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F420A230DF66200587A4A /* PlaybackInfo.swift */; };
 		B0443FF42305F7250019D0D8 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
@@ -107,6 +109,7 @@
 
 /* Begin PBXFileReference section */
 		B010113E23063BC200DE13C8 /* Demo Login Information.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Demo Login Information.txt"; sourceTree = "<group>"; };
+		B02382462348543E00BC2B0C /* NewReleases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReleases.swift; sourceTree = "<group>"; };
 		B039D69E2317480C00E6784F /* CoverWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverWindowController.swift; sourceTree = "<group>"; };
 		B03F420A230DF66200587A4A /* PlaybackInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackInfo.swift; sourceTree = "<group>"; };
 		B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TidalSwiftLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -183,6 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0F20E3A230A8D21005F0576 /* ImageIOSwiftUI in Frameworks */,
+				B02382452348497F00BC2B0C /* Sliders in Frameworks */,
 				B0F20E3D230A9771005F0576 /* Grid in Frameworks */,
 				B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */,
 			);
@@ -286,6 +290,7 @@
 				B0E8078D230615AD00E43B5D /* ContentView.swift */,
 				B0D974CA230C031E00695388 /* MasterDetailView.swift */,
 				B07685B8232079C800538D55 /* SearchView.swift */,
+				B02382462348543E00BC2B0C /* NewReleases.swift */,
 				B0D974CC230CC1D200695388 /* Favorites.swift */,
 				B0D974D0230CC9C600695388 /* PlaylistGrid.swift */,
 				B0D974CE230CC9BB00695388 /* ArtistGrid.swift */,
@@ -398,6 +403,7 @@
 			packageProductDependencies = (
 				B0F20E39230A8D21005F0576 /* ImageIOSwiftUI */,
 				B0F20E3C230A9771005F0576 /* Grid */,
+				B02382442348497F00BC2B0C /* Sliders */,
 			);
 			productName = TidalSwift;
 			productReference = B0E80789230615AD00E43B5D /* TidalSwift.app */;
@@ -462,6 +468,7 @@
 			packageReferences = (
 				B0F20E38230A8D21005F0576 /* XCRemoteSwiftPackageReference "ImageIOSwift" */,
 				B0F20E3B230A9771005F0576 /* XCRemoteSwiftPackageReference "grid" */,
+				B02382432348497F00BC2B0C /* XCRemoteSwiftPackageReference "sliders" */,
 			);
 			productRefGroup = B0E582CF223764A500ADAE6C /* Products */;
 			projectDirPath = "";
@@ -578,6 +585,7 @@
 				B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */,
 				B0A85FFD230DE2E3000C4C4E /* PlayerView.swift in Sources */,
 				B0D974CF230CC9BB00695388 /* ArtistGrid.swift in Sources */,
+				B02382472348543E00BC2B0C /* NewReleases.swift in Sources */,
 				B0D974D1230CC9C600695388 /* PlaylistGrid.swift in Sources */,
 				B0C3E6AB23061FDB006CABED /* AlbumView.swift in Sources */,
 				B0C3E6AA23061FDB006CABED /* LoadingSpinner.swift in Sources */,
@@ -1031,6 +1039,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B02382432348497F00BC2B0C /* XCRemoteSwiftPackageReference "sliders" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:spacenation/sliders.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.3;
+			};
+		};
 		B0F20E38230A8D21005F0576 /* XCRemoteSwiftPackageReference "ImageIOSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/davbeck/ImageIOSwift.git";
@@ -1050,6 +1066,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B02382442348497F00BC2B0C /* Sliders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B02382432348497F00BC2B0C /* XCRemoteSwiftPackageReference "sliders" */;
+			productName = Sliders;
+		};
 		B0F20E39230A8D21005F0576 /* ImageIOSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B0F20E38230A8D21005F0576 /* XCRemoteSwiftPackageReference "ImageIOSwift" */;

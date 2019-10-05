@@ -18,6 +18,15 @@
           "revision": "78d8dd32e321c96bcc88902df03f20c2f129ee83",
           "version": null
         }
+      },
+      {
+        "package": "Sliders",
+        "repositoryURL": "git@github.com:spacenation/sliders.git",
+        "state": {
+          "branch": null,
+          "revision": "1bcaf92254114047e8385dc0eab959702aef960e",
+          "version": "0.9.3"
+        }
       }
     ]
   },
