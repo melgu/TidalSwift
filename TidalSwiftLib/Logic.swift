@@ -1173,90 +1173,85 @@ public class Favorites {
 	
 	// Add
 	
-	public func addArtist(artistId: Int) -> Bool {
+	@discardableResult public func addArtist(artistId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/artists")!
-		
 		var parameters = session.sessionParameters
 		parameters["artistIds"] = "\(artistId)"
-		
 		let response = Network.post(url: url, parameters: parameters)
+		refreshCachedArtists()
 		return response.ok
 	}
 
-	public func addAlbum(albumId: Int) -> Bool {
+	@discardableResult public func addAlbum(albumId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/albums")!
-		
 		var parameters = session.sessionParameters
 		parameters["albumIds"] = "\(albumId)"
-		
 		let response = Network.post(url: url, parameters: parameters)
+		refreshCachedAlbums()
 		return response.ok
 	}
 
-	public func addTrack(trackId: Int) -> Bool {
+	@discardableResult public func addTrack(trackId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/tracks")!
-		
 		var parameters = session.sessionParameters
 		parameters["trackIds"] = "\(trackId)"
-		
 		let response = Network.post(url: url, parameters: parameters)
+		refreshCachedTracks()
 		return response.ok
 	}
 	
-	public func addVideo(videoId: Int) -> Bool {
+	@discardableResult public func addVideo(videoId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/videos")!
-		
 		var parameters = session.sessionParameters
 		parameters["videoIds"] = "\(videoId)"
-		
 		let response = Network.post(url: url, parameters: parameters)
+		refreshCachedVideos()
 		return response.ok
 	}
 
-	public func addPlaylist(playlistId: String) -> Bool {
+	@discardableResult public func addPlaylist(playlistId: String) -> Bool {
 		let url = URL(string: "\(baseUrl)/playlists")!
-		
 		var parameters = session.sessionParameters
 		parameters["uuids"] = playlistId
-		
 		let response = Network.post(url: url, parameters: parameters)
+		refreshCachedPlaylists()
 		return response.ok
 	}
 	
 	// Delete
 	
-	public func removeArtist(artistId: Int) -> Bool {
+	@discardableResult public func removeArtist(artistId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/artists/\(artistId)")!
-		
 		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		refreshCachedArtists()
 		return response.ok
 	}
 
-	public func removeAlbum(albumId: Int) -> Bool {
+	@discardableResult public func removeAlbum(albumId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/albums/\(albumId)")!
-		
 		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		refreshCachedAlbums()
 		return response.ok
 	}
 
-	public func removeTrack(trackId: Int) -> Bool {
+	@discardableResult public func removeTrack(trackId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/tracks/\(trackId)")!
-		
 		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		refreshCachedTracks()
 		return response.ok
 	}
 	
-	public func removeVideo(videoId: Int) -> Bool {
+	@discardableResult public func removeVideo(videoId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/videos/\(videoId)")!
-		
 		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		refreshCachedVideos()
 		return response.ok
 	}
 
-	public func removePlaylist(playlistId: String) -> Bool {
+	@discardableResult public func removePlaylist(playlistId: String) -> Bool {
 		let url = URL(string: "\(baseUrl)/playlists/\(playlistId)")!
-		
 		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		refreshCachedPlaylists()
 		return response.ok
 	}
 	
@@ -1321,6 +1316,28 @@ public class Favorites {
 		}
 		return false
 	}
+	
+	// Refresh Caches
+	
+	private func refreshCachedArtists() {
+		cache.artists = artists()
+	}
+	
+	private func refreshCachedAlbums() {
+		cache.albums = albums()
+	}
+	
+	private func refreshCachedTracks() {
+		cache.tracks = tracks()
+	}
+	
+	private func refreshCachedVideos() {
+		cache.videos = videos()
+	}
+	
+	private func refreshCachedPlaylists() {
+		cache.playlists = playlists()
+	}
 }
 
 class FavoritesCache {
@@ -1332,70 +1349,80 @@ class FavoritesCache {
 		self.timeoutInSeconds = timeoutInSeconds
 	}
 	
-	var _artists: [FavoriteArtist]?
+	private var _artists: [FavoriteArtist]?
+	private var lastCheckedArtists = Date(timeIntervalSince1970: 0)
 	var artists: [FavoriteArtist]? {
 		get {
 			if Date().timeIntervalSince(lastCheckedArtists) > timeoutInSeconds {
-				_artists = favorites.artists()
-				lastCheckedArtists = Date()
+				self.artists = favorites.artists()
 			}
 			return _artists
 		}
-		set { _artists = newValue }
+		set {
+			_artists = newValue
+			lastCheckedArtists = Date()
+		}
 	}
-	var lastCheckedArtists = Date(timeIntervalSince1970: 0)
 	
-	var _albums: [FavoriteAlbum]?
+	private var _albums: [FavoriteAlbum]?
+	private var lastCheckedAlbums = Date(timeIntervalSince1970: 0)
 	var albums: [FavoriteAlbum]? {
 		get {
 			if Date().timeIntervalSince(lastCheckedAlbums) > timeoutInSeconds {
-				_albums = favorites.albums()
-				lastCheckedAlbums = Date()
+				self.albums = favorites.albums()
 			}
 			return _albums
 		}
-		set { _albums = newValue }
+		set {
+			_albums = newValue
+			lastCheckedAlbums = Date()
+		}
 	}
-	var lastCheckedAlbums = Date(timeIntervalSince1970: 0)
 	
-	var _tracks: [FavoriteTrack]?
+	private var _tracks: [FavoriteTrack]?
+	private var lastCheckedTracks = Date(timeIntervalSince1970: 0)
 	var tracks: [FavoriteTrack]? {
 		get {
 			if Date().timeIntervalSince(lastCheckedTracks) > timeoutInSeconds {
-				_tracks = favorites.tracks()
-				lastCheckedTracks = Date()
+				self.tracks = favorites.tracks()
 			}
 			return _tracks
 		}
-		set { _tracks = newValue }
+		set {
+			_tracks = newValue
+			lastCheckedTracks = Date()
+		}
 	}
-	var lastCheckedTracks = Date(timeIntervalSince1970: 0)
 	
-	var _videos: [FavoriteVideo]?
+	private var _videos: [FavoriteVideo]?
+	private var lastCheckedVideos = Date(timeIntervalSince1970: 0)
 	var videos: [FavoriteVideo]? {
 		get {
 			if Date().timeIntervalSince(lastCheckedVideos) > timeoutInSeconds {
-				_videos = favorites.videos()
-				lastCheckedVideos = Date()
+				self.videos = favorites.videos()
 			}
 			return _videos
 		}
-		set { _videos = newValue }
+		set {
+			_videos = newValue
+			lastCheckedVideos = Date()
+		}
 	}
-	var lastCheckedVideos = Date(timeIntervalSince1970: 0)
 	
-	var _playlists: [FavoritePlaylist]?
+	private var _playlists: [FavoritePlaylist]?
+	private var lastCheckedPlaylists = Date(timeIntervalSince1970: 0)
 	var playlists: [FavoritePlaylist]? {
 		get {
 			if Date().timeIntervalSince(lastCheckedPlaylists) > timeoutInSeconds {
-				_playlists = favorites.playlists()
-				lastCheckedPlaylists = Date()
+				self.playlists = favorites.playlists()
 			}
 			return _playlists
 		}
-		set { _playlists = newValue }
+		set {
+			_playlists = newValue
+			lastCheckedPlaylists = Date()
+		}
 	}
-	var lastCheckedPlaylists = Date(timeIntervalSince1970: 0)
 }
 
 func displayError(title: String, content: String) {
