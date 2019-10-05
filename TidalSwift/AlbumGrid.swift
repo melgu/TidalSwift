@@ -41,6 +41,8 @@ struct AlbumGridItem: View {
 	let session: Session
 	let player: Player
 	
+	@State var t: Bool = false
+	
 	init(album: Album, showArtist: Bool = false, session: Session, player: Player) {
 		self.album = album
 		self.showArtist = showArtist
@@ -121,11 +123,26 @@ struct AlbumGridItem: View {
 				Text("Play last")
 			}
 			Divider()
-			Button(action: {
-				print("Remove from Favorites")
-			}) {
-				Text("Remove from Favorites")
+			if self.t || !self.t {
+				if self.album.isInFavorites(session: session)! {
+					Button(action: {
+						print("Remove from Favorites")
+						self.session.favorites!.removeAlbum(albumId: self.album.id)
+						self.t.toggle()
+					}) {
+						Text("Remove from Favorites")
+					}
+				} else {
+					Button(action: {
+						print("Add to Favorites")
+						self.session.favorites!.addAlbum(albumId: self.album.id)
+						self.t.toggle()
+					}) {
+						Text("Add to Favorites")
+					}
+				}
 			}
+			
 			Button(action: {
 				print(" to Playlist …")
 			}) {
