@@ -13,24 +13,40 @@ import Grid
 
 struct AlbumGrid: View {
 	let albums: [Album]
+	let showArtists: Bool
 	let session: Session
 	let player: Player
 	
+	init(albums: [Album], showArtists: Bool = false, session: Session, player: Player) {
+		self.albums = albums
+		self.showArtists = showArtists
+		self.session = session
+		self.player = player
+	}
+	
 	var body: some View {
 		Grid(albums) { album in
-			AlbumGridItem(album: album, session: self.session, player: self.player)
+			AlbumGridItem(album: album, showArtist: self.showArtists, session: self.session, player: self.player)
 		}
 		.padding()
 		.gridStyle(
-			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 200, hSpacing: 5, vSpacing: 0)
+			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 210, hSpacing: 5, vSpacing: 0)
 		)
 	}
 }
 
 struct AlbumGridItem: View {
 	let album: Album
+	let showArtist: Bool
 	let session: Session
 	let player: Player
+	
+	init(album: Album, showArtist: Bool = false, session: Session, player: Player) {
+		self.album = album
+		self.showArtist = showArtist
+		self.session = session
+		self.player = player
+	}
 	
 	var body: some View {
 		VStack {
@@ -66,6 +82,27 @@ struct AlbumGridItem: View {
 			Text(album.title)
 				.lineLimit(1)
 				.frame(width: 160)
+			if showArtist {
+				if album.artists != nil {
+					Text(album.artists!.formArtistString())
+						.fontWeight(.light)
+						.foregroundColor(Color.gray)
+						.lineLimit(1)
+						.frame(width: 160)
+				} else if album.artist != nil {
+					Text(album.artist!.name)
+						.fontWeight(.light)
+						.foregroundColor(Color.gray)
+						.lineLimit(1)
+						.frame(width: 160)
+				} else {
+					Text("Unknown Artist")
+						.fontWeight(.light)
+						.foregroundColor(Color.gray)
+						.lineLimit(1)
+						.frame(width: 160)
+				}
+			}
 		}
 		.padding(5)
 		.onTapGesture(count: 2) {
