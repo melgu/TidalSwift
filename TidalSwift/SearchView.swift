@@ -44,8 +44,15 @@ struct SearchView: View {
 					if !searchResult!.videos.isEmpty {
 						SearchViewVideos(videos: searchResult!.videos, session: session, player: player)
 					}
+					if searchResult!.artists.isEmpty && searchResult!.artists.isEmpty && searchResult!.artists.isEmpty &&
+					   searchResult!.artists.isEmpty && searchResult!.artists.isEmpty {
+						Text("No Results")
+							.font(.callout)
+					}
 				} else {
+					Spacer()
 					Text("Problems searching.")
+						.font(.callout)
 				}
 				Spacer()
 			}
@@ -128,7 +135,14 @@ struct SearchViewTracks: View {
 			Text("Tracks")
 				.font(.largeTitle)
 				.padding(.horizontal)
-			Spacer()
+			
+			ScrollView(.horizontal) {
+				HStack(alignment: .top) {
+					ForEach(tracks) { track in
+						TrackGridItem(track: track, session: self.session, player: self.player)
+					}
+				}
+			}
 		}
 	}
 }
@@ -143,7 +157,14 @@ struct SearchViewVideos: View {
 			Text("Videos")
 				.font(.largeTitle)
 				.padding(.horizontal)
-			Spacer()
+			
+			ScrollView(.horizontal) {
+				HStack(alignment: .top) {
+					ForEach(videos) { video in
+						VideoGridItem(video: video, session: self.session, player: self.player)
+					}
+				}
+			}
 		}
 	}
 }
