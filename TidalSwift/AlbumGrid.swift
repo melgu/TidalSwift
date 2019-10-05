@@ -35,12 +35,12 @@ struct AlbumGridItem: View {
 	var body: some View {
 		VStack {
 			if album.getCoverUrl(session: session, resolution: 320) != nil {
-				Rectangle()
-//				URLImageSourceView(
-//					album.getCoverUrl(session: session, resolution: 320)!,
-//					isAnimationEnabled: true,
-//					label: Text(album.title)
-//				)
+//				Rectangle()
+				URLImageSourceView(
+					album.getCoverUrl(session: session, resolution: 320)!,
+					isAnimationEnabled: true,
+					label: Text(album.title)
+				)
 					.aspectRatio(contentMode: .fill)
 					.frame(width: 160, height: 160)
 			} else {
