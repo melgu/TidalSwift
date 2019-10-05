@@ -35,12 +35,12 @@ struct ArtistGridItem: View {
 	var body: some View {
 		VStack {
 			if artist.getPictureUrl(session: session, resolution: 320) != nil {
-				Rectangle()
-//				URLImageSourceView(
-//					artist.getPictureUrl(session: session, resolution: 320)!,
-//					isAnimationEnabled: true,
-//					label: Text(artist.name)
-//				)
+//				Rectangle()
+				URLImageSourceView(
+					artist.getPictureUrl(session: session, resolution: 320)!,
+					isAnimationEnabled: true,
+					label: Text(artist.name)
+				)
 					.aspectRatio(contentMode: .fill)
 					.frame(width: 160, height: 160)
 			} else {

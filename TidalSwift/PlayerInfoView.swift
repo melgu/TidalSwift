@@ -21,23 +21,23 @@ struct PlayerInfoView: View {
 		VStack {
 			HStack {
 				if !player.queue.isEmpty {
-					Rectangle()
-//					URLImageSourceView(
-//						player.queue[0].getCoverUrl(session: session, resolution: 320)!,
-//						isAnimationEnabled: true,
-//						label: Text(player.queue[self.player.currentIndex].album.title)
-//					)
+//					Rectangle()
+					URLImageSourceView(
+						player.queue[0].getCoverUrl(session: session, resolution: 320)!,
+						isAnimationEnabled: true,
+						label: Text(player.queue[self.player.currentIndex].album.title)
+					)
 						.frame(width: 30, height: 30)
 						.onTapGesture {
 							print("Big Cover")
 							// TODO: Open new window with cover
 							let controller = CoverWindowController(rootView:
-								Rectangle()
-//								URLImageSourceView(
-//									self.player.queue[0].getCoverUrl(session: self.session, resolution: 1280)!,
-//									isAnimationEnabled: true,
-//									label: Text(self.player.queue[self.player.currentIndex].album.title)
-//								)
+//								Rectangle()
+								URLImageSourceView(
+									self.player.queue[0].getCoverUrl(session: self.session, resolution: 1280)!,
+									isAnimationEnabled: true,
+									label: Text(self.player.queue[self.player.currentIndex].album.title)
+								)
 							)
 							controller.window?.title = self.player.queue[self.player.currentIndex].album.title
 							controller.showWindow(nil)

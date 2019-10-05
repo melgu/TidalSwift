@@ -26,12 +26,12 @@ struct TrackRowFront: View {
 	var body: some View {
 		HStack {
 			if showCover {
-				Rectangle()
-//				URLImageSourceView(
-//					track.getCoverUrl(session: session, resolution: 80)!,
-//					isAnimationEnabled: true,
-//					label: Text(track.title)
-//				)
+//				Rectangle()
+				URLImageSourceView(
+					track.getCoverUrl(session: session, resolution: 80)!,
+					isAnimationEnabled: true,
+					label: Text(track.title)
+				)
 //					.size(width: 30, height: 30)
 					.frame(width: 30, height: 30)
 			} else {
