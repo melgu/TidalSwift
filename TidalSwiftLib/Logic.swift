@@ -1000,11 +1000,13 @@ public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
 public class Favorites {
 	
 	unowned let session: Session
+	var cache: FavoritesCache!
 	let baseUrl: String
 	
 	public init(session: Session, userId: Int) {
 		self.session = session
 		self.baseUrl = "\(session.config.apiLocation)/users/\(userId)/favorites"
+		self.cache = FavoritesCache(favorites: self)
 	}
 	
 	// Return
@@ -1257,6 +1259,143 @@ public class Favorites {
 		let response = Network.delete(url: url, parameters: session.sessionParameters)
 		return response.ok
 	}
+	
+	// Check
+	
+	public func doFavoritesContainArtist(artistId: Int) -> Bool? {
+		guard let artists = cache.artists else {
+			return nil
+		}
+		for artist in artists {
+			if artist.item.id == artistId {
+				return true
+			}
+		}
+		return false
+	}
+	
+	public func doFavoritesContainAlbum(albumId: Int) -> Bool? {
+		guard let albums = cache.albums else {
+			return nil
+		}
+		for album in albums {
+			if album.item.id == albumId {
+				return true
+			}
+		}
+		return false
+	}
+	
+	public func doFavoritesContainTrack(trackId: Int) -> Bool? {
+		guard let tracks = cache.tracks else {
+			return nil
+		}
+		for track in tracks {
+			if track.item.id == trackId {
+				return true
+			}
+		}
+		return false
+	}
+	
+	public func doFavoritesContainVideo(videoId: Int) -> Bool? {
+		guard let videos = cache.videos else {
+			return nil
+		}
+		for video in videos {
+			if video.item.id == videoId {
+				return true
+			}
+		}
+		return false
+	}
+	
+	public func doFavoritesContainPlaylist(playlistId: String) -> Bool? {
+		guard let playlists = cache.playlists else {
+			return nil
+		}
+		for playlist in playlists {
+			if playlist.item.id == playlistId {
+				return true
+			}
+		}
+		return false
+	}
+}
+
+class FavoritesCache {
+	unowned let favorites: Favorites
+	let timeoutInSeconds: Double
+	
+	init(favorites: Favorites, timeoutInSeconds: Double = 60) {
+		self.favorites = favorites
+		self.timeoutInSeconds = timeoutInSeconds
+	}
+	
+	var _artists: [FavoriteArtist]?
+	var artists: [FavoriteArtist]? {
+		get {
+			if Date().timeIntervalSince(lastCheckedArtists) > timeoutInSeconds {
+				_artists = favorites.artists()
+				lastCheckedArtists = Date()
+			}
+			return _artists
+		}
+		set { _artists = newValue }
+	}
+	var lastCheckedArtists = Date(timeIntervalSince1970: 0)
+	
+	var _albums: [FavoriteAlbum]?
+	var albums: [FavoriteAlbum]? {
+		get {
+			if Date().timeIntervalSince(lastCheckedAlbums) > timeoutInSeconds {
+				_albums = favorites.albums()
+				lastCheckedAlbums = Date()
+			}
+			return _albums
+		}
+		set { _albums = newValue }
+	}
+	var lastCheckedAlbums = Date(timeIntervalSince1970: 0)
+	
+	var _tracks: [FavoriteTrack]?
+	var tracks: [FavoriteTrack]? {
+		get {
+			if Date().timeIntervalSince(lastCheckedTracks) > timeoutInSeconds {
+				_tracks = favorites.tracks()
+				lastCheckedTracks = Date()
+			}
+			return _tracks
+		}
+		set { _tracks = newValue }
+	}
+	var lastCheckedTracks = Date(timeIntervalSince1970: 0)
+	
+	var _videos: [FavoriteVideo]?
+	var videos: [FavoriteVideo]? {
+		get {
+			if Date().timeIntervalSince(lastCheckedVideos) > timeoutInSeconds {
+				_videos = favorites.videos()
+				lastCheckedVideos = Date()
+			}
+			return _videos
+		}
+		set { _videos = newValue }
+	}
+	var lastCheckedVideos = Date(timeIntervalSince1970: 0)
+	
+	var _playlists: [FavoritePlaylist]?
+	var playlists: [FavoritePlaylist]? {
+		get {
+			if Date().timeIntervalSince(lastCheckedPlaylists) > timeoutInSeconds {
+				_playlists = favorites.playlists()
+				lastCheckedPlaylists = Date()
+			}
+			return _playlists
+		}
+		set { _playlists = newValue }
+	}
+	var lastCheckedPlaylists = Date(timeIntervalSince1970: 0)
 }
 
 func displayError(title: String, content: String) {

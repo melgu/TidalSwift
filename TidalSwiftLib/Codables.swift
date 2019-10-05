@@ -95,6 +95,10 @@ public struct Artist: Decodable, Equatable, Identifiable {
 	public let banner: String?
 	public let relationType: String? // e.g. SIMILAR_ARTIST
 	
+	public func isInFavorites(session: Session) -> Bool? {
+		return session.favorites?.doFavoritesContainArtist(artistId: id)
+	}
+	
 	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
 		guard let picture = picture else {
 			return nil
@@ -146,6 +150,10 @@ public struct Album: Decodable, Equatable, Identifiable {
 	public let artist: Artist?
 	public let artists: [Artist]?
 	
+	public func isInFavorites(session: Session) -> Bool? {
+		return session.favorites?.doFavoritesContainAlbum(albumId: id)
+	}
+	
 	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
 		guard let cover = cover else { return nil }
 		return session.getImageUrl(imageId: cover, resolution: resolution)
@@ -190,6 +198,10 @@ public struct Playlist: Decodable, Equatable, Identifiable {
 	public let image: String
 	public let popularity: Int
 	public let squareImage: String?
+	
+	public func isInFavorites(session: Session) -> Bool? {
+		return session.favorites?.doFavoritesContainPlaylist(playlistId: uuid)
+	}
 	
 	public func getImageUrl(session: Session, resolution: Int, resolutionY: Int? = nil) -> URL? {
 		if let resolutionY = resolutionY {
@@ -267,6 +279,10 @@ public struct Track: Decodable, Equatable, Identifiable {
 	public let artists: [Artist]
 	public let album: Album
 	
+	public func isInFavorites(session: Session) -> Bool? {
+		return session.favorites?.doFavoritesContainTrack(trackId: id)
+	}
+	
 	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
 		return album.getCoverUrl(session: session, resolution: resolution)
 	}
@@ -304,6 +320,10 @@ public struct Video: Decodable, Equatable, Identifiable {
 	public let adsPrePaywallOnly: Bool
 	public let artists: [Artist]
 	public let album: Album?
+	
+	public func isInFavorites(session: Session) -> Bool? {
+		return session.favorites?.doFavoritesContainVideo(videoId: id)
+	}
 	
 	public func getVideoUrl(session: Session) -> URL? {
 		return session.getVideoUrl(videoId: id)
