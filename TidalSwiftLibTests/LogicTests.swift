@@ -339,7 +339,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(searchResult?.tracks[0].url,
 					   URL(string: "http://www.tidal.com/track/59978883"))
 		XCTAssertEqual(searchResult?.tracks[0].isrc, "US23A1500084")
-		XCTAssertEqual(searchResult?.tracks[0].editable, true)
+		XCTAssertEqual(searchResult?.tracks[0].editable, false)
 		XCTAssertEqual(searchResult?.tracks[0].explicit, false)
 		XCTAssertEqual(searchResult?.tracks[0].audioQuality, .hifi)
 		
@@ -501,7 +501,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(track.url,
 					   URL(string: "http://www.tidal.com/track/59978883"))
 		XCTAssertEqual(track.isrc, "US23A1500084")
-		XCTAssertEqual(track.editable, true)
+		XCTAssertEqual(track.editable, false)
 		XCTAssertEqual(track.explicit, false)
 		XCTAssertEqual(track.audioQuality, .hifi)
 		
@@ -658,7 +658,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlistTracks[0].url, URL(string:
 			"http://www.tidal.com/track/9312527"))
 		XCTAssertEqual(playlistTracks[0].isrc, "USA560912799")
-		XCTAssertEqual(playlistTracks[0].editable, true)
+		XCTAssertEqual(playlistTracks[0].editable, false)
 		XCTAssertEqual(playlistTracks[0].explicit, false)
 		XCTAssertEqual(playlistTracks[0].audioQuality, .hifi)
 		XCTAssertEqual(playlistTracks[0].surroundTypes, [])
@@ -1142,8 +1142,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlists[0].publicPlaylist, true)
 		XCTAssertEqual(playlists[0].url, URL(string:
 			"http://www.tidal.com/playlist/98676f10-0aa1-4c8c-ba84-4f84e370f3d2"))
-		XCTAssertEqual(playlists[0].image, "8eaace51-981c-41a1-9ff5-6a1a149e3818")
-		XCTAssertEqual(playlists[0].squareImage, "305fff79-a8c2-413f-afe9-edf87720fa81")
+		XCTAssertEqual(playlists[0].image, "51179e26-5245-42d9-a689-7eac460dfba1")
+		XCTAssertEqual(playlists[0].squareImage, "12133a11-be8b-4c27-83bd-d756e4072ac4")
 		XCTAssertEqual(playlists[0].type, .editorial)
 		XCTAssertEqual(playlists[0].creator.id, 0)
 	}
