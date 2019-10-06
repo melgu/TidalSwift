@@ -36,7 +36,7 @@ public enum TrackOrder: String {
 public enum VideoOrder: String {
 	case name = "NAME"
 	case artist = "ARTIST"
-	case date = "DATE"
+	case releaseDate = "DATE"
 	case length = "LENGTH"
 }
 
