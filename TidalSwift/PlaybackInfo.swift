@@ -9,6 +9,7 @@
 import SwiftUI
 
 final class PlaybackInfo: ObservableObject {
+	@Published var currentIndex = 0
 	@Published var fraction: CGFloat = 0.0
 	@Published var playing: Bool = false
 }

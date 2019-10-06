@@ -19,7 +19,7 @@ struct FavoritePlaylists: View {
 				.font(.largeTitle)
 				.padding(.horizontal)
 			
-			if session.favorites?.playlists() != nil {
+			if session.favorites?.playlists(order: .dateAdded, orderDirection: .descending) != nil {
 				PlaylistGrid(playlists: favoritePlaylists2Playlists(session.favorites!.playlists()!), session: session, player: player)
 			} else {
 				Text("Problems fetching favorite playlists")
@@ -44,7 +44,7 @@ struct FavoriteAlbums: View {
 				.padding(.horizontal)
 			
 			if session.favorites?.playlists() != nil {
-				AlbumGrid(albums: favoriteAlbums2Albums(session.favorites!.albums(order: .releaseDate, orderDirection: .descending)!),
+				AlbumGrid(albums: favoriteAlbums2Albums(session.favorites!.albums(order: .dateAdded, orderDirection: .descending)!),
 						  showArtists: true, session: session, player: player)
 			} else {
 				Text("Problems fetching favorite albums")
@@ -68,7 +68,7 @@ struct FavoriteTracks: View {
 		self.session = session
 		self.player = player
 		
-		if let favTracks = session.favorites?.tracks() {
+		if let favTracks = session.favorites?.tracks(order: .dateAdded, orderDirection: .descending) {
 			self.tracks = favoriteTracks2Tracks(favTracks)
 		} else {
 			self.tracks = nil
@@ -92,7 +92,9 @@ struct FavoriteTracks: View {
 										self.player.add(tracks: self.tracks!, .now)
 										self.player.play(atIndex: i)
 									}
-								.contextMenu { TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player) }
+								.contextMenu {
+									TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player)
+								}
 //								if i < self.tracks!.count - 1 { // Commented out because Xcode makes problems if not
 								Divider()
 //								}
@@ -106,7 +108,9 @@ struct FavoriteTracks: View {
 										self.player.add(tracks: self.tracks!, .now)
 										self.player.play(atIndex: i)
 									}
-								.contextMenu { TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player) }
+								.contextMenu {
+									TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player)
+								}
 								.frame(height: 30)
 //								if i < self.tracks!.count - 1 { // Commented out because Xcode makes problems if not
 								Divider()
@@ -139,7 +143,7 @@ struct FavoriteVideos: View {
 				.padding(.horizontal)
 			
 			if session.favorites?.playlists() != nil {
-				VideoGrid(videos: favoriteVideos2Videos(session.favorites!.videos(order: .releaseDate, orderDirection: .descending)!),
+				VideoGrid(videos: favoriteVideos2Videos(session.favorites!.videos(order: .dateAdded, orderDirection: .descending)!),
 						  showArtists: true, session: session, player: player)
 			} else {
 				Text("Problems fetching favorite videos")

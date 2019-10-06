@@ -24,9 +24,9 @@ struct PlayerInfoView: View {
 				if !player.queue.isEmpty {
 //					Rectangle()
 					URLImageSourceView(
-						player.queue[0].getCoverUrl(session: session, resolution: 320)!,
+						player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: session, resolution: 320)!,
 						isAnimationEnabled: true,
-						label: Text(player.queue[self.player.currentIndex].album.title)
+						label: Text(player.queue[self.playbackInfo.currentIndex].album.title)
 					)
 						.frame(width: 30, height: 30)
 						.onTapGesture {
@@ -35,22 +35,22 @@ struct PlayerInfoView: View {
 							let controller = CoverWindowController(rootView:
 //								Rectangle()
 								URLImageSourceView(
-									self.player.queue[0].getCoverUrl(session: self.session, resolution: 1280)!,
+									self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
 									isAnimationEnabled: true,
-									label: Text(self.player.queue[self.player.currentIndex].album.title)
+									label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
 								)
 							)
-							controller.window?.title = self.player.queue[self.player.currentIndex].album.title
+							controller.window?.title = self.player.queue[self.playbackInfo.currentIndex].album.title
 							controller.showWindow(nil)
 						}
 						.contextMenu {
 							Button(action: {
-								self.player.add(track: self.player.queue[self.player.currentIndex], .next)
+								self.player.add(track: self.player.queue[self.playbackInfo.currentIndex], .next)
 							}) {
 								Text("Play next")
 							}
 							Button(action: {
-								self.player.add(track: self.player.queue[self.player.currentIndex], .last)
+								self.player.add(track: self.player.queue[self.playbackInfo.currentIndex], .last)
 							}) {
 								Text("Play last")
 							}
@@ -79,7 +79,7 @@ struct PlayerInfoView: View {
 					}
 					VStack(alignment: .leading) {
 						HStack {
-							Text(player.queue[self.player.currentIndex].title)
+							Text(player.queue[self.playbackInfo.currentIndex].title)
 							Text(player.currentQualityString())
 								.fontWeight(.light)
 								.foregroundColor(.orange)
@@ -89,7 +89,7 @@ struct PlayerInfoView: View {
 							
 							
 						}
-						Text("\(player.queue[self.player.currentIndex].artists.formArtistString()) – \(player.queue[self.player.currentIndex].album.title)")
+						Text("\(player.queue[self.playbackInfo.currentIndex].artists.formArtistString()) – \(player.queue[self.playbackInfo.currentIndex].album.title)")
 							.foregroundColor(.gray)
 					}
 				}
