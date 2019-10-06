@@ -97,13 +97,28 @@ struct TrackContextMenu: View {
 					}
 				}
 			}
-			
 			Button(action: {
 				print("Add Playlist \(self.track.title) to Playlist …")
 			}) {
 				Text("Add to Playlist …")
 			}
 			Divider()
+			if self.track.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+				Button(action: {
+					print("Cover")
+					let controller = CoverWindowController(rootView:
+						URLImageSourceView(
+							self.track.album.getCoverUrl(session: self.session, resolution: 1280)!,
+							isAnimationEnabled: true,
+							label: Text("\(self.track.title) – \(self.track.album.title)")
+						)
+					)
+					controller.window?.title = "\(self.track.title) – \(self.track.album.title)"
+					controller.showWindow(nil)
+				}) {
+					Text("Cover")
+				}
+			}
 			Button(action: {
 				print("Credits")
 			}) {

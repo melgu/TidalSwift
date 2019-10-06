@@ -74,6 +74,9 @@ struct VideoGridItem: View {
 			print("\(self.video.title)")
 //			self.player.add(playlist: self.playlist, .now)
 		}
+		.contextMenu {
+			VideoContextMenu(video: self.video, session: self.session, player: self.player)
+		}
 	}
 }
 
@@ -82,24 +85,73 @@ struct VideoContextMenu: View {
 	let session: Session
 	let player: Player
 	
+	@State var t: Bool = false
+	
 	var body: some View {
 		Group {
-			Text("WIP")
-//			Button(action: {
-//				self.player.add(track: self.track, .now)
-//			}) {
-//				Text("Play now")
-//			}
-//			Button(action: {
-//				self.player.add(track: self.track, .next)
-//			}) {
-//				Text("Play next")
-//			}
-//			Button(action: {
-//				self.player.add(track: self.track, .last)
-//			}) {
-//				Text("Play last")
-//			}
+			Button(action: {
+				print("Play next")
+			}) {
+				Text("Play next")
+			}
+			Button(action: {
+				print("Play last")
+			}) {
+				Text("Play last")
+			}
+			Divider()
+			if self.t || !self.t {
+				if self.video.isInFavorites(session: session)! {
+					Button(action: {
+						print("Remove from Favorites")
+						self.session.favorites!.removeVideo(videoId: self.video.id)
+						self.t.toggle()
+					}) {
+						Text("Remove from Favorites")
+					}
+				} else {
+					Button(action: {
+						print("Add to Favorites")
+						self.session.favorites!.addVideo(videoId: self.video.id)
+						self.t.toggle()
+					}) {
+						Text("Add to Favorites")
+					}
+				}
+			}
+			
+			Button(action: {
+				print("Add Playlist \(self.video.title) to Playlist …")
+			}) {
+				Text("Add to Playlist …")
+			}
+			Divider()
+			if self.video.getImageUrl(session: self.session, resolution: 1280) != nil {
+				Button(action: {
+					print("Preview Image")
+					let controller = CoverWindowController(rootView:
+						URLImageSourceView(
+							self.video.getImageUrl(session: self.session, resolution: 1280)!,
+							isAnimationEnabled: true,
+							label: Text(self.video.title)
+						)
+					)
+					controller.window?.title = self.video.title
+					controller.showWindow(nil)
+				}) {
+					Text("Preview Image")
+				}
+			}
+			Button(action: {
+				print("Credits")
+			}) {
+				Text("Credits")
+			}
+			Button(action: {
+				print("Share")
+			}) {
+				Text("Share")
+			}
 		}
 	}
 }

@@ -121,6 +121,22 @@ struct PlaylistContextMenu: View {
 				Text("Add to Playlist …")
 			}
 			Divider()
+			if self.playlist.getImageUrl(session: self.session, resolution: 750) != nil {
+				Button(action: {
+					print("Image")
+					let controller = CoverWindowController(rootView:
+						URLImageSourceView(
+							self.playlist.getImageUrl(session: self.session, resolution: 750)!,
+							isAnimationEnabled: true,
+							label: Text(self.playlist.title)
+						)
+					)
+					controller.window?.title = self.playlist.title
+					controller.showWindow(nil)
+				}) {
+					Text("Image")
+				}
+			}
 			Button(action: {
 				print("Credits")
 			}) {

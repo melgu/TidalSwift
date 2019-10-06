@@ -102,6 +102,22 @@ struct ArtistContextMenu: View {
 				}
 			}
 			Divider()
+			if self.artist.getPictureUrl(session: self.session, resolution: 750) != nil {
+				Button(action: {
+					print("Picture")
+					let controller = CoverWindowController(rootView:
+						URLImageSourceView(
+							self.artist.getPictureUrl(session: self.session, resolution: 750)!,
+							isAnimationEnabled: true,
+							label: Text(self.artist.name)
+						)
+					)
+					controller.window?.title = self.artist.name
+					controller.showWindow(nil)
+				}) {
+					Text("Picture")
+				}
+			}
 			Button(action: {
 				print("Bio")
 			}) {
