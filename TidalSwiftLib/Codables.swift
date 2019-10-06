@@ -95,6 +95,10 @@ public struct Artist: Decodable, Equatable, Identifiable {
 	public let banner: String?
 	public let relationType: String? // e.g. SIMILAR_ARTIST
 	
+	public func bio(session: Session) -> ArtistBio? {
+		return session.getArtistBio(artistId: id)
+	}
+	
 	public func isInFavorites(session: Session) -> Bool? {
 		return session.favorites?.doFavoritesContainArtist(artistId: id)
 	}
@@ -122,6 +126,10 @@ public struct ArtistBio: Decodable {
 	public let source: String
 	public let lastUpdated: Date
 	public let text: String
+	
+	public var lastUpdatedString: String {
+		return DateFormatter.dateOnly.string(from: lastUpdated)
+	}
 }
 
 public struct Album: Decodable, Equatable, Identifiable {
