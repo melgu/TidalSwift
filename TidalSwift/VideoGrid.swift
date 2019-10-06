@@ -9,9 +9,28 @@
 import SwiftUI
 import TidalSwiftLib
 import ImageIOSwiftUI
+import Grid
+
+struct VideoGrid: View {
+	let videos: [Video]
+	let showArtists: Bool
+	let session: Session
+	let player: Player
+	
+	var body: some View {
+		Grid(videos) { video in
+			VideoGridItem(video: video, showArtist: self.showArtists, session: self.session, player: self.player)
+		}
+		.padding()
+		.gridStyle(
+			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 210, hSpacing: 5, vSpacing: 0)
+		)
+	}
+}
 
 struct VideoGridItem: View {
     let video: Video
+	let showArtist: Bool
 	let session: Session
 	let player: Player
 	
@@ -40,7 +59,15 @@ struct VideoGridItem: View {
 				}
 			}
 			Text(video.title)
+				.lineLimit(1)
 				.frame(width: 160)
+			if showArtist {
+				Text(video.artists.formArtistString())
+					.fontWeight(.light)
+					.foregroundColor(Color.gray)
+					.lineLimit(1)
+					.frame(width: 160)
+			}
 		}
 		.padding(5)
 		.onTapGesture(count: 2) {

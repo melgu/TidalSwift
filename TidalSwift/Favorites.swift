@@ -20,13 +20,17 @@ struct FavoritePlaylists: View {
 				.padding(.horizontal)
 			
 			if session.favorites?.playlists() != nil {
-				PlaylistGrid(playlists: favoritePlaylists2Playlists(favoritePlaylists: session.favorites!.playlists()!), session: session, player: player)
+				PlaylistGrid(playlists: favoritePlaylists2Playlists(session.favorites!.playlists()!), session: session, player: player)
 			} else {
 				Text("Problems fetching favorite playlists")
 					.font(.largeTitle)
 			}
 		}
 	}
+}
+
+func favoritePlaylists2Playlists(_ favoritePlaylists: [FavoritePlaylist]) -> [Playlist] {
+	favoritePlaylists.map { $0.item }
 }
 
 struct FavoriteAlbums: View {
@@ -40,7 +44,7 @@ struct FavoriteAlbums: View {
 				.padding(.horizontal)
 			
 			if session.favorites?.playlists() != nil {
-				AlbumGrid(albums: favoriteAlbums2Albums(favoriteAlbums: session.favorites!.albums(order: .releaseDate, orderDirection: .descending)!),
+				AlbumGrid(albums: favoriteAlbums2Albums(session.favorites!.albums(order: .releaseDate, orderDirection: .descending)!),
 						  showArtists: true, session: session, player: player)
 			} else {
 				Text("Problems fetching favorite albums")
@@ -50,7 +54,7 @@ struct FavoriteAlbums: View {
 	}
 }
 
-func favoriteAlbums2Albums(favoriteAlbums: [FavoriteAlbum]) -> [Album] {
+func favoriteAlbums2Albums(_ favoriteAlbums: [FavoriteAlbum]) -> [Album] {
 	favoriteAlbums.map { $0.item }
 }
 
@@ -65,7 +69,7 @@ struct FavoriteTracks: View {
 		self.player = player
 		
 		if let favTracks = session.favorites?.tracks() {
-			self.tracks = favoriteTracks2Tracks(favoriteTracks: favTracks)
+			self.tracks = favoriteTracks2Tracks(favTracks)
 		} else {
 			self.tracks = nil
 		}
@@ -104,28 +108,6 @@ struct FavoriteTracks: View {
 										}) {
 											Text("Play last")
 										}
-//										Divider()
-//										Button(action: {
-//											print("Remove from Favorites")
-//										}) {
-//											Text("Remove from Favorites")
-//										}
-//										Button(action: {
-//											print(" to Playlist …")
-//										}) {
-//											Text("Add to Playlist …")
-//										}
-//										Divider()
-//										Button(action: {
-//											print("Credits")
-//										}) {
-//											Text("Credits")
-//										}
-//										Button(action: {
-//											print("Share")
-//										}) {
-//											Text("Share")
-//										}
 								}
 								Divider()
 							}
@@ -154,28 +136,6 @@ struct FavoriteTracks: View {
 										}) {
 											Text("Play last")
 										}
-//										Divider()
-//										Button(action: {
-//											print("Remove from Favorites")
-//										}) {
-//											Text("Remove from Favorites")
-//										}
-//										Button(action: {
-//											print(" to Playlist …")
-//										}) {
-//											Text("Add to Playlist …")
-//										}
-//										Divider()
-//										Button(action: {
-//											print("Credits")
-//										}) {
-//											Text("Credits")
-//										}
-//										Button(action: {
-//											print("Share")
-//										}) {
-//											Text("Share")
-//										}
 								}
 								.frame(height: 30)
 								Divider()
@@ -192,7 +152,7 @@ struct FavoriteTracks: View {
 	}
 }
 
-func favoriteTracks2Tracks(favoriteTracks: [FavoriteTrack]) -> [Track] {
+func favoriteTracks2Tracks(_ favoriteTracks: [FavoriteTrack]) -> [Track] {
 	favoriteTracks.map { $0.item }
 }
 
@@ -202,16 +162,23 @@ struct FavoriteVideos: View {
 	
 	var body: some View {
 		VStack(alignment: .leading) {
-		Text("Favorite Videos")
-			.font(.largeTitle)
-			.padding(.horizontal)
-		Spacer()
+			Text("Favorite Videos")
+				.font(.largeTitle)
+				.padding(.horizontal)
+			
+			if session.favorites?.playlists() != nil {
+				VideoGrid(videos: favoriteVideos2Videos(session.favorites!.videos(order: .releaseDate, orderDirection: .descending)!),
+						  showArtists: true, session: session, player: player)
+			} else {
+				Text("Problems fetching favorite videos")
+				.font(.largeTitle)
+			}
 		}
 	}
 }
 
-func favoritePlaylists2Playlists(favoritePlaylists: [FavoritePlaylist]) -> [Playlist] {
-	favoritePlaylists.map { $0.item }
+func favoriteVideos2Videos(_ favoriteVideos: [FavoriteVideo]) -> [Video] {
+	favoriteVideos.map { $0.item }
 }
 
 struct FavoriteArtists: View {
@@ -225,7 +192,7 @@ struct FavoriteArtists: View {
 				.padding(.horizontal)
 			
 			if session.favorites?.artists() != nil {
-				ArtistGrid(artists: favoriteArtists2Artists(favoriteArtists: session.favorites!.artists()!), session: session, player: player)
+				ArtistGrid(artists: favoriteArtists2Artists(session.favorites!.artists()!), session: session, player: player)
 			} else {
 				Text("Problems fetching favorite artists")
 					.font(.largeTitle)
@@ -235,7 +202,7 @@ struct FavoriteArtists: View {
 	}
 }
 
-func favoriteArtists2Artists(favoriteArtists: [FavoriteArtist]) -> [Artist] {
+func favoriteArtists2Artists(_ favoriteArtists: [FavoriteArtist]) -> [Artist] {
 	favoriteArtists.map { $0.item }
 }
 

@@ -161,7 +161,7 @@ struct SearchViewVideos: View {
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
 					ForEach(videos) { video in
-						VideoGridItem(video: video, session: self.session, player: self.player)
+						VideoGridItem(video: video, showArtist: true, session: self.session, player: self.player)
 					}
 				}
 			}
