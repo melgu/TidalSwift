@@ -147,6 +147,22 @@ struct AlbumContextMenu: View {
 				Text("Add to Playlist …")
 			}
 			Divider()
+			if self.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+				Button(action: {
+					print("Cover")
+					let controller = CoverWindowController(rootView:
+						URLImageSourceView(
+							self.album.getCoverUrl(session: self.session, resolution: 1280)!,
+							isAnimationEnabled: true,
+							label: Text(self.album.title)
+						)
+					)
+					controller.window?.title = self.album.title
+					controller.showWindow(nil)
+				}) {
+					Text("Cover")
+				}
+			}
 			Button(action: {
 				print("Credits")
 			}) {
