@@ -66,17 +66,17 @@ struct TrackContextMenu: View {
 				Button(action: {
 					self.player.add(track: self.track, .now)
 				}) {
-					Text("Play now")
+					Text("Play Now")
 				}
 				Button(action: {
 					self.player.add(track: self.track, .next)
 				}) {
-					Text("Play next")
+					Text("Play Next")
 				}
 				Button(action: {
 					self.player.add(track: self.track, .last)
 				}) {
-					Text("Play last")
+					Text("Play Last")
 				}
 			} else {
 				Text("Track not available")

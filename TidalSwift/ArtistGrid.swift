@@ -80,8 +80,23 @@ struct ArtistContextMenu: View {
 	
 	var body: some View {
 		Group {
-			Text("WIP: Play Artist Radio")
-				.italic()
+			Button(action: {
+				self.player.add(artist: self.artist, .now)
+			}) {
+				Text("Play Now")
+			}
+			Button(action: {
+				self.player.add(artist: self.artist, .next)
+			}) {
+				Text("Play Next")
+			}
+			Button(action: {
+				self.player.add(artist: self.artist, .last)
+			}) {
+				Text("Play Last")
+			}
+//			Text("WIP: Play Artist Radio")
+//				.italic()
 			Divider()
 			if self.t || !self.t {
 				if self.artist.isInFavorites(session: session)! {
