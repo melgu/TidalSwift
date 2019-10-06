@@ -34,8 +34,6 @@ struct AlbumGridItem: View {
 	let session: Session
 	let player: Player
 	
-	@State var t: Bool = false
-	
 	var body: some View {
 		VStack {
 			if album.getCoverUrl(session: session, resolution: 320) != nil {
@@ -98,6 +96,20 @@ struct AlbumGridItem: View {
 			self.player.add(album: self.album, .now)
 		}
 		.contextMenu {
+			AlbumContextMenu(album: self.album, session: session, player: player)
+		}
+	}
+}
+
+struct AlbumContextMenu: View {
+	let album: Album
+	let session: Session
+	let player: Player
+	
+	@State var t: Bool = false
+	
+	var body: some View {
+		Group {
 			Button(action: {
 				self.player.add(album: self.album, .next)
 			}) {
@@ -130,7 +142,7 @@ struct AlbumGridItem: View {
 			}
 			
 			Button(action: {
-				print(" to Playlist …")
+				print("Add Playlist \(self.album.title) to Playlist …")
 			}) {
 				Text("Add to Playlist …")
 			}

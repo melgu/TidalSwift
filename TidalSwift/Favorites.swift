@@ -92,24 +92,10 @@ struct FavoriteTracks: View {
 										self.player.add(tracks: self.tracks!, .now)
 										self.player.play(atIndex: i)
 									}
-									.contextMenu {
-										Button(action: {
-											self.player.add(track: self.tracks![i], .now)
-										}) {
-											Text("Play now")
-										}
-										Button(action: {
-											self.player.add(track: self.tracks![i], .next)
-										}) {
-											Text("Play next")
-										}
-										Button(action: {
-											self.player.add(track: self.tracks![i], .last)
-										}) {
-											Text("Play last")
-										}
-								}
+								.contextMenu { TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player) }
+//								if i < self.tracks!.count - 1 { // Commented out because Xcode makes problems if not
 								Divider()
+//								}
 							}
 						}
 						VStack(alignment: .trailing) {
@@ -120,25 +106,11 @@ struct FavoriteTracks: View {
 										self.player.add(tracks: self.tracks!, .now)
 										self.player.play(atIndex: i)
 									}
-									.contextMenu {
-										Button(action: {
-											self.player.add(track: self.tracks![i], .now)
-										}) {
-											Text("Play now")
-										}
-										Button(action: {
-											self.player.add(track: self.tracks![i], .next)
-										}) {
-											Text("Play next")
-										}
-										Button(action: {
-											self.player.add(track: self.tracks![i], .last)
-										}) {
-											Text("Play last")
-										}
-								}
+								.contextMenu { TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player) }
 								.frame(height: 30)
+//								if i < self.tracks!.count - 1 { // Commented out because Xcode makes problems if not
 								Divider()
+//								}
 							}
 						}
 					}
