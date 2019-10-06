@@ -6,7 +6,6 @@
 //  Copyright © 2019 Melvin Gundlach. All rights reserved.
 //
 
-import Foundation
 import SwiftUI
 
 class CoverWindowController<RootView : View>: NSWindowController {
