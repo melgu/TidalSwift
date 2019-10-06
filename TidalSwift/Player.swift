@@ -180,6 +180,9 @@ class Player {
 	}
 	
 	private func addNow(tracks: [Track]) {
+		if tracks.isEmpty {
+			return
+		}
 		clearQueue()
 		addLast(tracks: tracks)
 		print("addNow(): \(queue.count)")
@@ -187,6 +190,9 @@ class Player {
 	}
 	
 	private func addNext(tracks: [Track]) {
+		if tracks.isEmpty {
+			return
+		}
 		if queue.isEmpty {
 			queue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
 			avSetItem(from: queue[0])
@@ -197,6 +203,9 @@ class Player {
 	}
 	
 	private func addLast(tracks: [Track]) {
+		if tracks.isEmpty {
+			return
+		}
 		let wasEmtpy = queue.isEmpty
 		
 		queue.append(contentsOf: tracks)
