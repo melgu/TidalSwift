@@ -152,6 +152,7 @@ struct ProgressBar : View {
 	let player: Player
 	
 	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@Environment(\.colorScheme) var colorScheme: ColorScheme
 	
 	var body: some View {
 		
@@ -165,8 +166,8 @@ struct ProgressBar : View {
 		})
 		.height(5)
 		.thickness(5)
-		.valueColor(.black)
-		.trackColor(.gray)
+		.valueColor(.playbackProgressBarForeground(for: colorScheme))
+		.trackColor(.playbackProgressBarBackground(for: colorScheme))
 		.thumbSize(CGSize(width: 0, height: 0))
 	}
 }
