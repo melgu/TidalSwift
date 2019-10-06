@@ -80,7 +80,8 @@ struct ArtistContextMenu: View {
 	
 	var body: some View {
 		Group {
-			Text("WIP: Play Top Tracks")
+			Text("WIP: Play Artist Radio")
+				.italic()
 			Divider()
 			if self.t || !self.t {
 				if self.artist.isInFavorites(session: session)! {
@@ -120,6 +121,11 @@ struct ArtistContextMenu: View {
 			}
 			Button(action: {
 				print("Bio")
+				let controller = ArtistBioWindowController(rootView:
+					ArtistBioView(artist: self.artist, session: self.session)
+				)
+				controller.window?.title = "Bio – \(self.artist.name)"
+				controller.showWindow(nil)
 			}) {
 				Text("Bio")
 			}

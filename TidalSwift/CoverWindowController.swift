@@ -14,6 +14,7 @@ class CoverWindowController<RootView : View>: NSWindowController {
         let hostingController = NSHostingController(rootView: rootView.frame(width: 640, height: 640))
         let window = NSWindow(contentViewController: hostingController)
         window.setContentSize(NSSize(width: 640, height: 640))
+		window.center()
         self.init(window: window)
     }
 }

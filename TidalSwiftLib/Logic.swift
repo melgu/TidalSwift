@@ -613,7 +613,7 @@ public class Session {
 		return artistTopTracksResponse?.items
 	}
 	
-	public func getArtistBio(artistId: Int) -> ArtistBio? {
+	func getArtistBio(artistId: Int, linksRemoved: Bool = true) -> ArtistBio? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/bio")!
 		let response = Network.get(url: url, parameters: sessionParameters)
 		
@@ -629,7 +629,22 @@ public class Session {
 			displayError(title: "Artist Bio failed (JSON Parse Error)", content: "\(error)")
 		}
 		
-		return artistBio
+		guard let ab = artistBio else {
+			return nil
+		}
+		
+		// <br/> to \n
+		let regex = try! NSRegularExpression(pattern: #"<br/><br/>|<br/>"#)
+		let range = NSMakeRange(0, ab.text.count)
+		var alteredText = regex.stringByReplacingMatches(in: ab.text, options: [], range: range, withTemplate: "\n\n")
+		
+		if linksRemoved {
+			let regex = try! NSRegularExpression(pattern: #"(\[wimpLink.+?\])|(\[\/wimpLink\])"#)
+			let range = NSMakeRange(0, alteredText.count)
+			alteredText = regex.stringByReplacingMatches(in: alteredText, options: [], range: range, withTemplate: "")
+		}
+		
+		return ArtistBio(source: ab.source, lastUpdated: ab.lastUpdated, text: alteredText)
 	}
 	
 	public func getArtistSimilar(artistId: Int) -> [Artist]? {
