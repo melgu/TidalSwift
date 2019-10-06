@@ -19,7 +19,7 @@ struct NewReleases: View {
 	init(session: Session, player: Player) {
 		self.session = session
 		self.player = player
-		self.albums = session.helpers?.newReleasesFromFavoriteArtists(number: 20)
+		self.albums = session.helpers?.newReleasesFromFavoriteArtists(number: 40)
 	}
 	
 	var body: some View {

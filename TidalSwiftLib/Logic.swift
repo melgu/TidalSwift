@@ -12,14 +12,14 @@ import SwiftUI
 // Order
 
 public enum PlaylistOrder: String {
-	case date = "DATE"
+	case dateAdded = "DATE"
 	case name = "NAME"
 }
 
 public typealias ArtistOrder = PlaylistOrder
 
 public enum AlbumOrder: String {
-	case date = "DATE"
+	case dateAdded = "DATE"
 	case name = "NAME"
 	case artist = "ARTIST"
 	case releaseDate = "RELEASE_DATE"
@@ -29,14 +29,14 @@ public enum TrackOrder: String {
 	case name = "NAME"
 	case artist = "ARTIST"
 	case album = "ALBUM"
-	case date = "DATE"
+	case dateAdded = "DATE"
 	case length = "LENGTH"
 }
 
 public enum VideoOrder: String {
 	case name = "NAME"
 	case artist = "ARTIST"
-	case releaseDate = "DATE"
+	case dateAdded = "DATE"
 	case length = "LENGTH"
 }
 

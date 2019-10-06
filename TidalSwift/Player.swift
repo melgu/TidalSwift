@@ -17,7 +17,6 @@ class Player {
 	let avPlayer = AVPlayer()
 	public let playbackInfo = PlaybackInfo()
 	
-	public var currentIndex = 0
 	public var queue = [Track]()
 	
 	var timeObserverToken: Any?
@@ -47,8 +46,8 @@ class Player {
 	
 	func play(atIndex: Int) {
 		if queue.count > atIndex {
-			currentIndex = atIndex
-			avSetItem(from: queue[currentIndex])
+			playbackInfo.currentIndex = atIndex
+			avSetItem(from: queue[playbackInfo.currentIndex])
 			play()
 		}
 	}
@@ -59,40 +58,40 @@ class Player {
 	}
 	
 	func previous() {
-		if avPlayer.currentTime().seconds >= 3 || currentIndex == 0 {
+		if avPlayer.currentTime().seconds >= 3 || playbackInfo.currentIndex == 0 {
 			avPlayer.seek(to: CMTime(seconds: 0, preferredTimescale: 1))
-			if currentIndex == 0 && !queue[currentIndex].streamReady {
-				print("Not possible to stream \(queue[currentIndex].title)")
+			if playbackInfo.currentIndex == 0 && !queue[playbackInfo.currentIndex].streamReady {
+				print("Not possible to stream \(queue[playbackInfo.currentIndex].title)")
 				pause()
 				next()
 			}
 			return
 		}
 		
-		currentIndex -= 1
-		if queue[currentIndex].streamReady {
-			print("previous(): \(currentIndex) - \(queue.count)")
-			avSetItem(from: queue[currentIndex])
+		playbackInfo.currentIndex -= 1
+		if queue[playbackInfo.currentIndex].streamReady {
+			print("previous(): \(playbackInfo.currentIndex) - \(queue.count)")
+			avSetItem(from: queue[playbackInfo.currentIndex])
 			print("previous() done")
 		} else {
-			print("Not possible to stream \(queue[currentIndex].title)")
+			print("Not possible to stream \(queue[playbackInfo.currentIndex].title)")
 			previous()
 		}
 	}
 	
 	func next() {
-		if currentIndex >= queue.count - 1 {
-			print("next(): \(currentIndex) Last - \(queueCount())")
+		if playbackInfo.currentIndex >= queue.count - 1 {
+			print("next(): \(playbackInfo.currentIndex) Last - \(queueCount())")
 			pause()
 			avPlayer.seek(to: CMTime(seconds: 0, preferredTimescale: 1))
 			return
 		}
-		currentIndex += 1
-		if queue[currentIndex].streamReady {
-			print("next(): \(currentIndex) - \(queueCount())")
-			avSetItem(from: queue[currentIndex])
+		playbackInfo.currentIndex += 1
+		if queue[playbackInfo.currentIndex].streamReady {
+			print("next(): \(playbackInfo.currentIndex) - \(queueCount())")
+			avSetItem(from: queue[playbackInfo.currentIndex])
 		} else {
-			print("Not possible to stream \(queue[currentIndex].title)")
+			print("Not possible to stream \(queue[playbackInfo.currentIndex].title)")
 			next()
 		}
 	}
@@ -189,10 +188,10 @@ class Player {
 	
 	private func addNext(tracks: [Track]) {
 		if queue.isEmpty {
-			queue.insert(contentsOf: tracks, at: currentIndex)
+			queue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
 			avSetItem(from: queue[0])
 		} else {
-			queue.insert(contentsOf: tracks, at: currentIndex + 1)
+			queue.insert(contentsOf: tracks, at: playbackInfo.currentIndex + 1)
 		}
 		print("addNext(): \(queue.count)")
 	}
@@ -202,7 +201,7 @@ class Player {
 		
 		queue.append(contentsOf: tracks)
 		if wasEmtpy {
-			avSetItem(from: queue[currentIndex])
+			avSetItem(from: queue[playbackInfo.currentIndex])
 		}
 		print("addLast(): \(queue.count)")
 	}
@@ -215,7 +214,7 @@ class Player {
 	
 	func clearQueue() {
 		avPlayer.pause()
-		currentIndex = 0
+		playbackInfo.currentIndex = 0
 		avPlayer.replaceCurrentItem(with: nil)
 		queue.removeAll()
 		
