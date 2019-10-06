@@ -112,16 +112,20 @@ struct AlbumContextMenu: View {
 		Group {
 			if album.streamReady != nil && album.streamReady! {
 				Button(action: {
+					self.player.add(album: self.album, .now)
+				}) {
+					Text("Play Now")
+				}
+				Button(action: {
 					self.player.add(album: self.album, .next)
 				}) {
-					Text("Play next")
+					Text("Play Next")
 				}
 				Button(action: {
 					self.player.add(album: self.album, .last)
 				}) {
-					Text("Play last")
+					Text("Play Last")
 				}
-				
 			} else {
 				Text("Album not available")
 					.italic()

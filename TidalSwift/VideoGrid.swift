@@ -91,14 +91,19 @@ struct VideoContextMenu: View {
 		Group {
 			if video.streamReady {
 				Button(action: {
-					print("Play next")
+					print("Play Now")
 				}) {
-					Text("Play next")
+					Text("Play Now")
 				}
 				Button(action: {
-					print("Play last")
+					print("Play Next")
 				}) {
-					Text("Play last")
+					Text("Play Next")
+				}
+				Button(action: {
+					print("Play Last")
+				}) {
+					Text("Play Last")
 				}
 			} else {
 				Text("Video not available")
