@@ -64,6 +64,74 @@ struct PlaylistGridItem: View {
 			print("\(self.playlist.title)")
 			self.player.add(playlist: self.playlist, .now)
 		}
+		.contextMenu {
+			PlaylistContextMenu(playlist: self.playlist, session: session, player: player)
+		}
+	}
+}
+
+struct PlaylistContextMenu: View {
+	let playlist: Playlist
+	let session: Session
+	let player: Player
+	
+	@State var t: Bool = false
+	
+	var body: some View {
+		Group {
+			Button(action: {
+				self.player.add(playlist: self.playlist, .now)
+			}) {
+				Text("Play now")
+			}
+			Button(action: {
+				self.player.add(playlist: self.playlist, .next)
+			}) {
+				Text("Play next")
+			}
+			Button(action: {
+				self.player.add(playlist: self.playlist, .last)
+			}) {
+				Text("Play last")
+			}
+			Divider()
+			if self.t || !self.t {
+				if self.playlist.isInFavorites(session: session)! {
+					Button(action: {
+						print("Remove from Favorites")
+						self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
+						self.t.toggle()
+					}) {
+						Text("Remove from Favorites")
+					}
+				} else {
+					Button(action: {
+						print("Add to Favorites")
+						self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
+						self.t.toggle()
+					}) {
+						Text("Add to Favorites")
+					}
+				}
+			}
+			
+			Button(action: {
+				print("Add Playlist \(self.playlist.title) to Playlist …")
+			}) {
+				Text("Add to Playlist …")
+			}
+			Divider()
+			Button(action: {
+				print("Credits")
+			}) {
+				Text("Credits")
+			}
+			Button(action: {
+				print("Share")
+			}) {
+				Text("Share")
+			}
+		}
 	}
 }
 

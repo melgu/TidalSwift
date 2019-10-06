@@ -47,7 +47,75 @@ struct TrackGridItem: View {
 				print("\(self.track.title)")
 				self.player.add(track: self.track, .now)
 			}
+			.contextMenu {
+				TrackContextMenu(track: self.track, session: self.session, player: self.player)
+			}
 		}
+}
+
+struct TrackContextMenu: View {
+	let track: Track
+	let session: Session
+	let player: Player
+	
+	@State var t: Bool = false
+	
+	var body: some View {
+		Group {
+			Button(action: {
+				self.player.add(track: self.track, .now)
+			}) {
+				Text("Play now")
+			}
+			Button(action: {
+				self.player.add(track: self.track, .next)
+			}) {
+				Text("Play next")
+			}
+			Button(action: {
+				self.player.add(track: self.track, .last)
+			}) {
+				Text("Play last")
+			}
+			Divider()
+			if self.t || !self.t {
+				if self.track.isInFavorites(session: session)! {
+					Button(action: {
+						print("Remove from Favorites")
+						self.session.favorites!.removeTrack(trackId: self.track.id)
+						self.t.toggle()
+					}) {
+						Text("Remove from Favorites")
+					}
+				} else {
+					Button(action: {
+						print("Add to Favorites")
+						self.session.favorites!.addTrack(trackId: self.track.id)
+						self.t.toggle()
+					}) {
+						Text("Add to Favorites")
+					}
+				}
+			}
+			
+			Button(action: {
+				print("Add Playlist \(self.track.title) to Playlist …")
+			}) {
+				Text("Add to Playlist …")
+			}
+			Divider()
+			Button(action: {
+				print("Credits")
+			}) {
+				Text("Credits")
+			}
+			Button(action: {
+				print("Share")
+			}) {
+				Text("Share")
+			}
+		}
+	}
 }
 
 //struct TrackGrid_Previews: PreviewProvider {

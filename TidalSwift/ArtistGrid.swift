@@ -65,6 +65,54 @@ struct ArtistGridItem: View {
 			print("\(self.artist.name)")
 			self.player.add(artist: self.artist, .now)
 		}
+		.contextMenu {
+			ArtistContextMenu(artist: self.artist, session: self.session, player: self.player)
+		}
+	}
+}
+
+struct ArtistContextMenu: View {
+	let artist: Artist
+	let session: Session
+	let player: Player
+	
+	@State var t: Bool = false
+	
+	var body: some View {
+		Group {
+			Text("WIP: Play Top Tracks")
+			Divider()
+			if self.t || !self.t {
+				if self.artist.isInFavorites(session: session)! {
+					Button(action: {
+						print("Remove from Favorites")
+						self.session.favorites!.removeArtist(artistId: self.artist.id)
+						self.t.toggle()
+					}) {
+						Text("Remove from Favorites")
+					}
+				} else {
+					Button(action: {
+						print("Add to Favorites")
+						self.session.favorites!.addArtist(artistId: self.artist.id)
+						self.t.toggle()
+					}) {
+						Text("Add to Favorites")
+					}
+				}
+			}
+			Divider()
+			Button(action: {
+				print("Bio")
+			}) {
+				Text("Bio")
+			}
+			Button(action: {
+				print("Share")
+			}) {
+				Text("Share")
+			}
+		}
 	}
 }
 

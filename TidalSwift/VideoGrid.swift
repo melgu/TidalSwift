@@ -77,6 +77,33 @@ struct VideoGridItem: View {
 	}
 }
 
+struct VideoContextMenu: View {
+	let video: Video
+	let session: Session
+	let player: Player
+	
+	var body: some View {
+		Group {
+			Text("WIP")
+//			Button(action: {
+//				self.player.add(track: self.track, .now)
+//			}) {
+//				Text("Play now")
+//			}
+//			Button(action: {
+//				self.player.add(track: self.track, .next)
+//			}) {
+//				Text("Play next")
+//			}
+//			Button(action: {
+//				self.player.add(track: self.track, .last)
+//			}) {
+//				Text("Play last")
+//			}
+		}
+	}
+}
+
 //struct VideoGrid_Previews: PreviewProvider {
 //    static var previews: some View {
 //        VideoGrid()
