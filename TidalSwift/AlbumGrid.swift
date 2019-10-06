@@ -17,13 +17,6 @@ struct AlbumGrid: View {
 	let session: Session
 	let player: Player
 	
-	init(albums: [Album], showArtists: Bool = false, session: Session, player: Player) {
-		self.albums = albums
-		self.showArtists = showArtists
-		self.session = session
-		self.player = player
-	}
-	
 	var body: some View {
 		Grid(albums) { album in
 			AlbumGridItem(album: album, showArtist: self.showArtists, session: self.session, player: self.player)
@@ -42,13 +35,6 @@ struct AlbumGridItem: View {
 	let player: Player
 	
 	@State var t: Bool = false
-	
-	init(album: Album, showArtist: Bool = false, session: Session, player: Player) {
-		self.album = album
-		self.showArtist = showArtist
-		self.session = session
-		self.player = player
-	}
 	
 	var body: some View {
 		VStack {
