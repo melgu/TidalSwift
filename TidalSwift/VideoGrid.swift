@@ -89,15 +89,20 @@ struct VideoContextMenu: View {
 	
 	var body: some View {
 		Group {
-			Button(action: {
-				print("Play next")
-			}) {
-				Text("Play next")
-			}
-			Button(action: {
-				print("Play last")
-			}) {
-				Text("Play last")
+			if video.streamReady {
+				Button(action: {
+					print("Play next")
+				}) {
+					Text("Play next")
+				}
+				Button(action: {
+					print("Play last")
+				}) {
+					Text("Play last")
+				}
+			} else {
+				Text("Video not available")
+					.italic()
 			}
 			Divider()
 			if self.t || !self.t {
@@ -119,38 +124,39 @@ struct VideoContextMenu: View {
 					}
 				}
 			}
-			
-			Button(action: {
-				print("Add Playlist \(self.video.title) to Playlist …")
-			}) {
-				Text("Add to Playlist …")
-			}
-			Divider()
-			if self.video.getImageUrl(session: self.session, resolution: 1280) != nil {
+			if video.streamReady {
 				Button(action: {
-					print("Preview Image")
-					let controller = CoverWindowController(rootView:
-						URLImageSourceView(
-							self.video.getImageUrl(session: self.session, resolution: 1280)!,
-							isAnimationEnabled: true,
-							label: Text(self.video.title)
-						)
-					)
-					controller.window?.title = self.video.title
-					controller.showWindow(nil)
+					print("Add Playlist \(self.video.title) to Playlist …")
 				}) {
-					Text("Preview Image")
+					Text("Add to Playlist …")
 				}
-			}
-			Button(action: {
-				print("Credits")
-			}) {
-				Text("Credits")
-			}
-			Button(action: {
-				print("Share")
-			}) {
-				Text("Share")
+				Divider()
+				if self.video.getImageUrl(session: self.session, resolution: 1280) != nil {
+					Button(action: {
+						print("Preview Image")
+						let controller = CoverWindowController(rootView:
+							URLImageSourceView(
+								self.video.getImageUrl(session: self.session, resolution: 1280)!,
+								isAnimationEnabled: true,
+								label: Text(self.video.title)
+							)
+						)
+						controller.window?.title = self.video.title
+						controller.showWindow(nil)
+					}) {
+						Text("Preview Image")
+					}
+				}
+				Button(action: {
+					print("Credits")
+				}) {
+					Text("Credits")
+				}
+				Button(action: {
+					print("Share")
+				}) {
+					Text("Share")
+				}
 			}
 		}
 	}

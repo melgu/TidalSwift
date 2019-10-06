@@ -62,20 +62,25 @@ struct TrackContextMenu: View {
 	
 	var body: some View {
 		Group {
-			Button(action: {
-				self.player.add(track: self.track, .now)
-			}) {
-				Text("Play now")
-			}
-			Button(action: {
-				self.player.add(track: self.track, .next)
-			}) {
-				Text("Play next")
-			}
-			Button(action: {
-				self.player.add(track: self.track, .last)
-			}) {
-				Text("Play last")
+			if track.streamReady {
+				Button(action: {
+					self.player.add(track: self.track, .now)
+				}) {
+					Text("Play now")
+				}
+				Button(action: {
+					self.player.add(track: self.track, .next)
+				}) {
+					Text("Play next")
+				}
+				Button(action: {
+					self.player.add(track: self.track, .last)
+				}) {
+					Text("Play last")
+				}
+			} else {
+				Text("Track not available")
+					.italic()
 			}
 			Divider()
 			if self.t || !self.t {
@@ -97,37 +102,39 @@ struct TrackContextMenu: View {
 					}
 				}
 			}
-			Button(action: {
-				print("Add Playlist \(self.track.title) to Playlist …")
-			}) {
-				Text("Add to Playlist …")
-			}
-			Divider()
-			if self.track.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+			if track.streamReady {
 				Button(action: {
-					print("Cover")
-					let controller = CoverWindowController(rootView:
-						URLImageSourceView(
-							self.track.album.getCoverUrl(session: self.session, resolution: 1280)!,
-							isAnimationEnabled: true,
-							label: Text("\(self.track.title) – \(self.track.album.title)")
-						)
-					)
-					controller.window?.title = "\(self.track.title) – \(self.track.album.title)"
-					controller.showWindow(nil)
+					print("Add Playlist \(self.track.title) to Playlist …")
 				}) {
-					Text("Cover")
+					Text("Add to Playlist …")
 				}
-			}
-			Button(action: {
-				print("Credits")
-			}) {
-				Text("Credits")
-			}
-			Button(action: {
-				print("Share")
-			}) {
-				Text("Share")
+				Divider()
+				if self.track.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+					Button(action: {
+						print("Cover")
+						let controller = CoverWindowController(rootView:
+							URLImageSourceView(
+								self.track.album.getCoverUrl(session: self.session, resolution: 1280)!,
+								isAnimationEnabled: true,
+								label: Text("\(self.track.title) – \(self.track.album.title)")
+							)
+						)
+						controller.window?.title = "\(self.track.title) – \(self.track.album.title)"
+						controller.showWindow(nil)
+					}) {
+						Text("Cover")
+					}
+				}
+				Button(action: {
+					print("Credits")
+				}) {
+					Text("Credits")
+				}
+				Button(action: {
+					print("Share")
+				}) {
+					Text("Share")
+				}
 			}
 		}
 	}
