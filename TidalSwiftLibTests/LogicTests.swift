@@ -260,6 +260,7 @@ class LogicTests: XCTestCase {
 		XCTAssertNotNil(searchResult?.albums[0].popularity)
 		XCTAssertEqual(searchResult?.albums[0].audioQuality, .master) // Master Version
 		XCTAssertEqual(searchResult?.albums[0].surroundTypes, [])
+		XCTAssertEqual(searchResult?.albums[0].audioModes, [.stereo])
 		
 		// HiFi Version
 		XCTAssertEqual(searchResult?.albums[1].audioQuality, .hifi)
@@ -342,6 +343,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(searchResult?.tracks[0].editable, false)
 		XCTAssertEqual(searchResult?.tracks[0].explicit, false)
 		XCTAssertEqual(searchResult?.tracks[0].audioQuality, .hifi)
+		XCTAssertEqual(searchResult?.tracks[0].surroundTypes, [])
+		XCTAssertEqual(searchResult?.tracks[0].audioModes, [.stereo])
 		
 		// Artists
 		XCTAssertEqual(searchResult?.tracks[0].artists.count, 1)
@@ -504,6 +507,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(track.editable, false)
 		XCTAssertEqual(track.explicit, false)
 		XCTAssertEqual(track.audioQuality, .hifi)
+		XCTAssertEqual(track.surroundTypes, [])
+		XCTAssertEqual(track.audioModes, [.stereo])
 		
 		// Artists
 		XCTAssertEqual(track.artists.count, 1)
@@ -662,6 +667,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlistTracks[0].explicit, false)
 		XCTAssertEqual(playlistTracks[0].audioQuality, .hifi)
 		XCTAssertEqual(playlistTracks[0].surroundTypes, [])
+		XCTAssertEqual(playlistTracks[0].audioModes, [.stereo])
 		XCTAssertEqual(playlistTracks[0].artist?.id, 3969810)
 		XCTAssertEqual(playlistTracks[0].artist?.name, "Barack Obama")
 		XCTAssertEqual(playlistTracks[0].artists.count, 1)
@@ -691,6 +697,8 @@ class LogicTests: XCTestCase {
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
 		XCTAssertNotNil(album?.popularity)
 		XCTAssertEqual(album?.audioQuality, .master)
+		XCTAssertEqual(album?.surroundTypes, [])
+		XCTAssertEqual(album?.audioModes, [.stereo])
 		
 		// Album Artist
 		XCTAssertEqual(album?.artist?.id, 7553669)
@@ -753,6 +761,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(albumTracks[0].editable, false)
 		XCTAssertEqual(albumTracks[0].explicit, false)
 		XCTAssertEqual(albumTracks[0].audioQuality, .master)
+		XCTAssertEqual(albumTracks[0].surroundTypes, [])
+		XCTAssertEqual(albumTracks[0].audioModes, [.stereo])
 		
 		XCTAssertEqual(albumTracks[8].id, 100006880)
 		XCTAssertEqual(albumTracks[8].title, "All Night Long")
@@ -815,6 +825,8 @@ class LogicTests: XCTestCase {
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
 		XCTAssertNotNil(album1.popularity)
 		XCTAssertEqual(album1.audioQuality, .master)
+		XCTAssertEqual(album1.surroundTypes, [])
+		XCTAssertEqual(album1.audioModes, [.stereo])
 		
 		// Album Artists
 		XCTAssertEqual(album1.artists?.count, 3)
@@ -892,6 +904,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(artistTopTracks[0].editable, false)
 		XCTAssertEqual(artistTopTracks[0].explicit, false)
 		XCTAssertEqual(artistTopTracks[0].audioQuality, .hifi)
+		XCTAssertEqual(artistTopTracks[0].surroundTypes, [])
+		XCTAssertEqual(artistTopTracks[0].audioModes, [.stereo])
 		
 		// Artists
 		XCTAssertEqual(artistTopTracks[0].artists.count, 1)
@@ -991,6 +1005,8 @@ class LogicTests: XCTestCase {
 //		XCTAssertEqual(artistRadio[0].editable, false)
 //		XCTAssertEqual(artistRadio[0].explicit, false)
 //		XCTAssertEqual(artistRadio[0].audioQuality, .hifi)
+//		XCTAssertEqual(album.surroundTypes, [])
+//		XCTAssertEqual(album.audioModes, [.stereo])
 		
 		// Artists
 		XCTAssertEqual(artistRadio[0].artists.count, 1)
@@ -1228,8 +1244,8 @@ class LogicTests: XCTestCase {
 		XCTAssertFalse(artists.isEmpty)
 		
 		// Test order
-		let dateAsc = favorites.artists(order: .date, orderDirection: .ascending)
-		let dateDesc = favorites.artists(order: .date, orderDirection: .descending)
+		let dateAsc = favorites.artists(order: .dateAdded, orderDirection: .ascending)
+		let dateDesc = favorites.artists(order: .dateAdded, orderDirection: .descending)
 		XCTAssertNotNil(dateAsc)
 		XCTAssertNotNil(dateDesc)
 		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
@@ -1254,8 +1270,8 @@ class LogicTests: XCTestCase {
 		XCTAssertFalse(albums.isEmpty)
 		
 		// Test order
-		let dateAsc = favorites.albums(order: .date, orderDirection: .ascending)
-		let dateDesc = favorites.albums(order: .date, orderDirection: .descending)
+		let dateAsc = favorites.albums(order: .dateAdded, orderDirection: .ascending)
+		let dateDesc = favorites.albums(order: .dateAdded, orderDirection: .descending)
 		XCTAssertNotNil(dateAsc)
 		XCTAssertNotNil(dateDesc)
 		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
@@ -1324,8 +1340,8 @@ class LogicTests: XCTestCase {
 		// When sorting by album, the above test fails when there are two tracks from the same album,
 		// because those tracks are in the same order no matter if sorted by ascending or descending
 		
-		let dateAsc = favorites.tracks(order: .date, orderDirection: .ascending)
-		let dateDesc = favorites.tracks(order: .date, orderDirection: .descending)
+		let dateAsc = favorites.tracks(order: .dateAdded, orderDirection: .ascending)
+		let dateDesc = favorites.tracks(order: .dateAdded, orderDirection: .descending)
 		XCTAssertNotNil(dateAsc)
 		XCTAssertNotNil(dateDesc)
 		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
@@ -1361,8 +1377,8 @@ class LogicTests: XCTestCase {
 		XCTAssertNotNil(artistDesc)
 		XCTAssertEqual(artistAsc?.reversed(), artistDesc)
 		
-		let dateAsc = favorites.videos(order: .date, orderDirection: .ascending)
-		let dateDesc = favorites.videos(order: .date, orderDirection: .descending)
+		let dateAsc = favorites.videos(order: .dateAdded, orderDirection: .ascending)
+		let dateDesc = favorites.videos(order: .dateAdded, orderDirection: .descending)
 		XCTAssertNotNil(dateAsc)
 		XCTAssertNotNil(dateDesc)
 		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
@@ -1385,8 +1401,8 @@ class LogicTests: XCTestCase {
 		}
 		
 		// Test order
-		let dateAsc = favorites.playlists(order: .date, orderDirection: .ascending)
-		let dateDesc = favorites.playlists(order: .date, orderDirection: .descending)
+		let dateAsc = favorites.playlists(order: .dateAdded, orderDirection: .ascending)
+		let dateDesc = favorites.playlists(order: .dateAdded, orderDirection: .descending)
 		XCTAssertNotNil(dateAsc)
 		XCTAssertNotNil(dateDesc)
 		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
