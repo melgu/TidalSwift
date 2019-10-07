@@ -47,7 +47,7 @@ class MetadataTests: XCTestCase {
 		XCTAssertNotNil(metadata)
 	}
 	
-	func testSetMetadata() {
+//	func testSetMetadata() {
 //		let helpers = Helpers(session: session)
 //
 //		let optionalTrack = session.getTrack(trackId: 100006880)
@@ -78,6 +78,6 @@ class MetadataTests: XCTestCase {
 //		}
 //
 //		XCTAssertEqual(m4aFile.metadata.items.count, 9)
-	}
+//	}
     
 }
