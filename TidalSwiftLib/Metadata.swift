@@ -95,7 +95,7 @@ class Metadata {
 		}
 
 		// Set compilation // TODO: Immer noch nicht korrekt
-		if track.album.isCompilation(session: session) {
+		if track.album.isCompilation {
 			metadata.append((MP42MetadataKeyDiscCompilation,
 							 1 as NSCopying & NSObjectProtocol,
 							 .integer))

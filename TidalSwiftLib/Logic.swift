@@ -418,6 +418,25 @@ public class Session {
 		return trackResponse
 	}
 	
+	public func getTrackCredits(trackId: Int) -> [Credit]? {
+		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/credits")!
+		let response = Network.get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Track Credits Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var creditsResponse: [Credit]?
+		do {
+			creditsResponse = try customJSONDecoder().decode([Credit].self, from: content)
+		} catch {
+			displayError(title: "Track Credits Info failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return creditsResponse
+	}
+	
 	// Delete inexistent or unaccessable Tracks from list
 	// Detected by checking for nil values
 	public func cleanTrackList(_ trackList: [Track]) -> [Track] {
@@ -525,16 +544,23 @@ public class Session {
 		return albumTracksResponse?.items
 	}
 	
-	func isAlbumCompilation(albumId: Int) -> Bool {
-		let optionalTracks = getAlbumTracks(albumId: albumId)
-		guard let tracks = optionalTracks else {
-			return false
+	public func getAlbumCredits(albumId: Int) -> [Credit]? {
+		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)/credits")!
+		let response = Network.get(url: url, parameters: sessionParameters)
+		
+		guard let content = response.content else {
+			displayError(title: "Album Credits Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
 		}
 		
-		for track in tracks where track.artists != tracks.first?.artists {
-			return true
+		var creditsResponse: [Credit]?
+		do {
+			creditsResponse = try customJSONDecoder().decode([Credit].self, from: content)
+		} catch {
+			displayError(title: "Album Credits Info failed (JSON Parse Error)", content: "\(error)")
 		}
-		return false
+		
+		return creditsResponse
 	}
 	
 	public func getArtist(artistId: Int) -> Artist? {
@@ -826,14 +852,14 @@ public class Session {
 			return nil
 		}
 		
-		var moodsResponse: Moods?
+		var moodsResponse: [Mood]?
 		do {
-			moodsResponse = try customJSONDecoder().decode(Moods.self, from: content)
+			moodsResponse = try customJSONDecoder().decode([Mood].self, from: content)
 		} catch {
 			displayError(title: "Mood Overview failed (JSON Parse Error)", content: "\(error)")
 		}
 		
-		return moodsResponse?.items
+		return moodsResponse
 	}
 
 	public func getMoodPlaylists(moodPath: String) -> [Playlist]? {
@@ -866,14 +892,14 @@ public class Session {
 			return nil
 		}
 		
-		var genresResponse: Genres?
+		var genresResponse: [Genre]?
 		do {
-			genresResponse = try customJSONDecoder().decode(Genres.self, from: content)
+			genresResponse = try customJSONDecoder().decode([Genre].self, from: content)
 		} catch {
 			displayError(title: "Genre Overview failed (JSON Parse Error)", content: "\(error)")
 		}
 		
-		return genresResponse?.items
+		return genresResponse
 	}
 	
 	// Haven't found Artists in there yet, so only Tracks, Albums & Playlists

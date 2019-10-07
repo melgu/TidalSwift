@@ -164,6 +164,10 @@ public struct Album: Decodable, Equatable, Identifiable {
 	public let artist: Artist?
 	public let artists: [Artist]?
 	
+	public var isCompilation: Bool {
+		return artist?.name == "Various Artists"
+	}
+	
 	public func isInFavorites(session: Session) -> Bool? {
 		return session.favorites?.doFavoritesContainAlbum(albumId: id)
 	}
@@ -178,13 +182,23 @@ public struct Album: Decodable, Equatable, Identifiable {
 		return session.getImage(imageId: cover, resolution: resolution)
 	}
 	
-	public func isCompilation(session: Session) -> Bool {
-		return session.isAlbumCompilation(albumId: id)
+	public func getCredits(session: Session) -> [Credit]? {
+		session.getAlbumCredits(albumId: id)
 	}
 	
 	public static func == (lhs: Album, rhs: Album) -> Bool {
 		return lhs.id == rhs.id
 	}
+}
+
+public struct Credit: Decodable {
+	public let type: String
+	public let contributors: [Contributor]
+}
+
+public struct Contributor: Decodable {
+	public let id: Int?
+	public let name: String
 }
 
 public enum PlaylistType: String, Decodable {
@@ -296,6 +310,10 @@ public struct Track: Decodable, Equatable, Identifiable {
 	
 	public func isInFavorites(session: Session) -> Bool? {
 		return session.favorites?.doFavoritesContainTrack(trackId: id)
+	}
+	
+	public func getCredits(session: Session) -> [Credit]? {
+		session.getTrackCredits(trackId: id)
 	}
 	
 	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
@@ -501,21 +519,7 @@ struct MixModule: Decodable {
 	let pagedList: Tracks?
 }
 
-typealias Moods = Genres
 public typealias Mood = Genre
-
-struct Genres: Decodable { // Also Moods
-	let items: [Genre]
-	
-	init(from decoder: Decoder) throws {
-		var containersArray = try decoder.unkeyedContainer()
-		var temp: [Genre] = []
-		for _ in 0..<containersArray.count! {
-			temp.append(try containersArray.decode(Genre.self))
-		}
-		items = temp
-	}
-}
 
 public struct Genre: Decodable, Identifiable { // Also Mood
 	public var id: String { name }
