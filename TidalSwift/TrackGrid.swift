@@ -12,6 +12,7 @@ import ImageIOSwiftUI
 
 struct TrackGridItem: View {
 	let track: Track
+	let showArtist: Bool
 	let session: Session
 	let player: Player
 	
@@ -36,12 +37,20 @@ struct TrackGridItem: View {
 					Text(track.title)
 						.foregroundColor(.white)
 						.multilineTextAlignment(.center)
-						.lineLimit(2)
+						.lineLimit(5)
 						.frame(width: 160)
 				}
 			}
 			Text(track.title)
+				.lineLimit(1)
 				.frame(width: 160)
+			if showArtist {
+				Text(track.artists.formArtistString())
+					.fontWeight(.light)
+					.foregroundColor(Color.gray)
+					.lineLimit(1)
+					.frame(width: 160)
+			}
 		}
 		.padding(5)
 		.onTapGesture(count: 2) {
