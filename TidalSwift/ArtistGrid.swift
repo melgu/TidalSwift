@@ -120,6 +120,14 @@ struct ArtistContextMenu: View {
 				}
 			}
 			Divider()
+			Button(action: {
+				print("Radio")
+				if let radioTracks = self.artist.radio(session: self.session) {
+					self.player.add(tracks: radioTracks, .now)
+				}
+			}) {
+				Text("Radio")
+			}
 			if self.artist.getPictureUrl(session: self.session, resolution: 750) != nil {
 				Button(action: {
 					print("Picture")
