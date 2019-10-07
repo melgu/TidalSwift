@@ -132,6 +132,11 @@ public struct ArtistBio: Decodable {
 	}
 }
 
+public enum AudioMode: String, Decodable {
+	case stereo = "STEREO"
+	case mono = "MONO"
+}
+
 public struct Album: Decodable, Equatable, Identifiable {
 	public let id: Int
 	public let title: String
@@ -155,6 +160,7 @@ public struct Album: Decodable, Equatable, Identifiable {
 	public let popularity: Int?
 	public let audioQuality: AudioQuality?
 	public let surroundTypes: [String]?
+	public let audioModes: [AudioMode]?
 	public let artist: Artist?
 	public let artists: [Artist]?
 	
@@ -283,6 +289,7 @@ public struct Track: Decodable, Equatable, Identifiable {
 	public let explicit: Bool
 	public let audioQuality: AudioQuality?
 	public let surroundTypes: [String]?
+	public let audioModes: [AudioMode]?
 	public let artist: Artist?
 	public let artists: [Artist]
 	public let album: Album
