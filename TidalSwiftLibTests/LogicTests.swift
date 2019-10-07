@@ -522,6 +522,11 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(track.album.title, "In My Room")
 	}
 	
+	func testGetTracksCredits() {
+		let credits = session.getTrackCredits(trackId: 113133550)
+		XCTAssertEqual(credits?.count, 12)
+	}
+	
 	func testCleanTracks() {
 		let optionalPlaylistTracks = session.getPlaylistTracks(playlistId: "96696a2c-b284-4dd3-8e51-5e0dae44ace0")
 		XCTAssertNotNil(optionalPlaylistTracks)
@@ -780,6 +785,25 @@ class LogicTests: XCTestCase {
 		// Album
 		XCTAssertEqual(albumTracks[0].album.id, 100006868)
 		XCTAssertEqual(albumTracks[0].album.title, "Djesse Vol. 1")
+	}
+	
+	func testIsAlbumCompilation() {
+		let optionalAlbumComp = session.getAlbum(albumId: 45143359)
+		let optionalAlbumNotComp = session.getAlbum(albumId: 100006868)
+		XCTAssertNotNil(optionalAlbumComp)
+		XCTAssertNotNil(optionalAlbumNotComp)
+		guard let albumComp = optionalAlbumComp,
+			  let albumNotComp = optionalAlbumNotComp else {
+			return
+		}
+		
+		XCTAssert(albumComp.isCompilation)
+		XCTAssertFalse(albumNotComp.isCompilation)
+	}
+	
+	func testGetAlbumCredits() {
+		let credits = session.getAlbumCredits(albumId: 100006868)
+		XCTAssertEqual(credits?.count, 2)
 	}
 
 	func testGetArtist() {
