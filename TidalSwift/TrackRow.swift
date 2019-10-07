@@ -34,6 +34,7 @@ struct TrackRowFront: View {
 				)
 //					.size(width: 30, height: 30)
 					.frame(width: 30, height: 30)
+					.cornerRadius(CORNERRADIUS)
 			} else {
 				Text("\(track.trackNumber)")
 					.fontWeight(.thin)
