@@ -349,7 +349,7 @@ public struct Video: Decodable, Equatable, Identifiable {
 	public let trackNumber: Int
 	public let releaseDate: Date
 	public let imagePath: String? // As far as I know always null
-	public let imageId: String
+	public let imageId: String?
 	public let duration: Int
 	public let quality: String // Careful as video quality is different to audio quality
 	public let streamReady: Bool
@@ -372,10 +372,16 @@ public struct Video: Decodable, Equatable, Identifiable {
 	}
 	
 	public func getImageUrl(session: Session, resolution: Int) -> URL? {
+		guard let imageId = imageId else {
+			return nil
+		}
 		return session.getImageUrl(imageId: imageId, resolution: resolution)
 	}
 	
 	public func getImage(session: Session, resolution: Int) -> NSImage? {
+		guard let imageId = imageId else {
+			return nil
+		}
 		return session.getImage(imageId: imageId, resolution: resolution)
 	}
 	
