@@ -37,7 +37,7 @@ struct VideoGridItem: View {
 	var body: some View {
 		VStack {
 			if video.getImageUrl(session: session, resolution: 320) != nil {
-				//				Rectangle()
+//				Rectangle()
 				URLImageSourceView(
 					video.getImageUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -45,12 +45,16 @@ struct VideoGridItem: View {
 				)
 					.aspectRatio(contentMode: .fit)
 					.frame(width: 160, height: 160)
+					.cornerRadius(CORNERRADIUS)
+					.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 			} else {
 				ZStack {
 					Image("Single Black Pixel")
 						.resizable()
 						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)
+						.cornerRadius(CORNERRADIUS)
+						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 					Text(video.title)
 						.foregroundColor(.white)
 						.multilineTextAlignment(.center)
@@ -72,7 +76,7 @@ struct VideoGridItem: View {
 		.padding(5)
 		.onTapGesture(count: 2) {
 			print("\(self.video.title)")
-			//			self.player.add(playlist: self.playlist, .now)
+//			self.player.add(playlist: self.playlist, .now)
 		}
 		.contextMenu {
 			VideoContextMenu(video: self.video, session: self.session, player: self.player)

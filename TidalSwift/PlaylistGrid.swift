@@ -51,6 +51,8 @@ struct PlaylistGridItem: View {
 						.resizable()
 						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)
+						.cornerRadius(CORNERRADIUS)
+						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 					Text(playlist.title)
 						.foregroundColor(.white)
 						.multilineTextAlignment(.center)
