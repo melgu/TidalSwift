@@ -19,7 +19,7 @@ struct TrackGridItem: View {
 	var body: some View {
 		VStack {
 			if track.album.getCoverUrl(session: session, resolution: 320) != nil {
-//				Rectangle()
+				//				Rectangle()
 				URLImageSourceView(
 					track.album.getCoverUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -72,91 +72,109 @@ struct TrackContextMenu: View {
 	
 	var body: some View {
 		Group {
-			if track.streamReady {
-				Button(action: {
-					self.player.add(track: self.track, .now)
-				}) {
-					Text("Play Now")
-				}
-				Button(action: {
-					self.player.add(track: self.track, .next)
-				}) {
-					Text("Play Next")
-				}
-				Button(action: {
-					self.player.add(track: self.track, .last)
-				}) {
-					Text("Play Last")
-				}
-			} else {
-				Text("Track not available")
-					.italic()
-			}
-			Divider()
-			if self.t || !self.t {
-				if self.track.isInFavorites(session: session)! {
+			Group {
+				if track.streamReady {
 					Button(action: {
-						print("Remove from Favorites")
-						self.session.favorites!.removeTrack(trackId: self.track.id)
-						self.t.toggle()
+						self.player.add(track: self.track, .now)
 					}) {
-						Text("Remove from Favorites")
+						Text("Play Now")
+					}
+					Button(action: {
+						self.player.add(track: self.track, .next)
+					}) {
+						Text("Play Next")
+					}
+					Button(action: {
+						self.player.add(track: self.track, .last)
+					}) {
+						Text("Play Last")
 					}
 				} else {
-					Button(action: {
-						print("Add to Favorites")
-						self.session.favorites!.addTrack(trackId: self.track.id)
-						self.t.toggle()
-					}) {
-						Text("Add to Favorites")
-					}
+					Text("Track not available")
+						.italic()
 				}
 			}
-			if track.streamReady {
-				Button(action: {
-					print("Add Playlist \(self.track.title) to Playlist …")
-				}) {
-					Text("Add to Playlist …")
-				}
-				Divider()
-				Button(action: {
-					print("Radio")
-					if let radioTracks = self.track.radio(session: self.session) {
-						self.player.add(tracks: radioTracks, .now)
+			Divider()
+			Group {
+				if self.t || !self.t {
+					if self.track.isInFavorites(session: session)! {
+						Button(action: {
+							print("Remove from Favorites")
+							self.session.favorites!.removeTrack(trackId: self.track.id)
+							self.t.toggle()
+						}) {
+							Text("Remove from Favorites")
+						}
+					} else {
+						Button(action: {
+							print("Add to Favorites")
+							self.session.favorites!.addTrack(trackId: self.track.id)
+							self.t.toggle()
+						}) {
+							Text("Add to Favorites")
+						}
 					}
-				}) {
-					Text("Radio")
 				}
-				if self.track.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+				if track.streamReady {
 					Button(action: {
-						print("Cover")
-						let controller = CoverWindowController(rootView:
-							URLImageSourceView(
-								self.track.album.getCoverUrl(session: self.session, resolution: 1280)!,
-								isAnimationEnabled: true,
-								label: Text("\(self.track.title) – \(self.track.album.title)")
+						print("Add Playlist \(self.track.title) to Playlist …")
+					}) {
+						Text("Add to Playlist …")
+					}
+					Divider()
+					Group {
+						Button(action: {
+							print("Offline")
+						}) {
+							Text("Offline")
+						}
+						Button(action: {
+							print("Download")
+							_ = self.session.helpers?.download(track: self.track)
+						}) {
+							Text("Download")
+						}
+					}
+					Divider()
+					Button(action: {
+						print("Radio")
+						if let radioTracks = self.track.radio(session: self.session) {
+							self.player.add(tracks: radioTracks, .now)
+						}
+					}) {
+						Text("Radio")
+					}
+					if self.track.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+						Button(action: {
+							print("Cover")
+							let controller = CoverWindowController(rootView:
+								URLImageSourceView(
+									self.track.album.getCoverUrl(session: self.session, resolution: 1280)!,
+									isAnimationEnabled: true,
+									label: Text("\(self.track.title) – \(self.track.album.title)")
+								)
 							)
+							controller.window?.title = "\(self.track.title) – \(self.track.album.title)"
+							controller.showWindow(nil)
+						}) {
+							Text("Cover")
+						}
+					}
+					Button(action: {
+						print("Credits")
+						let controller = ResizableWindowController(rootView:
+							CreditsView(track: self.track, session: self.session)
 						)
-						controller.window?.title = "\(self.track.title) – \(self.track.album.title)"
+						controller.window?.title = "Credits – \(self.track.title)"
 						controller.showWindow(nil)
 					}) {
-						Text("Cover")
+						Text("Credits")
 					}
-				}
-				Button(action: {
-					print("Credits")
-					let controller = ResizableWindowController(rootView:
-						CreditsView(track: self.track, session: self.session)
-					)
-					controller.window?.title = "Credits – \(self.track.title)"
-					controller.showWindow(nil)
-				}) {
-					Text("Credits")
-				}
-				Button(action: {
-					print("Share")
-				}) {
-					Text("Share")
+					Button(action: {
+						print("Share")
+					}) {
+						Text("Share")
+					}
 				}
 			}
 		}

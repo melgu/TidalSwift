@@ -37,7 +37,7 @@ struct AlbumGridItem: View {
 	var body: some View {
 		VStack {
 			if album.getCoverUrl(session: session, resolution: 320) != nil {
-//				Rectangle()
+				//				Rectangle()
 				URLImageSourceView(
 					album.getCoverUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -112,83 +112,101 @@ struct AlbumContextMenu: View {
 	
 	var body: some View {
 		Group {
-			if album.streamReady != nil && album.streamReady! {
-				Button(action: {
-					self.player.add(album: self.album, .now)
-				}) {
-					Text("Play Now")
-				}
-				Button(action: {
-					self.player.add(album: self.album, .next)
-				}) {
-					Text("Play Next")
-				}
-				Button(action: {
-					self.player.add(album: self.album, .last)
-				}) {
-					Text("Play Last")
-				}
-			} else {
-				Text("Album not available")
-					.italic()
-			}
-			Divider()
-			if self.t || !self.t {
-				if self.album.isInFavorites(session: session)! {
+			Group {
+				if album.streamReady != nil && album.streamReady! {
 					Button(action: {
-						print("Remove from Favorites")
-						self.session.favorites!.removeAlbum(albumId: self.album.id)
-						self.t.toggle()
+						self.player.add(album: self.album, .now)
 					}) {
-						Text("Remove from Favorites")
+						Text("Play Now")
+					}
+					Button(action: {
+						self.player.add(album: self.album, .next)
+					}) {
+						Text("Play Next")
+					}
+					Button(action: {
+						self.player.add(album: self.album, .last)
+					}) {
+						Text("Play Last")
 					}
 				} else {
-					Button(action: {
-						print("Add to Favorites")
-						self.session.favorites!.addAlbum(albumId: self.album.id)
-						self.t.toggle()
-					}) {
-						Text("Add to Favorites")
-					}
+					Text("Album not available")
+						.italic()
 				}
 			}
-			if album.streamReady != nil && album.streamReady! {
-				Button(action: {
-					print("Add Playlist \(self.album.title) to Playlist …")
-				}) {
-					Text("Add to Playlist …")
-				}
-				Divider()
-				if self.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
-					Button(action: {
-						print("Cover")
-						let controller = CoverWindowController(rootView:
-							URLImageSourceView(
-								self.album.getCoverUrl(session: self.session, resolution: 1280)!,
-								isAnimationEnabled: true,
-								label: Text(self.album.title)
-							)
-						)
-						controller.window?.title = self.album.title
-						controller.showWindow(nil)
-					}) {
-						Text("Cover")
+			Divider()
+			Group {
+				if self.t || !self.t {
+					if self.album.isInFavorites(session: session)! {
+						Button(action: {
+							print("Remove from Favorites")
+							self.session.favorites!.removeAlbum(albumId: self.album.id)
+							self.t.toggle()
+						}) {
+							Text("Remove from Favorites")
+						}
+					} else {
+						Button(action: {
+							print("Add to Favorites")
+							self.session.favorites!.addAlbum(albumId: self.album.id)
+							self.t.toggle()
+						}) {
+							Text("Add to Favorites")
+						}
 					}
 				}
-				Button(action: {
-					print("Credits")
-					let controller = ResizableWindowController(rootView:
-						CreditsView(album: self.album, session: self.session)
-					)
-					controller.window?.title = "Credits – \(self.album.title)"
-					controller.showWindow(nil)
-				}) {
-					Text("Credits")
-				}
-				Button(action: {
-					print("Share")
-				}) {
-					Text("Share")
+				if album.streamReady != nil && album.streamReady! {
+					Button(action: {
+						print("Add Playlist \(self.album.title) to Playlist …")
+					}) {
+						Text("Add to Playlist …")
+					}
+					Divider()
+					Group {
+						Button(action: {
+							print("Offline")
+						}) {
+							Text("Offline")
+						}
+						Button(action: {
+							print("Download")
+							_ = self.session.helpers?.download(album: self.album)
+						}) {
+							Text("Download")
+						}
+					}
+					Divider()
+					if self.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+						Button(action: {
+							print("Cover")
+							let controller = CoverWindowController(rootView:
+								URLImageSourceView(
+									self.album.getCoverUrl(session: self.session, resolution: 1280)!,
+									isAnimationEnabled: true,
+									label: Text(self.album.title)
+								)
+							)
+							controller.window?.title = self.album.title
+							controller.showWindow(nil)
+						}) {
+							Text("Cover")
+						}
+					}
+					Button(action: {
+						print("Credits")
+						let controller = ResizableWindowController(rootView:
+							CreditsView(album: self.album, session: self.session)
+						)
+						controller.window?.title = "Credits – \(self.album.title)"
+						controller.showWindow(nil)
+					}) {
+						Text("Credits")
+					}
+					Button(action: {
+						print("Share")
+					}) {
+						Text("Share")
+					}
 				}
 			}
 		}

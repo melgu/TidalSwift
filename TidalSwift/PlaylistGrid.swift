@@ -35,7 +35,7 @@ struct PlaylistGridItem: View {
 	var body: some View {
 		VStack {
 			if playlist.getImageUrl(session: session, resolution: 320) != nil {
-//				Rectangle()
+				//				Rectangle()
 				URLImageSourceView(
 					playlist.getImageUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -81,73 +81,92 @@ struct PlaylistContextMenu: View {
 	
 	var body: some View {
 		Group {
-			Button(action: {
-				self.player.add(playlist: self.playlist, .now)
-			}) {
-				Text("Play Now")
-			}
-			Button(action: {
-				self.player.add(playlist: self.playlist, .next)
-			}) {
-				Text("Play Next")
-			}
-			Button(action: {
-				self.player.add(playlist: self.playlist, .last)
-			}) {
-				Text("Play Last")
-			}
-			Divider()
-			if self.t || !self.t {
-				if self.playlist.isInFavorites(session: session)! {
-					Button(action: {
-						print("Remove from Favorites")
-						self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
-						self.t.toggle()
-					}) {
-						Text("Remove from Favorites")
-					}
-				} else {
-					Button(action: {
-						print("Add to Favorites")
-						self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
-						self.t.toggle()
-					}) {
-						Text("Add to Favorites")
-					}
-				}
-			}
-			
-			Button(action: {
-				print("Add Playlist \(self.playlist.title) to Playlist …")
-			}) {
-				Text("Add to Playlist …")
-			}
-			Divider()
-			if self.playlist.getImageUrl(session: self.session, resolution: 750) != nil {
+//			Group{
 				Button(action: {
-					print("Image")
-					let controller = CoverWindowController(rootView:
-						URLImageSourceView(
-							self.playlist.getImageUrl(session: self.session, resolution: 750)!,
-							isAnimationEnabled: true,
-							label: Text(self.playlist.title)
-						)
-					)
-					controller.window?.title = self.playlist.title
-					controller.showWindow(nil)
+					self.player.add(playlist: self.playlist, .now)
 				}) {
-					Text("Image")
+					Text("Play Now")
+				}
+				Button(action: {
+					self.player.add(playlist: self.playlist, .next)
+				}) {
+					Text("Play Next")
+				}
+				Button(action: {
+					self.player.add(playlist: self.playlist, .last)
+				}) {
+					Text("Play Last")
+				}
+//			}
+			Divider()
+			Group {
+				if self.t || !self.t {
+					if self.playlist.isInFavorites(session: session)! {
+						Button(action: {
+							print("Remove from Favorites")
+							self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
+							self.t.toggle()
+						}) {
+							Text("Remove from Favorites")
+						}
+					} else {
+						Button(action: {
+							print("Add to Favorites")
+							self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
+							self.t.toggle()
+						}) {
+							Text("Add to Favorites")
+						}
+					}
+				}
+				Button(action: {
+					print("Add Playlist \(self.playlist.title) to Playlist …")
+				}) {
+					Text("Add to Playlist …")
 				}
 			}
-			Button(action: {
-				print("Credits")
-			}) {
-				Text("Credits")
-			}
-			Button(action: {
-				print("Share")
-			}) {
-				Text("Share")
+			Divider()
+//			Group {
+				Button(action: {
+					print("Offline")
+				}) {
+					Text("Offline")
+				}
+				Button(action: {
+					print("Download")
+					_ = self.session.helpers?.download(playlist: self.playlist)
+				}) {
+					Text("Download")
+				}
+//			}
+			Divider()
+			Group {
+				if self.playlist.getImageUrl(session: self.session, resolution: 750) != nil {
+					Button(action: {
+						print("Image")
+						let controller = CoverWindowController(rootView:
+							URLImageSourceView(
+								self.playlist.getImageUrl(session: self.session, resolution: 750)!,
+								isAnimationEnabled: true,
+								label: Text(self.playlist.title)
+							)
+						)
+						controller.window?.title = self.playlist.title
+						controller.showWindow(nil)
+					}) {
+						Text("Image")
+					}
+				}
+				Button(action: {
+					print("Credits")
+				}) {
+					Text("Credits")
+				}
+				Button(action: {
+					print("Share")
+				}) {
+					Text("Share")
+				}
 			}
 		}
 	}

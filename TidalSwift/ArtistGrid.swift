@@ -35,7 +35,7 @@ struct ArtistGridItem: View {
 	var body: some View {
 		VStack {
 			if artist.getPictureUrl(session: session, resolution: 320) != nil {
-//				Rectangle()
+				//				Rectangle()
 				URLImageSourceView(
 					artist.getPictureUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -82,82 +82,100 @@ struct ArtistContextMenu: View {
 	
 	var body: some View {
 		Group {
-			Button(action: {
-				self.player.add(artist: self.artist, .now)
-			}) {
-				Text("Play Now")
-			}
-			Button(action: {
-				self.player.add(artist: self.artist, .next)
-			}) {
-				Text("Play Next")
-			}
-			Button(action: {
-				self.player.add(artist: self.artist, .last)
-			}) {
-				Text("Play Last")
-			}
-//			Text("WIP: Play Artist Radio")
-//				.italic()
-			Divider()
-			if self.t || !self.t {
-				if self.artist.isInFavorites(session: session)! {
-					Button(action: {
-						print("Remove from Favorites")
-						self.session.favorites!.removeArtist(artistId: self.artist.id)
-						self.t.toggle()
-					}) {
-						Text("Remove from Favorites")
-					}
-				} else {
-					Button(action: {
-						print("Add to Favorites")
-						self.session.favorites!.addArtist(artistId: self.artist.id)
-						self.t.toggle()
-					}) {
-						Text("Add to Favorites")
-					}
-				}
-			}
-			Divider()
-			Button(action: {
-				print("Radio")
-				if let radioTracks = self.artist.radio(session: self.session) {
-					self.player.add(tracks: radioTracks, .now)
-				}
-			}) {
-				Text("Radio")
-			}
-			if self.artist.getPictureUrl(session: self.session, resolution: 750) != nil {
+//			Group {
 				Button(action: {
-					print("Picture")
-					let controller = CoverWindowController(rootView:
-						URLImageSourceView(
-							self.artist.getPictureUrl(session: self.session, resolution: 750)!,
-							isAnimationEnabled: true,
-							label: Text(self.artist.name)
+					self.player.add(artist: self.artist, .now)
+				}) {
+					Text("Play Now")
+				}
+				Button(action: {
+					self.player.add(artist: self.artist, .next)
+				}) {
+					Text("Play Next")
+				}
+				Button(action: {
+					self.player.add(artist: self.artist, .last)
+				}) {
+					Text("Play Last")
+				}
+//			}
+			Divider()
+			Group {
+				if self.t || !self.t {
+					if self.artist.isInFavorites(session: session)! {
+						Button(action: {
+							print("Remove from Favorites")
+							self.session.favorites!.removeArtist(artistId: self.artist.id)
+							self.t.toggle()
+						}) {
+							Text("Remove from Favorites")
+						}
+					} else {
+						Button(action: {
+							print("Add to Favorites")
+							self.session.favorites!.addArtist(artistId: self.artist.id)
+							self.t.toggle()
+						}) {
+							Text("Add to Favorites")
+						}
+					}
+				}
+			}
+			Divider()
+//			Group {
+				Button(action: {
+					print("Offline")
+				}) {
+					Text("Offline")
+				}
+				Button(action: {
+					print("Download")
+					_ = self.session.helpers?.downloadAllAlbums(from: self.artist)
+				}) {
+					Text("Download")
+				}
+//			}
+			Divider()
+			Group {
+				Button(action: {
+					print("Radio")
+					if let radioTracks = self.artist.radio(session: self.session) {
+						self.player.add(tracks: radioTracks, .now)
+					}
+				}) {
+					Text("Radio")
+				}
+				if self.artist.getPictureUrl(session: self.session, resolution: 750) != nil {
+					Button(action: {
+						print("Picture")
+						let controller = CoverWindowController(rootView:
+							URLImageSourceView(
+								self.artist.getPictureUrl(session: self.session, resolution: 750)!,
+								isAnimationEnabled: true,
+								label: Text(self.artist.name)
+							)
 						)
+						controller.window?.title = self.artist.name
+						controller.showWindow(nil)
+					}) {
+						Text("Picture")
+					}
+				}
+				Button(action: {
+					print("Bio")
+					let controller = ResizableWindowController(rootView:
+						ArtistBioView(artist: self.artist, session: self.session)
 					)
-					controller.window?.title = self.artist.name
+					controller.window?.title = "Bio – \(self.artist.name)"
 					controller.showWindow(nil)
 				}) {
-					Text("Picture")
+					Text("Bio")
 				}
-			}
-			Button(action: {
-				print("Bio")
-				let controller = ResizableWindowController(rootView:
-					ArtistBioView(artist: self.artist, session: self.session)
-				)
-				controller.window?.title = "Bio – \(self.artist.name)"
-				controller.showWindow(nil)
-			}) {
-				Text("Bio")
-			}
-			Button(action: {
-				print("Share")
-			}) {
-				Text("Share")
+				Button(action: {
+					print("Share")
+				}) {
+					Text("Share")
+				}
 			}
 		}
 	}
