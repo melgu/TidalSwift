@@ -23,7 +23,7 @@ struct AlbumGrid: View {
 		}
 		.padding()
 		.gridStyle(
-			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 210, hSpacing: 5, vSpacing: 0)
+			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 210, hSpacing: 5, vSpacing: 5)
 		)
 	}
 }

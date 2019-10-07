@@ -117,6 +117,10 @@ public struct Artist: Decodable, Equatable, Identifiable {
 		return session.getImage(imageId: picture, resolution: resolution)
 	}
 	
+	public func radio(session: Session) -> [Track]? {
+		return session.getArtistRadio(artistId: id)
+	}
+	
 	public static func == (lhs: Artist, rhs: Artist) -> Bool {
 		return lhs.id == rhs.id
 	}
@@ -313,10 +317,6 @@ public struct Track: Decodable, Equatable, Identifiable {
 		return session.favorites?.doFavoritesContainTrack(trackId: id)
 	}
 	
-	public func getCredits(session: Session) -> [Credit]? {
-		session.getTrackCredits(trackId: id)
-	}
-	
 	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
 		return album.getCoverUrl(session: session, resolution: resolution)
 	}
@@ -325,8 +325,16 @@ public struct Track: Decodable, Equatable, Identifiable {
 		return album.getCover(session: session, resolution: resolution)
 	}
 	
+	public func getCredits(session: Session) -> [Credit]? {
+		session.getTrackCredits(trackId: id)
+	}
+	
 	public func getAudioUrl(session: Session) -> URL? {
 		return session.getAudioUrl(trackId: id)
+	}
+	
+	public func radio(session: Session) -> [Track]? {
+		return session.getTrackRadio(trackId: id)
 	}
 	
 	public static func == (lhs: Track, rhs: Track) -> Bool {

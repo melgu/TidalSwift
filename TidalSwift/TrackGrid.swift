@@ -119,6 +119,14 @@ struct TrackContextMenu: View {
 					Text("Add to Playlist …")
 				}
 				Divider()
+				Button(action: {
+					print("Radio")
+					if let radioTracks = self.track.radio(session: self.session) {
+						self.player.add(tracks: radioTracks, .now)
+					}
+				}) {
+					Text("Radio")
+				}
 				if self.track.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
 					Button(action: {
 						print("Cover")
