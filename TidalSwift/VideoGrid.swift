@@ -29,7 +29,7 @@ struct VideoGrid: View {
 }
 
 struct VideoGridItem: View {
-    let video: Video
+	let video: Video
 	let showArtist: Bool
 	let session: Session
 	let player: Player
@@ -37,7 +37,7 @@ struct VideoGridItem: View {
 	var body: some View {
 		VStack {
 			if video.getImageUrl(session: session, resolution: 320) != nil {
-//				Rectangle()
+				//				Rectangle()
 				URLImageSourceView(
 					video.getImageUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -72,7 +72,7 @@ struct VideoGridItem: View {
 		.padding(5)
 		.onTapGesture(count: 2) {
 			print("\(self.video.title)")
-//			self.player.add(playlist: self.playlist, .now)
+			//			self.player.add(playlist: self.playlist, .now)
 		}
 		.contextMenu {
 			VideoContextMenu(video: self.video, session: self.session, player: self.player)
@@ -89,78 +89,94 @@ struct VideoContextMenu: View {
 	
 	var body: some View {
 		Group {
-			if video.streamReady {
-				Button(action: {
-					print("Play Now")
-				}) {
-					Text("Play Now")
-				}
-				Button(action: {
-					print("Play Next")
-				}) {
-					Text("Play Next")
-				}
-				Button(action: {
-					print("Play Last")
-				}) {
-					Text("Play Last")
-				}
-			} else {
-				Text("Video not available")
-					.italic()
-			}
-			Divider()
-			if self.t || !self.t {
-				if self.video.isInFavorites(session: session)! {
+			Group {
+				if video.streamReady {
 					Button(action: {
-						print("Remove from Favorites")
-						self.session.favorites!.removeVideo(videoId: self.video.id)
-						self.t.toggle()
+						print("Play Now")
 					}) {
-						Text("Remove from Favorites")
+						Text("Play Now")
+					}
+					Button(action: {
+						print("Play Next")
+					}) {
+						Text("Play Next")
+					}
+					Button(action: {
+						print("Play Last")
+					}) {
+						Text("Play Last")
 					}
 				} else {
-					Button(action: {
-						print("Add to Favorites")
-						self.session.favorites!.addVideo(videoId: self.video.id)
-						self.t.toggle()
-					}) {
-						Text("Add to Favorites")
-					}
+					Text("Video not available")
+						.italic()
 				}
 			}
-			if video.streamReady {
-				Button(action: {
-					print("Add Playlist \(self.video.title) to Playlist …")
-				}) {
-					Text("Add to Playlist …")
-				}
-				Divider()
-				if self.video.getImageUrl(session: self.session, resolution: 1280) != nil {
-					Button(action: {
-						print("Preview Image")
-						let controller = CoverWindowController(rootView:
-							URLImageSourceView(
-								self.video.getImageUrl(session: self.session, resolution: 1280)!,
-								isAnimationEnabled: true,
-								label: Text(self.video.title)
-							)
-						)
-						controller.window?.title = self.video.title
-						controller.showWindow(nil)
-					}) {
-						Text("Preview Image")
+			Divider()
+			Group {
+				if self.t || !self.t {
+					if self.video.isInFavorites(session: session)! {
+						Button(action: {
+							print("Remove from Favorites")
+							self.session.favorites!.removeVideo(videoId: self.video.id)
+							self.t.toggle()
+						}) {
+							Text("Remove from Favorites")
+						}
+					} else {
+						Button(action: {
+							print("Add to Favorites")
+							self.session.favorites!.addVideo(videoId: self.video.id)
+							self.t.toggle()
+						}) {
+							Text("Add to Favorites")
+						}
 					}
 				}
-				Button(action: {
-					print("Credits")
-				}) {
-					Text("Credits")
-				}
-				Button(action: {
-					print("Share")
-				}) {
-					Text("Share")
+				if video.streamReady {
+					Button(action: {
+						print("Add Playlist \(self.video.title) to Playlist …")
+					}) {
+						Text("Add to Playlist …")
+					}
+					Divider()
+					Button(action: {
+						print("Offline")
+					}) {
+						Text("Offline")
+					}
+					Button(action: {
+						print("Download")
+//						let r = self.session.helpers?.download(video: self.video)
+					}) {
+						Text("Download")
+					}
+					Divider()
+					if self.video.getImageUrl(session: self.session, resolution: 1280) != nil {
+						Button(action: {
+							print("Preview Image")
+							let controller = CoverWindowController(rootView:
+								URLImageSourceView(
+									self.video.getImageUrl(session: self.session, resolution: 1280)!,
+									isAnimationEnabled: true,
+									label: Text(self.video.title)
+								)
+							)
+							controller.window?.title = self.video.title
+							controller.showWindow(nil)
+						}) {
+							Text("Preview Image")
+						}
+					}
+					Button(action: {
+						print("Credits")
+					}) {
+						Text("Credits")
+					}
+					Button(action: {
+						print("Share")
+					}) {
+						Text("Share")
+					}
 				}
 			}
 		}

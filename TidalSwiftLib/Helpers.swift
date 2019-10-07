@@ -60,7 +60,7 @@ public class Helpers {
 		return "\(video.trackNumber) \(video.title) - \(video.artists.formArtistString()).mp4"
 	}
 	
-	public func downloadTrack(track: Track, parentFolder: String = "") -> Bool {
+	public func download(track: Track, parentFolder: String = "") -> Bool {
 		guard let url = track.getAudioUrl(session: session) else { return false }
 		print("Downloading \(track.title)")
 		let fileName = formFileName(track)
@@ -74,7 +74,7 @@ public class Helpers {
 		return response.ok
 	}
 	
-	public func downloadVideo(video: Video, parentFolder: String = "") -> Bool {
+	public func download(video: Video, parentFolder: String = "") -> Bool {
 		guard let url = video.getVideoUrl(session: session) else { return false }
 		print("Downloading Video \(video.title)")
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: formFileName(video))
@@ -87,11 +87,11 @@ public class Helpers {
 		return response.ok
 	}
 	
-	public func downloadAlbum(album: Album, parentFolder: String = "") -> DownloadErrors {
+	public func download(album: Album, parentFolder: String = "") -> DownloadErrors {
 		guard let tracks = session.getAlbumTracks(albumId: album.id) else { return DownloadErrors(affectedAlbums: [album]) }
 		var error = DownloadErrors()
 		for track in tracks {
-			let r = downloadTrack(track: track, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title)")
+			let r = download(track: track, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title)")
 			if !r {
 				error.affectedTracks.append(track)
 			}
@@ -99,26 +99,26 @@ public class Helpers {
 		return error
 	}
 	
-	public func downloadAllAlbumsFromArtist(artist: Artist, parentFolder: String = "") -> DownloadErrors {
+	public func downloadAllAlbums(from artist: Artist, parentFolder: String = "") -> DownloadErrors {
 		guard let albums = session.getArtistAlbums(artistId: artist.id) else {
 			return DownloadErrors(affectedArtists: [artist])
 		}
 		var error = DownloadErrors()
 		for album in albums {
-			let r = downloadAlbum(album: album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)")
+			let r = download(album: album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)")
 			error.affectedAlbums.append(contentsOf: r.affectedAlbums)
 			error.affectedTracks.append(contentsOf: r.affectedTracks)
 		}
 		return error
 	}
 	
-	public func downloadPlaylist(playlist: Playlist, parentFolder: String = "") -> DownloadErrors {
+	public func download(playlist: Playlist, parentFolder: String = "") -> DownloadErrors {
 		guard let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) else {
 			return DownloadErrors(affectedPlaylists: [playlist])
 		}
 		var error = DownloadErrors()
 		for track in tracks {
-			let r = downloadTrack(track: track,
+			let r = download(track: track,
 								  parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
 			if !r {
 				error.affectedTracks.append(track)
