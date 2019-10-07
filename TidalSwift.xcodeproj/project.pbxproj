@@ -24,6 +24,7 @@
 		B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B010113F23063BC200DE13C8 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B010113E23063BC200DE13C8 /* Demo Login Information.txt */; };
+		B01B09CB234ADADB007A4E15 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CA234ADADB007A4E15 /* CreditsView.swift */; };
 		B02382452348497F00BC2B0C /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = B02382442348497F00BC2B0C /* Sliders */; };
 		B02382472348543E00BC2B0C /* NewReleases.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02382462348543E00BC2B0C /* NewReleases.swift */; };
 		B039D69F2317480C00E6784F /* CoverWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B039D69E2317480C00E6784F /* CoverWindowController.swift */; };
@@ -38,7 +39,7 @@
 		B07685BD2320C12D00538D55 /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07685BC2320C12D00538D55 /* QueueView.swift */; };
 		B08AB537230ACACA004CBBE8 /* AlbumGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */; };
 		B0A1E2752349C65900BBC4F0 /* ArtistBio.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2742349C65900BBC4F0 /* ArtistBio.swift */; };
-		B0A1E2772349DB0100BBC4F0 /* ArtistBioWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2762349DB0100BBC4F0 /* ArtistBioWindowController.swift */; };
+		B0A1E2772349DB0100BBC4F0 /* ResizableWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2762349DB0100BBC4F0 /* ResizableWindowController.swift */; };
 		B0A1E2792349EDE900BBC4F0 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2782349EDE900BBC4F0 /* Colors.swift */; };
 		B0A85FFB230DDB28000C4C4E /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFA230DDB28000C4C4E /* Player.swift */; };
 		B0A85FFD230DE2E3000C4C4E /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFC230DE2E3000C4C4E /* PlayerView.swift */; };
@@ -112,6 +113,7 @@
 
 /* Begin PBXFileReference section */
 		B010113E23063BC200DE13C8 /* Demo Login Information.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Demo Login Information.txt"; sourceTree = "<group>"; };
+		B01B09CA234ADADB007A4E15 /* CreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsView.swift; sourceTree = "<group>"; };
 		B02382462348543E00BC2B0C /* NewReleases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReleases.swift; sourceTree = "<group>"; };
 		B039D69E2317480C00E6784F /* CoverWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverWindowController.swift; sourceTree = "<group>"; };
 		B03F420A230DF66200587A4A /* PlaybackInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackInfo.swift; sourceTree = "<group>"; };
@@ -128,7 +130,7 @@
 		B07C5EF522C8797A00710752 /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadata.swift; sourceTree = "<group>"; };
 		B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumGrid.swift; sourceTree = "<group>"; };
 		B0A1E2742349C65900BBC4F0 /* ArtistBio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistBio.swift; sourceTree = "<group>"; };
-		B0A1E2762349DB0100BBC4F0 /* ArtistBioWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistBioWindowController.swift; sourceTree = "<group>"; };
+		B0A1E2762349DB0100BBC4F0 /* ResizableWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableWindowController.swift; sourceTree = "<group>"; };
 		B0A1E2782349EDE900BBC4F0 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MP42Foundation.framework; sourceTree = "<group>"; };
 		B0A85FFA230DDB28000C4C4E /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -307,6 +309,7 @@
 				B0C3E6A923061FDA006CABED /* PlaylistView.swift */,
 				B0C3E6A823061FDA006CABED /* TrackRow.swift */,
 				B0A1E2742349C65900BBC4F0 /* ArtistBio.swift */,
+				B01B09CA234ADADB007A4E15 /* CreditsView.swift */,
 				B0C3E6A523061FDA006CABED /* LoadingSpinner.swift */,
 				B0A85FFC230DE2E3000C4C4E /* PlayerView.swift */,
 				B03F420A230DF66200587A4A /* PlaybackInfo.swift */,
@@ -314,7 +317,7 @@
 				B0D974D4230CD60D00695388 /* PlayerInfoView.swift */,
 				B07685BC2320C12D00538D55 /* QueueView.swift */,
 				B039D69E2317480C00E6784F /* CoverWindowController.swift */,
-				B0A1E2762349DB0100BBC4F0 /* ArtistBioWindowController.swift */,
+				B0A1E2762349DB0100BBC4F0 /* ResizableWindowController.swift */,
 				B0A1E2782349EDE900BBC4F0 /* Colors.swift */,
 				B0E8078F230615AE00E43B5D /* Assets.xcassets */,
 				B0E80794230615AE00E43B5D /* Main.storyboard */,
@@ -600,7 +603,8 @@
 				B0A1E2752349C65900BBC4F0 /* ArtistBio.swift in Sources */,
 				B0C3E6AB23061FDB006CABED /* AlbumView.swift in Sources */,
 				B0C3E6AA23061FDB006CABED /* LoadingSpinner.swift in Sources */,
-				B0A1E2772349DB0100BBC4F0 /* ArtistBioWindowController.swift in Sources */,
+				B01B09CB234ADADB007A4E15 /* CreditsView.swift in Sources */,
+				B0A1E2772349DB0100BBC4F0 /* ResizableWindowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

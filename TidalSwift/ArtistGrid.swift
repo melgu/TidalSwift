@@ -136,7 +136,7 @@ struct ArtistContextMenu: View {
 			}
 			Button(action: {
 				print("Bio")
-				let controller = ArtistBioWindowController(rootView:
+				let controller = ResizableWindowController(rootView:
 					ArtistBioView(artist: self.artist, session: self.session)
 				)
 				controller.window?.title = "Bio – \(self.artist.name)"

@@ -191,7 +191,8 @@ public struct Album: Decodable, Equatable, Identifiable {
 	}
 }
 
-public struct Credit: Decodable {
+public struct Credit: Decodable, Identifiable {
+	public var id: String { type }
 	public let type: String
 	public let contributors: [Contributor]
 }
@@ -715,7 +716,7 @@ public struct FavoritePlaylist: Decodable, Equatable {
 	}
 }
 
-// MARK: - Artist String
+// MARK: - Artist & Contributor String
 
 extension Array where Element == Artist {
 	public func formArtistString() -> String {
@@ -744,6 +745,36 @@ extension Array where Element == Artist {
 		artistString += " & \(artists.last!.name)"
 		
 		return artistString
+	}
+}
+
+extension Array where Element == Contributor {
+	public func formContributorString() -> String {
+		var contributorString: String = ""
+		let contributors = self
+		
+		guard !contributors.isEmpty else {
+			return contributorString
+		}
+		
+		// First
+		contributorString += contributors[0].name
+		
+		guard contributors.count > 1 else {
+			return contributorString
+		}
+		
+		// Middles
+		if contributors.count > 2 {
+			for i in 1 ..< contributors.count - 1 {
+				contributorString += ", \(contributors[i].name)"
+			}
+		}
+		
+		// Last
+		contributorString += " & \(contributors.last!.name)"
+		
+		return contributorString
 	}
 }
 
