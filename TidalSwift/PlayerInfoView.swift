@@ -21,78 +21,49 @@ struct PlayerInfoView: View {
 	var body: some View {
 		VStack {
 			HStack {
-				if !player.queue.isEmpty {
-//					Rectangle()
-					URLImageSourceView(
-						player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: session, resolution: 320)!,
-						isAnimationEnabled: true,
-						label: Text(player.queue[self.playbackInfo.currentIndex].album.title)
-					)
-						.frame(width: 30, height: 30)
-						.onTapGesture {
-							print("Big Cover")
-							// TODO: Open new window with cover
-							let controller = CoverWindowController(rootView:
-//								Rectangle()
-								URLImageSourceView(
-									self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
-									isAnimationEnabled: true,
-									label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
+				if !self.player.queue.isEmpty {
+					HStack {
+						URLImageSourceView(
+							self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320)!,
+							isAnimationEnabled: true,
+							label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
+						)
+							.frame(width: 30, height: 30)
+							.cornerRadius(CORNERRADIUS)
+							.onTapGesture {
+								print("Big Cover")
+								// TODO: Open new window with cover
+								let controller = CoverWindowController(rootView:
+									URLImageSourceView(
+										self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
+										isAnimationEnabled: true,
+										label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
+									)
 								)
-							)
-							controller.window?.title = self.player.queue[self.playbackInfo.currentIndex].album.title
-							controller.showWindow(nil)
+								controller.window?.title = self.player.queue[self.playbackInfo.currentIndex].album.title
+								controller.showWindow(nil)
 						}
-						.contextMenu {
-							Button(action: {
-								self.player.add(track: self.player.queue[self.playbackInfo.currentIndex], .next)
-							}) {
-								Text("Play next")
+						VStack(alignment: .leading) {
+							HStack {
+								Text(self.player.queue[self.playbackInfo.currentIndex].title)
+								Text(self.player.currentQualityString())
+									.fontWeight(.light)
+									.foregroundColor(.orange)
+								Text(self.player.maxQualityString())
+									.fontWeight(.light)
+									.foregroundColor(.gray)
+								
+								
 							}
-							Button(action: {
-								self.player.add(track: self.player.queue[self.playbackInfo.currentIndex], .last)
-							}) {
-								Text("Play last")
-							}
-							Divider()
-							Button(action: {
-								print("Remove from Favorites")
-							}) {
-								Text("Remove from Favorites")
-							}
-							Button(action: {
-								print(" to Playlist …")
-							}) {
-								Text("Add to Playlist …")
-							}
-							Divider()
-							Button(action: {
-								print("Credits")
-							}) {
-								Text("Credits")
-							}
-							Button(action: {
-								print("Share")
-							}) {
-								Text("Share")
-							}
-					}
-					VStack(alignment: .leading) {
-						HStack {
-							Text(player.queue[self.playbackInfo.currentIndex].title)
-							Text(player.currentQualityString())
-								.fontWeight(.light)
-								.foregroundColor(.orange)
-							Text(player.maxQualityString())
-								.fontWeight(.light)
+							Text("\(self.player.queue[self.playbackInfo.currentIndex].artists.formArtistString()) – \(self.player.queue[self.playbackInfo.currentIndex].album.title)")
 								.foregroundColor(.gray)
-							
-							
 						}
-						Text("\(player.queue[self.playbackInfo.currentIndex].artists.formArtistString()) – \(player.queue[self.playbackInfo.currentIndex].album.title)")
-							.foregroundColor(.gray)
+					}
+					.contextMenu {
+						TrackContextMenu(track: self.player.queue[self.playbackInfo.currentIndex], session: self.session, player: self.player)
 					}
 				}
+				
 				Spacer()
 					.layoutPriority(-1)
 				VStack {
@@ -127,12 +98,12 @@ struct PlayerInfoView: View {
 						}
 						Spacer()
 					}
-					ProgressBar(player: player)
+					ProgressBar(player: self.player)
 				}
 				.frame(width: 200)
 				Spacer()
 					.layoutPriority(-1)
-				Slider(value: $volumeSlider, in: 0.0...1.0, onEditingChanged: {changed in
+				Slider(value: self.$volumeSlider, in: 0.0...1.0, onEditingChanged: { changed in
 					if changed {
 						self.player.setVolum(to: Float(self.volumeSlider))
 					}
@@ -144,7 +115,6 @@ struct PlayerInfoView: View {
 			.padding([.top, .horizontal])
 			Divider()
 		}
-		
 	}
 }
 
@@ -155,20 +125,17 @@ struct ProgressBar : View {
 	@Environment(\.colorScheme) var colorScheme: ColorScheme
 	
 	var body: some View {
-		
-//		Text("Ladida")
-		
 		HorizontalValueSlider(value: $playbackInfo.fraction, onEditingChanged: {ended  in
 			if ended {
-//				print("Changed: \(self.playbackInfo.fraction)")
+				//				print("Changed: \(self.playbackInfo.fraction)")
 				self.player.seek(to: Double(self.playbackInfo.fraction))
 			}
 		})
-		.height(5)
-		.thickness(5)
-		.valueColor(.playbackProgressBarForeground(for: colorScheme))
-		.trackColor(.playbackProgressBarBackground(for: colorScheme))
-		.thumbSize(CGSize(width: 0, height: 0))
+			.height(5)
+			.thickness(5)
+			.valueColor(.playbackProgressBarForeground(for: colorScheme))
+			.trackColor(.playbackProgressBarBackground(for: colorScheme))
+			.thumbSize(CGSize(width: 0, height: 0))
 	}
 }
 

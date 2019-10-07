@@ -25,3 +25,7 @@ extension Color {
         }
     }
 }
+
+let CORNERRADIUS: CGFloat = 3
+let SHADOWRADIUS: CGFloat = 3
+let SHADOWY: CGFloat = 3
