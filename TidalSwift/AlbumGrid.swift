@@ -14,30 +14,48 @@ import Grid
 struct AlbumGrid: View {
 	let albums: [Album]
 	let showArtists: Bool
+	let showReleaseDate: Bool
 	let session: Session
 	let player: Player
 	
+	init(albums: [Album], showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
+		self.albums = albums
+		self.showArtists = showArtists
+		self.showReleaseDate = showReleaseDate
+		self.session = session
+		self.player = player
+	}
+	
 	var body: some View {
 		Grid(albums) { album in
-			AlbumGridItem(album: album, showArtist: self.showArtists, session: self.session, player: self.player)
+			AlbumGridItem(album: album, showArtists: self.showArtists, showReleaseDate: self.showReleaseDate, session: self.session, player: self.player)
 		}
 		.padding()
 		.gridStyle(
-			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 210, hSpacing: 5, vSpacing: 5)
+			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: showReleaseDate ? 230 : 210, hSpacing: 5, vSpacing: 5)
 		)
 	}
 }
 
 struct AlbumGridItem: View {
 	let album: Album
-	let showArtist: Bool
+	let showArtists: Bool
+	let showReleaseDate: Bool
 	let session: Session
 	let player: Player
+	
+	init(album: Album, showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
+		self.album = album
+		self.showArtists = showArtists
+		self.showReleaseDate = showReleaseDate
+		self.session = session
+		self.player = player
+	}
 	
 	var body: some View {
 		VStack {
 			if album.getCoverUrl(session: session, resolution: 320) != nil {
-				//				Rectangle()
+//				Rectangle()
 				URLImageSourceView(
 					album.getCoverUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -70,7 +88,7 @@ struct AlbumGridItem: View {
 			Text(album.title)
 				.lineLimit(1)
 				.frame(width: 160)
-			if showArtist {
+			if showArtists {
 				if album.artists != nil {
 					Text(album.artists!.formArtistString())
 						.fontWeight(.light)
@@ -90,6 +108,13 @@ struct AlbumGridItem: View {
 						.lineLimit(1)
 						.frame(width: 160)
 				}
+			}
+			if showReleaseDate && album.releaseDate != nil {
+				Text(DateFormatter.dateOnly.string(from: album.releaseDate!))
+					.fontWeight(.light)
+					.foregroundColor(Color.gray)
+					.lineLimit(1)
+					.frame(width: 160)
 			}
 		}
 		.padding(5)

@@ -75,31 +75,32 @@ struct PlayerInfoView: View {
 					VStack {
 						HStack {
 							Spacer()
-							Text("🔀")
+							Text("􀊝")
 								.onTapGesture {
-									print("Random")
+									print("Shuffle")
 							}
-							Text("⏪")
+							Text("􀊊")
 								.onTapGesture {
 									self.player.previous()
 							}
 							if self.playbackInfo.playing {
-								Text("⏸")
+								Text("􀊆")
 									.onTapGesture {
 										self.player.pause()
 								}
 							} else {
-								Text("▶️")
+								Text("􀊄")
 									.onTapGesture {
 										self.player.play()
 								}
 							}
-							Text("⏩")
+							Text("􀊌")
 								.onTapGesture {
 									self.player.next()
 							}
-							Text("🔁")
+							Text("􀊞") // 􀊟
 								.onTapGesture {
+									print("Repeat")
 									self.player.clearQueue()
 							}
 							Spacer()
@@ -115,7 +116,7 @@ struct PlayerInfoView: View {
 						}
 					})
 						.frame(width: 80)
-					Text("***")
+					Text("􀌮")
 						.onTapGesture {
 							if !self.player.queue.isEmpty {
 								let controller = ResizableWindowController(rootView:
@@ -125,6 +126,14 @@ struct PlayerInfoView: View {
 								controller.window?.title = "\(track.title) – \(track.artists.formArtistString())"
 								controller.showWindow(nil)
 							}
+					}
+					Text("􀋱")
+						.onTapGesture {
+							let controller = ResizableWindowController(rootView:
+								Text("Queue")
+							)
+							controller.window?.title = "Queue"
+							controller.showWindow(nil)
 					}
 				}
 			}
