@@ -71,6 +71,8 @@ struct AlbumGridItem: View {
 						.resizable()
 						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)
+						.cornerRadius(CORNERRADIUS)
+						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 					if album.streamReady != nil && album.streamReady! {
 						Text(album.title)
 							.foregroundColor(.white)
