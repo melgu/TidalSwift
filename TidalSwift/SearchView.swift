@@ -44,8 +44,8 @@ struct SearchView: View {
 					if !searchResult!.videos.isEmpty {
 						SearchViewVideos(videos: searchResult!.videos, session: session, player: player)
 					}
-					if searchResult!.artists.isEmpty && searchResult!.artists.isEmpty && searchResult!.artists.isEmpty &&
-					   searchResult!.artists.isEmpty && searchResult!.artists.isEmpty {
+					if searchResult!.artists.isEmpty && searchResult!.albums.isEmpty && searchResult!.playlists.isEmpty &&
+					   searchResult!.tracks.isEmpty && searchResult!.videos.isEmpty {
 						Text("No Results")
 							.font(.callout)
 					}
@@ -76,6 +76,7 @@ struct SearchViewArtists: View {
 						ArtistGridItem(artist: artist, session: self.session, player: self.player)
 					}
 				}
+				.padding(5)
 			}
 		}
 	}
@@ -98,6 +99,7 @@ struct SearchViewAlbums: View {
 						AlbumGridItem(album: album, showArtist: true, session: self.session, player: self.player)
 					}
 				}
+				.padding(5)
 			}
 		}
 	}
@@ -120,6 +122,7 @@ struct SearchViewPlaylists: View {
 						PlaylistGridItem(playlist: playlist, session: self.session, player: self.player)
 					}
 				}
+				.padding(5)
 			}
 		}
 	}
@@ -139,9 +142,10 @@ struct SearchViewTracks: View {
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
 					ForEach(tracks) { track in
-						TrackGridItem(track: track, session: self.session, player: self.player)
+						TrackGridItem(track: track, showArtist: true, session: self.session, player: self.player)
 					}
 				}
+				.padding(5)
 			}
 		}
 	}
@@ -164,6 +168,7 @@ struct SearchViewVideos: View {
 						VideoGridItem(video: video, showArtist: true, session: self.session, player: self.player)
 					}
 				}
+				.padding(5)
 			}
 		}
 	}
