@@ -116,6 +116,16 @@ struct PlayerInfoView: View {
 					})
 						.frame(width: 80)
 					Text("***")
+						.onTapGesture {
+							if !self.player.queue.isEmpty {
+								let controller = ResizableWindowController(rootView:
+									LyricsView(track: self.player.queue[self.playbackInfo.currentIndex])
+								)
+								let track = self.player.queue[self.playbackInfo.currentIndex]
+								controller.window?.title = "\(track.title) – \(track.artists.formArtistString())"
+								controller.showWindow(nil)
+							}
+					}
 				}
 			}
 			.frame(height: 30)

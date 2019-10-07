@@ -19,40 +19,42 @@ struct ArtistBioView: View {
 	}
 	
 	var body: some View {
-		VStack(alignment: .leading) {
-			HStack {
-				Text(artist.name)
-					.font(.title)
-					.padding(.bottom)
-				Spacer(minLength: 0)
-			}
-			if bio != nil {
-				Group {
-					Text(bio!.text)
-					Text("")
-					Text("\(bio!.source) – Last Updated: \(bio!.lastUpdatedString)")
-						.foregroundColor(.gray)
-						.multilineTextAlignment(.center)
+		ScrollView {
+			VStack(alignment: .leading) {
+				HStack {
+					Text(artist.name)
+						.font(.title)
+						.padding(.bottom)
+					Spacer(minLength: 0)
 				}
-				.contextMenu {
-					if bio != nil {
-						Button(action: {
-							print("Copy")
-							let pb = NSPasteboard.init(name: NSPasteboard.Name.general)
-							pb.declareTypes([.string], owner: nil)
-							pb.setString(self.bio!.text, forType: .string)
-						}) {
-							Text("Copy")
+				if bio != nil {
+					Group {
+						Text(bio!.text)
+						Text("")
+						Text("\(bio!.source) – Last Updated: \(bio!.lastUpdatedString)")
+							.foregroundColor(.gray)
+							.multilineTextAlignment(.center)
+					}
+					.contextMenu {
+						if bio != nil {
+							Button(action: {
+								print("Copy")
+								let pb = NSPasteboard.init(name: NSPasteboard.Name.general)
+								pb.declareTypes([.string], owner: nil)
+								pb.setString(self.bio!.text, forType: .string)
+							}) {
+								Text("Copy")
+							}
 						}
 					}
+				} else {
+					Text("No Bio available")
+						.foregroundColor(.gray)
 				}
-			} else {
-				Text("No Bio available")
-					.foregroundColor(.gray)
+				Spacer(minLength: 0)
 			}
-			Spacer(minLength: 0)
+			.padding()
 		}
-		.padding()
 	}
 }
 
