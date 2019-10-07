@@ -96,7 +96,7 @@ struct SearchViewAlbums: View {
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
 					ForEach(albums) { album in
-						AlbumGridItem(album: album, showArtist: true, session: self.session, player: self.player)
+						AlbumGridItem(album: album, showArtists: true, session: self.session, player: self.player)
 					}
 				}
 				.padding(5)
