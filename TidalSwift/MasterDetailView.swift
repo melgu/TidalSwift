@@ -74,7 +74,6 @@ struct DetailView: View {
 	var body: some View {
 		VStack {
 			PlayerInfoView(session: session, player: player)
-//			PlayerView()
 			HStack {
 				// Search
 				if viewType == "Search" {
