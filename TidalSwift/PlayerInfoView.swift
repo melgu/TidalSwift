@@ -20,96 +20,103 @@ struct PlayerInfoView: View {
 	
 	var body: some View {
 		VStack {
-			HStack {
-				if !self.player.queue.isEmpty {
+			GeometryReader { metrics in
+				HStack {
 					HStack {
-						URLImageSourceView(
-							self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320)!,
-							isAnimationEnabled: true,
-							label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
-						)
-							.frame(width: 30, height: 30)
-							.cornerRadius(CORNERRADIUS)
-							.onTapGesture {
-								print("Big Cover")
-								// TODO: Open new window with cover
-								let controller = CoverWindowController(rootView:
-									URLImageSourceView(
-										self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
-										isAnimationEnabled: true,
-										label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
-									)
-								)
-								controller.window?.title = self.player.queue[self.playbackInfo.currentIndex].album.title
-								controller.showWindow(nil)
-						}
-						VStack(alignment: .leading) {
+						if !self.player.queue.isEmpty {
 							HStack {
-								Text(self.player.queue[self.playbackInfo.currentIndex].title)
-								Text(self.player.currentQualityString())
-									.fontWeight(.light)
-									.foregroundColor(.orange)
-								Text(self.player.maxQualityString())
-									.fontWeight(.light)
-									.foregroundColor(.gray)
-								
-								
+								URLImageSourceView(
+									self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320)!,
+									isAnimationEnabled: true,
+									label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
+								)
+									.frame(width: 30, height: 30)
+									.cornerRadius(CORNERRADIUS)
+									.onTapGesture {
+										print("Big Cover")
+										// TODO: Open new window with cover
+										let controller = CoverWindowController(rootView:
+											URLImageSourceView(
+												self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
+												isAnimationEnabled: true,
+												label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
+											)
+										)
+										controller.window?.title = self.player.queue[self.playbackInfo.currentIndex].album.title
+										controller.showWindow(nil)
+								}
+								VStack(alignment: .leading) {
+									HStack {
+										Text(self.player.queue[self.playbackInfo.currentIndex].title)
+										Text(self.player.currentQualityString())
+											.fontWeight(.light)
+											.foregroundColor(.orange)
+										Text(self.player.maxQualityString())
+											.fontWeight(.light)
+											.foregroundColor(.gray)
+										
+										
+									}
+									Text("\(self.player.queue[self.playbackInfo.currentIndex].artists.formArtistString()) – \(self.player.queue[self.playbackInfo.currentIndex].album.title)")
+										.foregroundColor(.gray)
+								}
+								Spacer()
+									.layoutPriority(-1)
 							}
-							Text("\(self.player.queue[self.playbackInfo.currentIndex].artists.formArtistString()) – \(self.player.queue[self.playbackInfo.currentIndex].album.title)")
-								.foregroundColor(.gray)
-						}
-					}
-					.contextMenu {
-						TrackContextMenu(track: self.player.queue[self.playbackInfo.currentIndex], session: self.session, player: self.player)
-					}
-				}
-				
-				Spacer()
-					.layoutPriority(-1)
-				VStack {
-					HStack {
-						Spacer()
-						Text("🔀")
-							.onTapGesture {
-								print("Random")
-						}
-						Text("⏪")
-							.onTapGesture {
-								self.player.previous()
-						}
-						if self.playbackInfo.playing {
-							Text("⏸")
-								.onTapGesture {
-									self.player.pause()
+							.contextMenu {
+								TrackContextMenu(track: self.player.queue[self.playbackInfo.currentIndex], session: self.session, player: self.player)
 							}
 						} else {
-							Text("▶️")
+							Spacer()
+						}
+					}
+					.frame(width: metrics.size.width / 3)
+					
+					VStack {
+						HStack {
+							Spacer()
+							Text("🔀")
 								.onTapGesture {
-									self.player.play()
+									print("Random")
 							}
+							Text("⏪")
+								.onTapGesture {
+									self.player.previous()
+							}
+							if self.playbackInfo.playing {
+								Text("⏸")
+									.onTapGesture {
+										self.player.pause()
+								}
+							} else {
+								Text("▶️")
+									.onTapGesture {
+										self.player.play()
+								}
+							}
+							Text("⏩")
+								.onTapGesture {
+									self.player.next()
+							}
+							Text("🔁")
+								.onTapGesture {
+									self.player.clearQueue()
+							}
+							Spacer()
 						}
-						Text("⏩")
-							.onTapGesture {
-								self.player.next()
-						}
-						Text("🔁")
-							.onTapGesture {
-								self.player.clearQueue()
-						}
-						Spacer()
+						ProgressBar(player: self.player)
 					}
-					ProgressBar(player: self.player)
+					.frame(width: 200)
+					Spacer()
+						.layoutPriority(-1)
+					Slider(value: self.$volumeSlider, in: 0.0...1.0, onEditingChanged: { changed in
+						if changed {
+							self.player.setVolum(to: Float(self.volumeSlider))
+						}
+					})
+						.frame(width: 80)
+					Text("***")
 				}
-				.frame(width: 200)
-				Spacer()
-					.layoutPriority(-1)
-				Slider(value: self.$volumeSlider, in: 0.0...1.0, onEditingChanged: { changed in
-					if changed {
-						self.player.setVolum(to: Float(self.volumeSlider))
-					}
-				})
-					.frame(width: 80)
-				Text("***")
 			}
 			.frame(height: 30)
 			.padding([.top, .horizontal])
