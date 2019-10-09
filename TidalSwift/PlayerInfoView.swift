@@ -17,6 +17,8 @@ struct PlayerInfoView: View {
 	
 	@EnvironmentObject var playbackInfo: PlaybackInfo
 	@State var volumeSlider = 1.0
+	@State var previousValue = 1.0
+	@State var muted = false
 	
 	var body: some View {
 		VStack {
@@ -109,13 +111,30 @@ struct PlayerInfoView: View {
 					}
 					.frame(width: 200)
 					Spacer()
-						.layoutPriority(-1)
-					Slider(value: self.$volumeSlider, in: 0.0...1.0, onEditingChanged: { changed in
-						if changed {
-							self.player.setVolum(to: Float(self.volumeSlider))
+					HStack {
+						Text(self.speakerSymbol())
+							.frame(width: 20, alignment: .leading)
+							.onTapGesture {
+								print("Mute")
+								if self.muted {
+									self.volumeSlider = self.previousValue
+								} else {
+									self.previousValue = self.volumeSlider
+									self.volumeSlider = 0
+								}
+								self.player.setVolume(to: Float(self.volumeSlider))
+								self.muted.toggle()
 						}
-					})
-						.frame(width: 80)
+						Slider(value: self.$volumeSlider, in: 0.0...1.0, onEditingChanged: { changed in
+							if changed {
+								self.muted = false
+								self.player.setVolume(to: Float(self.volumeSlider))
+							}
+						})
+							.frame(width: 80)
+					}
+					.layoutPriority(1)
+					Spacer()
 					Text("􀌮")
 						.onTapGesture {
 							if !self.player.queue.isEmpty {
@@ -140,6 +159,18 @@ struct PlayerInfoView: View {
 			.frame(height: 30)
 			.padding([.top, .horizontal])
 			Divider()
+		}
+	}
+	
+	func speakerSymbol() -> String {
+		if volumeSlider > 0.66 {
+			return "􀊩"
+		} else if volumeSlider > 0.33 {
+			return "􀊧"
+		} else if volumeSlider > 0 {
+			return "􀊥"
+		} else {
+			return "􀊡" // or 􀊣
 		}
 	}
 }
