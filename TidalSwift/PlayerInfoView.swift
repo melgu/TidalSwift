@@ -125,15 +125,22 @@ struct PlayerInfoView: View {
 								self.player.setVolume(to: Float(self.volumeSlider))
 								self.muted.toggle()
 						}
-						Slider(value: self.$volumeSlider, in: 0.0...1.0, onEditingChanged: { changed in
+						HorizontalValueSlider(value: self.$volumeSlider, in: 0.0...1.0, onEditingChanged: { changed  in
 							if changed {
 								self.muted = false
 								self.player.setVolume(to: Float(self.volumeSlider))
 							}
 						})
+							.trackColor(.gray)
+							.valueColor(.gray)
+							.thumbSize(CGSize(width: 15, height: 15))
+							.thumbBorderWidth(0.5)
+							.thumbBorderColor(Color(hue: 0, saturation: 0, brightness: 0.7))
+							.thumbShadowRadius(0)
+							.thumbShadowColor(Color(.displayP3, white: 0, opacity: 0.2))
 							.frame(width: 80)
+							.layoutPriority(1)
 					}
-					.layoutPriority(1)
 					Spacer()
 					Text("􀌮")
 						.onTapGesture {
