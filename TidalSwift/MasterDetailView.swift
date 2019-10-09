@@ -21,7 +21,7 @@ struct MasterDetailView: View {
 		NavigationView {
 			MasterView(session: session, selection: $selection, searchText: $searchText, fixedSearchText: $fixedSearchText)
 			DetailView(viewType: selection ?? "", session: session, player: player, fixedSearchText: $fixedSearchText)
-				.frame(minWidth: 510)
+				.frame(minWidth: 570)
 		}
 		.frame(minHeight: 200)
 	}

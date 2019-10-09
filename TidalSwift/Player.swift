@@ -249,7 +249,7 @@ class Player {
 		return r
 	}
 	
-	func setVolum(to volume: Float) {
+	func setVolume(to volume: Float) {
 		avPlayer.volume = volume
 	}
 	
