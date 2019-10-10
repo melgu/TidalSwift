@@ -14,11 +14,10 @@ import Grid
 struct ContentView: View {
 	let session: Session
 	let player: Player
-	let playbackInfo: PlaybackInfo
 	
 	var body: some View {
 		MasterDetailView(session: session, player: player)
-			.environmentObject(playbackInfo)
+			.environmentObject(player.playbackInfo)
 	}
 }
 

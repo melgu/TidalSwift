@@ -19,20 +19,20 @@ struct MasterDetailView: View {
 	
 	var body: some View {
 		NavigationView {
-			MasterView(session: session, selection: $selection, searchText: $searchText, fixedSearchText: $fixedSearchText)
-			DetailView(viewType: selection ?? "", session: session, player: player, fixedSearchText: $fixedSearchText)
-				.frame(minWidth: 570)
+			MasterView(selection: $selection, searchText: $searchText, fixedSearchText: $fixedSearchText, session: session)
+			DetailView(viewType: selection ?? "", fixedSearchText: $fixedSearchText, session: session, player: player)
+				.frame(minWidth: 580)
 		}
 		.frame(minHeight: 200)
 	}
 }
 
 struct MasterView: View {
-	let session: Session
-	
 	@Binding var selection: String?
 	@Binding var searchText: String
 	@Binding var fixedSearchText: String
+	
+	let session: Session
 	
 	private let news = ["New Releases"]
 	private let favorites = ["Playlists", "Albums", "Tracks", "Videos", "Artists"]
@@ -43,8 +43,9 @@ struct MasterView: View {
 				print(self.searchText)
 				self.fixedSearchText = self.searchText
 				self.selection = "Search"
+//				let window = (NSApp.delegate as? AppDelegate)?.window
+//				window?.makeFirstResponder(window?.initialFirstResponder)
 			})
-//			TextField("Search", text: $searchText)
 				.textFieldStyle(RoundedBorderTextFieldStyle())
 				.padding(.top, 10)
 				.padding([.leading, .trailing], 5)
@@ -66,10 +67,10 @@ struct MasterView: View {
 
 struct DetailView: View {
 	var viewType: String
+	@Binding var fixedSearchText: String
+	
 	let session: Session
 	let player: Player
-	
-	@Binding var fixedSearchText: String
 	
 	var body: some View {
 		VStack {

@@ -15,6 +15,14 @@ struct LyricsObject: Decodable {
 }
 
 class Lyrics {
+	static func showLyrics(for track: Track) {
+		let controller = ResizableWindowController(rootView:
+			LyricsView(track: track)
+		)
+		controller.window?.title = "\(track.title) – \(track.artists.formArtistString())"
+		controller.showWindow(nil)
+	}
+	
 	static func getLyrics(for track: Track) -> String {
 		guard let artist = track.artists.first else {
 			return ""
