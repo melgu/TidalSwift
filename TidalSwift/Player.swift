@@ -18,6 +18,7 @@ class Player {
 	public let playbackInfo = PlaybackInfo()
 	
 	public var queue = [Track]()
+	private var nonShuffledQueue = [Track]()
 	
 	private var timeObserverToken: Any?
 	
@@ -32,6 +33,7 @@ class Player {
 		}
 		
 		_ = playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: setVolume(to:))
+		_ = playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffle(enabled:))
 	}
 	
 	deinit {
@@ -124,6 +126,20 @@ class Player {
 		}
 	}
 	
+	func shuffle(enabled: Bool) {
+		if queue.isEmpty {
+			return
+		}
+		if enabled {
+			nonShuffledQueue = queue
+			queue = queue[0...playbackInfo.currentIndex] + queue[playbackInfo.currentIndex+1..<queue.count].shuffled()
+		} else {
+			let i = nonShuffledQueue.firstIndex(where: { $0 == queue[playbackInfo.currentIndex] })!
+			queue = nonShuffledQueue
+			playbackInfo.currentIndex = i
+		}
+	}
+	
 	func seek(to percentage: Double) {
 		guard let currentItem = avPlayer.currentItem else {
 			return
@@ -211,7 +227,12 @@ class Player {
 			return
 		}
 		clearQueue()
-		addLast(tracks: tracks)
+		if playbackInfo.shuffle {
+			nonShuffledQueue = tracks
+			addLast(tracks: tracks.shuffled())
+		} else {
+			addLast(tracks: tracks)
+		}
 		print("addNow(): \(queue.count)")
 		play()
 	}
@@ -220,6 +241,7 @@ class Player {
 		if tracks.isEmpty {
 			return
 		}
+		nonShuffledQueue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
 		if queue.isEmpty {
 			queue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
 			avSetItem(from: queue[0])
@@ -234,6 +256,10 @@ class Player {
 			return
 		}
 		let wasEmtpy = queue.isEmpty
+		
+		if !playbackInfo.shuffle {
+			nonShuffledQueue.append(contentsOf: tracks)
+		}
 		
 		queue.append(contentsOf: tracks)
 		if wasEmtpy {
@@ -253,6 +279,7 @@ class Player {
 		playbackInfo.currentIndex = 0
 		avPlayer.replaceCurrentItem(with: nil)
 		queue.removeAll()
+		nonShuffledQueue.removeAll()
 		
 		playbackInfo.playing = false
 	}
