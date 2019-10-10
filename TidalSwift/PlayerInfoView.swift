@@ -16,9 +16,6 @@ struct PlayerInfoView: View {
 	let player: Player
 	
 	@EnvironmentObject var playbackInfo: PlaybackInfo
-	@State var volumeSlider = 1.0
-	@State var previousValue = 1.0
-	@State var muted = false
 	
 	var body: some View {
 		VStack {
@@ -36,7 +33,6 @@ struct PlayerInfoView: View {
 									.cornerRadius(CORNERRADIUS)
 									.onTapGesture {
 										print("Big Cover")
-										// TODO: Open new window with cover
 										let controller = CoverWindowController(rootView:
 											URLImageSourceView(
 												self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
@@ -79,8 +75,9 @@ struct PlayerInfoView: View {
 							Spacer()
 							Text("􀊝")
 								.onTapGesture {
-									print("Shuffle")
+									self.playbackInfo.shuffle.toggle()
 							}
+							.foregroundColor(self.playbackInfo.shuffle ? .blue : .black)
 							Text("􀊊")
 								.onTapGesture {
 									self.player.previous()
@@ -100,11 +97,12 @@ struct PlayerInfoView: View {
 								.onTapGesture {
 									self.player.next()
 							}
-							Text("􀊞") // 􀊟
+							Text(self.playbackInfo.repeatState == .single ? "􀊟" : "􀊞")
 								.onTapGesture {
 									print("Repeat")
-									self.player.clearQueue()
+									self.player.playbackInfo.repeatState = self.player.playbackInfo.repeatState.next()
 							}
+							.foregroundColor(self.playbackInfo.repeatState == .off ? .black : .blue)
 							Spacer()
 						}
 						ProgressBar(player: self.player)
@@ -115,22 +113,9 @@ struct PlayerInfoView: View {
 						Text(self.speakerSymbol())
 							.frame(width: 20, alignment: .leading)
 							.onTapGesture {
-								print("Mute")
-								if self.muted {
-									self.volumeSlider = self.previousValue
-								} else {
-									self.previousValue = self.volumeSlider
-									self.volumeSlider = 0
-								}
-								self.player.setVolume(to: Float(self.volumeSlider))
-								self.muted.toggle()
+								self.player.toggleMute()
 						}
-						HorizontalValueSlider(value: self.$volumeSlider, in: 0.0...1.0, onEditingChanged: { changed  in
-							if changed {
-								self.muted = false
-								self.player.setVolume(to: Float(self.volumeSlider))
-							}
-						})
+						HorizontalValueSlider(value: self.$playbackInfo.volume, in: 0.0...1.0)
 							.trackColor(.gray)
 							.valueColor(.gray)
 							.thumbSize(CGSize(width: 15, height: 15))
@@ -145,12 +130,7 @@ struct PlayerInfoView: View {
 					Text("􀌮")
 						.onTapGesture {
 							if !self.player.queue.isEmpty {
-								let controller = ResizableWindowController(rootView:
-									LyricsView(track: self.player.queue[self.playbackInfo.currentIndex])
-								)
-								let track = self.player.queue[self.playbackInfo.currentIndex]
-								controller.window?.title = "\(track.title) – \(track.artists.formArtistString())"
-								controller.showWindow(nil)
+								Lyrics.showLyrics(for: self.player.queue[self.playbackInfo.currentIndex])
 							}
 					}
 					Text("􀋱")
@@ -170,11 +150,11 @@ struct PlayerInfoView: View {
 	}
 	
 	func speakerSymbol() -> String {
-		if volumeSlider > 0.66 {
+		if playbackInfo.volume > 0.66 {
 			return "􀊩"
-		} else if volumeSlider > 0.33 {
+		} else if playbackInfo.volume > 0.33 {
 			return "􀊧"
-		} else if volumeSlider > 0 {
+		} else if playbackInfo.volume > 0 {
 			return "􀊥"
 		} else {
 			return "􀊡" // or 􀊣

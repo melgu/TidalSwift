@@ -67,38 +67,38 @@
                                         <menuItem title="Download Track" id="Fwz-Jp-eyW">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="newDocument:" target="Ady-hI-5gd" id="PRs-ba-zTu"/>
+                                                <action selector="downloadTrack:" target="Voe-Tx-rLC" id="hQc-hb-TY6"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Download Album" id="XlS-7R-GwC">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="oS9-Ns-k1N"/>
+                                                <action selector="downloadAlbum:" target="Voe-Tx-rLC" id="KWP-BD-JdT"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Download Playlist" id="vsC-RH-WJL">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="mym-XR-3B4"/>
+                                                <action selector="downloadPlaylist:" target="Voe-Tx-rLC" id="X6w-8a-NAl"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="TAy-FD-ADh"/>
-                                        <menuItem title="Add Album to Offline" id="mZ6-G2-eZo">
+                                        <menuItem title="Album Offline" id="mZ6-G2-eZo">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="fRq-ba-com"/>
+                                                <action selector="albumToggleOffline:" target="Voe-Tx-rLC" id="mKE-J8-aui"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Add Track to Offline" id="mfY-SC-fQc">
+                                        <menuItem title="Track Offline" id="mfY-SC-fQc">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="newDocument:" target="Ady-hI-5gd" id="FAI-L5-eSg"/>
+                                                <action selector="trackToggleOffline:" target="Voe-Tx-rLC" id="Y1b-jq-skx"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Add Playlist to Offline" id="AsP-6Z-Yp5">
+                                        <menuItem title="Playlist Offline" id="AsP-6Z-Yp5">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="DuR-Rb-vcD"/>
+                                                <action selector="playlistToggleOffline:" target="Voe-Tx-rLC" id="QGQ-nI-pOK"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -140,43 +140,59 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
-                                        <menuItem title="Find" keyEquivalent="f" id="4EN-yA-p0u"/>
+                                        <menuItem title="Find" keyEquivalent="f" id="4EN-yA-p0u">
+                                            <connections>
+                                                <action selector="find:" target="Voe-Tx-rLC" id="tMQ-6B-34F"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
                             <menuItem title="Track" id="YPO-DE-1yS" userLabel="Track">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Track" id="bfQ-c5-SV0">
+                                <menu key="submenu" title="Track" autoenablesItems="NO" id="bfQ-c5-SV0">
                                     <items>
                                         <menuItem title="Go to Album" id="f16-Gd-3QD">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="newDocument:" target="Ady-hI-5gd" id="V9k-Ud-YVk"/>
+                                                <action selector="goToAlbum:" target="Voe-Tx-rLC" id="Y9c-9u-XTu"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Go to Artist" id="aZC-T4-e8V">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="HZm-jT-G0B"/>
+                                                <action selector="goToArtist:" target="Voe-Tx-rLC" id="Sfa-MW-43F"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="Oqi-Fc-NFF"/>
                                         <menuItem title="Add to Favorites" id="WTv-Dr-nfO">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="wzo-u0-VEZ"/>
+                                                <action selector="addToFavorites:" target="Voe-Tx-rLC" id="dAK-4W-udF"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Remove from Favorites" state="on" id="SH1-du-oJp">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="removeFromFavorites:" target="Voe-Tx-rLC" id="wZt-HP-EtW"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Add to Playlist ..." id="ulu-QT-2bW">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="uXc-oc-Bss"/>
+                                                <action selector="addToPlaylist:" target="Voe-Tx-rLC" id="hTB-1f-fhQ"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Add Album to Favorites" id="u3O-vA-1O9">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="mpO-SK-nk0"/>
+                                                <action selector="albumAddFavorites:" target="Voe-Tx-rLC" id="yqR-OT-nkW"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Remove Album from Favorites" state="on" id="hRK-XZ-tco">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="albumRemoveFavorites:" target="Voe-Tx-rLC" id="qnx-i7-kcv"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -186,69 +202,81 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Control" id="fit-ig-8a2">
                                     <items>
-                                        <menuItem title="Play / Pause" keyEquivalent="s" id="qju-kD-hsU">
+                                        <menuItem title="Play" keyEquivalent=" " id="qju-kD-hsU">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES"/>
                                             <connections>
-                                                <action selector="newDocument:" target="Ady-hI-5gd" id="EhG-gB-tUq"/>
+                                                <action selector="play:" target="Voe-Tx-rLC" id="KdU-rg-kJN"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Stop" keyEquivalent="." id="sXL-C7-UwI">
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="21s-0Z-DqQ"/>
+                                                <action selector="stop:" target="Voe-Tx-rLC" id="Ebo-3R-Byc"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Next" keyEquivalent="" id="7bG-at-qzK">
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="uAZ-cs-lYi"/>
+                                                <action selector="next:" target="Voe-Tx-rLC" id="VtX-Ib-Sxd"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Previous" keyEquivalent="" id="rfl-F7-3Bh">
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="ZPc-Nh-GAP"/>
+                                                <action selector="previous:" target="Voe-Tx-rLC" id="YQh-Af-dZE"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="jrQ-x0-I8q"/>
                                         <menuItem title="Increase Volume" keyEquivalent="" id="MOA-9M-OUA">
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="reH-7y-Jru"/>
+                                                <action selector="increaseVolume:" target="Voe-Tx-rLC" id="DZh-4i-NxC"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Decrease Volume" keyEquivalent="" id="GbO-dk-sqS">
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="kCy-4e-63T"/>
+                                                <action selector="decreaseVolume:" target="Voe-Tx-rLC" id="KxS-A8-Ijp"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Mute" id="EJc-FY-8Q5">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="mute:" target="Voe-Tx-rLC" id="Inz-AV-Khi"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="ftz-FW-wZZ"/>
                                         <menuItem title="Shuffle" id="TVq-ul-LaF">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="fe2-Pq-mKa"/>
+                                                <action selector="shuffle:" target="Voe-Tx-rLC" id="HZn-YP-6HU"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Repeat" id="LEj-9a-dVJ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <menu key="submenu" title="Track" id="pWt-Wo-cqU">
                                                 <items>
                                                     <menuItem title="Off" id="1X7-YC-z9d">
                                                         <modifierMask key="keyEquivalentModifierMask"/>
                                                         <connections>
-                                                            <action selector="newDocument:" target="Ady-hI-5gd" id="hXe-x5-sMs"/>
+                                                            <action selector="repeatOff:" target="Voe-Tx-rLC" id="Jlu-TR-46x"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="All" id="YcN-On-ZgD">
                                                         <modifierMask key="keyEquivalentModifierMask"/>
                                                         <connections>
-                                                            <action selector="openDocument:" target="Ady-hI-5gd" id="2Av-wW-6Qt"/>
+                                                            <action selector="repeatAll:" target="Voe-Tx-rLC" id="w4d-Vk-r59"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="Single" id="ftc-tj-DHT">
                                                         <modifierMask key="keyEquivalentModifierMask"/>
                                                         <connections>
-                                                            <action selector="openDocument:" target="Ady-hI-5gd" id="NhB-FN-jEY"/>
+                                                            <action selector="repeatSingle:" target="Voe-Tx-rLC" id="iJ0-eD-dZY"/>
                                                         </connections>
                                                     </menuItem>
                                                 </items>
                                             </menu>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="Y10-5D-Uc4"/>
+                                        <menuItem title="Clear Queue" id="sI7-lB-3s2">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="SXB-tt-K2p"/>
+                                                <action selector="clearQueue:" target="Voe-Tx-rLC" id="xlg-IN-s9a"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -260,9 +288,15 @@
                                     <items>
                                         <menuItem title="Account Info" id="Ui9-ZL-aHi">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="accountInfo:" target="Voe-Tx-rLC" id="oir-Cb-bFF"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem title="Logout" id="EVe-69-XrZ">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="logout:" target="Voe-Tx-rLC" id="XcD-d4-fyY"/>
+                                            </connections>
                                         </menuItem>
                                     </items>
                                 </menu>
@@ -271,6 +305,19 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="View" id="HyV-fh-RgO">
                                     <items>
+                                        <menuItem title="Lyrics" id="PP0-UT-15s">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="lyrics:" target="Voe-Tx-rLC" id="WUn-Qp-7Iy"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Queue" id="JNV-9r-eZc">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="queue:" target="Voe-Tx-rLC" id="GQ9-SM-c6a"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="ziq-vb-GMY"/>
                                         <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>
@@ -342,7 +389,26 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="TidalSwift" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="TidalSwift" customModuleProvider="target">
+                    <connections>
+                        <outlet property="addToFavorites" destination="WTv-Dr-nfO" id="Ek3-cj-Aag"/>
+                        <outlet property="addToPlaylist" destination="ulu-QT-2bW" id="MS8-MH-mzh"/>
+                        <outlet property="albumAddFavorites" destination="u3O-vA-1O9" id="T6N-KI-VWN"/>
+                        <outlet property="albumRemoveFavorites" destination="hRK-XZ-tco" id="0Dv-Cd-Azs"/>
+                        <outlet property="albumToggleOffline" destination="mZ6-G2-eZo" id="rdR-k4-4KT"/>
+                        <outlet property="goToAlbum" destination="f16-Gd-3QD" id="lqr-La-wCe"/>
+                        <outlet property="goToArtist" destination="aZC-T4-e8V" id="flN-ka-6n6"/>
+                        <outlet property="mute" destination="EJc-FY-8Q5" id="QuD-KR-PQq"/>
+                        <outlet property="play" destination="qju-kD-hsU" id="iVO-B9-1FG"/>
+                        <outlet property="playlistToggleOffline" destination="AsP-6Z-Yp5" id="mHg-L7-a2r"/>
+                        <outlet property="removeFromFavorites" destination="SH1-du-oJp" id="4bF-Bj-FUN"/>
+                        <outlet property="repeatAll" destination="YcN-On-ZgD" id="Y6a-a0-QDD"/>
+                        <outlet property="repeatOff" destination="1X7-YC-z9d" id="3eA-k9-Jd4"/>
+                        <outlet property="repeatSingle" destination="ftc-tj-DHT" id="cjw-gt-Qay"/>
+                        <outlet property="shuffle" destination="TVq-ul-LaF" id="7TP-Bh-zOu"/>
+                        <outlet property="trackToggleOffline" destination="mfY-SC-fQc" id="0rU-pC-V36"/>
+                    </connections>
+                </customObject>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

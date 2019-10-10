@@ -19,7 +19,9 @@ class Player {
 	
 	public var queue = [Track]()
 	
-	var timeObserverToken: Any?
+	private var timeObserverToken: Any?
+	
+	private var previousValue: Float = 1.0
 	
 	init(session: Session, autoplayAfterAddNow: Bool = true) {
 		self.session = session
@@ -28,6 +30,8 @@ class Player {
 		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: nil) { [weak self] time in
 			self?.playbackInfo.fraction = CGFloat(self!.fraction())
 		}
+		
+		_ = playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: setVolume(to:))
 	}
 	
 	deinit {
@@ -55,6 +59,20 @@ class Player {
 	func pause() {
 		avPlayer.pause()
 		playbackInfo.playing = false
+		
+	}
+	
+	func togglePlay() {
+		if playbackInfo.playing {
+			pause()
+		} else {
+			play()
+		}
+	}
+	
+	func stop() {
+		pause()
+		seek(to: 0)
 	}
 	
 	func previous() {
@@ -80,13 +98,23 @@ class Player {
 	}
 	
 	func next() {
-		if playbackInfo.currentIndex >= queue.count - 1 {
-			print("next(): \(playbackInfo.currentIndex) Last - \(queueCount())")
-			pause()
-			avPlayer.seek(to: CMTime(seconds: 0, preferredTimescale: 1))
+		if playbackInfo.repeatState == .single {
+			seek(to: 0)
+			play()
 			return
 		}
-		playbackInfo.currentIndex += 1
+		
+		if playbackInfo.currentIndex >= queue.count - 1 {
+			print("next(): \(playbackInfo.currentIndex) Last - \(queueCount())")
+			if playbackInfo.repeatState == .all {
+				playbackInfo.currentIndex = 0
+			} else {
+				pause()
+				seek(to: 0)
+			}
+		} else {
+			playbackInfo.currentIndex += 1
+		}
 		if queue[playbackInfo.currentIndex].streamReady {
 			print("next(): \(playbackInfo.currentIndex) - \(queueCount())")
 			avSetItem(from: queue[playbackInfo.currentIndex])
@@ -124,7 +152,6 @@ class Player {
 	
 	@objc func playerDidFinishPlaying(sender: Notification) {
 		print("Song finished playing")
-		
 		next()
 	}
 	
@@ -251,6 +278,31 @@ class Player {
 	
 	func setVolume(to volume: Float) {
 		avPlayer.volume = volume
+	}
+	
+	func increaseVolume() {
+		var newVolume = playbackInfo.volume + 0.1
+		if newVolume > 1 {
+			newVolume = 1
+		}
+		playbackInfo.volume = newVolume
+	}
+	
+	func decreaseVolume() {
+		var newVolume = playbackInfo.volume - 0.1
+		if newVolume < 0 {
+			newVolume = 0
+		}
+		playbackInfo.volume = newVolume
+	}
+	
+	func toggleMute() {
+		if playbackInfo.volume == 0 {
+			playbackInfo.volume = previousValue
+		} else {
+			previousValue = playbackInfo.volume
+			playbackInfo.volume = 0
+		}
 	}
 	
 	func currentQualityString() -> String {
