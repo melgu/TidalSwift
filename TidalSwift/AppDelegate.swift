@@ -135,12 +135,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var addToFavorites: NSMenuItem!
 	@IBAction func addToFavorites(_ sender: Any) {
-		session.favorites?.addTrack(trackId: player.queue[player.playbackInfo.currentIndex].id)
+		session.favorites?.addTrack(trackId: player.playbackInfo.queue[player.playbackInfo.currentIndex].id)
 		favoriteLabel(currentIndex: player.playbackInfo.currentIndex)
 	}
 	@IBOutlet weak var removeFromFavorites: NSMenuItem!
 	@IBAction func removeFromFavorites(_ sender: Any) {
-		session.favorites?.removeTrack(trackId: player.queue[player.playbackInfo.currentIndex].id)
+		session.favorites?.removeTrack(trackId: player.playbackInfo.queue[player.playbackInfo.currentIndex].id)
 		favoriteLabel(currentIndex: player.playbackInfo.currentIndex)
 	}
 	
@@ -150,17 +150,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBOutlet weak var albumAddFavorites: NSMenuItem!
 	@IBAction func albumAddFavorites(_ sender: Any) {
-		session.favorites?.addAlbum(albumId: player.queue[player.playbackInfo.currentIndex].album.id)
+		session.favorites?.addAlbum(albumId: player.playbackInfo.queue[player.playbackInfo.currentIndex].album.id)
 		favoriteLabel(currentIndex: player.playbackInfo.currentIndex)
 	}
 	@IBOutlet weak var albumRemoveFavorites: NSMenuItem!
 	@IBAction func albumRemoveFavorites(_ sender: Any) {
-		session.favorites?.removeAlbum(albumId: player.queue[player.playbackInfo.currentIndex].album.id)
+		session.favorites?.removeAlbum(albumId: player.playbackInfo.queue[player.playbackInfo.currentIndex].album.id)
 		favoriteLabel(currentIndex: player.playbackInfo.currentIndex)
 	}
 	
 	func favoriteLabel(currentIndex: Int) {
-		if player.queue.isEmpty {
+		if player.playbackInfo.queue.isEmpty {
 			goToAlbum.isEnabled = false
 			goToArtist.isEnabled = false
 			
@@ -182,7 +182,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			albumAddFavorites.isEnabled = true
 		}
 		
-		if player.queue[currentIndex].isInFavorites(session: session)! {
+		if player.playbackInfo.queue[currentIndex].isInFavorites(session: session)! {
 			addToFavorites.isHidden = true
 			removeFromFavorites.isHidden = false
 		} else {
@@ -190,7 +190,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			removeFromFavorites.isHidden = true
 		}
 		
-		if player.queue[currentIndex].album.isInFavorites(session: session)! {
+		if player.playbackInfo.queue[currentIndex].album.isInFavorites(session: session)! {
 			albumAddFavorites.isHidden = true
 			albumRemoveFavorites.isHidden = false
 		} else {
@@ -290,12 +290,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	// MARK: - View
 	
 	@IBAction func lyrics(_ sender: Any) {
-		if !self.player.queue.isEmpty {
-			Lyrics.showLyrics(for: self.player.queue[self.player.playbackInfo.currentIndex])
+		if !self.player.playbackInfo.queue.isEmpty {
+			Lyrics.showLyricsWindow(for: self.player.playbackInfo.queue[self.player.playbackInfo.currentIndex])
 		}
 	}
 	@IBAction func queue(_ sender: Any) {
-		print("Queue")
+		player.showQueueWindow()
 	}
 	
 }

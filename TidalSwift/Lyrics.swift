@@ -15,7 +15,7 @@ struct LyricsObject: Decodable {
 }
 
 class Lyrics {
-	static func showLyrics(for track: Track) {
+	static func showLyricsWindow(for track: Track) {
 		let controller = ResizableWindowController(rootView:
 			LyricsView(track: track)
 		)

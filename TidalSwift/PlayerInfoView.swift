@@ -22,12 +22,12 @@ struct PlayerInfoView: View {
 			GeometryReader { metrics in
 				HStack {
 					HStack {
-						if !self.player.queue.isEmpty {
+						if !self.player.playbackInfo.queue.isEmpty {
 							HStack {
 								URLImageSourceView(
-									self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320)!,
+									self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320)!,
 									isAnimationEnabled: true,
-									label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
+									label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)
 								)
 									.frame(width: 30, height: 30)
 									.cornerRadius(CORNERRADIUS)
@@ -35,17 +35,17 @@ struct PlayerInfoView: View {
 										print("Big Cover")
 										let controller = CoverWindowController(rootView:
 											URLImageSourceView(
-												self.player.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
+												self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
 												isAnimationEnabled: true,
-												label: Text(self.player.queue[self.playbackInfo.currentIndex].album.title)
+												label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)
 											)
 										)
-										controller.window?.title = self.player.queue[self.playbackInfo.currentIndex].album.title
+										controller.window?.title = self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title
 										controller.showWindow(nil)
 								}
 								VStack(alignment: .leading) {
 									HStack {
-										Text(self.player.queue[self.playbackInfo.currentIndex].title)
+										Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].title)
 										Text(self.player.currentQualityString())
 											.fontWeight(.light)
 											.foregroundColor(.orange)
@@ -55,14 +55,14 @@ struct PlayerInfoView: View {
 										
 										
 									}
-									Text("\(self.player.queue[self.playbackInfo.currentIndex].artists.formArtistString()) – \(self.player.queue[self.playbackInfo.currentIndex].album.title)")
+									Text("\(self.playbackInfo.queue[self.playbackInfo.currentIndex].artists.formArtistString()) – \(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)")
 										.foregroundColor(.gray)
 								}
 								Spacer()
 									.layoutPriority(-1)
 							}
 							.contextMenu {
-								TrackContextMenu(track: self.player.queue[self.playbackInfo.currentIndex], session: self.session, player: self.player)
+								TrackContextMenu(track: self.playbackInfo.queue[self.playbackInfo.currentIndex], session: self.session, player: self.player)
 							}
 						} else {
 							Spacer()
@@ -129,17 +129,13 @@ struct PlayerInfoView: View {
 					Spacer()
 					Text("􀌮")
 						.onTapGesture {
-							if !self.player.queue.isEmpty {
-								Lyrics.showLyrics(for: self.player.queue[self.playbackInfo.currentIndex])
+							if !self.playbackInfo.queue.isEmpty {
+								Lyrics.showLyricsWindow(for: self.playbackInfo.queue[self.playbackInfo.currentIndex])
 							}
 					}
 					Text("􀋱")
 						.onTapGesture {
-							let controller = ResizableWindowController(rootView:
-								Text("Queue")
-							)
-							controller.window?.title = "Queue"
-							controller.showWindow(nil)
+							self.player.showQueueWindow()
 					}
 				}
 			}
