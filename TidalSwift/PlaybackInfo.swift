@@ -7,8 +7,10 @@
 //
 
 import SwiftUI
+import TidalSwiftLib
 
 final class PlaybackInfo: ObservableObject {
+	@Published var queue = [Track]()
 	@Published var currentIndex: Int = 0
 	@Published var fraction: CGFloat = 0.0
 	@Published var playing: Bool = false

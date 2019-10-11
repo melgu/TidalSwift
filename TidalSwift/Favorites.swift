@@ -91,7 +91,7 @@ struct FavoriteTracks: View {
 										print("\(self.tracks![i].title)")
 										self.player.add(tracks: self.tracks!, .now)
 										self.player.play(atIndex: i)
-									}
+								}
 								.contextMenu {
 									TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player)
 								}
@@ -107,7 +107,7 @@ struct FavoriteTracks: View {
 										print("\(self.tracks![i].title)")
 										self.player.add(tracks: self.tracks!, .now)
 										self.player.play(atIndex: i)
-									}
+								}
 								.contextMenu {
 									TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player)
 								}

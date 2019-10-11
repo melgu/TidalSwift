@@ -17,7 +17,6 @@ class Player {
 	let avPlayer = AVPlayer()
 	public let playbackInfo = PlaybackInfo()
 	
-	public var queue = [Track]()
 	private var nonShuffledQueue = [Track]()
 	
 	private var timeObserverToken: Any?
@@ -44,16 +43,16 @@ class Player {
 	}
 	
 	func play() {
-		if (!queue.isEmpty) {
+		if (!playbackInfo.queue.isEmpty) {
 			avPlayer.play()
 			playbackInfo.playing = true
 		}
 	}
 	
 	func play(atIndex: Int) {
-		if queue.count > atIndex {
+		if playbackInfo.queue.count > atIndex {
 			playbackInfo.currentIndex = atIndex
-			avSetItem(from: queue[playbackInfo.currentIndex])
+			avSetItem(from: playbackInfo.queue[playbackInfo.currentIndex])
 			play()
 		}
 	}
@@ -80,8 +79,8 @@ class Player {
 	func previous() {
 		if avPlayer.currentTime().seconds >= 3 || playbackInfo.currentIndex == 0 {
 			avPlayer.seek(to: CMTime(seconds: 0, preferredTimescale: 1))
-			if playbackInfo.currentIndex == 0 && !queue[playbackInfo.currentIndex].streamReady {
-				print("Not possible to stream \(queue[playbackInfo.currentIndex].title)")
+			if playbackInfo.currentIndex == 0 && !playbackInfo.queue[playbackInfo.currentIndex].streamReady {
+				print("Not possible to stream \(playbackInfo.queue[playbackInfo.currentIndex].title)")
 				pause()
 				next()
 			}
@@ -89,12 +88,12 @@ class Player {
 		}
 		
 		playbackInfo.currentIndex -= 1
-		if queue[playbackInfo.currentIndex].streamReady {
-			print("previous(): \(playbackInfo.currentIndex) - \(queue.count)")
-			avSetItem(from: queue[playbackInfo.currentIndex])
+		if playbackInfo.queue[playbackInfo.currentIndex].streamReady {
+			print("previous(): \(playbackInfo.currentIndex) - \(playbackInfo.queue.count)")
+			avSetItem(from: playbackInfo.queue[playbackInfo.currentIndex])
 			print("previous() done")
 		} else {
-			print("Not possible to stream \(queue[playbackInfo.currentIndex].title)")
+			print("Not possible to stream \(playbackInfo.queue[playbackInfo.currentIndex].title)")
 			previous()
 		}
 	}
@@ -102,11 +101,11 @@ class Player {
 	func next() {
 		if playbackInfo.repeatState == .single {
 			seek(to: 0)
-			play()
+//			play()
 			return
 		}
 		
-		if playbackInfo.currentIndex >= queue.count - 1 {
+		if playbackInfo.currentIndex >= playbackInfo.queue.count - 1 {
 			print("next(): \(playbackInfo.currentIndex) Last - \(queueCount())")
 			if playbackInfo.repeatState == .all {
 				playbackInfo.currentIndex = 0
@@ -117,25 +116,26 @@ class Player {
 		} else {
 			playbackInfo.currentIndex += 1
 		}
-		if queue[playbackInfo.currentIndex].streamReady {
+		if playbackInfo.queue[playbackInfo.currentIndex].streamReady {
 			print("next(): \(playbackInfo.currentIndex) - \(queueCount())")
-			avSetItem(from: queue[playbackInfo.currentIndex])
+			avSetItem(from: playbackInfo.queue[playbackInfo.currentIndex])
 		} else {
-			print("Not possible to stream \(queue[playbackInfo.currentIndex].title)")
+			print("Not possible to stream \(playbackInfo.queue[playbackInfo.currentIndex].title)")
 			next()
 		}
 	}
 	
 	func shuffle(enabled: Bool) {
-		if queue.isEmpty {
+		if playbackInfo.queue.isEmpty {
 			return
 		}
 		if enabled {
-			nonShuffledQueue = queue
-			queue = queue[0...playbackInfo.currentIndex] + queue[playbackInfo.currentIndex+1..<queue.count].shuffled()
+			nonShuffledQueue = playbackInfo.queue
+			playbackInfo.queue = playbackInfo.queue[0...playbackInfo.currentIndex] +
+				playbackInfo.queue[playbackInfo.currentIndex+1..<playbackInfo.queue.count].shuffled()
 		} else {
-			let i = nonShuffledQueue.firstIndex(where: { $0 == queue[playbackInfo.currentIndex] })!
-			queue = nonShuffledQueue
+			let i = nonShuffledQueue.firstIndex(where: { $0 == playbackInfo.queue[playbackInfo.currentIndex] })!
+			playbackInfo.queue = nonShuffledQueue
 			playbackInfo.currentIndex = i
 		}
 	}
@@ -233,7 +233,7 @@ class Player {
 		} else {
 			addLast(tracks: tracks)
 		}
-		print("addNow(): \(queue.count)")
+		print("addNow(): \(playbackInfo.queue.count)")
 		play()
 	}
 	
@@ -242,30 +242,30 @@ class Player {
 			return
 		}
 		nonShuffledQueue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
-		if queue.isEmpty {
-			queue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
-			avSetItem(from: queue[0])
+		if playbackInfo.queue.isEmpty {
+			playbackInfo.queue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
+			avSetItem(from: playbackInfo.queue[0])
 		} else {
-			queue.insert(contentsOf: tracks, at: playbackInfo.currentIndex + 1)
+			playbackInfo.queue.insert(contentsOf: tracks, at: playbackInfo.currentIndex + 1)
 		}
-		print("addNext(): \(queue.count)")
+		print("addNext(): \(playbackInfo.queue.count)")
 	}
 	
 	private func addLast(tracks: [Track]) {
 		if tracks.isEmpty {
 			return
 		}
-		let wasEmtpy = queue.isEmpty
+		let wasEmtpy = playbackInfo.queue.isEmpty
 		
 		if !playbackInfo.shuffle {
 			nonShuffledQueue.append(contentsOf: tracks)
 		}
 		
-		queue.append(contentsOf: tracks)
+		playbackInfo.queue.append(contentsOf: tracks)
 		if wasEmtpy {
-			avSetItem(from: queue[playbackInfo.currentIndex])
+			avSetItem(from: playbackInfo.queue[playbackInfo.currentIndex])
 		}
-		print("addLast(): \(queue.count)")
+		print("addLast(): \(playbackInfo.queue.count)")
 	}
 	
 //	private func cleanTracks(_ tracks: [Track]) -> [Track] {
@@ -278,14 +278,14 @@ class Player {
 		avPlayer.pause()
 		playbackInfo.currentIndex = 0
 		avPlayer.replaceCurrentItem(with: nil)
-		queue.removeAll()
+		playbackInfo.queue.removeAll()
 		nonShuffledQueue.removeAll()
 		
 		playbackInfo.playing = false
 	}
 	
 	func queueCount() -> Int {
-		return queue.count
+		return playbackInfo.queue.count
 	}
 	
 	func fraction() -> Double {
@@ -333,10 +333,10 @@ class Player {
 	}
 	
 	func currentQualityString() -> String {
-		guard !queue.isEmpty else {
+		guard !playbackInfo.queue.isEmpty else {
 			return ""
 		}
-		guard let quality = queue[0].audioQuality else {
+		guard let quality = playbackInfo.queue[0].audioQuality else {
 			return ""
 		}
 		
@@ -357,10 +357,10 @@ class Player {
 	}
 	
 	func maxQualityString() -> String {
-		guard !queue.isEmpty else {
+		guard !playbackInfo.queue.isEmpty else {
 			return ""
 		}
-		guard let quality = queue[0].audioQuality else {
+		guard let quality = playbackInfo.queue[0].audioQuality else {
 			return ""
 		}
 		
@@ -378,5 +378,14 @@ class Player {
 		case .master:
 			return "MASTER"
 		}
+	}
+	
+	func showQueueWindow() {
+		let controller = ResizableWindowController(rootView:
+			QueueView(session: session, player: self)
+				.environmentObject(playbackInfo)
+		)
+		controller.window?.title = "Queue"
+		controller.showWindow(nil)
 	}
 }
