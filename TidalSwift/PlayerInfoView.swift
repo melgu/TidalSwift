@@ -58,12 +58,12 @@ struct PlayerInfoView: View {
 											.foregroundColor(.orange)
 										Text(self.player.maxQualityString())
 											.fontWeight(.light)
-											.foregroundColor(.gray)
+											.foregroundColor(.secondary)
 										
 										
 									}
 									Text("\(self.playbackInfo.queue[self.playbackInfo.currentIndex].artists.formArtistString()) – \(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)")
-										.foregroundColor(.gray)
+										.foregroundColor(.secondary)
 								}
 								Spacer()
 									.layoutPriority(-1)
@@ -84,7 +84,7 @@ struct PlayerInfoView: View {
 								.onTapGesture {
 									self.playbackInfo.shuffle.toggle()
 							}
-							.foregroundColor(self.playbackInfo.shuffle ? .blue : .black)
+							.foregroundColor(self.playbackInfo.shuffle ? .accentColor : .primary)
 							Text("􀊊")
 								.onTapGesture {
 									self.player.previous()
@@ -109,7 +109,7 @@ struct PlayerInfoView: View {
 									print("Repeat")
 									self.player.playbackInfo.repeatState = self.player.playbackInfo.repeatState.next()
 							}
-							.foregroundColor(self.playbackInfo.repeatState == .off ? .black : .blue)
+							.foregroundColor(self.playbackInfo.repeatState == .off ? .primary : .accentColor)
 							Spacer()
 						}
 						ProgressBar(player: self.player)
@@ -123,8 +123,8 @@ struct PlayerInfoView: View {
 								self.player.toggleMute()
 						}
 						HorizontalValueSlider(value: self.$playbackInfo.volume, in: 0.0...1.0)
-							.trackColor(.gray)
-							.valueColor(.gray)
+							.trackColor(.secondary)
+							.valueColor(.secondary)
 							.thumbSize(CGSize(width: 15, height: 15))
 							.thumbBorderWidth(0.5)
 							.thumbBorderColor(Color(hue: 0, saturation: 0, brightness: 0.7))

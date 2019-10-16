@@ -46,7 +46,7 @@ struct LyricsView: View {
 					}
 				} else {
 					Text("No Lyrics available")
-						.foregroundColor(.gray)
+						.foregroundColor(.secondary)
 				}
 				Spacer(minLength: 0)
 			}

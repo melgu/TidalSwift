@@ -26,7 +26,7 @@ struct QueueView: View {
 				}
 				if playbackInfo.queue.isEmpty {
 					Text("Empty Queue")
-						.foregroundColor(.gray)
+						.foregroundColor(.secondary)
 				} else {
 					ForEach(0..<playbackInfo.queue.count) { i in
 						Text("\(self.playbackInfo.queue[i].title) - \(self.playbackInfo.queue[i].artists.formArtistString())")

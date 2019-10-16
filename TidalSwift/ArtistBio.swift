@@ -32,7 +32,7 @@ struct ArtistBioView: View {
 						Text(bio!.text)
 						Text("")
 						Text("\(bio!.source) – Last Updated: \(bio!.lastUpdatedString)")
-							.foregroundColor(.gray)
+							.foregroundColor(.secondary)
 							.multilineTextAlignment(.center)
 					}
 					.contextMenu {
@@ -49,7 +49,7 @@ struct ArtistBioView: View {
 					}
 				} else {
 					Text("No Bio available")
-						.foregroundColor(.gray)
+						.foregroundColor(.secondary)
 				}
 				Spacer(minLength: 0)
 			}

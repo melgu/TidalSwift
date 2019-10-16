@@ -52,9 +52,9 @@ struct PlaylistView: View {
 									.font(.title)
 									.lineLimit(2)
 								Text("(i)")
-									.foregroundColor(.gray)
+									.foregroundColor(.secondary)
 								Text("<3")
-									.foregroundColor(.gray)
+									.foregroundColor(.secondary)
 							}
 							Text(playlist!.creator.name ?? "")
 							Text(DateFormatter.dateOnly.string(from: playlist!.lastUpdated))
@@ -63,9 +63,9 @@ struct PlaylistView: View {
 							.layoutPriority(-1)
 						VStack(alignment: .leading) {
 							Text("\(playlist!.numberOfTracks) Tracks")
-								.foregroundColor(.gray)
+								.foregroundColor(.secondary)
 							Text("\(playlist!.duration) sec")
-								.foregroundColor(.gray)
+								.foregroundColor(.secondary)
 							Spacer()
 						}
 					}
