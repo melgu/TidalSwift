@@ -1,5 +1,5 @@
 //
-//  DetailWindowController.swift
+//  CoverWindowController.swift
 //  TidalSwift
 //
 //  Created by Melvin Gundlach on 29.08.19.

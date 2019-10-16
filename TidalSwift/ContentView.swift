@@ -16,10 +16,16 @@ struct ContentView: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var loginInfo: LoginInfo
+	
 	var body: some View {
 		MasterDetailView(session: session, player: player)
 			.environmentObject(player.playbackInfo)
 			.environmentObject(viewState)
+			.sheet(isPresented: $loginInfo.showLoginView) {
+				LoginView()
+					.environmentObject(self.loginInfo)
+		}
 	}
 }
 

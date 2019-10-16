@@ -12,34 +12,44 @@ import TidalSwiftLib
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-
+	
 	var window: NSWindow!
 	
 	var session: Session
 	var player: Player
 	var viewState = ViewState()
 	
+	// Login
+	let loginInfo = LoginInfo()
+	
 	override init() {
-		func readDemoLoginCredentials() -> LoginCredentials {
-			let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
-			var content = ""
-			do {
-				content = try String(contentsOfFile: fileLocation)
-			} catch {
-				print("AppDelegate: readDemoLoginCredentials can't open Demo file")
-			}
-
-			let lines: [String] = content.components(separatedBy: "\n")
-			return LoginCredentials(username: lines[0], password: lines[1])
-		}
-
-		let config = Config(quality: .hifi,
-							loginCredentials: readDemoLoginCredentials(),
-							apiToken: nil)
-		session = Session(config: config)
+		session = Session(config: nil)
 		player = Player(session: session)
-
+		
 		super.init()
+	}
+	
+	func login(username: String, password: String, quality: AudioQuality) {
+		let credentials = LoginCredentials(username: username, password: password)
+		let config = Config(quality: quality, loginCredentials: credentials)
+		session = Session(config: config)
+		
+		let loginSuccessful = session.login()
+		if loginSuccessful {
+			loginInfo.wrongLogin = false
+			loginInfo.showLoginView = false
+			session.saveConfig()
+			session.saveSession()
+			player = Player(session: session)
+		} else {
+			loginInfo.wrongLogin = true
+		}
+	}
+	
+	func logout() {
+		print("Logout")
+		loginInfo.showLoginView = true
+		session.deletePersistentInformation()
 	}
 	
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -47,12 +57,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		// My Stuff
 		
-//		session?.login()
-//		session?.saveConfig()
-//		session?.saveSession()
-		
 		session.loadSession()
-//		print("Login Succesful: \(session.checkLogin())")
+		let loggedIn = session.checkLogin()
+		print("Login Succesful: \(loggedIn)")
+		
+		loginInfo.showLoginView = !loggedIn
 		
 		print("-----")
 		
@@ -80,14 +89,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			backing: .buffered, defer: false)
 		window.center()
 		window.setFrameAutosaveName("Main Window")
-
-		window.contentView = NSHostingView(rootView: ContentView(viewState: viewState, session: session, player: player))
+		
+		window.contentView = NSHostingView(rootView:
+			ContentView(viewState: viewState, session: session, player: player)
+				.environmentObject(loginInfo)
+		)
 		
 		window.makeKeyAndOrderFront(nil)
 	}
-
+	
 	func applicationWillTerminate(_ aNotification: Notification) {
 		// Insert code here to tear down your application
+		UserDefaults.standard.synchronize()
 	}
 	
 	func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -95,6 +108,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	// MARK: - Menu Bar
+	// MARK: - Quit
+	
+	@IBAction func Quit(_ sender: Any) {
+		loginInfo.showLoginView = false
+		NSApp.terminate(nil)
+	}
+	
 	// MARK: File
 	
 	@IBAction func downloadTrack(_ sender: Any) {
@@ -288,7 +308,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		print("accountInfo")
 	}
 	@IBAction func logout(_ sender: Any) {
-		print("Logout")
+		logout()
 	}
 	
 	// MARK: - View
@@ -301,6 +321,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func queue(_ sender: Any) {
 		player.showQueueWindow()
 	}
-	
 }
 
