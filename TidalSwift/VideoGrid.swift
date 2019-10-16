@@ -66,7 +66,7 @@ struct VideoGridItem: View {
 			if showArtist {
 				Text(video.artists.formArtistString())
 					.fontWeight(.light)
-					.foregroundColor(Color.gray)
+					.foregroundColor(Color.secondary)
 					.lineLimit(1)
 					.frame(width: 160)
 			}

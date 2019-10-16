@@ -31,7 +31,7 @@ struct CreditsView: View {
 				}
 				if credits == nil || credits!.isEmpty {
 					Text("No Credits available")
-						.foregroundColor(.gray)
+						.foregroundColor(.secondary)
 				} else {
 					ForEach(credits!) { credit in
 						Text(credit.type)

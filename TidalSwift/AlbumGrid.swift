@@ -96,19 +96,19 @@ struct AlbumGridItem: View {
 				if album.artists != nil {
 					Text(album.artists!.formArtistString())
 						.fontWeight(.light)
-						.foregroundColor(Color.gray)
+						.foregroundColor(Color.secondary)
 						.lineLimit(1)
 						.frame(width: 160)
 				} else if album.artist != nil {
 					Text(album.artist!.name)
 						.fontWeight(.light)
-						.foregroundColor(Color.gray)
+						.foregroundColor(Color.secondary)
 						.lineLimit(1)
 						.frame(width: 160)
 				} else {
 					Text("Unknown Artist")
 						.fontWeight(.light)
-						.foregroundColor(Color.gray)
+						.foregroundColor(Color.secondary)
 						.lineLimit(1)
 						.frame(width: 160)
 				}
@@ -116,7 +116,7 @@ struct AlbumGridItem: View {
 			if showReleaseDate && album.releaseDate != nil {
 				Text(DateFormatter.dateOnly.string(from: album.releaseDate!))
 					.fontWeight(.light)
-					.foregroundColor(Color.gray)
+					.foregroundColor(Color.secondary)
 					.lineLimit(1)
 					.frame(width: 160)
 			}

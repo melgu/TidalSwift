@@ -19,9 +19,9 @@ extension Color {
 	
 	static func playbackProgressBarBackground(for colorScheme: ColorScheme) -> Color {
 		if colorScheme == .light {
-			return .gray
+			return .secondary
         } else {
-			return .gray
+			return .secondary
         }
     }
 }

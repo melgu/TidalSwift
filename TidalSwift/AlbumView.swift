@@ -52,9 +52,9 @@ struct AlbumView: View {
 									.font(.title)
 									.lineLimit(2)
 								Text("(i)")
-									.foregroundColor(.gray)
+									.foregroundColor(.secondary)
 								Text("<3")
-									.foregroundColor(.gray)
+									.foregroundColor(.secondary)
 							}
 							Text(album!.artists?.formArtistString() ?? "")
 							if album!.releaseDate != nil {
@@ -66,11 +66,11 @@ struct AlbumView: View {
 						VStack(alignment: .leading) {
 							if album!.numberOfTracks != nil {
 								Text("\(album!.numberOfTracks!) Tracks")
-									.foregroundColor(.gray)
+									.foregroundColor(.secondary)
 							}
 							if album!.duration != nil {
 								Text("\(album!.duration!) sec")
-									.foregroundColor(.gray)
+									.foregroundColor(.secondary)
 							}
 							Spacer()
 						}

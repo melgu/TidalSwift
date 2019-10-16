@@ -88,7 +88,7 @@ struct TrackRowFront: View {
 			} else {
 				Text("\(trackNumber ?? track.trackNumber)")
 					.fontWeight(.thin)
-					.foregroundColor(.gray)
+					.foregroundColor(.secondary)
 			}
 			Text(track.title)
 		}
@@ -110,7 +110,7 @@ struct TrackRowBack: View {
 			Spacer()
 //				.layoutPriority(-1)
 //			Text("^")
-//				.foregroundColor(.gray)
+//				.foregroundColor(.secondary)
 			Group {
 				Text("+")
 				Text("<3")

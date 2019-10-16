@@ -18,7 +18,7 @@ struct LoadingSpinner: View {
 //				.rotationEffect(.degrees(360))
 //				.animation(.linear(duration: 3))
 				.frame(width: 50, height: 50)
-				.background(Color(.gray))
+				.background(Color.secondary)
 		}
 	}
 }
