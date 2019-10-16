@@ -1,5 +1,5 @@
 //
-//  ArtistBioWindowController.swift
+//  ResizableWindowController.swift
 //  TidalSwift
 //
 //  Created by Melvin Gundlach on 06.10.19.

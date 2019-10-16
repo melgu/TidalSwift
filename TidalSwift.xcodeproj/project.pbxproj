@@ -24,6 +24,7 @@
 		B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B010113F23063BC200DE13C8 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B010113E23063BC200DE13C8 /* Demo Login Information.txt */; };
+		B016FAF423575CB200ECE565 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B016FAF323575CB200ECE565 /* LoginView.swift */; };
 		B01B09CB234ADADB007A4E15 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CA234ADADB007A4E15 /* CreditsView.swift */; };
 		B01B09CD234B15D6007A4E15 /* Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CC234B15D6007A4E15 /* Lyrics.swift */; };
 		B01B09CF234B1C7B007A4E15 /* LyricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CE234B1C7B007A4E15 /* LyricsView.swift */; };
@@ -116,6 +117,7 @@
 
 /* Begin PBXFileReference section */
 		B010113E23063BC200DE13C8 /* Demo Login Information.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Demo Login Information.txt"; sourceTree = "<group>"; };
+		B016FAF323575CB200ECE565 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		B01B09CA234ADADB007A4E15 /* CreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsView.swift; sourceTree = "<group>"; };
 		B01B09CC234B15D6007A4E15 /* Lyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lyrics.swift; sourceTree = "<group>"; };
 		B01B09CE234B1C7B007A4E15 /* LyricsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsView.swift; sourceTree = "<group>"; };
@@ -302,6 +304,7 @@
 			children = (
 				B0E8078B230615AD00E43B5D /* AppDelegate.swift */,
 				B0E8078D230615AD00E43B5D /* ContentView.swift */,
+				B016FAF323575CB200ECE565 /* LoginView.swift */,
 				B05E18CA23570DF600F96030 /* ViewState.swift */,
 				B0D974CA230C031E00695388 /* MasterDetailView.swift */,
 				B07685B8232079C800538D55 /* SearchView.swift */,
@@ -590,6 +593,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0C3E6AD23061FDB006CABED /* TrackList.swift in Sources */,
+				B016FAF423575CB200ECE565 /* LoginView.swift in Sources */,
 				B0A1E2792349EDE900BBC4F0 /* Colors.swift in Sources */,
 				B08AB537230ACACA004CBBE8 /* AlbumGrid.swift in Sources */,
 				B0C3E6AE23061FDB006CABED /* PlaylistView.swift in Sources */,

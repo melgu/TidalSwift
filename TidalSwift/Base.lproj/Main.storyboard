@@ -48,7 +48,7 @@
                                         <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
                                         <menuItem title="Quit TidalSwift" keyEquivalent="q" id="4sb-4s-VLi">
                                             <connections>
-                                                <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
+                                                <action selector="Quit:" target="Voe-Tx-rLC" id="ej2-mp-myd"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -282,25 +282,6 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Account" id="U8e-OA-wge" userLabel="Account">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Account" id="LZI-fA-6Ml">
-                                    <items>
-                                        <menuItem title="Account Info" id="Ui9-ZL-aHi">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="accountInfo:" target="Voe-Tx-rLC" id="oir-Cb-bFF"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Logout" id="EVe-69-XrZ">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="logout:" target="Voe-Tx-rLC" id="XcD-d4-fyY"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
                             <menuItem title="View" id="H8h-7b-M4v">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="View" id="HyV-fh-RgO">
@@ -341,6 +322,25 @@
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
                                                 <action selector="toggleFullScreen:" target="Ady-hI-5gd" id="dU3-MA-1Rq"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Account" id="U8e-OA-wge" userLabel="Account">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Account" id="LZI-fA-6Ml">
+                                    <items>
+                                        <menuItem title="Account Info" id="Ui9-ZL-aHi">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="accountInfo:" target="Voe-Tx-rLC" id="oir-Cb-bFF"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Logout" id="EVe-69-XrZ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="logout:" target="Voe-Tx-rLC" id="XcD-d4-fyY"/>
                                             </connections>
                                         </menuItem>
                                     </items>

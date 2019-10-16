@@ -158,7 +158,11 @@ public class Session {
 		if let config = config {
 			self.config = config
 		} else {
-			self.config = loadConfig()! // Still don't like this force-unwrap
+			if let config = loadConfig() {
+				self.config = config
+			} else {
+				self.config = Config(loginCredentials: LoginCredentials(username: "", password: ""))
+			}
 		}
 		
 	}
@@ -208,7 +212,7 @@ public class Session {
 		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
 	}
 	
-	public func deletePersistantInformation() {
+	public func deletePersistentInformation() {
 		let domain = Bundle.main.bundleIdentifier!
 		UserDefaults.standard.removePersistentDomain(forName: domain)
 	}
