@@ -105,9 +105,9 @@ struct DetailView: View {
 				} else if viewState.viewType == "Artists" {
 					FavoriteArtists(session: session, player: player)
 				} else if viewState.viewType == "SingleAlbum" {
-					AlbumView(session: session, player: player)
+					AlbumView(album: viewState.album, session: session, player: player)
 				} else if viewState.viewType == "SinglePlaylist" {
-					Spacer() // TODO: Single Playlist
+					PlaylistView(playlist: viewState.playlist, session: session, player: player)
 				}
 			}
 			if viewState.viewType == "" || viewState.viewType == nil {

@@ -24,25 +24,32 @@ struct PlayerInfoView: View {
 					HStack {
 						if !self.player.playbackInfo.queue.isEmpty {
 							HStack {
-								URLImageSourceView(
-									self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320)!,
-									isAnimationEnabled: true,
-									label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)
-								)
-									.frame(width: 30, height: 30)
-									.cornerRadius(CORNERRADIUS)
-									.onTapGesture {
-										print("Big Cover")
-										let controller = CoverWindowController(rootView:
-											URLImageSourceView(
-												self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
-												isAnimationEnabled: true,
-												label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)
+								if self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320) != nil {
+									URLImageSourceView(
+										self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320)!,
+										isAnimationEnabled: true,
+										label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)
+									)
+										.frame(width: 30, height: 30)
+										.cornerRadius(CORNERRADIUS)
+										.onTapGesture {
+											print("Big Cover")
+											let controller = CoverWindowController(rootView:
+												URLImageSourceView(
+													self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
+													isAnimationEnabled: true,
+													label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)
+												)
 											)
-										)
-										controller.window?.title = self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title
-										controller.showWindow(nil)
+											controller.window?.title = self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title
+											controller.showWindow(nil)
+									}
+								} else {
+									Rectangle()
+										.frame(width: 30, height: 30)
+										.cornerRadius(CORNERRADIUS)
 								}
+								
 								VStack(alignment: .leading) {
 									HStack {
 										Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].title)

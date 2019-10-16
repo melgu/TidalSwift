@@ -11,32 +11,44 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct AlbumView: View {
+	let album: Album?
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
-	@State var bigCover = false
+	let tracks: [Track]?
+	
+	init(album: Album?, session: Session, player: Player) {
+		self.album = album
+		self.session = session
+		self.player = player
+		
+		if let album = album {
+			self.tracks = session.getAlbumTracks(albumId: album.id)
+		} else {
+			self.tracks = nil
+		}
+	}
 	
 	var body: some View {
-		ZStack {
-			if viewState.album == nil {
-				Spacer()
-			} else {
-				VStack(alignment: .leading) {
+		ScrollView {
+			VStack(alignment: .leading) {
+				if album == nil {
+					HStack {
+						Spacer()
+					}
+					Spacer()
+				} else {
 					HStack {
 						URLImageSourceView(
-							viewState.album!.getCoverUrl(session: session, resolution: 320)!,
+							album!.getCoverUrl(session: session, resolution: 320)!,
 							isAnimationEnabled: true,
-							label: Text(viewState.album!.title)
+							label: Text(album!.title)
 						)
 							.frame(width: 100, height: 100)
-							.onTapGesture {
-								self.bigCover.toggle()
-						}
 						
 						VStack(alignment: .leading) {
 							HStack {
-								Text(viewState.album!.title)
+								Text(album!.title)
 									.font(.title)
 									.lineLimit(2)
 								Text("(i)")
@@ -44,78 +56,35 @@ struct AlbumView: View {
 								Text("<3")
 									.foregroundColor(.gray)
 							}
-							Text(viewState.album!.artists?.formArtistString() ?? "")
-							if viewState.album!.releaseDate != nil {
-								Text(DateFormatter.dateOnly.string(from: viewState.album!.releaseDate!))
+							Text(album!.artists?.formArtistString() ?? "")
+							if album!.releaseDate != nil {
+								Text(DateFormatter.dateOnly.string(from: album!.releaseDate!))
 							}
 						}
 						Spacer()
 							.layoutPriority(-1)
 						VStack(alignment: .leading) {
-							if viewState.album!.numberOfTracks != nil {
-								Text("\(viewState.album!.numberOfTracks!) Tracks")
+							if album!.numberOfTracks != nil {
+								Text("\(album!.numberOfTracks!) Tracks")
 									.foregroundColor(.gray)
 							}
-							if viewState.album!.duration != nil {
-								Text("\(viewState.album!.duration!) sec")
+							if album!.duration != nil {
+								Text("\(album!.duration!) sec")
 									.foregroundColor(.gray)
 							}
 							Spacer()
 						}
 					}
 					.frame(height: 100)
+					.padding(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+					Divider()
 					
-					ScrollView {
-						HStack {
-							VStack(alignment: .leading) {
-								ForEach(session.getAlbumTracks(albumId: viewState.album!.id)!) { track in
-									TrackRowFront(track: track, session: self.session)
-								}
-							}
-							//								.background(Color.red)
-							VStack(alignment: .trailing) {
-								ForEach(session.getAlbumTracks(albumId: viewState.album!.id)!) { track in
-									TrackRowBack(track: track)
-								}
-							}
-							//								.background(Color.green)
-						}
-					}
-					
+					TrackList(tracks: tracks!, showCover: false, session: session, player: player)
 				}
-				.blur(radius: bigCover ? 4 : 0)
-				
-				if bigCover {
-					URLImageSourceView(
-						viewState.album!.getCoverUrl(session: session, resolution: 1280)!,
-						isAnimationEnabled: true,
-						label: Text(viewState.album!.title)
-					)
-						.scaledToFit()
-						.padding()
-				}
-				
 				
 			}
 		}
-//			.foregroundColor(.white)
-			.padding(EdgeInsets(top: 20, leading: 20, bottom: 0, trailing: 20))
-			//			.background(
-			//				URLImageSourceView(
-			//					viewState.album!.getCoverUrl(session: session, resolution: 1280)!,
-			//					isAnimationEnabled: true,
-			//					label: Text(viewState.album!.title)
-			//				)
-			//					.aspectRatio(contentMode: .fill)
-			//					.scaleEffect(1.2)
-			//					.brightness(-0.5)
-			//					.blur(radius: 30)
-			//			)
-			.onTapGesture {
-				self.bigCover = false
 	}
-}
-
 }
 
 //struct AlbumView_Previews: PreviewProvider {

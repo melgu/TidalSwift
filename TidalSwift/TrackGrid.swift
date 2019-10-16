@@ -30,9 +30,7 @@ struct TrackGridItem: View {
 					.cornerRadius(CORNERRADIUS)
 			} else {
 				ZStack {
-					Image("Single Black Pixel")
-						.resizable()
-						.aspectRatio(contentMode: .fill)
+					Rectangle()
 						.frame(width: 160, height: 160)
 					Text(track.title)
 						.foregroundColor(.white)
