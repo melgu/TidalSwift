@@ -25,7 +25,7 @@ struct MasterDetailView: View {
 		)
 		return NavigationView {
 			MasterView(selection: selectionBinding, searchText: $searchText, fixedSearchText: $fixedSearchText, session: session)
-			DetailView(fixedSearchText: $fixedSearchText, session: session, player: player)
+			DetailView(fixedSearchText: fixedSearchText, session: session, player: player)
 				.frame(minWidth: 580)
 		}
 		.frame(minHeight: 200)
@@ -74,7 +74,7 @@ struct MasterView: View {
 }
 
 struct DetailView: View {
-	@Binding var fixedSearchText: String
+	let fixedSearchText: String
 	
 	let session: Session
 	let player: Player
