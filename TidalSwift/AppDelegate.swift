@@ -17,6 +17,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	var session: Session
 	var player: Player
+	var viewState = ViewState()
 	
 	override init() {
 		func readDemoLoginCredentials() -> LoginCredentials {
@@ -51,14 +52,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //		session?.saveSession()
 		
 		session.loadSession()
-		print("Login Succesful: \(session.checkLogin())")
-//		
-//		let demoAlbum = session.getAlbum(albumId: 100006868)!
-//		let demoTracks = session.getAlbumTracks(albumId: demoAlbum.id)!
-//		
-//		player.addNow(tracks: demoTracks)
-//		print(player.queueCount())
-//		player.play()
+//		print("Login Succesful: \(session.checkLogin())")
 		
 		print("-----")
 		
@@ -68,6 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		_ = player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: repeatLabel(repeatState:))
 		_ = player.playbackInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
 		_ = player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
+		_ = viewState.$viewType.receive(on: DispatchQueue.main).sink(receiveValue: { print("View: \($0 ?? "nil")") })
 		
 		// Swift UI Stuff
 		window = NSWindow(
@@ -77,7 +72,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		window.center()
 		window.setFrameAutosaveName("Main Window")
 
-		window.contentView = NSHostingView(rootView: ContentView(session: session, player: player))
+		window.contentView = NSHostingView(rootView: ContentView(viewState: viewState, session: session, player: player))
 		
 		window.makeKeyAndOrderFront(nil)
 	}

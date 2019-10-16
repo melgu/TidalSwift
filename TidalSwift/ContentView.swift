@@ -12,12 +12,14 @@ import ImageIOSwiftUI
 import Grid
 
 struct ContentView: View {
+	let viewState: ViewState
 	let session: Session
 	let player: Player
 	
 	var body: some View {
 		MasterDetailView(session: session, player: player)
 			.environmentObject(player.playbackInfo)
+			.environmentObject(viewState)
 	}
 }
 

@@ -13,14 +13,19 @@ struct MasterDetailView: View {
     let session: Session
 	let player: Player
 	
-	@State var selection: String? = nil
 	@State var searchText: String = ""
 	@State var fixedSearchText: String = ""
 	
+	@EnvironmentObject var viewState: ViewState
+	
 	var body: some View {
-		NavigationView {
-			MasterView(selection: $selection, searchText: $searchText, fixedSearchText: $fixedSearchText, session: session)
-			DetailView(viewType: selection ?? "", fixedSearchText: $fixedSearchText, session: session, player: player)
+		let selectionBinding = Binding<String?>(
+			get: { self.viewState.viewType },
+			set: { self.viewState.viewType = $0 }
+		)
+		return NavigationView {
+			MasterView(selection: selectionBinding, searchText: $searchText, fixedSearchText: $fixedSearchText, session: session)
+			DetailView(fixedSearchText: $fixedSearchText, session: session, player: player)
 				.frame(minWidth: 580)
 		}
 		.frame(minHeight: 200)
@@ -36,6 +41,7 @@ struct MasterView: View {
 	
 	private let news = ["New Releases"]
 	private let favorites = ["Playlists", "Albums", "Tracks", "Videos", "Artists"]
+	private let views = ["SingleAlbum", "SinglePlaylist"]
 	
 	var body: some View {
 		VStack {
@@ -66,40 +72,45 @@ struct MasterView: View {
 }
 
 struct DetailView: View {
-	var viewType: String
 	@Binding var fixedSearchText: String
 	
 	let session: Session
 	let player: Player
+	
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack {
 			PlayerInfoView(session: session, player: player)
 			HStack {
 				// Search
-				if viewType == "Search" {
+				if viewState.viewType == "Search" {
 					SearchView(searchText: fixedSearchText, session: session, player: player)
 				}
 				
 				// News
-				else if viewType == "New Releases" {
+				else if viewState.viewType == "New Releases" {
 					NewReleases(session: session, player: player)
 				}
 				
 				// Favorites
-				else if viewType == "Playlists" {
+				else if viewState.viewType == "Playlists" {
 					FavoritePlaylists(session: session, player: player)
-				} else if viewType == "Albums" {
+				} else if viewState.viewType == "Albums" {
 					FavoriteAlbums(session: session, player: player)
-				} else if viewType == "Tracks" {
+				} else if viewState.viewType == "Tracks" {
 					FavoriteTracks(session: session, player: player)
-				} else if viewType == "Videos" {
+				} else if viewState.viewType == "Videos" {
 					FavoriteVideos(session: session, player: player)
-				} else if viewType == "Artists" {
+				} else if viewState.viewType == "Artists" {
 					FavoriteArtists(session: session, player: player)
+				} else if viewState.viewType == "SingleAlbum" {
+					AlbumView(session: session, player: player)
+				} else if viewState.viewType == "SinglePlaylist" {
+					Spacer() // TODO: Single Playlist
 				}
 			}
-			if viewType == "" {
+			if viewState.viewType == "" || viewState.viewType == nil {
 				Spacer()
 			}
 		}
