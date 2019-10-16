@@ -83,41 +83,7 @@ struct FavoriteTracks: View {
 			
 			if tracks != nil {
 				ScrollView {
-					HStack {
-						VStack(alignment: .leading) {
-							ForEach(0..<tracks!.count) { i in
-								TrackRowFront(track: self.tracks![i], showCover: true, session: self.session)
-									.onTapGesture(count: 2) {
-										print("\(self.tracks![i].title)")
-										self.player.add(tracks: self.tracks!, .now)
-										self.player.play(atIndex: i)
-								}
-								.contextMenu {
-									TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player)
-								}
-//								if i < self.tracks!.count - 1 { // Commented out because Xcode makes problems if not
-								Divider()
-//								}
-							}
-						}
-						VStack(alignment: .trailing) {
-							ForEach(0..<tracks!.count) { i in
-								TrackRowBack(track: self.tracks![i])
-									.onTapGesture(count: 2) {
-										print("\(self.tracks![i].title)")
-										self.player.add(tracks: self.tracks!, .now)
-										self.player.play(atIndex: i)
-								}
-								.contextMenu {
-									TrackContextMenu(track: self.tracks![i], session: self.session, player: self.player)
-								}
-								.frame(height: 30)
-//								if i < self.tracks!.count - 1 { // Commented out because Xcode makes problems if not
-								Divider()
-//								}
-							}
-						}
-					}
+					TrackList(tracks: tracks!, showCover: true, session: session, player: player)
 				}
 			} else {
 				Text("Problems fetching favorite tracks")

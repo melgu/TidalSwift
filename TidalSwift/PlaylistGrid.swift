@@ -32,6 +32,8 @@ struct PlaylistGridItem: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var viewState: ViewState
+	
 	var body: some View {
 		VStack {
 			if playlist.getImageUrl(session: session, resolution: 320) != nil {
@@ -47,9 +49,7 @@ struct PlaylistGridItem: View {
 					.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 			} else {
 				ZStack {
-					Image("Single Black Pixel")
-						.resizable()
-						.aspectRatio(contentMode: .fill)
+					Rectangle()
 						.frame(width: 160, height: 160)
 						.cornerRadius(CORNERRADIUS)
 						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
@@ -65,8 +65,13 @@ struct PlaylistGridItem: View {
 		}
 		.padding(5)
 		.onTapGesture(count: 2) {
-			print("\(self.playlist.title)")
+			print("Second Click. \(self.playlist.title)")
 			self.player.add(playlist: self.playlist, .now)
+		}
+		.onTapGesture(count: 1) {
+			print("First Click. \(self.playlist.title)")
+			self.viewState.playlist = self.playlist
+			self.viewState.viewType = "SinglePlaylist"
 		}
 		.contextMenu {
 			PlaylistContextMenu(playlist: self.playlist, session: session, player: player)

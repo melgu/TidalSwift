@@ -1,5 +1,5 @@
 //
-//  Playlist.swift
+//  PlaylistView.swift
 //  SwiftUI Player
 //
 //  Created by Melvin Gundlach on 02.08.19.
@@ -11,78 +11,71 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct PlaylistView: View {
-	let playlist: Playlist
+	let playlist: Playlist?
 	let session: Session
+	let player: Player
 	
-	@State var bigCover = false
+	let tracks: [Track]?
+	
+	init(playlist: Playlist?, session: Session, player: Player) {
+		self.playlist = playlist
+		self.session = session
+		self.player = player
+		
+		if let playlist = playlist {
+			self.tracks = session.getPlaylistTracks(playlistId: playlist.id)
+		} else {
+			self.tracks = nil
+		}
+	}
 	
 	var body: some View {
-		ZStack {
+		ScrollView {
 			VStack(alignment: .leading) {
-				HStack {
-//					Rectangle()
-					URLImageSourceView(
-						playlist.getImageUrl(session: session, resolution: 320)!,
-						isAnimationEnabled: true,
-						label: Text(playlist.title)
-					)
-						.frame(width: 100, height: 100)
-						.onTapGesture {
-							self.bigCover.toggle()
-					}
-					
-					VStack(alignment: .leading) {
-						HStack {
-							Text(playlist.title)
-								.font(.title)
-								.lineLimit(2)
-							Text("(i)")
-								.foregroundColor(.gray)
-							Text("<3")
-								.foregroundColor(.gray)
-						}
-						Text("Album Artists")
-						Text(DateFormatter.dateOnly.string(from: playlist.lastUpdated))
-					}
-					Spacer()
-						.layoutPriority(-1)
-					VStack(alignment: .leading) {
-						Text("\(playlist.numberOfTracks) Tracks")
-							.foregroundColor(.gray)
-						Text("\(playlist.duration) sec")
-							.foregroundColor(.gray)
+				if playlist == nil {
+					HStack {
 						Spacer()
 					}
-				}
-				.frame(height: 100)
-				
-				ScrollView {
+					Spacer()
+				} else {
 					HStack {
+						URLImageSourceView(
+							playlist!.getImageUrl(session: session, resolution: 320)!,
+							isAnimationEnabled: true,
+							label: Text(playlist!.title)
+						)
+							.frame(width: 100, height: 100)
+						
 						VStack(alignment: .leading) {
-							ForEach(session.getPlaylistTracks(playlistId: playlist.id)!) { track in
-								TrackRowFront(track: track, session: self.session)
+							HStack {
+								Text(playlist!.title)
+									.font(.title)
+									.lineLimit(2)
+								Text("(i)")
+									.foregroundColor(.gray)
+								Text("<3")
+									.foregroundColor(.gray)
 							}
+							Text(playlist!.creator.name ?? "")
+							Text(DateFormatter.dateOnly.string(from: playlist!.lastUpdated))
 						}
-//							.background(Color.red)
-						VStack(alignment: .trailing) {
-							ForEach(session.getPlaylistTracks(playlistId: playlist.id)!) { track in
-								TrackRowBack(track: track)
-							}
+						Spacer()
+							.layoutPriority(-1)
+						VStack(alignment: .leading) {
+							Text("\(playlist!.numberOfTracks) Tracks")
+								.foregroundColor(.gray)
+							Text("\(playlist!.duration) sec")
+								.foregroundColor(.gray)
+							Spacer()
 						}
-//							.background(Color.green)
 					}
+					.frame(height: 100)
+					.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+					Divider()
+					
+					
+					TrackList(tracks: tracks!, showCover: true, session: session, player: player)
 				}
-			}
-			
-			if bigCover {
-//				Rectangle()
-				URLImageSourceView(
-					playlist.getImageUrl(session: session, resolution: 1280)!,
-					isAnimationEnabled: true,
-					label: Text(playlist.title)
-				)
-					.scaledToFit()
-					.padding()
 			}
 		}
 	}

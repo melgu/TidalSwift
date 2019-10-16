@@ -266,11 +266,11 @@ public struct Playlist: Decodable, Equatable, Identifiable {
 }
 
 public struct PlaylistCreator: Decodable {
-	let id: Int?
-	let name: String?
-	let url: URL?
-	let picture: String?
-	let popularity: Int?
+	public let id: Int?
+	public let name: String?
+	public let url: URL?
+	public let picture: String?
+	public let popularity: Int?
 	
 	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
 		guard let picture = picture else {
