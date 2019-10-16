@@ -56,6 +56,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		print("-----")
 		
+		// Space for Play/Pause
+		// Currently deactivated, because no way to know, if currently writing text in a TextField
+//		NSEvent.addLocalMonitorForEvents(matching: .keyUp) { event in
+//			if event.characters == " " {
+//				self.player.togglePlay()
+//			}
+//			return event
+//		}
+		
 		// Combine Stuff
 		_ = player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
 		_ = player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffleState(enabled:))
