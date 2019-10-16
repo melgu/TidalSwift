@@ -44,6 +44,8 @@ struct AlbumGridItem: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var viewState: ViewState
+	
 	init(album: Album, showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
 		self.album = album
 		self.showArtists = showArtists
@@ -121,8 +123,13 @@ struct AlbumGridItem: View {
 		}
 		.padding(5)
 		.onTapGesture(count: 2) {
-			print("\(self.album.title)")
+			print("Second Click. \(self.album.title)")
 			self.player.add(album: self.album, .now)
+		}
+		.onTapGesture(count: 1) {
+			print("First Click. \(self.album.title)")
+			self.viewState.album = self.album
+			self.viewState.viewType = "SingleAlbum"
 		}
 		.contextMenu {
 			AlbumContextMenu(album: self.album, session: session, player: player)
