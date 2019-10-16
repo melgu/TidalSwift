@@ -46,11 +46,13 @@ struct MasterView: View {
 	var body: some View {
 		VStack {
 			TextField("Search", text: $searchText, onCommit: {
-				print(self.searchText)
-				self.fixedSearchText = self.searchText
-				self.selection = "Search"
-//				let window = (NSApp.delegate as? AppDelegate)?.window
-//				window?.makeFirstResponder(window?.initialFirstResponder)
+				if self.searchText != "" {
+					print(self.searchText)
+					self.fixedSearchText = self.searchText
+					self.selection = "Search"
+//					let window = (NSApp.delegate as? AppDelegate)?.window
+//					window?.makeFirstResponder(window?.initialFirstResponder)
+				}
 			})
 				.textFieldStyle(RoundedBorderTextFieldStyle())
 				.padding(.top, 10)
