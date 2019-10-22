@@ -20,7 +20,7 @@ struct TrackList: View {
 		HStack {
 			VStack(alignment: .leading) {
 				ForEach(0..<tracks.count) { i in
-					TrackRowFront(track: self.tracks[i], showCover: true, trackNumber: i, session: self.session)
+					TrackRowFront(track: self.tracks[i], showCover: self.showCover, trackNumber: i, session: self.session)
 						.onTapGesture(count: 2) {
 							print("\(self.tracks[i].title)")
 							self.player.add(tracks: self.tracks, .now)

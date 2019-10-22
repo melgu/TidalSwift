@@ -139,6 +139,7 @@ public struct ArtistBio: Decodable {
 public enum AudioMode: String, Decodable {
 	case stereo = "STEREO"
 	case mono = "MONO"
+	case sony360RealityAudio = "SONY_360RA"
 }
 
 public struct Album: Decodable, Equatable, Identifiable {
