@@ -45,6 +45,18 @@ struct AlbumView: View {
 							label: Text(album!.title)
 						)
 							.frame(width: 100, height: 100)
+							.onTapGesture {
+								print("Big Cover")
+								let controller = CoverWindowController(rootView:
+									URLImageSourceView(
+										self.album!.getCoverUrl(session: self.session, resolution: 1280)!,
+										isAnimationEnabled: true,
+										label: Text(self.album!.title)
+									)
+								)
+								controller.window?.title = self.album!.title
+								controller.showWindow(nil)
+						}
 						
 						VStack(alignment: .leading) {
 							HStack {

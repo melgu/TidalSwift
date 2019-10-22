@@ -22,6 +22,7 @@ class Player {
 	private var timeObserverToken: Any?
 	
 	private var previousValue: Float = 1.0
+	private var failedItems = 0
 	
 	init(session: Session, autoplayAfterAddNow: Bool = true) {
 		self.session = session
@@ -112,6 +113,7 @@ class Player {
 			} else {
 				pause()
 				seek(to: 0)
+				return
 			}
 		} else {
 			playbackInfo.currentIndex += 1
@@ -154,9 +156,15 @@ class Player {
 		pause()
 		
 		guard let url = track.getAudioUrl(session: session) else {
-			next()
+			failedItems += 1
+			if failedItems == playbackInfo.queue.count {
+				clearQueue()
+			} else {
+				next()
+			}
 			return
 		}
+		failedItems = 0
 		let item = AVPlayerItem(url: url)
 		NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(sender:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: item)
 		avPlayer.replaceCurrentItem(with: item)
@@ -273,6 +281,21 @@ class Player {
 //		ts.removeAll(where: { !$0.streamReady })
 //		return ts
 //	}
+	
+	func removeTrack(atIndex: Int) {
+		if playbackInfo.shuffle {
+			let nonShuffledIndex = nonShuffledQueue.firstIndex(of: playbackInfo.queue[atIndex])!
+			nonShuffledQueue.remove(at: nonShuffledIndex)
+		} else {
+			nonShuffledQueue.remove(at: atIndex)
+		}
+		playbackInfo.queue.remove(at: atIndex)
+		if atIndex == playbackInfo.queue.count-1 {
+			play(atIndex: atIndex)
+		} else if atIndex == playbackInfo.currentIndex {
+			next()
+		}
+	}
 	
 	func clearQueue() {
 		avPlayer.pause()

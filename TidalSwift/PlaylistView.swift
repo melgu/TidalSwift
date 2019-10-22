@@ -45,6 +45,18 @@ struct PlaylistView: View {
 							label: Text(playlist!.title)
 						)
 							.frame(width: 100, height: 100)
+							.onTapGesture {
+								print("Big Cover")
+								let controller = CoverWindowController(rootView:
+									URLImageSourceView(
+										self.playlist!.getImageUrl(session: self.session, resolution: 750)!,
+										isAnimationEnabled: true,
+										label: Text(self.playlist!.title)
+									)
+								)
+								controller.window?.title = self.playlist!.title
+								controller.showWindow(nil)
+						}
 						
 						VStack(alignment: .leading) {
 							HStack {

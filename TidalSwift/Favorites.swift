@@ -48,7 +48,7 @@ struct FavoriteAlbums: View {
 						  showArtists: true, session: session, player: player)
 			} else {
 				Text("Problems fetching favorite albums")
-				.font(.largeTitle)
+					.font(.largeTitle)
 			}
 		}
 	}
