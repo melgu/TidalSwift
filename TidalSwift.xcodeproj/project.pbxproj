@@ -42,6 +42,8 @@
 		B07685B9232079C800538D55 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07685B8232079C800538D55 /* SearchView.swift */; };
 		B07685BD2320C12D00538D55 /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07685BC2320C12D00538D55 /* QueueView.swift */; };
 		B08AB537230ACACA004CBBE8 /* AlbumGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */; };
+		B08B819B235F85C3001C35C9 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
+		B08B819C235F85C3001C35C9 /* TidalSwiftLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B0A1E2752349C65900BBC4F0 /* ArtistBio.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2742349C65900BBC4F0 /* ArtistBio.swift */; };
 		B0A1E2772349DB0100BBC4F0 /* ResizableWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2762349DB0100BBC4F0 /* ResizableWindowController.swift */; };
 		B0A1E2792349EDE900BBC4F0 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2782349EDE900BBC4F0 /* Colors.swift */; };
@@ -92,6 +94,13 @@
 			remoteGlobalIDString = B0E80788230615AD00E43B5D;
 			remoteInfo = TidalSwift;
 		};
+		B08B819D235F85C3001C35C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B0E582C6223764A400ADAE6C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B0443FEA2305F7250019D0D8;
+			remoteInfo = TidalSwiftLib;
+		};
 		B0E8079E230615AF00E43B5D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B0E582C6223764A400ADAE6C /* Project object */;
@@ -109,6 +118,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */,
+				B08B819C235F85C3001C35C9 /* TidalSwiftLib.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -203,6 +213,7 @@
 			files = (
 				B0F20E3A230A8D21005F0576 /* ImageIOSwiftUI in Frameworks */,
 				B02382452348497F00BC2B0C /* Sliders in Frameworks */,
+				B08B819B235F85C3001C35C9 /* TidalSwiftLib.framework in Frameworks */,
 				B0F20E3D230A9771005F0576 /* Grid in Frameworks */,
 				B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */,
 			);
@@ -422,6 +433,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B08B819E235F85C3001C35C9 /* PBXTargetDependency */,
 			);
 			name = TidalSwift;
 			packageProductDependencies = (
@@ -458,7 +470,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1100;
+				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = "Melvin Gundlach";
 				TargetAttributes = {
 					B0443FEA2305F7250019D0D8 = {
@@ -645,6 +657,11 @@
 			target = B0E80788230615AD00E43B5D /* TidalSwift */;
 			targetProxy = B07685B6232073C100538D55 /* PBXContainerItemProxy */;
 		};
+		B08B819E235F85C3001C35C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B0443FEA2305F7250019D0D8 /* TidalSwiftLib */;
+			targetProxy = B08B819D235F85C3001C35C9 /* PBXContainerItemProxy */;
+		};
 		B0E8079F230615AF00E43B5D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B0E80788230615AD00E43B5D /* TidalSwift */;
@@ -667,7 +684,7 @@
 		B04440022305F7250019D0D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -701,7 +718,7 @@
 		B04440032305F7250019D0D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
