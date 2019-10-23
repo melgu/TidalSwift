@@ -63,6 +63,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		loginInfo.showLoginView = !loggedIn
 		
+		// Retrieve Playback State
+		if let data = UserDefaults.standard.data(forKey: "PlaybackInfo") {
+			if let tempPI = try? JSONDecoder().decode(CodablePlaybackInfo.self, from: data) {
+				player.playbackInfo.nonShuffledQueue = tempPI.nonShuffledQueue
+				player.playbackInfo.queue = tempPI.queue
+				player.playbackInfo.volume = tempPI.volume
+				player.playbackInfo.shuffle = tempPI.shuffle
+				player.playbackInfo.repeatState = tempPI.repeatState
+				
+				player.play(atIndex: tempPI.currentIndex)
+				player.pause()
+				// TODO: Seeking at this point doesn't work. Why?
+//				player.seek(to: Double(tempPI.fraction))
+//				print("Wanted: \(Double(tempPI.fraction)), Actual: \(player.playbackInfo.fraction)")
+			}
+		}
+		
 		print("-----")
 		
 		// Space for Play/Pause
@@ -100,7 +117,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	func applicationWillTerminate(_ aNotification: Notification) {
 		// Insert code here to tear down your application
-		UserDefaults.standard.synchronize()
 	}
 	
 	func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -111,7 +127,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	// MARK: - Quit
 	
 	@IBAction func Quit(_ sender: Any) {
+		print("Exiting...")
 		loginInfo.showLoginView = false
+		
+		// Save Playback State
+		let codablePI = CodablePlaybackInfo(nonShuffledQueue: player.playbackInfo.nonShuffledQueue,
+											queue: player.playbackInfo.queue,
+											currentIndex: player.playbackInfo.currentIndex,
+											fraction: player.playbackInfo.fraction,
+											playing: player.playbackInfo.playing,
+											volume: player.playbackInfo.volume,
+											shuffle: player.playbackInfo.shuffle,
+											repeatState: player.playbackInfo.repeatState)
+		let data = try? JSONEncoder().encode(codablePI)
+		UserDefaults.standard.set(data, forKey: "PlaybackInfo")
+		UserDefaults.standard.synchronize()
+		
 		NSApp.terminate(nil)
 	}
 	

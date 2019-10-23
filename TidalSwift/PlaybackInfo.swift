@@ -10,6 +10,7 @@ import SwiftUI
 import TidalSwiftLib
 
 final class PlaybackInfo: ObservableObject {
+	var nonShuffledQueue = [Track]()
 	@Published var queue = [Track]()
 	@Published var currentIndex: Int = 0
 	@Published var fraction: CGFloat = 0.0
@@ -19,7 +20,7 @@ final class PlaybackInfo: ObservableObject {
 	@Published var repeatState: RepeatState = .off
 }
 
-enum RepeatState: CaseIterable {
+enum RepeatState: Int, CaseIterable, Codable {
 	case off
 	case all
 	case single
@@ -32,4 +33,15 @@ extension CaseIterable where Self: Equatable {
         let next = all.index(after: idx)
         return all[next == all.endIndex ? all.startIndex : next]
     }
+}
+
+struct CodablePlaybackInfo: Codable {
+	var nonShuffledQueue: [Track]
+	var queue: [Track]
+	var currentIndex: Int
+	var fraction: CGFloat
+	var playing: Bool
+	var volume: Float
+	var shuffle: Bool
+	var repeatState: RepeatState
 }

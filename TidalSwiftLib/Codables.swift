@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-public enum AudioQuality: String, Decodable {
+public enum AudioQuality: String, Codable {
 	case master = "HI_RES"
 	case hifi = "LOSSLESS"
 	case high = "HIGH"
@@ -85,7 +85,7 @@ struct Videos: Decodable {
 	let items: [Video]
 }
 
-public struct Artist: Decodable, Equatable, Identifiable {
+public struct Artist: Codable, Equatable, Identifiable {
 	public let id: Int
 	public let name: String
 	public let url: URL?
@@ -136,13 +136,13 @@ public struct ArtistBio: Decodable {
 	}
 }
 
-public enum AudioMode: String, Decodable {
+public enum AudioMode: String, Codable {
 	case stereo = "STEREO"
 	case mono = "MONO"
 	case sony360RealityAudio = "SONY_360RA"
 }
 
-public struct Album: Decodable, Equatable, Identifiable {
+public struct Album: Codable, Equatable, Identifiable {
 	public let id: Int
 	public let title: String
 	public let duration: Int? // In Seconds
@@ -288,7 +288,7 @@ public struct PlaylistCreator: Decodable {
 	}
 }
 
-public struct Track: Decodable, Equatable, Identifiable {
+public struct Track: Codable, Equatable, Identifiable {
 	public let id: Int
 	public let title: String
 	public let duration: Int
