@@ -17,8 +17,6 @@ class Player {
 	let avPlayer = AVPlayer()
 	public let playbackInfo = PlaybackInfo()
 	
-	private var nonShuffledQueue = [Track]()
-	
 	private var timeObserverToken: Any?
 	
 	private var previousValue: Float = 1.0
@@ -132,12 +130,12 @@ class Player {
 			return
 		}
 		if enabled {
-			nonShuffledQueue = playbackInfo.queue
+			playbackInfo.nonShuffledQueue = playbackInfo.queue
 			playbackInfo.queue = playbackInfo.queue[0...playbackInfo.currentIndex] +
 				playbackInfo.queue[playbackInfo.currentIndex+1..<playbackInfo.queue.count].shuffled()
 		} else {
-			let i = nonShuffledQueue.firstIndex(where: { $0 == playbackInfo.queue[playbackInfo.currentIndex] })!
-			playbackInfo.queue = nonShuffledQueue
+			let i = playbackInfo.nonShuffledQueue.firstIndex(where: { $0 == playbackInfo.queue[playbackInfo.currentIndex] })!
+			playbackInfo.queue = playbackInfo.nonShuffledQueue
 			playbackInfo.currentIndex = i
 		}
 	}
@@ -236,7 +234,7 @@ class Player {
 		}
 		clearQueue()
 		if playbackInfo.shuffle {
-			nonShuffledQueue = tracks
+			playbackInfo.nonShuffledQueue = tracks
 			addLast(tracks: tracks.shuffled())
 		} else {
 			addLast(tracks: tracks)
@@ -249,7 +247,7 @@ class Player {
 		if tracks.isEmpty {
 			return
 		}
-		nonShuffledQueue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
+		playbackInfo.nonShuffledQueue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
 		if playbackInfo.queue.isEmpty {
 			playbackInfo.queue.insert(contentsOf: tracks, at: playbackInfo.currentIndex)
 			avSetItem(from: playbackInfo.queue[0])
@@ -266,7 +264,7 @@ class Player {
 		let wasEmtpy = playbackInfo.queue.isEmpty
 		
 		if !playbackInfo.shuffle {
-			nonShuffledQueue.append(contentsOf: tracks)
+			playbackInfo.nonShuffledQueue.append(contentsOf: tracks)
 		}
 		
 		playbackInfo.queue.append(contentsOf: tracks)
@@ -284,10 +282,10 @@ class Player {
 	
 	func removeTrack(atIndex: Int) {
 		if playbackInfo.shuffle {
-			let nonShuffledIndex = nonShuffledQueue.firstIndex(of: playbackInfo.queue[atIndex])!
-			nonShuffledQueue.remove(at: nonShuffledIndex)
+			let nonShuffledIndex = playbackInfo.nonShuffledQueue.firstIndex(of: playbackInfo.queue[atIndex])!
+			playbackInfo.nonShuffledQueue.remove(at: nonShuffledIndex)
 		} else {
-			nonShuffledQueue.remove(at: atIndex)
+			playbackInfo.nonShuffledQueue.remove(at: atIndex)
 		}
 		playbackInfo.queue.remove(at: atIndex)
 		if atIndex == playbackInfo.queue.count-1 {
@@ -302,7 +300,7 @@ class Player {
 		playbackInfo.currentIndex = 0
 		avPlayer.replaceCurrentItem(with: nil)
 		playbackInfo.queue.removeAll()
-		nonShuffledQueue.removeAll()
+		playbackInfo.nonShuffledQueue.removeAll()
 		
 		playbackInfo.playing = false
 	}
