@@ -624,6 +624,29 @@ public class Session {
 		return artistAlbumsResponse?.items
 	}
 	
+	public func getArtistVideos(artistId: Int, limit: Int = 999, offset: Int = 0) -> [Video]? {
+		var parameters = sessionParameters
+		parameters["limit"] = "\(limit)"
+		parameters["offset"] = "\(offset)"
+		
+		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/videos")!
+		let response = Network.get(url: url, parameters: parameters)
+
+		guard let content = response.content else {
+			displayError(title: "Artist Videos failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return nil
+		}
+		
+		var artistVideosResponse: Videos?
+		do {
+			artistVideosResponse = try customJSONDecoder().decode(Videos.self, from: content)
+		} catch {
+			displayError(title: "Artist Videos failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		return artistVideosResponse?.items
+	}
+	
 	public func getArtistTopTracks(artistId: Int, limit: Int = 999, offset: Int = 0) -> [Track]? {
 		var parameters = sessionParameters
 		parameters["limit"] = "\(limit)"
