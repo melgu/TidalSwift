@@ -115,7 +115,7 @@ struct TrackRowBack: View {
 		HStack {
 			Spacer()
 //				.layoutPriority(-1)
-			Text("\(track.duration) sec")
+			Text(secondsToHoursMinutesSecondsString(seconds: track.duration))
 			Spacer()
 //				.layoutPriority(-1)
 			Group {

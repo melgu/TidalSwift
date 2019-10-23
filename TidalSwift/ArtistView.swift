@@ -103,13 +103,6 @@ struct ArtistView: View {
 						}
 						Spacer()
 							.layoutPriority(-1)
-//						VStack(alignment: .leading) {
-//							Text("\(playlist!.numberOfTracks) Tracks")
-//								.foregroundColor(.secondary)
-//							Text("\(playlist!.duration) sec")
-//								.foregroundColor(.secondary)
-//							Spacer()
-//						}
 					}
 					.frame(height: 100)
 					.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
