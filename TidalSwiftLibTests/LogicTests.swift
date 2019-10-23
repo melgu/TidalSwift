@@ -36,7 +36,7 @@ class LogicTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
 		
 		// Delete messed-with UserDefaults
-		session.deletePersistantInformation()
+		session.deletePersistentInformation()
 		
 		// Save back old UserDefaults
 		tempSession?.saveConfig()
@@ -259,7 +259,6 @@ class LogicTests: XCTestCase {
 		
 		XCTAssertNotNil(searchResult?.albums[0].popularity)
 		XCTAssertEqual(searchResult?.albums[0].audioQuality, .master) // Master Version
-		XCTAssertEqual(searchResult?.albums[0].surroundTypes, [])
 		XCTAssertEqual(searchResult?.albums[0].audioModes, [.stereo])
 		
 		// HiFi Version
@@ -343,7 +342,6 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(searchResult?.tracks[0].editable, false)
 		XCTAssertEqual(searchResult?.tracks[0].explicit, false)
 		XCTAssertEqual(searchResult?.tracks[0].audioQuality, .hifi)
-		XCTAssertEqual(searchResult?.tracks[0].surroundTypes, [])
 		XCTAssertEqual(searchResult?.tracks[0].audioModes, [.stereo])
 		
 		// Artists
@@ -507,7 +505,6 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(track.editable, false)
 		XCTAssertEqual(track.explicit, false)
 		XCTAssertEqual(track.audioQuality, .hifi)
-		XCTAssertEqual(track.surroundTypes, [])
 		XCTAssertEqual(track.audioModes, [.stereo])
 		
 		// Artists
@@ -537,11 +534,10 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlistTracks.count, 20)
 		
 		// For some reason this exact track doesn't exist even though it's technically part of the playlist
-		// And for some reason it just gained audioQuality, but not streamStartDate or surroundTypes
+		// And for some reason it just gained audioQuality, but not streamStartDate
 		XCTAssertEqual(playlistTracks[17].id, 16557722)
 		XCTAssertNil(playlistTracks[17].streamStartDate)
 //		XCTAssertNil(playlistTracks[17].audioQuality)
-		XCTAssertNil(playlistTracks[17].surroundTypes)
 		
 		let cleanedTrackList = session.cleanTrackList(playlistTracks)
 		XCTAssertEqual(cleanedTrackList.count, 19)
@@ -671,7 +667,6 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlistTracks[0].editable, false)
 		XCTAssertEqual(playlistTracks[0].explicit, false)
 		XCTAssertEqual(playlistTracks[0].audioQuality, .hifi)
-		XCTAssertEqual(playlistTracks[0].surroundTypes, [])
 		XCTAssertEqual(playlistTracks[0].audioModes, [.stereo])
 		XCTAssertEqual(playlistTracks[0].artist?.id, 3969810)
 		XCTAssertEqual(playlistTracks[0].artist?.name, "Barack Obama")
@@ -702,7 +697,6 @@ class LogicTests: XCTestCase {
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
 		XCTAssertNotNil(album?.popularity)
 		XCTAssertEqual(album?.audioQuality, .master)
-		XCTAssertEqual(album?.surroundTypes, [])
 		XCTAssertEqual(album?.audioModes, [.stereo])
 		
 		// Album Artist
@@ -735,6 +729,11 @@ class LogicTests: XCTestCase {
 		XCTAssertNil(album?.artists?[2].picture)
 		XCTAssertNil(album?.artists?[2].popularity)
 		XCTAssertEqual(album?.artists?[2].type, "MAIN")
+		
+		
+		// Sony 360 Reality Audio Test
+		let album360 = session.getAlbum(albumId: 119966103)
+		XCTAssertEqual(album360?.audioModes, [.sony360RealityAudio])
 	}
 
 	func testGetAlbumTracks() {
@@ -766,7 +765,6 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(albumTracks[0].editable, false)
 		XCTAssertEqual(albumTracks[0].explicit, false)
 		XCTAssertEqual(albumTracks[0].audioQuality, .master)
-		XCTAssertEqual(albumTracks[0].surroundTypes, [])
 		XCTAssertEqual(albumTracks[0].audioModes, [.stereo])
 		
 		XCTAssertEqual(albumTracks[8].id, 100006880)
@@ -811,6 +809,7 @@ class LogicTests: XCTestCase {
 		
 		XCTAssertEqual(artist?.id, 16579)
 		XCTAssertEqual(artist?.name, "Roger Cicero")
+		XCTAssertEqual(artist?.artistTypes, [.artist, .contributor])
 		XCTAssertEqual(artist?.url, URL(string:
 			"http://www.tidal.com/artist/16579"))
 		// Interestingly the resulting URL is HTTP instead of HTTPS
@@ -849,7 +848,6 @@ class LogicTests: XCTestCase {
 					   "© 2018 Hajanga Records, under exclusive licence to Geffen Records / Decca, a division of Universal Music Operations Limited")
 		XCTAssertNotNil(album1.popularity)
 		XCTAssertEqual(album1.audioQuality, .master)
-		XCTAssertEqual(album1.surroundTypes, [])
 		XCTAssertEqual(album1.audioModes, [.stereo])
 		
 		// Album Artists
@@ -928,7 +926,6 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(artistTopTracks[0].editable, false)
 		XCTAssertEqual(artistTopTracks[0].explicit, false)
 		XCTAssertEqual(artistTopTracks[0].audioQuality, .hifi)
-		XCTAssertEqual(artistTopTracks[0].surroundTypes, [])
 		XCTAssertEqual(artistTopTracks[0].audioModes, [.stereo])
 		
 		// Artists
@@ -1029,7 +1026,6 @@ class LogicTests: XCTestCase {
 //		XCTAssertEqual(artistRadio[0].editable, false)
 //		XCTAssertEqual(artistRadio[0].explicit, false)
 //		XCTAssertEqual(artistRadio[0].audioQuality, .hifi)
-//		XCTAssertEqual(album.surroundTypes, [])
 //		XCTAssertEqual(album.audioModes, [.stereo])
 		
 		// Artists

@@ -446,7 +446,7 @@ public class Session {
 	public func cleanTrackList(_ trackList: [Track]) -> [Track] {
 		var result = [Track]()
 		for track in trackList {
-			if !(track.streamStartDate == nil || track.audioQuality == nil || track.surroundTypes == nil) {
+			if !(track.streamStartDate == nil || track.audioQuality == nil) {
 				result.append(track)
 			}
 		}

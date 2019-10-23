@@ -85,9 +85,15 @@ struct Videos: Decodable {
 	let items: [Video]
 }
 
+public enum ArtistType: String, Codable {
+	case artist = "ARTIST"
+	case contributor = "CONTRIBUTOR"
+}
+
 public struct Artist: Codable, Equatable, Identifiable {
 	public let id: Int
 	public let name: String
+	public let artistTypes: Set<ArtistType>?
 	public let url: URL?
 	public let picture: String?
 	public let popularity: Int?
@@ -164,7 +170,6 @@ public struct Album: Codable, Equatable, Identifiable {
 	public let upc: String?
 	public let popularity: Int?
 	public let audioQuality: AudioQuality?
-	public let surroundTypes: [String]?
 	public let audioModes: [AudioMode]?
 	public let artist: Artist?
 	public let artists: [Artist]?
@@ -308,7 +313,6 @@ public struct Track: Codable, Equatable, Identifiable {
 	public let editable: Bool
 	public let explicit: Bool
 	public let audioQuality: AudioQuality?
-	public let surroundTypes: [String]?
 	public let audioModes: [AudioMode]?
 	public let artist: Artist?
 	public let artists: [Artist]
