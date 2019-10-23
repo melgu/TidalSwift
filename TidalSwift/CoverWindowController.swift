@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-class CoverWindowController<RootView : View>: NSWindowController {
+class CoverWindowController<RootView: View>: NSWindowController {
     convenience init(rootView: RootView) {
         let hostingController = NSHostingController(rootView: rootView.frame(width: 640, height: 640))
         let window = NSWindow(contentViewController: hostingController)
