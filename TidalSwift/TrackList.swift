@@ -137,7 +137,7 @@ struct TrackRowBack: View {
 								self.t.toggle()
 						}
 					} else {
-						Text("􀊷")
+						Text("􀊴")
 							.onTapGesture {
 								print("Add to Favorites")
 								self.session.favorites!.addTrack(trackId: self.track.id)
