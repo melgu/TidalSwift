@@ -40,6 +40,9 @@ class HelpersTests: XCTestCase {
 			return
 		}
 		XCTAssertEqual(albums.count, 30)
+		guard albums.count >= 30 else {
+			return
+		}
 		XCTAssert(albums[0].releaseDate! > albums[29].releaseDate!)
 //		for album in albums {
 //			print("\(album.artist!.name) - \(album.title) - \(album.releaseDate!)")
