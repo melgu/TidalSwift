@@ -28,7 +28,7 @@ struct MasterDetailView: View {
 			DetailView(fixedSearchText: fixedSearchText, session: session, player: player)
 				.frame(minWidth: 580)
 		}
-		.frame(minHeight: 200)
+		.frame(minHeight: 500)
 	}
 }
 
@@ -106,6 +106,8 @@ struct DetailView: View {
 					FavoriteVideos(session: session, player: player)
 				} else if viewState.viewType == "Artists" {
 					FavoriteArtists(session: session, player: player)
+				}  else if viewState.viewType == "SingleArtist" {
+					ArtistView(artist: viewState.artist, session: session, player: player)
 				} else if viewState.viewType == "SingleAlbum" {
 					AlbumView(album: viewState.album, session: session, player: player)
 				} else if viewState.viewType == "SinglePlaylist" {

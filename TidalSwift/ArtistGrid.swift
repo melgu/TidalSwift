@@ -32,10 +32,11 @@ struct ArtistGridItem: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var viewState: ViewState
+	
 	var body: some View {
 		VStack {
 			if artist.getPictureUrl(session: session, resolution: 320) != nil {
-				//				Rectangle()
 				URLImageSourceView(
 					artist.getPictureUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -66,6 +67,11 @@ struct ArtistGridItem: View {
 		.onTapGesture(count: 2) {
 			print("\(self.artist.name)")
 			self.player.add(artist: self.artist, .now)
+		}
+		.onTapGesture(count: 1) {
+			print("First Click. \(self.artist.name)")
+			self.viewState.artist = self.artist
+			self.viewState.viewType = "SingleArtist"
 		}
 		.contextMenu {
 			ArtistContextMenu(artist: self.artist, session: self.session, player: self.player)

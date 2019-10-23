@@ -624,9 +624,13 @@ public class Session {
 		return artistAlbumsResponse?.items
 	}
 	
-	public func getArtistTopTracks(artistId: Int) -> [Track]? {
+	public func getArtistTopTracks(artistId: Int, limit: Int = 999, offset: Int = 0) -> [Track]? {
+		var parameters = sessionParameters
+		parameters["limit"] = "\(limit)"
+		parameters["offset"] = "\(offset)"
+		
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/toptracks")!
-		let response = Network.get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: parameters)
 
 		guard let content = response.content else {
 			displayError(title: "Artist Top Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
