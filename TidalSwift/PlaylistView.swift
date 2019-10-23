@@ -101,7 +101,7 @@ struct PlaylistView: View {
 						VStack(alignment: .leading) {
 							Text("\(playlist!.numberOfTracks) Tracks")
 								.foregroundColor(.secondary)
-							Text("\(playlist!.duration) sec")
+							Text(secondsToHoursMinutesSecondsString(seconds: playlist!.duration))
 								.foregroundColor(.secondary)
 							Spacer()
 						}

@@ -106,7 +106,7 @@ struct AlbumView: View {
 									.foregroundColor(.secondary)
 							}
 							if album!.duration != nil {
-								Text("\(album!.duration!) sec")
+								Text(secondsToHoursMinutesSecondsString(seconds: album!.duration!))
 									.foregroundColor(.secondary)
 							}
 							Spacer()

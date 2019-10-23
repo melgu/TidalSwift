@@ -354,3 +354,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 }
 
+// MARK: - Extra functions
+
+func secondsToHoursMinutesSecondsString(seconds: Int) -> String {
+	let formatter = DateComponentsFormatter()
+	formatter.allowedUnits = [.hour, .minute, .second]
+	formatter.unitsStyle = .positional
+
+	return formatter.string(from: TimeInterval(seconds))!
+}
+
