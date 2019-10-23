@@ -76,7 +76,7 @@ struct SearchViewArtists: View {
 						ArtistGridItem(artist: artist, session: self.session, player: self.player)
 					}
 				}
-				.padding(5)
+				.padding(10)
 			}
 		}
 	}
@@ -99,7 +99,7 @@ struct SearchViewAlbums: View {
 						AlbumGridItem(album: album, showArtists: true, session: self.session, player: self.player)
 					}
 				}
-				.padding(5)
+				.padding(10)
 			}
 		}
 	}
@@ -122,7 +122,7 @@ struct SearchViewPlaylists: View {
 						PlaylistGridItem(playlist: playlist, session: self.session, player: self.player)
 					}
 				}
-				.padding(5)
+				.padding(10)
 			}
 		}
 	}
@@ -145,7 +145,7 @@ struct SearchViewTracks: View {
 						TrackGridItem(track: track, showArtist: true, session: self.session, player: self.player)
 					}
 				}
-				.padding(5)
+				.padding(10)
 			}
 		}
 	}
@@ -168,7 +168,7 @@ struct SearchViewVideos: View {
 						VideoGridItem(video: video, showArtist: true, session: self.session, player: self.player)
 					}
 				}
-				.padding(5)
+				.padding(10)
 			}
 		}
 	}
