@@ -115,7 +115,7 @@ struct ArtistView: View {
 					.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
 					Divider()
 					
-					TrackList(tracks: topTracks!, showCover: true, session: session, player: player)
+					TrackList(tracks: topTracks!, showCover: true, showAlbumTrackNumber: false, session: session, player: player)
 					
 					AlbumGrid(albums: albums!, showArtists: false, showReleaseDate: true, session: session, player: player)
 				}

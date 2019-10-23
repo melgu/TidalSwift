@@ -116,9 +116,8 @@ struct AlbumView: View {
 					.padding(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
 					Divider()
 					
-					TrackList(tracks: tracks!, showCover: false, session: session, player: player)
+					TrackList(tracks: tracks!, showCover: false, showAlbumTrackNumber: true, session: session, player: player)
 				}
-				
 			}
 		}
 	}
