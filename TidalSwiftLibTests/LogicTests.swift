@@ -894,6 +894,27 @@ class LogicTests: XCTestCase {
 		}
 		XCTAssert(artistAlbumsFilterAppearances.count >= 10) // Probably going to be more in the future
 	}
+	
+	func testGetArtistVideos() {
+		let optionalArtistVideos = session.getArtistVideos(artistId: 7553669)
+		XCTAssertNotNil(optionalArtistVideos)
+		guard let artistVideos = optionalArtistVideos else {
+			return
+		}
+		
+		XCTAssert(artistVideos.count > 6)
+		guard artistVideos.count > 6 else {
+			return
+		}
+		let video1 = artistVideos[artistVideos.count - 5]
+		let video2 = artistVideos[artistVideos.count - 6]
+		
+		XCTAssertEqual(video1.id, 98785108)
+		XCTAssertEqual(video1.title, "With The Love In My Heart")
+		
+		XCTAssertEqual(video2.id, 107149001)
+		XCTAssertEqual(video2.title, "Make Me Cry")
+	}
 
 	func testGetArtistTopTracks() {
 		// Probably needs to be updated once in a while as it can change
