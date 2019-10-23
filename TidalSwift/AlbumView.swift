@@ -17,6 +17,8 @@ struct AlbumView: View {
 	
 	let tracks: [Track]?
 	
+	@State var t: Bool = false
+	
 	init(album: Album?, session: Session, player: Player) {
 		self.album = album
 		self.session = session
@@ -46,7 +48,6 @@ struct AlbumView: View {
 						)
 							.frame(width: 100, height: 100)
 							.onTapGesture {
-								print("Big Cover")
 								let controller = CoverWindowController(rootView:
 									URLImageSourceView(
 										self.album!.getCoverUrl(session: self.session, resolution: 1280)!,
@@ -63,10 +64,34 @@ struct AlbumView: View {
 								Text(album!.title)
 									.font(.title)
 									.lineLimit(2)
-								Text("(i)")
+								Text("􀅴")
 									.foregroundColor(.secondary)
-								Text("<3")
-									.foregroundColor(.secondary)
+									.onTapGesture {
+										let controller = ResizableWindowController(rootView:
+											CreditsView(album: self.album!, session: self.session)
+										)
+										controller.window?.title = "Credits – \(self.album!.title)"
+										controller.showWindow(nil)
+								}
+								if self.t || !self.t {
+									if self.album!.isInFavorites(session: session)! {
+										Text("􀊵")
+											.foregroundColor(.secondary)
+											.onTapGesture {
+												print("Remove from Favorites")
+												self.session.favorites!.removeAlbum(albumId: self.album!.id)
+												self.t.toggle()
+										}
+									} else {
+										Text("􀊷")
+											.foregroundColor(.secondary)
+											.onTapGesture {
+												print("Add to Favorites")
+												self.session.favorites!.addAlbum(albumId: self.album!.id)
+												self.t.toggle()
+										}
+									}
+								}
 							}
 							Text(album!.artists?.formArtistString() ?? "")
 							if album!.releaseDate != nil {

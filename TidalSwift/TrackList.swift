@@ -34,7 +34,7 @@ struct TrackList: View {
 			}
 			VStack(alignment: .trailing) {
 				ForEach(0..<tracks.count) { i in
-					TrackRowBack(track: self.tracks[i])
+					TrackRowBack(track: self.tracks[i], session: self.session)
 						.onTapGesture(count: 2) {
 							print("\(self.tracks[i].title)")
 							self.player.add(tracks: self.tracks, .now)
@@ -102,6 +102,10 @@ struct TrackRowFront: View {
 struct TrackRowBack: View {
 	var track: Track
 	
+	var session: Session
+	
+	@State var t: Bool = false
+	
 	var body: some View {
 		HStack {
 			Spacer()
@@ -109,11 +113,33 @@ struct TrackRowBack: View {
 			Text("\(track.duration) sec")
 			Spacer()
 //				.layoutPriority(-1)
-//			Text("^")
-//				.foregroundColor(.secondary)
 			Group {
-				Text("+")
-				Text("<3")
+//				Text("+")
+				Text("􀅴")
+					.onTapGesture {
+						let controller = ResizableWindowController(rootView:
+							CreditsView(track: self.track, session: self.session)
+						)
+						controller.window?.title = "Credits – \(self.track.title)"
+						controller.showWindow(nil)
+				}
+				if self.t || !self.t {
+					if self.track.isInFavorites(session: session)! {
+						Text("􀊵")
+							.onTapGesture {
+								print("Remove from Favorites")
+								self.session.favorites!.removeTrack(trackId: self.track.id)
+								self.t.toggle()
+						}
+					} else {
+						Text("􀊷")
+							.onTapGesture {
+								print("Add to Favorites")
+								self.session.favorites!.addTrack(trackId: self.track.id)
+								self.t.toggle()
+						}
+					}
+				}
 			}
 			.layoutPriority(1)
 		}

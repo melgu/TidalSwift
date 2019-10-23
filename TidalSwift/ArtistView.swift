@@ -52,7 +52,6 @@ struct ArtistView: View {
 							)
 								.frame(width: 100, height: 100)
 								.onTapGesture {
-									print("Big Cover")
 									let controller = CoverWindowController(rootView:
 										URLImageSourceView(
 											self.artist!.getPictureUrl(session: self.session, resolution: 750)!,

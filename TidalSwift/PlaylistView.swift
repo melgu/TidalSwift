@@ -17,6 +17,8 @@ struct PlaylistView: View {
 	
 	let tracks: [Track]?
 	
+	@State var t: Bool = false
+	
 	init(playlist: Playlist?, session: Session, player: Player) {
 		self.playlist = playlist
 		self.session = session
@@ -46,7 +48,6 @@ struct PlaylistView: View {
 						)
 							.frame(width: 100, height: 100)
 							.onTapGesture {
-								print("Big Cover")
 								let controller = CoverWindowController(rootView:
 									URLImageSourceView(
 										self.playlist!.getImageUrl(session: self.session, resolution: 750)!,
@@ -63,13 +64,37 @@ struct PlaylistView: View {
 								Text(playlist!.title)
 									.font(.title)
 									.lineLimit(2)
-								Text("(i)")
-									.foregroundColor(.secondary)
-								Text("<3")
-									.foregroundColor(.secondary)
+//								Text("􀅴")
+//									.foregroundColor(.secondary)
+//									.onTapGesture {
+//										// Nothing yet
+//								}
+								if self.t || !self.t {
+									if self.playlist!.isInFavorites(session: session)! {
+										Text("􀊵")
+											.foregroundColor(.secondary)
+											.onTapGesture {
+												print("Remove from Favorites")
+												self.session.favorites!.removePlaylist(playlistId: self.playlist!.uuid)
+												self.t.toggle()
+										}
+									} else {
+										Text("􀊷")
+											.foregroundColor(.secondary)
+											.onTapGesture {
+												print("Add to Favorites")
+												self.session.favorites!.addPlaylist(playlistId: self.playlist!.uuid)
+												self.t.toggle()
+										}
+									}
+								}
+								
 							}
 							Text(playlist!.creator.name ?? "")
-							Text(DateFormatter.dateOnly.string(from: playlist!.lastUpdated))
+							Text("Created: \(DateFormatter.dateOnly.string(from: playlist!.created))")
+								.foregroundColor(.secondary)
+							Text("Last updated: \(DateFormatter.dateOnly.string(from: playlist!.lastUpdated))")
+								.foregroundColor(.secondary)
 						}
 						Spacer()
 							.layoutPriority(-1)
