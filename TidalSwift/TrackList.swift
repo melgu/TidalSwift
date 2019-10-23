@@ -13,6 +13,7 @@ import ImageIOSwiftUI
 struct TrackList: View {
 	let tracks: [Track]
 	let showCover: Bool
+	let showAlbumTrackNumber: Bool
 	let session: Session
 	let player: Player
 	
@@ -20,7 +21,7 @@ struct TrackList: View {
 		HStack {
 			VStack(alignment: .leading) {
 				ForEach(0..<tracks.count) { i in
-					TrackRowFront(track: self.tracks[i], showCover: self.showCover, trackNumber: i, session: self.session)
+					TrackRowFront(track: self.tracks[i], showCover: self.showCover, trackNumber: self.showAlbumTrackNumber ? nil : i, session: self.session)
 						.onTapGesture(count: 2) {
 							print("\(self.tracks[i].title)")
 							self.player.add(tracks: self.tracks, .now)
@@ -61,7 +62,11 @@ struct TrackRowFront: View {
 	init(track: Track, showCover: Bool = false, trackNumber: Int? = nil, session: Session) {
 		self.track = track
 		self.showCover = showCover
-		self.trackNumber = trackNumber
+		if let trackNumber = trackNumber {
+			self.trackNumber = trackNumber + 1 // To start counting from 1
+		} else {
+			self.trackNumber = nil
+		}
 		self.session = session
 		
 		if showCover {
