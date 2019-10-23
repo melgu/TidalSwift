@@ -75,7 +75,7 @@ struct PlayerInfoView: View {
 							Spacer()
 						}
 					}
-					.frame(width: metrics.size.width / 3)
+					.frame(width: metrics.size.width / 2 - 100)
 					
 					VStack {
 						HStack {
