@@ -34,6 +34,8 @@ struct VideoGridItem: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var playbackInfo: PlaybackInfo
+	
 	var body: some View {
 		VStack {
 			if video.getImageUrl(session: session, resolution: 320) != nil {
@@ -74,7 +76,14 @@ struct VideoGridItem: View {
 		.padding(5)
 		.onTapGesture(count: 2) {
 			print("\(self.video.title)")
-//			self.player.add(playlist: self.playlist, .now)
+			guard let url = self.video.getVideoUrl(session: self.session) else {
+				return
+			}
+			print(url)
+			self.player.pause()
+			let controller = VideoPlayerController(videoUrl: url, volume: self.playbackInfo.volume)
+			controller.window?.title = "\(self.video.title) - \(self.video.artists.formArtistString())"
+			controller.showWindow(nil)
 		}
 		.contextMenu {
 			VideoContextMenu(video: self.video, session: self.session, player: self.player)
