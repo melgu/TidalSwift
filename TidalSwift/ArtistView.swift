@@ -16,8 +16,15 @@ struct ArtistView: View {
 	let player: Player
 	
 	let albums: [Album]?
+	let videos: [Video]?
 	let topTracks: [Track]?
 	
+	enum BottomSectionType {
+		case albums
+		case videos
+	}
+	
+	@State var bottomSectionType: BottomSectionType = .albums
 	@State var t: Bool = false
 	
 	init(artist: Artist?, session: Session, player: Player) {
@@ -27,9 +34,11 @@ struct ArtistView: View {
 		
 		if let artist = artist {
 			self.albums = session.getArtistAlbums(artistId: artist.id)
+			self.videos = session.getArtistVideos(artistId: artist.id)
 			self.topTracks = session.getArtistTopTracks(artistId: artist.id, limit: 5, offset: 0)
 		} else {
 			self.albums = nil
+			self.videos = nil
 			self.topTracks = nil
 		}
 	}
@@ -110,7 +119,19 @@ struct ArtistView: View {
 					
 					TrackList(tracks: topTracks!, showCover: true, showAlbumTrackNumber: false, session: session, player: player)
 					
-					AlbumGrid(albums: albums!, showArtists: false, showReleaseDate: true, session: session, player: player)
+					HStack {
+						Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {
+							Text("Albums").tag(BottomSectionType.albums)
+							Text("Videos").tag(BottomSectionType.videos)
+						}
+						.pickerStyle(SegmentedPickerStyle())
+						.padding(.horizontal)
+					}
+					if bottomSectionType == .albums {
+						AlbumGrid(albums: albums!, showArtists: false, showReleaseDate: true, session: session, player: player)
+					} else if bottomSectionType == .videos {
+						VideoGrid(videos: videos!, showArtists: false, session: session, player: player)
+					}
 				}
 			}
 //		}
