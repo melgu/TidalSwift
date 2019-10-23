@@ -88,7 +88,7 @@ struct ArtistView: View {
 												self.t.toggle()
 										}
 									} else {
-										Text("􀊷")
+										Text("􀊴")
 											.foregroundColor(.secondary)
 											.onTapGesture {
 												print("Add to Favorites")
