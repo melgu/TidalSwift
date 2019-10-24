@@ -27,7 +27,7 @@ enum ViewType: String, Codable {
 	case none = ""
 }
 
-struct TidalSwiftView {
+struct TidalSwiftView: Codable {
 	var viewType: ViewType
 	var artist: Artist? = nil
 	var album: Album? = nil

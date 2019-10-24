@@ -80,6 +80,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			}
 		}
 		
+		// Retrieve View State
+		if let data = UserDefaults.standard.data(forKey: "ViewState") {
+			if let tempStack = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
+				viewState.stack = tempStack
+				if viewState.stack.count > 0 {
+					viewState.viewType = tempStack.last!.viewType.rawValue
+					viewState.artist = tempStack.last!.artist
+					viewState.album = tempStack.last!.album
+					viewState.playlist = tempStack.last!.playlist
+				}
+			}
+		}
+		
 		print("-----")
 		
 		// Space for Play/Pause
@@ -139,8 +152,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 											volume: player.playbackInfo.volume,
 											shuffle: player.playbackInfo.shuffle,
 											repeatState: player.playbackInfo.repeatState)
-		let data = try? JSONEncoder().encode(codablePI)
-		UserDefaults.standard.set(data, forKey: "PlaybackInfo")
+		let playbackInfoData = try? JSONEncoder().encode(codablePI)
+		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
+		
+		// Save View State
+		let viewStackData = try? JSONEncoder().encode(viewState.stack)
+		UserDefaults.standard.set(viewStackData, forKey: "ViewState")
+		
 		UserDefaults.standard.synchronize()
 		
 		NSApp.terminate(nil)

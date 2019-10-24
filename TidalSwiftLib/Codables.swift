@@ -212,14 +212,14 @@ public struct Contributor: Decodable {
 	public let name: String
 }
 
-public enum PlaylistType: String, Decodable {
+public enum PlaylistType: String, Codable {
 	case user = "USER"
 	case editorial = "EDITORIAL"
 	case artist = "ARTIST"
 	// Haven't seen others yet
 }
 
-public struct Playlist: Decodable, Equatable, Identifiable {
+public struct Playlist: Codable, Equatable, Identifiable {
 	public var id: String { uuid }
 	
 	public let uuid: String
@@ -271,7 +271,7 @@ public struct Playlist: Decodable, Equatable, Identifiable {
 	}
 }
 
-public struct PlaylistCreator: Decodable {
+public struct PlaylistCreator: Codable {
 	public let id: Int?
 	public let name: String?
 	public let url: URL?
