@@ -138,7 +138,7 @@ struct ArtistView: View {
 					
 					ScrollView {
 						TrackList(tracks: topTracks!, showCover: true, showAlbumTrackNumber: false,
-								  showArtist: false, showAlbum: true, session: session, player: player)
+								  showArtist: true, showAlbum: true, session: session, player: player)
 					}
 					.frame(height: 200)
 					
