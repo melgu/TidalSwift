@@ -58,6 +58,8 @@ struct AlbumView: View {
 							label: Text(album!.title)
 						)
 							.frame(width: 100, height: 100)
+							.cornerRadius(CORNERRADIUS)
+							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 							.onTapGesture {
 								let controller = CoverWindowController(rootView:
 									URLImageSourceView(
