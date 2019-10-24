@@ -21,15 +21,21 @@ struct AlbumView: View {
 	@State var t: Bool = false
 	
 	init(album: Album?, session: Session, player: Player) {
-		self.album = album
-		self.session = session
-		self.player = player
-		
 		if let album = album {
+			if album.releaseDate == nil {
+				print("Reloading Album: \(album.title)")
+				self.album = session.getAlbum(albumId: album.id)
+			} else {
+				self.album = album
+			}
 			self.tracks = session.getAlbumTracks(albumId: album.id)
 		} else {
+			self.album = nil
 			self.tracks = nil
 		}
+		
+		self.session = session
+		self.player = player
 	}
 	
 	var body: some View {

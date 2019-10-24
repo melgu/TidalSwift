@@ -36,22 +36,18 @@ struct ArtistView: View {
 			} else {
 				self.artist = artist
 			}
-			
-		} else {
-			self.artist = nil
-		}
-		self.session = session
-		self.player = player
-		
-		if let artist = artist {
 			self.albums = session.getArtistAlbums(artistId: artist.id)
 			self.videos = session.getArtistVideos(artistId: artist.id)
 			self.topTracks = session.getArtistTopTracks(artistId: artist.id, limit: 30, offset: 0)
 		} else {
+			self.artist = nil
 			self.albums = nil
 			self.videos = nil
 			self.topTracks = nil
 		}
+		
+		self.session = session
+		self.player = player
 	}
 	
 	var body: some View {
