@@ -399,7 +399,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(searchResult?.videos[0].artists[2].type, "MAIN")
 		
 		// Album (probably need to find a better example)
-		XCTAssertNil(searchResult?.videos[0].album)
+//		XCTAssertNil(searchResult?.videos[0].album)
 		
 	}
 	
@@ -587,7 +587,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(video.artists[2].type, "MAIN")
 		
 		// Album (probably need to find a better example)
-		XCTAssertNil(video.album)
+//		XCTAssertNil(video.album)
 	}
 	
 	func testGetPlaylist() {

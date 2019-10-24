@@ -366,7 +366,7 @@ public struct Video: Decodable, Equatable, Identifiable {
 	public let adsUrl: String?
 	public let adsPrePaywallOnly: Bool
 	public let artists: [Artist]
-	public let album: Album?
+//	public let album: Album? // Sometimes Tidal returns empty object here which breaks things. In all other cases I found, returns nil otherwise, so doesn't matter anyways.
 	
 	public func isInFavorites(session: Session) -> Bool? {
 		return session.favorites?.doFavoritesContainVideo(videoId: id)
