@@ -75,7 +75,7 @@ struct VideoGridItem: View {
 		}
 		.padding(5)
 		.onTapGesture(count: 2) {
-			print("\(self.video.title)")
+			print("Play Video: \(self.video.title)")
 			guard let url = self.video.getVideoUrl(session: self.session) else {
 				return
 			}
@@ -96,33 +96,44 @@ struct VideoContextMenu: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var viewState: ViewState
+	@EnvironmentObject var playbackInfo: PlaybackInfo
 	@State var t: Bool = false
 	
 	var body: some View {
 		Group {
-			Group {
-				if video.streamReady {
-					Button(action: {
-						print("Play Now")
-					}) {
-						Text("Play Now")
+			if video.streamReady {
+				Button(action: {
+					print("Play Video: \(self.video.title)")
+					guard let url = self.video.getVideoUrl(session: self.session) else {
+						return
 					}
-					Button(action: {
-						print("Play Next")
-					}) {
-						Text("Play Next")
-					}
-					Button(action: {
-						print("Play Last")
-					}) {
-						Text("Play Last")
-					}
-				} else {
-					Text("Video not available")
-						.italic()
+					print(url)
+					self.player.pause()
+					let controller = VideoPlayerController(videoUrl: url, volume: self.playbackInfo.volume)
+					controller.window?.title = "\(self.video.title) - \(self.video.artists.formArtistString())"
+					controller.showWindow(nil)
+				}) {
+					Text("Play")
 				}
+			} else {
+				Text("Video not available")
+					.italic()
 			}
 			Divider()
+			if self.video.artists[0].name != "Various Artists" {
+				Group {
+					ForEach(self.video.artists) { artist in
+						Button(action: {
+							self.viewState.artist = artist
+							self.viewState.viewType = "SingleArtist"
+						}) {
+							Text("Go to \(artist.name)")
+						}
+					}
+				}
+				Divider()
+			}
 			Group {
 				if self.t || !self.t {
 					if self.video.isInFavorites(session: session)! {

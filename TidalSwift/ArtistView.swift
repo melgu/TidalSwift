@@ -28,7 +28,17 @@ struct ArtistView: View {
 	@State var t: Bool = false
 	
 	init(artist: Artist?, session: Session, player: Player) {
-		self.artist = artist
+		if let artist = artist {
+			if artist.url == nil {
+				print("Reloading Artist: \(artist.name)")
+				self.artist = session.getArtist(artistId: artist.id)
+			} else {
+				self.artist = artist
+			}
+			
+		} else {
+			self.artist = nil
+		}
 		self.session = session
 		self.player = player
 		
