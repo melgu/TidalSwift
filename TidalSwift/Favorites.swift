@@ -83,7 +83,8 @@ struct FavoriteTracks: View {
 			
 			if tracks != nil {
 				ScrollView {
-					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false, session: session, player: player)
+					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false,
+							  showArtist: true, showAlbum: true, session: session, player: player)
 				}
 			} else {
 				Text("Problems fetching favorite tracks")

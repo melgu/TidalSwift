@@ -117,7 +117,8 @@ struct ArtistView: View {
 					.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
 					Divider()
 					
-					TrackList(tracks: topTracks!, showCover: true, showAlbumTrackNumber: false, session: session, player: player)
+					TrackList(tracks: topTracks!, showCover: true, showAlbumTrackNumber: false,
+							  showArtist: false, showAlbum: true, session: session, player: player)
 					
 					HStack {
 						Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {

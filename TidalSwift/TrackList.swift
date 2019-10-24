@@ -14,6 +14,8 @@ struct TrackList: View {
 	let tracks: [Track]
 	let showCover: Bool
 	let showAlbumTrackNumber: Bool
+	let showArtist: Bool
+	let showAlbum: Bool
 	let session: Session
 	let player: Player
 	
@@ -21,21 +23,8 @@ struct TrackList: View {
 		HStack {
 			VStack(alignment: .leading) {
 				ForEach(0..<tracks.count) { i in
-					TrackRowFront(track: self.tracks[i], showCover: self.showCover, trackNumber: self.showAlbumTrackNumber ? nil : i, session: self.session)
-						.onTapGesture(count: 2) {
-							print("\(self.tracks[i].title)")
-							self.player.add(tracks: self.tracks, .now)
-							self.player.play(atIndex: i)
-					}
-					.contextMenu {
-						TrackContextMenu(track: self.tracks[i], session: self.session, player: self.player)
-					}
-					Divider()
-				}
-			}
-			VStack(alignment: .trailing) {
-				ForEach(0..<tracks.count) { i in
-					TrackRowBack(track: self.tracks[i], session: self.session)
+					TrackRow(track: self.tracks[i], showCover: self.showCover, showArtist: self.showArtist, showAlbum: self.showAlbum,
+							 trackNumber: self.showAlbumTrackNumber ? nil : i, session: self.session)
 						.onTapGesture(count: 2) {
 							print("\(self.tracks[i].title)")
 							self.player.add(tracks: self.tracks, .now)
@@ -51,17 +40,27 @@ struct TrackList: View {
 	}
 }
 
-struct TrackRowFront: View {
+struct TrackRow: View {
 	let track: Track
 	let showCover: Bool
+	let showArtist: Bool
+	let showAlbum: Bool
 	let trackNumber: Int?
 	let session: Session
 	
 	var coverUrl: URL? = nil
+	var widthFactorTrack: CGFloat
+	var widthFactorArtist: CGFloat
+	var widthFactorAlbum: CGFloat
 	
-	init(track: Track, showCover: Bool = false, trackNumber: Int? = nil, session: Session) {
+	@State var t: Bool = false
+	
+	init(track: Track, showCover: Bool = false, showArtist: Bool, showAlbum: Bool,
+		 trackNumber: Int? = nil, session: Session) {
 		self.track = track
 		self.showCover = showCover
+		self.showArtist = showArtist
+		self.showAlbum = showAlbum
 		if let trackNumber = trackNumber {
 			self.trackNumber = trackNumber + 1 // To start counting from 1
 		} else {
@@ -72,85 +71,98 @@ struct TrackRowFront: View {
 		if showCover {
 			self.coverUrl = track.getCoverUrl(session: session, resolution: 80)
 		}
-	}
-	
-	var body: some View {
-		HStack {
-			if showCover {
-				if coverUrl != nil {
-					URLImageSourceView(
-						coverUrl!,
-						isAnimationEnabled: true,
-						label: Text(track.title)
-					)
-						.frame(width: 30, height: 30)
-						.cornerRadius(CORNERRADIUS)
-				} else {
-					Rectangle()
-						.frame(width: 30, height: 30)
-						.cornerRadius(CORNERRADIUS)
-				}
-			} else {
-				Text("\(trackNumber ?? track.trackNumber)")
-					.fontWeight(.thin)
-					.foregroundColor(.secondary)
-			}
-			Text(track.title)
-		}
-//			.foregroundColor(.white)
-			.padding()
-			.frame(height: 30) // TODO: Is 40 no matter what when cover is shown. Why?
 		
+		if showArtist && showAlbum { // Both
+			self.widthFactorTrack = 0.28
+			self.widthFactorArtist = 0.28
+			self.widthFactorAlbum = 0.28
+		} else if showArtist != showAlbum { // One
+			self.widthFactorTrack = 0.40
+			self.widthFactorArtist = 0.40
+			self.widthFactorAlbum = 0.40
+		} else { // None
+			self.widthFactorTrack = 0.66
+			self.widthFactorArtist = 0.0
+			self.widthFactorAlbum = 0.0
+		}
 	}
-}
-
-struct TrackRowBack: View {
-	var track: Track
-	
-	var session: Session
-	
-	@State var t: Bool = false
 	
 	var body: some View {
-		HStack {
-			Spacer()
-//				.layoutPriority(-1)
-			Text(secondsToHoursMinutesSecondsString(seconds: track.duration))
-			Spacer()
-//				.layoutPriority(-1)
-			Group {
-//				Text("+")
-				Text("􀅴")
-					.onTapGesture {
-						let controller = ResizableWindowController(rootView:
-							CreditsView(track: self.track, session: self.session)
-						)
-						controller.window?.title = "Credits – \(self.track.title)"
-						controller.showWindow(nil)
-				}
-				if self.t || !self.t {
-					if self.track.isInFavorites(session: session)! {
-						Text("􀊵")
-							.onTapGesture {
-								print("Remove from Favorites")
-								self.session.favorites!.removeTrack(trackId: self.track.id)
-								self.t.toggle()
+		GeometryReader { metrics in
+			HStack {
+				HStack {
+					HStack {
+						if self.showCover {
+							if self.coverUrl != nil {
+								URLImageSourceView(
+									self.coverUrl!,
+									isAnimationEnabled: true,
+									label: Text(self.track.title)
+								)
+									.frame(width: 30, height: 30)
+									.cornerRadius(CORNERRADIUS)
+							} else {
+								Rectangle()
+									.frame(width: 30, height: 30)
+									.cornerRadius(CORNERRADIUS)
+							}
+						} else {
+							Text("\(self.trackNumber ?? self.track.trackNumber)")
+								.fontWeight(.thin)
+								.foregroundColor(.secondary)
 						}
-					} else {
-						Text("􀊴")
-							.onTapGesture {
-								print("Add to Favorites")
-								self.session.favorites!.addTrack(trackId: self.track.id)
-								self.t.toggle()
+						Text(self.track.title)
+						Spacer(minLength: 5)
+					}
+					.frame(width: metrics.size.width * self.widthFactorTrack)
+					if self.showArtist {
+						HStack {
+							Text(self.track.artists.formArtistString())
+							Spacer(minLength: 5)
+						}
+						.frame(width: metrics.size.width * self.widthFactorArtist)
+					}
+					if self.showAlbum {
+						HStack {
+							Text(self.track.album.title)
+							Spacer(minLength: 5)
+						}
+						.frame(width: metrics.size.width * self.widthFactorAlbum)
+					}
+				}
+				Group {
+					Text(secondsToHoursMinutesSecondsString(seconds: self.track.duration))
+					Spacer()
+					Text("􀅴")
+						.onTapGesture {
+							let controller = ResizableWindowController(rootView:
+								CreditsView(track: self.track, session: self.session)
+							)
+							controller.window?.title = "Credits – \(self.track.title)"
+							controller.showWindow(nil)
+					}
+					if self.t || !self.t {
+						if self.track.isInFavorites(session: self.session)! {
+							Text("􀊵")
+								.onTapGesture {
+									print("Remove from Favorites")
+									self.session.favorites!.removeTrack(trackId: self.track.id)
+									self.t.toggle()
+							}
+						} else {
+							Text("􀊴")
+								.onTapGesture {
+									print("Add to Favorites")
+									self.session.favorites!.addTrack(trackId: self.track.id)
+									self.t.toggle()
+							}
 						}
 					}
 				}
 			}
-			.layoutPriority(1)
 		}
-//			.foregroundColor(.white)
 			.padding()
-			.frame(height: 30)
+			.frame(height: 30) // TODO: Is 40 no matter what when cover is shown. Why?
 		
 	}
 }
