@@ -21,8 +21,15 @@ struct MasterDetailView: View {
 	var body: some View {
 		let selectionBinding = Binding<String?>(
 			get: { self.viewState.viewType },
-			set: { self.viewState.viewType = $0 }
-		)
+			set: {
+				print("View: \($0 ?? "nil")")
+				self.viewState.clear()
+				if $0 != nil {
+					self.viewState.push(view: TidalSwiftView(viewType: ViewType(rawValue: $0!)!))
+				} else {
+					self.viewState.push(view: TidalSwiftView(viewType: .none))
+				}
+		})
 		return NavigationView {
 			MasterView(selection: selectionBinding, searchText: $searchText, fixedSearchText: $fixedSearchText, session: session)
 			DetailView(fixedSearchText: fixedSearchText, session: session, player: player)
@@ -41,7 +48,7 @@ struct MasterView: View {
 	
 	private let news = ["New Releases"]
 	private let favorites = ["Playlists", "Albums", "Tracks", "Videos", "Artists"]
-	private let views = ["SingleAlbum", "SinglePlaylist"]
+//	private let views = ["SingleAlbum", "SinglePlaylist"]
 	
 	var body: some View {
 		VStack {

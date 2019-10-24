@@ -24,6 +24,7 @@ struct ArtistView: View {
 		case videos
 	}
 	
+	@EnvironmentObject var viewState: ViewState
 	@State var bottomSectionType: BottomSectionType = .albums
 	@State var t: Bool = false
 	
@@ -56,6 +57,16 @@ struct ArtistView: View {
 	var body: some View {
 //		ScrollView { // TODO: Comment back in, when Grid supports nesting inside a ScrollView
 			VStack(alignment: .leading) {
+				HStack {
+					Button(action: {
+						print("Back")
+						self.viewState.pop()
+					}) {
+						Text("􀆉")
+					}
+					.padding(.leading, 10)
+					Spacer()
+				}
 				if artist == nil {
 					HStack {
 						Spacer()
@@ -97,8 +108,8 @@ struct ArtistView: View {
 										controller.window?.title = "Bio – \(self.artist!.name)"
 										controller.showWindow(nil)
 								}
-								if self.t || !self.t {
-									if self.artist!.isInFavorites(session: session)! {
+								if t || !t {
+									if artist!.isInFavorites(session: session)! {
 										Text("􀊵")
 											.foregroundColor(.secondary)
 											.onTapGesture {

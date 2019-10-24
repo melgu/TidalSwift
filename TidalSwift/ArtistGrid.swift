@@ -70,8 +70,7 @@ struct ArtistGridItem: View {
 		}
 		.onTapGesture(count: 1) {
 			print("First Click. \(self.artist.name)")
-			self.viewState.artist = self.artist
-			self.viewState.viewType = "SingleArtist"
+			self.viewState.push(artist: self.artist)
 		}
 		.contextMenu {
 			ArtistContextMenu(artist: self.artist, session: self.session, player: self.player)
@@ -107,8 +106,8 @@ struct ArtistContextMenu: View {
 //			}
 			Divider()
 			Group {
-				if self.t || !self.t {
-					if self.artist.isInFavorites(session: session)! {
+				if t || !t {
+					if artist.isInFavorites(session: session)! {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeArtist(artistId: self.artist.id)
@@ -151,7 +150,7 @@ struct ArtistContextMenu: View {
 				}) {
 					Text("Radio")
 				}
-				if self.artist.getPictureUrl(session: self.session, resolution: 750) != nil {
+				if artist.getPictureUrl(session: self.session, resolution: 750) != nil {
 					Button(action: {
 						print("Picture")
 						let controller = CoverWindowController(rootView:

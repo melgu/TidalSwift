@@ -102,11 +102,10 @@ struct TrackContextMenu: View {
 			}
 			Divider()
 			Group {
-				if self.track.artists[0].name != "Various Artists" {
+				if track.artists[0].name != "Various Artists" {
 					ForEach(self.track.artists) { artist in
 						Button(action: {
-							self.viewState.artist = artist
-							self.viewState.viewType = "SingleArtist"
+							self.viewState.push(artist: artist)
 						}) {
 							Text("Go to \(artist.name)")
 						}
@@ -114,16 +113,15 @@ struct TrackContextMenu: View {
 					Divider()
 				}
 				Button(action: {
-					self.viewState.album = self.track.album
-					self.viewState.viewType = "SingleAlbum"
+					self.viewState.push(album: self.track.album)
 				}) {
 					Text("Go to Album")
 				}
 			}
 			Divider()
 			Group {
-				if self.t || !self.t {
-					if self.track.isInFavorites(session: session)! {
+				if t || !t {
+					if track.isInFavorites(session: session)! {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeTrack(trackId: self.track.id)
@@ -170,7 +168,7 @@ struct TrackContextMenu: View {
 					}) {
 						Text("Radio")
 					}
-					if self.track.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+					if track.album.getCoverUrl(session: session, resolution: 1280) != nil {
 						Button(action: {
 							print("Cover")
 							let controller = CoverWindowController(rootView:

@@ -128,12 +128,11 @@ struct VideoContextMenu: View {
 					.italic()
 			}
 			Divider()
-			if self.video.artists[0].name != "Various Artists" {
+			if video.artists[0].name != "Various Artists" {
 				Group {
 					ForEach(self.video.artists) { artist in
 						Button(action: {
-							self.viewState.artist = artist
-							self.viewState.viewType = "SingleArtist"
+							self.viewState.push(artist: artist)
 						}) {
 							Text("Go to \(artist.name)")
 						}
@@ -142,8 +141,8 @@ struct VideoContextMenu: View {
 				Divider()
 			}
 			Group {
-				if self.t || !self.t {
-					if self.video.isInFavorites(session: session)! {
+				if t || !t {
+					if video.isInFavorites(session: session)! {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeVideo(videoId: self.video.id)
@@ -180,7 +179,7 @@ struct VideoContextMenu: View {
 						Text("Download")
 					}
 					Divider()
-					if self.video.getImageUrl(session: self.session, resolution: 1280) != nil {
+					if video.getImageUrl(session: self.session, resolution: 1280) != nil {
 						Button(action: {
 							print("Preview Image")
 							let controller = CoverWindowController(rootView:
