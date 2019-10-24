@@ -35,7 +35,7 @@ struct ArtistView: View {
 		if let artist = artist {
 			self.albums = session.getArtistAlbums(artistId: artist.id)
 			self.videos = session.getArtistVideos(artistId: artist.id)
-			self.topTracks = session.getArtistTopTracks(artistId: artist.id, limit: 5, offset: 0)
+			self.topTracks = session.getArtistTopTracks(artistId: artist.id, limit: 30, offset: 0)
 		} else {
 			self.albums = nil
 			self.videos = nil
@@ -107,8 +107,6 @@ struct ArtistView: View {
 									}
 								}
 							}
-//							Text(playlist!.creator.name ?? "")
-//							Text(DateFormatter.dateOnly.string(from: playlist!.lastUpdated))
 						}
 						Spacer()
 							.layoutPriority(-1)
@@ -117,8 +115,11 @@ struct ArtistView: View {
 					.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
 					Divider()
 					
-					TrackList(tracks: topTracks!, showCover: true, showAlbumTrackNumber: false,
-							  showArtist: false, showAlbum: true, session: session, player: player)
+					ScrollView {
+						TrackList(tracks: topTracks!, showCover: true, showAlbumTrackNumber: false,
+								  showArtist: false, showAlbum: true, session: session, player: player)
+					}
+					.frame(height: 200)
 					
 					HStack {
 						Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {
