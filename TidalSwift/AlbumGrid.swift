@@ -142,6 +142,8 @@ struct AlbumContextMenu: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var viewState: ViewState
+	
 	@State var t: Bool = false
 	
 	var body: some View {
@@ -169,6 +171,19 @@ struct AlbumContextMenu: View {
 				}
 			}
 			Divider()
+			if album.artists != nil && album.artists![0].name != "Various Artists" {
+				Group {
+					ForEach(self.album.artists!) { artist in
+						Button(action: {
+							self.viewState.artist = artist
+							self.viewState.viewType = "SingleArtist"
+						}) {
+							Text("Go to \(artist.name)")
+						}
+					}
+				}
+				Divider()
+			}
 			Group {
 				if self.t || !self.t {
 					if self.album.isInFavorites(session: session)! {

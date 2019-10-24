@@ -66,6 +66,7 @@ struct TrackContextMenu: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var viewState: ViewState
 	@State var t: Bool = false
 	
 	var body: some View {
@@ -90,6 +91,26 @@ struct TrackContextMenu: View {
 				} else {
 					Text("Track not available")
 						.italic()
+				}
+			}
+			Divider()
+			Group {
+				if self.track.artists[0].name != "Various Artists" {
+					ForEach(self.track.artists) { artist in
+						Button(action: {
+							self.viewState.artist = artist
+							self.viewState.viewType = "SingleArtist"
+						}) {
+							Text("Go to \(artist.name)")
+						}
+					}
+					Divider()
+				}
+				Button(action: {
+					self.viewState.album = self.track.album
+					self.viewState.viewType = "SingleAlbum"
+				}) {
+					Text("Go to Album")
 				}
 			}
 			Divider()
