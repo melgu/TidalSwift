@@ -62,9 +62,16 @@ struct VideoGridItem: View {
 						.frame(width: 160)
 				}
 			}
-			Text(video.title)
-				.lineLimit(1)
-				.frame(width: 160)
+			HStack {
+				Text(video.title)
+					.lineLimit(1)
+				if video.explicit {
+					Text("􀂝")
+						.foregroundColor(.secondary)
+						.layoutPriority(1)
+				}
+			}
+			.frame(width: 160)
 			if showArtist {
 				Text(video.artists.formArtistString())
 					.fontWeight(.light)
