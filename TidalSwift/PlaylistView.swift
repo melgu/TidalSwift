@@ -111,7 +111,8 @@ struct PlaylistView: View {
 					Divider()
 					
 					
-					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false, session: session, player: player)
+					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false,
+							  showArtist: true, showAlbum: true, session: session, player: player)
 				}
 			}
 		}
