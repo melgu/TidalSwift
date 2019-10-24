@@ -89,9 +89,16 @@ struct AlbumGridItem: View {
 					}
 				}
 			}
-			Text(album.title)
-				.lineLimit(1)
-				.frame(width: 160)
+			HStack {
+				Text(album.title)
+					.lineLimit(1)
+				if album.explicit != nil && album.explicit! {
+					Text("􀂝")
+						.foregroundColor(.secondary)
+						.layoutPriority(1)
+				}
+			}
+			.frame(width: 160)
 			if showArtists {
 				if album.artists != nil {
 					Text(album.artists!.formArtistString())

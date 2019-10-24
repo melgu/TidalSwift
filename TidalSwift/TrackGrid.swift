@@ -39,9 +39,16 @@ struct TrackGridItem: View {
 						.frame(width: 160)
 				}
 			}
-			Text(track.title)
-				.lineLimit(1)
-				.frame(width: 160)
+			HStack {
+				Text(track.title)
+					.lineLimit(1)
+				if track.explicit {
+					Text("􀂝")
+						.foregroundColor(.secondary)
+						.layoutPriority(1)
+				}
+			}
+			.frame(width: 160)
 			if showArtist {
 				Text(track.artists.formArtistString())
 					.fontWeight(.light)
