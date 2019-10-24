@@ -17,6 +17,7 @@ struct PlaylistView: View {
 	
 	let tracks: [Track]?
 	
+	@EnvironmentObject var viewState: ViewState
 	@State var t: Bool = false
 	
 	init(playlist: Playlist?, session: Session, player: Player) {
@@ -34,6 +35,16 @@ struct PlaylistView: View {
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
+				HStack {
+					Button(action: {
+						print("Back")
+						self.viewState.pop()
+					}) {
+						Text("􀆉")
+					}
+					.padding(.leading, 10)
+					Spacer()
+				}
 				if playlist == nil {
 					HStack {
 						Spacer()
@@ -69,8 +80,8 @@ struct PlaylistView: View {
 //									.onTapGesture {
 //										// Nothing yet
 //								}
-								if self.t || !self.t {
-									if self.playlist!.isInFavorites(session: session)! {
+								if t || !t {
+									if playlist!.isInFavorites(session: session)! {
 										Text("􀊵")
 											.foregroundColor(.secondary)
 											.onTapGesture {

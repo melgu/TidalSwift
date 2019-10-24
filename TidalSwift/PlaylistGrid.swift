@@ -70,8 +70,7 @@ struct PlaylistGridItem: View {
 		}
 		.onTapGesture(count: 1) {
 			print("First Click. \(self.playlist.title)")
-			self.viewState.playlist = self.playlist
-			self.viewState.viewType = "SinglePlaylist"
+			self.viewState.push(playlist: self.playlist)
 		}
 		.contextMenu {
 			PlaylistContextMenu(playlist: self.playlist, session: session, player: player)
@@ -107,8 +106,8 @@ struct PlaylistContextMenu: View {
 //			}
 			Divider()
 			Group {
-				if self.t || !self.t {
-					if self.playlist.isInFavorites(session: session)! {
+				if t || !t {
+					if playlist.isInFavorites(session: session)! {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
@@ -148,7 +147,7 @@ struct PlaylistContextMenu: View {
 //			}
 			Divider()
 			Group {
-				if self.playlist.getImageUrl(session: self.session, resolution: 750) != nil {
+				if playlist.getImageUrl(session: self.session, resolution: 750) != nil {
 					Button(action: {
 						print("Image")
 						let controller = CoverWindowController(rootView:

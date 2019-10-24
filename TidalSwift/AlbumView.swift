@@ -17,6 +17,7 @@ struct AlbumView: View {
 	
 	let tracks: [Track]?
 	
+	@EnvironmentObject var viewState: ViewState
 	@State var t: Bool = false
 	
 	init(album: Album?, session: Session, player: Player) {
@@ -34,6 +35,16 @@ struct AlbumView: View {
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
+				HStack {
+					Button(action: {
+						print("Back")
+						self.viewState.pop()
+					}) {
+						Text("􀆉")
+					}
+					.padding(.leading, 10)
+					Spacer()
+				}
 				if album == nil {
 					HStack {
 						Spacer()
@@ -73,8 +84,8 @@ struct AlbumView: View {
 										controller.window?.title = "Credits – \(self.album!.title)"
 										controller.showWindow(nil)
 								}
-								if self.t || !self.t {
-									if self.album!.isInFavorites(session: session)! {
+								if t || !t {
+									if album!.isInFavorites(session: session)! {
 										Text("􀊵")
 											.foregroundColor(.secondary)
 											.onTapGesture {

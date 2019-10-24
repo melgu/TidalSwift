@@ -135,8 +135,7 @@ struct AlbumGridItem: View {
 		}
 		.onTapGesture(count: 1) {
 			print("First Click. \(self.album.title)")
-			self.viewState.album = self.album
-			self.viewState.viewType = "SingleAlbum"
+			self.viewState.push(album: self.album)
 		}
 		.contextMenu {
 			AlbumContextMenu(album: self.album, session: session, player: player)
@@ -182,8 +181,7 @@ struct AlbumContextMenu: View {
 				Group {
 					ForEach(self.album.artists!) { artist in
 						Button(action: {
-							self.viewState.artist = artist
-							self.viewState.viewType = "SingleArtist"
+							self.viewState.push(artist: artist)
 						}) {
 							Text("Go to \(artist.name)")
 						}
@@ -192,8 +190,8 @@ struct AlbumContextMenu: View {
 				Divider()
 			}
 			Group {
-				if self.t || !self.t {
-					if self.album.isInFavorites(session: session)! {
+				if t || !t {
+					if album.isInFavorites(session: session)! {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeAlbum(albumId: self.album.id)
@@ -232,7 +230,7 @@ struct AlbumContextMenu: View {
 						}
 					}
 					Divider()
-					if self.album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+					if album.getCoverUrl(session: self.session, resolution: 1280) != nil {
 						Button(action: {
 							print("Cover")
 							let controller = CoverWindowController(rootView:
