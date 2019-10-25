@@ -135,7 +135,7 @@ struct PlaylistContextMenu: View {
 						} else {
 							Button(action: {
 								print("Add to Favorites")
-								self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
+								self.session.favorites!.addPlaylist(playlistId: self.playlist.uuid)
 								self.t.toggle()
 							}) {
 								Text("Add to Favorites")
