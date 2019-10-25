@@ -18,6 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var session: Session
 	var player: Player
 	var viewState = ViewState()
+	var playlistEditingValues = PlaylistEditingValues()
 	
 	// Login
 	let loginInfo = LoginInfo()
@@ -37,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let loginSuccessful = session.login()
 		if loginSuccessful {
 			loginInfo.wrongLogin = false
-			loginInfo.showLoginView = false
+			loginInfo.showModal = false
 			session.saveConfig()
 			session.saveSession()
 			player = Player(session: session)
@@ -48,7 +49,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	func logout() {
 		print("Logout")
-		loginInfo.showLoginView = true
+		loginInfo.showModal = true
 		session.deletePersistentInformation()
 	}
 	
@@ -61,7 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let loggedIn = session.checkLogin()
 		print("Login Succesful: \(loggedIn)")
 		
-		loginInfo.showLoginView = !loggedIn
+		loginInfo.showModal = !loggedIn
 		
 		// Retrieve Playback State
 		if let data = UserDefaults.standard.data(forKey: "PlaybackInfo") {
@@ -123,6 +124,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		window.contentView = NSHostingView(rootView:
 			ContentView(viewState: viewState, session: session, player: player)
 				.environmentObject(loginInfo)
+				.environmentObject(playlistEditingValues)
 		)
 		
 		window.makeKeyAndOrderFront(nil)
@@ -141,7 +143,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBAction func Quit(_ sender: Any) {
 		print("Exiting...")
-		loginInfo.showLoginView = false
+		loginInfo.showModal = false
+		playlistEditingValues.showAddTracksModal = false
+		playlistEditingValues.showDeleteModal = false
+		playlistEditingValues.showEditModal = false
 		
 		// Save Playback State
 		let codablePI = CodablePlaybackInfo(nonShuffledQueue: player.playbackInfo.nonShuffledQueue,

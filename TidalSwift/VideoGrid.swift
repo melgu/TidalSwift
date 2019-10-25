@@ -162,11 +162,13 @@ struct VideoContextMenu: View {
 				}
 				if video.streamReady {
 					Button(action: {
-						print("Add Playlist \(self.video.title) to Playlist …")
+						print("Add \(self.video.title) to Playlist")
 					}) {
 						Text("Add to Playlist …")
 					}
-					Divider()
+				}
+				Divider()
+				if video.streamReady {
 					Button(action: {
 						print("Offline")
 					}) {

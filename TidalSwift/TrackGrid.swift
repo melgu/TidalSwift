@@ -74,6 +74,7 @@ struct TrackContextMenu: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	@State var t: Bool = false
 	
 	var body: some View {
@@ -141,11 +142,15 @@ struct TrackContextMenu: View {
 				}
 				if track.streamReady {
 					Button(action: {
-						print("Add Playlist \(self.track.title) to Playlist …")
+						print("Add \(self.track.title) to Playlist")
+						self.playlistEditingValues.tracksToAdd = [self.track]
+						self.playlistEditingValues.showAddTracksModal = true
 					}) {
 						Text("Add to Playlist …")
 					}
-					Divider()
+				}
+				Divider()
+				if track.streamReady {
 					Group {
 						Button(action: {
 							print("Offline")

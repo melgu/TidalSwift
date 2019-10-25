@@ -56,6 +56,7 @@
 		B0C3E6AE23061FDB006CABED /* PlaylistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C3E6A923061FDA006CABED /* PlaylistView.swift */; };
 		B0CAD8D92348333000A9BAA6 /* TrackGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CAD8D82348333000A9BAA6 /* TrackGrid.swift */; };
 		B0CAD8DB2348358B00A9BAA6 /* VideoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CAD8DA2348358B00A9BAA6 /* VideoGrid.swift */; };
+		B0CDC7732362649300E90FBF /* PlaylistModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CDC7722362649300E90FBF /* PlaylistModification.swift */; };
 		B0D7DD9F2305FB2E004391AD /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDD92296417500BA669F /* Helpers.swift */; };
 		B0D7DDA02305FB2E004391AD /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E1223764C100ADAE6C /* Network.swift */; };
 		B0D7DDA12305FB2E004391AD /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E52238C84F00ADAE6C /* Logic.swift */; };
@@ -166,6 +167,7 @@
 		B0C3E6A923061FDA006CABED /* PlaylistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistView.swift; sourceTree = "<group>"; };
 		B0CAD8D82348333000A9BAA6 /* TrackGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackGrid.swift; sourceTree = "<group>"; };
 		B0CAD8DA2348358B00A9BAA6 /* VideoGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoGrid.swift; sourceTree = "<group>"; };
+		B0CDC7722362649300E90FBF /* PlaylistModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistModification.swift; sourceTree = "<group>"; };
 		B0D7DD962305FA76004391AD /* MetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataTests.swift; sourceTree = "<group>"; };
 		B0D974CA230C031E00695388 /* MasterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterDetailView.swift; sourceTree = "<group>"; };
 		B0D974CC230CC1D200695388 /* Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorites.swift; sourceTree = "<group>"; };
@@ -323,6 +325,7 @@
 				B07685B8232079C800538D55 /* SearchView.swift */,
 				B02382462348543E00BC2B0C /* NewReleases.swift */,
 				B0D974CC230CC1D200695388 /* Favorites.swift */,
+				B0CDC7722362649300E90FBF /* PlaylistModification.swift */,
 				B0D974D0230CC9C600695388 /* PlaylistGrid.swift */,
 				B0D974CE230CC9BB00695388 /* ArtistGrid.swift */,
 				B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */,
@@ -628,6 +631,7 @@
 				B01B09CD234B15D6007A4E15 /* Lyrics.swift in Sources */,
 				B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */,
 				B0A85FFD230DE2E3000C4C4E /* VideoPlayerController.swift in Sources */,
+				B0CDC7732362649300E90FBF /* PlaylistModification.swift in Sources */,
 				B0D974CF230CC9BB00695388 /* ArtistGrid.swift in Sources */,
 				B02382472348543E00BC2B0C /* NewReleases.swift in Sources */,
 				B0D974D1230CC9C600695388 /* PlaylistGrid.swift in Sources */,

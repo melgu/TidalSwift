@@ -106,7 +106,7 @@ public class Session {
 	
 	var sessionId: String?
 	var countryCode: String?
-	var userId: Int?
+	public var userId: Int?
 	
 	var sessionParameters: [String: String] {
 		if sessionId == nil || countryCode == nil {
@@ -1002,14 +1002,32 @@ public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
 		return response.etag!
 	}
 	
-	public func addTrack(_ trackId: Int, to playlistId: String, duplicate: Bool) -> Bool {
+	public func addTracks(_ trackIds: [Int], to playlistId: String, duplicate: Bool) -> Bool {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/items")!
 		var parameters = sessionParameters
-		parameters["trackIds"] = "\(trackId)"
+		var trackIdsString = ""
+		for id in trackIds {
+			trackIdsString += "\(id),"
+		}
+		trackIdsString = String(trackIdsString.dropLast())
+		parameters["trackIds"] = trackIdsString
 		parameters["onDupes"] = duplicate ? "ADD" : "FAIL"
 		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId))
 		return response.ok
 	}
+	
+	public func addTrack(_ trackId: Int, to playlistId: String, duplicate: Bool) -> Bool {
+		return addTracks([trackId], to: playlistId, duplicate: duplicate)
+	}
+	
+//	public func addTrack(_ trackId: Int, to playlistId: String, duplicate: Bool) -> Bool {
+//		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/items")!
+//		var parameters = sessionParameters
+//		parameters["trackIds"] = "\(trackId)"
+//		parameters["onDupes"] = duplicate ? "ADD" : "FAIL"
+//		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId))
+//		return response.ok
+//	}
 	
 	public func removeTrack(index: Int, from playlistId: String) -> Bool {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/items/\(index)")!

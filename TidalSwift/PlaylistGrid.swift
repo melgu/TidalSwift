@@ -83,6 +83,7 @@ struct PlaylistContextMenu: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	@State var t: Bool = false
 	
 	var body: some View {
@@ -106,27 +107,48 @@ struct PlaylistContextMenu: View {
 //			}
 			Divider()
 			Group {
-				if t || !t {
-					if playlist.isInFavorites(session: session)! {
-						Button(action: {
-							print("Remove from Favorites")
-							self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
-							self.t.toggle()
-						}) {
-							Text("Remove from Favorites")
-						}
-					} else {
-						Button(action: {
-							print("Add to Favorites")
-							self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
-							self.t.toggle()
-						}) {
-							Text("Add to Favorites")
+				if playlist.creator.id == session.userId { // My playlist
+					Button(action: {
+						print("Edit Playlist")
+						self.playlistEditingValues.playlistToModify = self.playlist
+						self.playlistEditingValues.showEditModal = true
+					}) {
+						Text("Edit Playlist")
+					}
+					Button(action: {
+						print("Delete Playlist")
+						self.playlistEditingValues.playlistToModify = self.playlist
+						self.playlistEditingValues.showDeleteModal = true
+					}) {
+						Text("Delete Playlist")
+					}
+				} else {
+					if t || !t {
+						if playlist.isInFavorites(session: session)! {
+							Button(action: {
+								print("Remove from Favorites")
+								self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
+								self.t.toggle()
+							}) {
+								Text("Remove from Favorites")
+							}
+						} else {
+							Button(action: {
+								print("Add to Favorites")
+								self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
+								self.t.toggle()
+							}) {
+								Text("Add to Favorites")
+							}
 						}
 					}
 				}
 				Button(action: {
-					print("Add Playlist \(self.playlist.title) to Playlist …")
+					print("Add \(self.playlist.title) to Playlist")
+					if let tracks = self.session.getPlaylistTracks(playlistId: self.playlist.uuid) {
+						self.playlistEditingValues.tracksToAdd = tracks
+						self.playlistEditingValues.showAddTracksModal = true
+					}
 				}) {
 					Text("Add to Playlist …")
 				}

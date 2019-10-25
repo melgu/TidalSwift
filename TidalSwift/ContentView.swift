@@ -17,14 +17,27 @@ struct ContentView: View {
 	let player: Player
 	
 	@EnvironmentObject var loginInfo: LoginInfo
+	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	
 	var body: some View {
 		MasterDetailView(session: session, player: player)
 			.environmentObject(player.playbackInfo)
 			.environmentObject(viewState)
-			.sheet(isPresented: $loginInfo.showLoginView) {
+			.sheet(isPresented: $loginInfo.showModal) {
 				LoginView()
 					.environmentObject(self.loginInfo)
+		}
+		.sheet(isPresented: $playlistEditingValues.showAddTracksModal) {
+			AddToPlaylistView(session: self.session)
+				.environmentObject(self.playlistEditingValues)
+		}
+		.sheet(isPresented: $playlistEditingValues.showDeleteModal) {
+			DeletePlaylist(session: self.session)
+				.environmentObject(self.playlistEditingValues)
+		}
+		.sheet(isPresented: $playlistEditingValues.showEditModal) {
+			EditPlaylist(session: self.session)
+				.environmentObject(self.playlistEditingValues)
 		}
 	}
 }

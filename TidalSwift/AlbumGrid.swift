@@ -149,6 +149,7 @@ struct AlbumContextMenu: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	
 	@State var t: Bool = false
 	
@@ -211,11 +212,17 @@ struct AlbumContextMenu: View {
 				}
 				if album.streamReady != nil && album.streamReady! {
 					Button(action: {
-						print("Add Playlist \(self.album.title) to Playlist …")
+						print("Add \(self.album.title) to Playlist")
+						if let tracks = self.session.getAlbumTracks(albumId: self.album.id) {
+							self.playlistEditingValues.tracksToAdd = tracks
+							self.playlistEditingValues.showAddTracksModal = true
+						}
 					}) {
 						Text("Add to Playlist …")
 					}
-					Divider()
+				}
+				Divider()
+				if album.streamReady != nil && album.streamReady! {
 					Group {
 						Button(action: {
 							print("Offline")
