@@ -162,7 +162,7 @@ func buildPath(baseLocation: DownloadLocation, parentFolder: String, name: Strin
 											   create: false)
 		}
 		path.appendPathComponent(parentFolder)
-		path.appendPathComponent(name)
+		path.appendPathComponent(name.replacingOccurrences(of: "/", with: ":"))
 	} catch {
 		displayError(title: "Path Building Error", content: "File Error: \(error)")
 		return nil

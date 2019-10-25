@@ -1611,7 +1611,8 @@ class LogicTests: XCTestCase {
 	// MARK: - Playlist Editing
 	
 	func testPlaylistEditing() {
-		let demoTrackId = 59978883
+		let demoTrackId1 = 59978883
+		let demoTrackId2 = 59978884
 		let demoVideoId = 98785108
 		
 		XCTAssertNotNil(session.userId)
@@ -1639,7 +1640,7 @@ class LogicTests: XCTestCase {
 
 		// Add Track
 		
-		let r1 = session.addTrack(demoTrackId, to: playlist1.uuid, duplicate: false)
+		let r1 = session.addTracks([demoTrackId1, demoTrackId2], to: playlist1.uuid, duplicate: false)
 		XCTAssert(r1)
 
 		let optionalPlaylist2 = session.getPlaylist(playlistId: playlist1.uuid)
@@ -1648,7 +1649,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 
-		XCTAssertEqual(playlist2.numberOfTracks, 1)
+		XCTAssertEqual(playlist2.numberOfTracks, 2)
 		XCTAssertEqual(playlist2.numberOfVideos, 0)
 		
 		let optionalPlaylist2Tracks = session.getPlaylistTracks(playlistId: playlist1.uuid)
@@ -1657,7 +1658,8 @@ class LogicTests: XCTestCase {
 			return
 		}
 		
-		XCTAssertEqual(playlist2Tracks[0].id, 59978883) // Track
+		XCTAssertEqual(playlist2Tracks[0].id, 59978883)
+		XCTAssertEqual(playlist2Tracks[1].id, 59978884)
 		
 		// Add Video
 		
@@ -1670,7 +1672,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 
-		XCTAssertEqual(playlist3.numberOfTracks, 1)
+		XCTAssertEqual(playlist3.numberOfTracks, 2)
 		XCTAssertEqual(playlist3.numberOfVideos, 1)
 		
 		let optionalPlaylist3Tracks = session.getPlaylistTracks(playlistId: playlist1.uuid)
@@ -1680,16 +1682,16 @@ class LogicTests: XCTestCase {
 		}
 		
 		XCTAssertEqual(playlist3Tracks[0].id, 59978883) // Track
-//		XCTAssertEqual(playlist3Tracks[1].id, 98785108) // Video
-		XCTAssertEqual(playlist3Tracks[1].id, 98785110) // Video
+//		XCTAssertEqual(playlist3Tracks[2].id, 98785108) // Video
+		XCTAssertEqual(playlist3Tracks[2].id, 98785110) // Video
 		// For some reason after adding it, the Video ID changes. Possibly has something to do with regions:
 		// https://github.com/jackfagner/OpenTidl/issues/5
 		// 98785110 is actually a track when I try to add it.
 		// When adding 98785108 the resulting 98785110 in the playlist is a video (and is counted as such).
 		
-		// Move Video from position 1 to 0 (effectively switch places)
+		// Move Video from position 2 to 0
 		
-		let r3 = session.moveTrack(from: 1, to: 0, in: playlist1.uuid)
+		let r3 = session.moveTrack(from: 2, to: 0, in: playlist1.uuid)
 		XCTAssert(r3)
 		
 		let optionalPlaylist4Tracks = session.getPlaylistTracks(playlistId: playlist1.uuid)
@@ -1698,15 +1700,16 @@ class LogicTests: XCTestCase {
 			return
 		}
 		
-		XCTAssertEqual(playlist4Tracks.count, 2)
+		XCTAssertEqual(playlist4Tracks.count, 3)
 		
 //		XCTAssertEqual(playlist4Tracks[0].id, 98785108) // Video (same problem as above)
 		XCTAssertEqual(playlist4Tracks[0].id, 98785110) // Video
 		XCTAssertEqual(playlist4Tracks[1].id, 59978883) // Track
+		XCTAssertEqual(playlist4Tracks[2].id, 59978884) // Track
 		
 		// Remove Track
 
-		let r4 = session.removeTrack(index: 1, from: playlist1.uuid)
+		let r4 = session.removeTrack(index: 2, from: playlist1.uuid)
 		XCTAssert(r4)
 
 		let optionalPlaylist5 = session.getPlaylist(playlistId: playlist1.uuid)
@@ -1715,7 +1718,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 
-		XCTAssertEqual(playlist5.numberOfTracks, 0)
+		XCTAssertEqual(playlist5.numberOfTracks, 1)
 		XCTAssertEqual(playlist5.numberOfVideos, 1)
 		
 		// Edit Playlist name and description

@@ -10,7 +10,7 @@ import SwiftUI
 import TidalSwiftLib
 
 final class LoginInfo: ObservableObject {
-	@Published var showLoginView = false
+	@Published var showModal = false
 	@Published var wrongLogin = false
 }
 
