@@ -29,6 +29,7 @@ enum ViewType: String, Codable {
 
 struct TidalSwiftView: Codable {
 	var viewType: ViewType
+	var searchTerm: String = ""
 	var artist: Artist? = nil
 	var album: Album? = nil
 	var playlist: Playlist? = nil
@@ -36,6 +37,8 @@ struct TidalSwiftView: Codable {
 
 final class ViewState: ObservableObject {
 	@Published var viewType: String?
+	var searchTerm: String = ""
+	@Published var fixedSearchTerm: String = ""
 	@Published var artist: Artist?
 	@Published var album: Album?
 	@Published var playlist: Playlist?
@@ -43,11 +46,14 @@ final class ViewState: ObservableObject {
 	var stack: [TidalSwiftView] = []
 	
 	func push(view: TidalSwiftView) {
-		stack.append(view)
-		viewType = view.viewType.rawValue
-		artist = view.artist
-		album = view.album
-		playlist = view.playlist
+		var tempView = view
+		tempView.searchTerm = searchTerm
+		
+		stack.append(tempView)
+		viewType = tempView.viewType.rawValue
+		artist = tempView.artist
+		album = tempView.album
+		playlist = tempView.playlist
 	}
 	
 	func push(artist: Artist) {
