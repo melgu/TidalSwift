@@ -15,6 +15,7 @@ struct SearchView: View {
 	let player: Player
 	
 	init(searchText: String, session: Session, player: Player) {
+		print("init SearchView: \(searchText)")
 		self.session = session
 		self.player = player
 		searchResult = session.search(for: searchText)

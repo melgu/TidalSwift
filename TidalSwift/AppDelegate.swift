@@ -87,6 +87,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				viewState.stack = tempStack
 				if viewState.stack.count > 0 {
 					viewState.viewType = tempStack.last!.viewType.rawValue
+					viewState.searchTerm = tempStack.last!.searchTerm
+					viewState.fixedSearchTerm = tempStack.last!.searchTerm
 					viewState.artist = tempStack.last!.artist
 					viewState.album = tempStack.last!.album
 					viewState.playlist = tempStack.last!.playlist

@@ -13,12 +13,20 @@ struct MasterDetailView: View {
     let session: Session
 	let player: Player
 	
-	@State var searchText: String = ""
-	@State var fixedSearchText: String = ""
+//	@State var fixedSearchText: String = ""
 	
 	@EnvironmentObject var viewState: ViewState
 	
+	init(session: Session, player: Player) {
+		self.session = session
+		self.player = player
+	}
+	
 	var body: some View {
+		let searchTerm = Binding<String>(
+			get: { self.viewState.searchTerm },
+			set: { self.viewState.searchTerm = $0 }
+		)
 		let selectionBinding = Binding<String?>(
 			get: { self.viewState.viewType },
 			set: {
@@ -27,12 +35,12 @@ struct MasterDetailView: View {
 				if $0 != nil {
 					self.viewState.push(view: TidalSwiftView(viewType: ViewType(rawValue: $0!)!))
 				} else {
-					self.viewState.push(view: TidalSwiftView(viewType: .none))
+					self.viewState.push(view: TidalSwiftView(viewType: .none, searchTerm: self.viewState.fixedSearchTerm))
 				}
 		})
 		return NavigationView {
-			MasterView(selection: selectionBinding, searchText: $searchText, fixedSearchText: $fixedSearchText, session: session)
-			DetailView(fixedSearchText: fixedSearchText, session: session, player: player)
+			MasterView(selection: selectionBinding, searchText: searchTerm, session: session)
+			DetailView(session: session, player: player)
 				.frame(minWidth: 580)
 		}
 		.frame(minHeight: 500)
@@ -42,7 +50,6 @@ struct MasterDetailView: View {
 struct MasterView: View {
 	@Binding var selection: String?
 	@Binding var searchText: String
-	@Binding var fixedSearchText: String
 	
 	let session: Session
 	
@@ -50,12 +57,15 @@ struct MasterView: View {
 	private let favorites = ["Playlists", "Albums", "Tracks", "Videos", "Artists"]
 //	private let views = ["SingleAlbum", "SinglePlaylist"]
 	
+	@EnvironmentObject var viewState: ViewState
+	
 	var body: some View {
 		VStack {
 			TextField("Search", text: $searchText, onCommit: {
+				print("Search Commit")
 				if self.searchText != "" {
-					print(self.searchText)
-					self.fixedSearchText = self.searchText
+					print("Search Commit: \(self.searchText)")
+					self.viewState.fixedSearchTerm = self.searchText
 					self.selection = "Search"
 //					let window = (NSApp.delegate as? AppDelegate)?.window
 //					window?.makeFirstResponder(window?.initialFirstResponder)
@@ -81,12 +91,16 @@ struct MasterView: View {
 }
 
 struct DetailView: View {
-	let fixedSearchText: String
-	
 	let session: Session
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	
+	init(session: Session, player: Player) {
+		self.session = session
+		self.player = player
+		print("init DetailView")
+	}
 	
 	var body: some View {
 		VStack {
@@ -94,7 +108,7 @@ struct DetailView: View {
 			HStack {
 				// Search
 				if viewState.viewType == "Search" {
-					SearchView(searchText: fixedSearchText, session: session, player: player)
+					SearchView(searchText: self.viewState.fixedSearchTerm, session: session, player: player)
 				}
 				
 				// News
