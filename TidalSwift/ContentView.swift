@@ -23,22 +23,27 @@ struct ContentView: View {
 		MasterDetailView(session: session, player: player)
 			.environmentObject(player.playbackInfo)
 			.environmentObject(viewState)
-			.sheet(isPresented: $loginInfo.showModal) {
-				LoginView()
-					.environmentObject(self.loginInfo)
-		}
-		.sheet(isPresented: $playlistEditingValues.showAddTracksModal) {
-			AddToPlaylistView(session: self.session)
-				.environmentObject(self.playlistEditingValues)
-		}
-		.sheet(isPresented: $playlistEditingValues.showDeleteModal) {
-			DeletePlaylist(session: self.session)
-				.environmentObject(self.playlistEditingValues)
-		}
-		.sheet(isPresented: $playlistEditingValues.showEditModal) {
-			EditPlaylist(session: self.session)
-				.environmentObject(self.playlistEditingValues)
-		}
+			.background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
+				LoginView().environmentObject(self.loginInfo)
+			})
+			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showAddTracksModal) {
+				AddToPlaylistView(session: self.session)
+					.environmentObject(self.playlistEditingValues)
+			})
+			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showDeleteModal) {
+				DeletePlaylist(session: self.session)
+					.environmentObject(self.playlistEditingValues)
+			})
+			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showEditModal) {
+				EditPlaylist(session: self.session)
+					.environmentObject(self.playlistEditingValues)
+			})
+	}
+}
+
+struct EmptyView: View {
+	var body: some View {
+		Spacer()
 	}
 }
 
