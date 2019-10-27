@@ -30,7 +30,17 @@ struct FavoritePlaylists: View {
 }
 
 func favoritePlaylists2Playlists(_ favoritePlaylists: [FavoritePlaylist]) -> [Playlist] {
-	favoritePlaylists.map { $0.item }
+	let tempPlaylists = favoritePlaylists.map { $0.playlist }
+	
+	// Playlists can appear as userCreated and userFavorited
+	// Only keep one
+	var resultArray: [Playlist] = []
+	for playlist in tempPlaylists {
+		if !resultArray.contains(playlist) {
+			resultArray.append(playlist)
+		}
+	}
+	return resultArray
 }
 
 struct FavoriteAlbums: View {

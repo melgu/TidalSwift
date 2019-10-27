@@ -716,22 +716,28 @@ struct FavoritePlaylists: Decodable {
 	let items: [FavoritePlaylist]
 }
 
+public enum FavoritePlaylistType: String, Decodable {
+	case userCreated = "USER_CREATED"
+	case userFavorited = "USER_FAVORITE"
+}
+
 public struct FavoritePlaylist: Decodable, Equatable {
-	public var id: String { item.id }
+	public var id: String { playlist.id }
 	
+	public let type: FavoritePlaylistType
 	public let created: Date
-	public let item: Playlist
+	public let playlist: Playlist
 	
 	public static func == (lhs: FavoritePlaylist, rhs: FavoritePlaylist) -> Bool {
-		return lhs.item.uuid == rhs.item.uuid
+		return lhs.playlist.uuid == rhs.playlist.uuid
 	}
 	
 	public static func == (lhs: FavoritePlaylist, rhs: Playlist) -> Bool {
-		return lhs.item.uuid == rhs.uuid
+		return lhs.playlist.uuid == rhs.uuid
 	}
 	
 	public static func == (lhs: Playlist, rhs: FavoritePlaylist) -> Bool {
-		return lhs.uuid == rhs.item.uuid
+		return lhs.uuid == rhs.playlist.uuid
 	}
 }
 
