@@ -1225,31 +1225,56 @@ public class Favorites {
 	// Includes User Playlists
 	public func playlists(limit: Int = 999, offset: Int = 0, order: PlaylistOrder? = nil,
 				   orderDirection: OrderDirection? = nil) -> [FavoritePlaylist]? {
-		let url = URL(string: "\(baseUrl)/playlists")!
-		var parameters = session.sessionParameters
-		parameters["limit"] = "\(limit)"
-		parameters["offset"] = "\(offset)"
-		if let order = order {
-			parameters["order"] = "\(order.rawValue)"
-		}
-		if let orderDirection = orderDirection {
-			parameters["orderDirection"] = "\(orderDirection.rawValue)"
-		}
-		let response = Network.get(url: url, parameters: parameters)
-		
-		guard let content = response.content else {
-			displayError(title: "Favorite Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		guard let userId = session.userId else {
 			return nil
 		}
+		let url = URL(string: "\(session.config.apiLocation)/users/\(userId)/playlistsAndFavoritePlaylists")!
 		
-		var playlists: FavoritePlaylists?
-		do {
-			playlists = try customJSONDecoder().decode(FavoritePlaylists.self, from: content)
-		} catch {
-			displayError(title: "Favorite Playlists failed (JSON Parse Error)", content: "\(error)")
+		var tempLimit = limit
+		var tempOffset = offset
+		var tempPlaylists: [FavoritePlaylist] = []
+		while tempLimit > 0 {
+			print("tempLimit: \(tempLimit), tempOffset: \(tempOffset)")
+			var parameters = session.sessionParameters
+			if tempLimit > 50 { // Maximum of 50 allowed by Tidal
+				parameters["limit"] = "50"
+			} else {
+				parameters["limit"] = "\(tempLimit)"
+			}
+			parameters["offset"] = "\(tempOffset)"
+			if let order = order {
+				parameters["order"] = "\(order.rawValue)"
+			}
+			if let orderDirection = orderDirection {
+				parameters["orderDirection"] = "\(orderDirection.rawValue)"
+			}
+			let response = Network.get(url: url, parameters: parameters)
+			
+			guard let content = response.content else {
+				displayError(title: "Favorite Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+				return nil
+			}
+			
+			var playlists: FavoritePlaylists? // TODO: JSON signature is different
+			do {
+				playlists = try customJSONDecoder().decode(FavoritePlaylists.self, from: content)
+			} catch {
+				displayError(title: "Favorite Playlists failed (JSON Parse Error)", content: "\(error)")
+			}
+			
+			guard let definitePlaylists = playlists else {
+				return nil
+			}
+			tempPlaylists += definitePlaylists.items
+			if definitePlaylists.totalNumberOfItems - tempOffset < tempLimit {
+				return tempPlaylists
+			}
+			
+			tempLimit -= 50
+			tempOffset += 50
 		}
 		
-		return playlists?.items
+		return tempPlaylists
 	}
 
 	public func userPlaylists() -> [Playlist]? {
@@ -1400,7 +1425,7 @@ public class Favorites {
 			return nil
 		}
 		for playlist in playlists {
-			if playlist.item.id == playlistId {
+			if playlist.playlist.id == playlistId {
 				return true
 			}
 		}
