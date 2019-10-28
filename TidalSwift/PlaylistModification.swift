@@ -38,7 +38,7 @@ struct AddToPlaylistView: View {
 		ScrollView {
 			VStack {
 				if playlists != nil {
-					Text("Ladida")
+					Text("\(playlistEditingValues.tracksToAdd.count) \(playlistEditingValues.tracksToAdd.count > 1 ? "tracks" : "track")")
 					Picker(selection: $selectedPlaylist, label: Spacer(minLength: 0)) {
 						ForEach(playlists!) { playlist in
 							Text(playlist.title).tag(playlist.uuid)
@@ -108,9 +108,6 @@ struct DeletePlaylist: View {
 	var body: some View {
 		VStack {
 			Text("Delete \(self.playlistEditingValues.playlistToModify!.title)?")
-				.onAppear {
-					print("Halli hallo")
-			}
 			
 			HStack {
 				Button(action: {
