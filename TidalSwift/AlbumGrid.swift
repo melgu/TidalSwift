@@ -30,10 +30,10 @@ struct AlbumGrid: View {
 		Grid(albums) { album in
 			AlbumGridItem(album: album, showArtists: self.showArtists, showReleaseDate: self.showReleaseDate, session: self.session, player: self.player)
 		}
-		.padding()
 		.gridStyle(
 			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: showReleaseDate ? 230 : 210, hSpacing: 5, vSpacing: 5)
 		)
+		.padding()
 	}
 }
 

@@ -13,6 +13,7 @@ enum ViewType: String, Codable {
 	case search = "Search"
 	
 	case newReleases = "New Releases"
+	case myMixes = "My Mixes"
 	
 	case favoriteArtists = "Artists"
 	case favoriteAlbums = "Albums"
@@ -23,6 +24,7 @@ enum ViewType: String, Codable {
 	case artist = "SingleArtist"
 	case album = "SingleAlbum"
 	case playlist = "SinglePlaylist"
+	case mix = "SingleMix"
 	
 	case none = ""
 }
@@ -33,6 +35,7 @@ struct TidalSwiftView: Codable {
 	var artist: Artist? = nil
 	var album: Album? = nil
 	var playlist: Playlist? = nil
+	var mix: MixesItem? = nil
 }
 
 final class ViewState: ObservableObject {
@@ -42,6 +45,7 @@ final class ViewState: ObservableObject {
 	@Published var artist: Artist?
 	@Published var album: Album?
 	@Published var playlist: Playlist?
+	@Published var mix: MixesItem?
 	
 	var stack: [TidalSwiftView] = []
 	
@@ -54,6 +58,7 @@ final class ViewState: ObservableObject {
 		artist = tempView.artist
 		album = tempView.album
 		playlist = tempView.playlist
+		mix = tempView.mix
 	}
 	
 	func push(artist: Artist) {
@@ -71,6 +76,11 @@ final class ViewState: ObservableObject {
 		push(view: view)
 	}
 	
+	func push(mix: MixesItem) {
+		let view = TidalSwiftView(viewType: .mix, mix: mix)
+		push(view: view)
+	}
+	
 	func pop() {
 		stack.removeLast()
 		if stack.count > 0 {
@@ -78,11 +88,13 @@ final class ViewState: ObservableObject {
 			artist = stack.last!.artist
 			album = stack.last!.album
 			playlist = stack.last!.playlist
+			mix = stack.last!.mix
 		} else {
 			viewType = ""
 			artist = nil
 			album = nil
 			playlist = nil
+			mix = nil
 		}
 	}
 	

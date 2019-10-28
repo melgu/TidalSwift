@@ -20,10 +20,10 @@ struct PlaylistGrid: View {
 		Grid(playlists) { playlist in
 			PlaylistGridItem(playlist: playlist, session: self.session, player: self.player)
 		}
-		.padding()
 		.gridStyle(
 			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 200, hSpacing: 5, vSpacing: 5)
 		)
+		.padding()
 	}
 }
 
@@ -37,7 +37,6 @@ struct PlaylistGridItem: View {
 	var body: some View {
 		VStack {
 			if playlist.getImageUrl(session: session, resolution: 320) != nil {
-				//				Rectangle()
 				URLImageSourceView(
 					playlist.getImageUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
