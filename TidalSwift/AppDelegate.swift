@@ -49,6 +49,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	func logout() {
 		print("Logout")
+		closeModals()
+		sc.player.clearQueue()
 		sc.session.deletePersistentInformation()
 		viewState.clear()
 		loginInfo.showModal = true
@@ -141,15 +143,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		return true
 	}
 	
+	func closeModals() {
+		loginInfo.showModal = false
+		playlistEditingValues.showAddTracksModal = false
+		playlistEditingValues.showDeleteModal = false
+		playlistEditingValues.showEditModal = false
+	}
+	
 	// MARK: - Menu Bar
 	// MARK: - Quit
 	
 	@IBAction func Quit(_ sender: Any) {
 		print("Exiting...")
-		loginInfo.showModal = false
-		playlistEditingValues.showAddTracksModal = false
-		playlistEditingValues.showDeleteModal = false
-		playlistEditingValues.showEditModal = false
+		closeModals()
 		
 		// Save Playback State
 		let codablePI = CodablePlaybackInfo(nonShuffledQueue: sc.player.playbackInfo.nonShuffledQueue,
