@@ -24,6 +24,7 @@
 		B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B010113F23063BC200DE13C8 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B010113E23063BC200DE13C8 /* Demo Login Information.txt */; };
+		B014CA53236742E600282931 /* SessionContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B014CA52236742E600282931 /* SessionContainer.swift */; };
 		B016FAF423575CB200ECE565 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B016FAF323575CB200ECE565 /* LoginView.swift */; };
 		B01B09CB234ADADB007A4E15 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CA234ADADB007A4E15 /* CreditsView.swift */; };
 		B01B09CD234B15D6007A4E15 /* Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CC234B15D6007A4E15 /* Lyrics.swift */; };
@@ -130,6 +131,7 @@
 
 /* Begin PBXFileReference section */
 		B010113E23063BC200DE13C8 /* Demo Login Information.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Demo Login Information.txt"; sourceTree = "<group>"; };
+		B014CA52236742E600282931 /* SessionContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContainer.swift; sourceTree = "<group>"; };
 		B016FAF323575CB200ECE565 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		B01B09CA234ADADB007A4E15 /* CreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsView.swift; sourceTree = "<group>"; };
 		B01B09CC234B15D6007A4E15 /* Lyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lyrics.swift; sourceTree = "<group>"; };
@@ -323,6 +325,7 @@
 				B0E8078D230615AD00E43B5D /* ContentView.swift */,
 				B016FAF323575CB200ECE565 /* LoginView.swift */,
 				B05E18CA23570DF600F96030 /* ViewState.swift */,
+				B014CA52236742E600282931 /* SessionContainer.swift */,
 				B0D974CA230C031E00695388 /* MasterDetailView.swift */,
 				B0CDC77423664A1500E90FBF /* MyMixes.swift */,
 				B07685B8232079C800538D55 /* SearchView.swift */,
@@ -640,6 +643,7 @@
 				B02382472348543E00BC2B0C /* NewReleases.swift in Sources */,
 				B0D974D1230CC9C600695388 /* PlaylistGrid.swift in Sources */,
 				B05E18CB23570DF600F96030 /* ViewState.swift in Sources */,
+				B014CA53236742E600282931 /* SessionContainer.swift in Sources */,
 				B0A1E2752349C65900BBC4F0 /* ArtistBio.swift in Sources */,
 				B0C3E6AB23061FDB006CABED /* AlbumView.swift in Sources */,
 				B0C3E6AA23061FDB006CABED /* LoadingSpinner.swift in Sources */,

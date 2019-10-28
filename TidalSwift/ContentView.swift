@@ -12,30 +12,26 @@ import ImageIOSwiftUI
 import Grid
 
 struct ContentView: View {
-	let viewState: ViewState
-	let session: Session
-	let player: Player
-	
+	@EnvironmentObject var sc: SessionContainer
 	@EnvironmentObject var loginInfo: LoginInfo
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	
 	var body: some View {
-		MasterDetailView(session: session, player: player)
-			.environmentObject(player.playbackInfo)
-			.environmentObject(viewState)
+		MasterDetailView(session: sc.session, player: sc.player)
+			.environmentObject(sc.player.playbackInfo)
 			.background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
 				LoginView().environmentObject(self.loginInfo)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showAddTracksModal) {
-				AddToPlaylistView(session: self.session)
+				AddToPlaylistView(session: self.sc.session)
 					.environmentObject(self.playlistEditingValues)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showDeleteModal) {
-				DeletePlaylist(session: self.session)
+				DeletePlaylist(session: self.sc.session)
 					.environmentObject(self.playlistEditingValues)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showEditModal) {
-				EditPlaylist(session: self.session)
+				EditPlaylist(session: self.sc.session)
 					.environmentObject(self.playlistEditingValues)
 			})
 	}
