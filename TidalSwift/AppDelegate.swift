@@ -15,8 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	var window: NSWindow!
 	
-	var session: Session
-	var player: Player
+	var sc: SessionContainer
 	var viewState = ViewState()
 	var playlistEditingValues = PlaylistEditingValues()
 	
@@ -24,8 +23,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	let loginInfo = LoginInfo()
 	
 	override init() {
-		session = Session(config: nil)
-		player = Player(session: session)
+		let session = Session(config: nil)
+		let player = Player(session: session)
+		sc = SessionContainer(session: session, player: player)
 		
 		super.init()
 	}
@@ -33,15 +33,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	func login(username: String, password: String, quality: AudioQuality) {
 		let credentials = LoginCredentials(username: username, password: password)
 		let config = Config(quality: quality, loginCredentials: credentials)
-		session = Session(config: config)
+		sc.session = Session(config: config)
 		
-		let loginSuccessful = session.login()
+		let loginSuccessful = sc.session.login()
 		if loginSuccessful {
 			loginInfo.wrongLogin = false
 			loginInfo.showModal = false
-			session.saveConfig()
-			session.saveSession()
-			player = Player(session: session)
+			sc.session.saveConfig()
+			sc.session.saveSession()
+			sc.player = Player(session: sc.session)
 		} else {
 			loginInfo.wrongLogin = true
 		}
@@ -49,54 +49,53 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	func logout() {
 		print("Logout")
+		sc.session.deletePersistentInformation()
+		viewState.clear()
 		loginInfo.showModal = true
-		session.deletePersistentInformation()
 	}
 	
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
 		
-		// My Stuff
-		
-		session.loadSession()
-		let loggedIn = session.checkLogin()
+		sc.session.loadSession()
+		let loggedIn = sc.session.checkLogin()
 		print("Login Succesful: \(loggedIn)")
 		
 		loginInfo.showModal = !loggedIn
 		
-		// Retrieve Playback State
-		if let data = UserDefaults.standard.data(forKey: "PlaybackInfo") {
-			if let tempPI = try? JSONDecoder().decode(CodablePlaybackInfo.self, from: data) {
-				player.playbackInfo.nonShuffledQueue = tempPI.nonShuffledQueue
-				player.playbackInfo.queue = tempPI.queue
-				player.playbackInfo.volume = tempPI.volume
-				player.playbackInfo.shuffle = tempPI.shuffle
-				player.playbackInfo.repeatState = tempPI.repeatState
-				
-				player.play(atIndex: tempPI.currentIndex)
-				player.pause()
-				// TODO: Seeking at this point doesn't work. Why?
-//				player.seek(to: Double(tempPI.fraction))
-//				print("Wanted: \(Double(tempPI.fraction)), Actual: \(player.playbackInfo.fraction)")
+		if loggedIn {
+			// Retrieve Playback State
+			if let data = UserDefaults.standard.data(forKey: "PlaybackInfo") {
+				if let tempPI = try? JSONDecoder().decode(CodablePlaybackInfo.self, from: data) {
+					sc.player.playbackInfo.nonShuffledQueue = tempPI.nonShuffledQueue
+					sc.player.playbackInfo.queue = tempPI.queue
+					sc.player.playbackInfo.volume = tempPI.volume
+					sc.player.playbackInfo.shuffle = tempPI.shuffle
+					sc.player.playbackInfo.repeatState = tempPI.repeatState
+					
+					sc.player.play(atIndex: tempPI.currentIndex)
+					sc.player.pause()
+					// TODO: Seeking at this point doesn't work. Why?
+//					player.seek(to: Double(tempPI.fraction))
+//					print("Wanted: \(Double(tempPI.fraction)), Actual: \(player.playbackInfo.fraction)")
+				}
 			}
-		}
-		
-		// Retrieve View State
-		if let data = UserDefaults.standard.data(forKey: "ViewState") {
-			if let tempStack = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
-				viewState.stack = tempStack
-				if viewState.stack.count > 0 {
-					viewState.viewType = tempStack.last!.viewType.rawValue
-					viewState.searchTerm = tempStack.last!.searchTerm
-					viewState.fixedSearchTerm = tempStack.last!.searchTerm
-					viewState.artist = tempStack.last!.artist
-					viewState.album = tempStack.last!.album
-					viewState.playlist = tempStack.last!.playlist
+			
+			// Retrieve View State
+			if let data = UserDefaults.standard.data(forKey: "ViewState") {
+				if let tempStack = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
+					viewState.stack = tempStack
+					if viewState.stack.count > 0 {
+						viewState.viewType = tempStack.last!.viewType.rawValue
+						viewState.searchTerm = tempStack.last!.searchTerm
+						viewState.fixedSearchTerm = tempStack.last!.searchTerm
+						viewState.artist = tempStack.last!.artist
+						viewState.album = tempStack.last!.album
+						viewState.playlist = tempStack.last!.playlist
+					}
 				}
 			}
 		}
-		
-		print("-----")
 		
 		// Space for Play/Pause
 		// Currently deactivated, because no way to know, if currently writing text in a TextField
@@ -108,11 +107,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //		}
 		
 		// Combine Stuff
-		_ = player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
-		_ = player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffleState(enabled:))
-		_ = player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: repeatLabel(repeatState:))
-		_ = player.playbackInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
-		_ = player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
+		_ = sc.player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
+		_ = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffleState(enabled:))
+		_ = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: repeatLabel(repeatState:))
+		_ = sc.player.playbackInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
+		_ = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
 		_ = viewState.$viewType.receive(on: DispatchQueue.main).sink(receiveValue: { print("View: \($0 ?? "nil")") })
 		
 		// Swift UI Stuff
@@ -124,7 +123,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		window.setFrameAutosaveName("Main Window")
 		
 		window.contentView = NSHostingView(rootView:
-			ContentView(viewState: viewState, session: session, player: player)
+			ContentView()
+				.environmentObject(sc)
+				.environmentObject(viewState)
 				.environmentObject(loginInfo)
 				.environmentObject(playlistEditingValues)
 		)
@@ -151,14 +152,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playlistEditingValues.showEditModal = false
 		
 		// Save Playback State
-		let codablePI = CodablePlaybackInfo(nonShuffledQueue: player.playbackInfo.nonShuffledQueue,
-											queue: player.playbackInfo.queue,
-											currentIndex: player.playbackInfo.currentIndex,
-											fraction: player.playbackInfo.fraction,
-											playing: player.playbackInfo.playing,
-											volume: player.playbackInfo.volume,
-											shuffle: player.playbackInfo.shuffle,
-											repeatState: player.playbackInfo.repeatState)
+		let codablePI = CodablePlaybackInfo(nonShuffledQueue: sc.player.playbackInfo.nonShuffledQueue,
+											queue: sc.player.playbackInfo.queue,
+											currentIndex: sc.player.playbackInfo.currentIndex,
+											fraction: sc.player.playbackInfo.fraction,
+											playing: sc.player.playbackInfo.playing,
+											volume: sc.player.playbackInfo.volume,
+											shuffle: sc.player.playbackInfo.shuffle,
+											repeatState: sc.player.playbackInfo.repeatState)
 		let playbackInfoData = try? JSONEncoder().encode(codablePI)
 		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
 		
@@ -215,13 +216,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var addToFavorites: NSMenuItem!
 	@IBAction func addToFavorites(_ sender: Any) {
-		session.favorites?.addTrack(trackId: player.playbackInfo.queue[player.playbackInfo.currentIndex].id)
-		favoriteLabel(currentIndex: player.playbackInfo.currentIndex)
+		sc.session.favorites?.addTrack(trackId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].id)
+		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
 	}
 	@IBOutlet weak var removeFromFavorites: NSMenuItem!
 	@IBAction func removeFromFavorites(_ sender: Any) {
-		session.favorites?.removeTrack(trackId: player.playbackInfo.queue[player.playbackInfo.currentIndex].id)
-		favoriteLabel(currentIndex: player.playbackInfo.currentIndex)
+		sc.session.favorites?.removeTrack(trackId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].id)
+		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
 	}
 	
 	@IBOutlet weak var addToPlaylist: NSMenuItem!
@@ -230,17 +231,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBOutlet weak var albumAddFavorites: NSMenuItem!
 	@IBAction func albumAddFavorites(_ sender: Any) {
-		session.favorites?.addAlbum(albumId: player.playbackInfo.queue[player.playbackInfo.currentIndex].album.id)
-		favoriteLabel(currentIndex: player.playbackInfo.currentIndex)
+		sc.session.favorites?.addAlbum(albumId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].album.id)
+		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
 	}
 	@IBOutlet weak var albumRemoveFavorites: NSMenuItem!
 	@IBAction func albumRemoveFavorites(_ sender: Any) {
-		session.favorites?.removeAlbum(albumId: player.playbackInfo.queue[player.playbackInfo.currentIndex].album.id)
-		favoriteLabel(currentIndex: player.playbackInfo.currentIndex)
+		sc.session.favorites?.removeAlbum(albumId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].album.id)
+		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
 	}
 	
 	func favoriteLabel(currentIndex: Int) {
-		if player.playbackInfo.queue.isEmpty {
+		if sc.player.playbackInfo.queue.isEmpty {
 			goToAlbum.isEnabled = false
 			goToArtist.isEnabled = false
 			
@@ -262,7 +263,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			albumAddFavorites.isEnabled = true
 		}
 		
-		if player.playbackInfo.queue[currentIndex].isInFavorites(session: session)! {
+		let trackIsInFavorites = sc.player.playbackInfo.queue[currentIndex].isInFavorites(session: sc.session)
+		if trackIsInFavorites != nil && trackIsInFavorites! {
 			addToFavorites.isHidden = true
 			removeFromFavorites.isHidden = false
 		} else {
@@ -270,7 +272,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			removeFromFavorites.isHidden = true
 		}
 		
-		if player.playbackInfo.queue[currentIndex].album.isInFavorites(session: session)! {
+		if trackIsInFavorites != nil && trackIsInFavorites! {
 			albumAddFavorites.isHidden = true
 			albumRemoveFavorites.isHidden = false
 		} else {
@@ -284,7 +286,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var play: NSMenuItem!
 	@IBAction func play(_ sender: Any) {
-		player.togglePlay()
+		sc.player.togglePlay()
 	}
 	func playLabel(playing: Bool) {
 		if playing {
@@ -294,24 +296,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	@IBAction func stop(_ sender: Any) {
-		player.stop()
+		sc.player.stop()
 	}
 	@IBAction func next(_ sender: Any) {
-		player.next()
+		sc.player.next()
 	}
 	@IBAction func previous(_ sender: Any) {
-		player.previous()
+		sc.player.previous()
 	}
 	
 	@IBAction func increaseVolume(_ sender: Any) {
-		player.increaseVolume()
+		sc.player.increaseVolume()
 	}
 	@IBAction func decreaseVolume(_ sender: Any) {
-		player.decreaseVolume()
+		sc.player.decreaseVolume()
 	}
 	@IBOutlet weak var mute: NSMenuItem!
 	@IBAction func mute(_ sender: Any) {
-		player.toggleMute()
+		sc.player.toggleMute()
 	}
 	func muteState(volume: Float) {
 		mute.state = volume == 0 ? .on : .off
@@ -319,7 +321,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var shuffle: NSMenuItem!
 	@IBAction func shuffle(_ sender: Any) {
-		player.playbackInfo.shuffle.toggle()
+		sc.player.playbackInfo.shuffle.toggle()
 	}
 	func shuffleState(enabled: Bool) {
 		shuffle.state = enabled ? .on : .off
@@ -327,15 +329,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var repeatOff: NSMenuItem!
 	@IBAction func repeatOff(_ sender: Any) {
-		player.playbackInfo.repeatState = .off
+		sc.player.playbackInfo.repeatState = .off
 	}
 	@IBOutlet weak var repeatAll: NSMenuItem!
 	@IBAction func repeatAll(_ sender: Any) {
-		player.playbackInfo.repeatState = .all
+		sc.player.playbackInfo.repeatState = .all
 	}
 	@IBOutlet weak var repeatSingle: NSMenuItem!
 	@IBAction func repeatSingle(_ sender: Any) {
-		player.playbackInfo.repeatState = .single
+		sc.player.playbackInfo.repeatState = .single
 	}
 	func repeatLabel(repeatState: RepeatState) {
 		switch repeatState {
@@ -355,7 +357,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	@IBAction func clearQueue(_ sender: Any) {
-		player.clearQueue()
+		sc.player.clearQueue()
 	}
 	
 	// MARK: - Account
@@ -370,12 +372,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	// MARK: - View
 	
 	@IBAction func lyrics(_ sender: Any) {
-		if !self.player.playbackInfo.queue.isEmpty {
-			Lyrics.showLyricsWindow(for: self.player.playbackInfo.queue[self.player.playbackInfo.currentIndex])
+		if !self.sc.player.playbackInfo.queue.isEmpty {
+			Lyrics.showLyricsWindow(for: self.sc.player.playbackInfo.queue[self.sc.player.playbackInfo.currentIndex])
 		}
 	}
 	@IBAction func queue(_ sender: Any) {
-		player.showQueueWindow()
+		sc.player.showQueueWindow()
 	}
 }
 

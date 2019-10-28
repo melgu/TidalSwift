@@ -100,5 +100,7 @@ final class ViewState: ObservableObject {
 	
 	func clear() {
 		stack.removeAll()
+		viewType = ""
+		searchTerm = ""
 	}
 }
