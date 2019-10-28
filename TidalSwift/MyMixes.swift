@@ -180,11 +180,6 @@ struct MixImage: View {
 	
 	@State var scrollImages = false
 	
-	init(mix: MixesItem, session: Session) {
-		self.mix = mix
-		self.session = session
-	}
-	
 	var body: some View {
 		GeometryReader { metrics in
 			if self.mix.graphic.images.count >= 5 {
@@ -345,6 +340,8 @@ struct MixImage: View {
 						self.scrollImages.toggle()
 					}
 				}
+				.contentShape(Rectangle())
+				.clipped()
 				.overlay(
 					RoundedRectangle(cornerRadius: CORNERRADIUS)
 						.stroke(Color(hex: self.mix.graphic.images[0].vibrantColor)!, lineWidth: metrics.size.width * 0.1)
