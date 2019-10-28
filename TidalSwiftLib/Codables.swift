@@ -484,28 +484,28 @@ struct MixesPagedList: Decodable {
 	let dataApiPath: String
 }
 
-public struct MixesItem: Decodable {
+public struct MixesItem: Codable {
 	public let id: String
 	public let title: String
 	public let subTitle: String
 	public let graphic: MixesGraphic
 }
 
-public enum MixesGraphicType: String, Decodable {
+public enum MixesGraphicType: String, Codable {
 	case squaresGrid = "SQUARES_GRID"
 }
 
-public struct MixesGraphic: Decodable {
+public struct MixesGraphic: Codable {
 	public let type: MixesGraphicType
 	public let text: String
 	public let images: [MixesGraphicImage]
 }
 
-public enum MixesGraphicImageType: String, Decodable {
+public enum MixesGraphicImageType: String, Codable {
 	case artist = "ARTIST"
 }
 
-public struct MixesGraphicImage: Decodable {
+public struct MixesGraphicImage: Codable {
 	public let id: String
 	public let vibrantColor: String
 	public let type: MixesGraphicImageType

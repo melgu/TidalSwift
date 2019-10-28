@@ -127,7 +127,7 @@ struct ArtistView: View {
 								}
 							}
 						}
-						Spacer()
+						Spacer(minLength: 0)
 							.layoutPriority(-1)
 					}
 					.frame(height: 100)

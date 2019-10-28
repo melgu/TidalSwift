@@ -20,10 +20,10 @@ struct ArtistGrid: View {
 		Grid(artists) { artist in
 			ArtistGridItem(artist: artist, session: self.session, player: self.player)
 		}
-		.padding()
 		.gridStyle(
 			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 200, hSpacing: 5, vSpacing: 0)
 		)
+		.padding()
 	}
 }
 

@@ -53,7 +53,7 @@ struct MasterView: View {
 	
 	let session: Session
 	
-	private let news = ["New Releases"]
+	private let news = ["New Releases", "My Mixes"]
 	private let favorites = ["Playlists", "Albums", "Tracks", "Videos", "Artists"]
 //	private let views = ["SingleAlbum", "SinglePlaylist"]
 	
@@ -114,6 +114,8 @@ struct DetailView: View {
 				// News
 				else if viewState.viewType == "New Releases" {
 					NewReleases(session: session, player: player)
+				} else if viewState.viewType == "My Mixes" {
+					MyMixes(session: session, player: player)
 				}
 				
 				// Favorites
@@ -133,6 +135,8 @@ struct DetailView: View {
 					AlbumView(album: viewState.album, session: session, player: player)
 				} else if viewState.viewType == "SinglePlaylist" {
 					PlaylistView(playlist: viewState.playlist, session: session, player: player)
+				} else if viewState.viewType == "SingleMix" {
+					MixPlaylistView(mix: viewState.mix, session: session, player: player)
 				}
 			}
 			if viewState.viewType == "" || viewState.viewType == nil {
