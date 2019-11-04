@@ -94,6 +94,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 						viewState.artist = tempStack.last!.artist
 						viewState.album = tempStack.last!.album
 						viewState.playlist = tempStack.last!.playlist
+						viewState.mix = tempStack.last!.mix
 					}
 				}
 			}
