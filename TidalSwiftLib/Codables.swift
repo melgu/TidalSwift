@@ -90,7 +90,7 @@ public enum ArtistType: String, Codable {
 	case contributor = "CONTRIBUTOR"
 }
 
-public struct Artist: Codable, Equatable, Identifiable {
+public struct Artist: Codable, Equatable, Identifiable, Hashable {
 	public let id: Int
 	public let name: String
 	public let artistTypes: Set<ArtistType>?
@@ -130,6 +130,10 @@ public struct Artist: Codable, Equatable, Identifiable {
 	public static func == (lhs: Artist, rhs: Artist) -> Bool {
 		return lhs.id == rhs.id
 	}
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
 }
 
 public struct ArtistBio: Decodable {
@@ -148,7 +152,7 @@ public enum AudioMode: String, Codable {
 	case sony360RealityAudio = "SONY_360RA"
 }
 
-public struct Album: Codable, Equatable, Identifiable {
+public struct Album: Codable, Equatable, Identifiable, Hashable {
 	public let id: Int
 	public let title: String
 	public let duration: Int? // In Seconds
@@ -199,6 +203,10 @@ public struct Album: Codable, Equatable, Identifiable {
 	public static func == (lhs: Album, rhs: Album) -> Bool {
 		return lhs.id == rhs.id
 	}
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
 }
 
 public struct Credit: Decodable, Identifiable {
@@ -219,7 +227,7 @@ public enum PlaylistType: String, Codable {
 	// Haven't seen others yet
 }
 
-public struct Playlist: Codable, Equatable, Identifiable {
+public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 	public var id: String { uuid }
 	
 	public let uuid: String
@@ -269,6 +277,10 @@ public struct Playlist: Codable, Equatable, Identifiable {
 	public static func == (lhs: Playlist, rhs: Playlist) -> Bool {
 		return lhs.uuid == rhs.uuid
 	}
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(uuid)
+	}
 }
 
 public struct PlaylistCreator: Codable {
@@ -293,7 +305,7 @@ public struct PlaylistCreator: Codable {
 	}
 }
 
-public struct Track: Codable, Equatable, Identifiable {
+public struct Track: Codable, Equatable, Identifiable, Hashable {
 	public let id: Int
 	public let title: String
 	public let duration: Int
@@ -345,9 +357,13 @@ public struct Track: Codable, Equatable, Identifiable {
 	public static func == (lhs: Track, rhs: Track) -> Bool {
 		return lhs.id == rhs.id
 	}
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
 }
 
-public struct Video: Decodable, Equatable, Identifiable {
+public struct Video: Decodable, Equatable, Identifiable, Hashable {
 	public let id: Int
 	public let title: String
 	public let volumeNumber: Int
@@ -392,6 +408,10 @@ public struct Video: Decodable, Equatable, Identifiable {
 	
 	public static func == (lhs: Video, rhs: Video) -> Bool {
 		return lhs.id == rhs.id
+	}
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
 	}
 }
 

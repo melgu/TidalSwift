@@ -11,10 +11,10 @@ import SDAVAssetExportSession
 
 // TODO: Maybe present a textform or something other than this
 public struct DownloadErrors {
-	var affectedTracks = [Track]()
-	var affectedAlbums = [Album]()
-	var affectedArtists = [Artist]()
-	var affectedPlaylists = [Playlist]()
+	var affectedTracks = Set<Track>()
+	var affectedAlbums = Set<Album>()
+	var affectedArtists = Set<Artist>()
+	var affectedPlaylists = Set<Playlist>()
 }
 
 public class Helpers {
@@ -74,6 +74,17 @@ public class Helpers {
 		return response.ok
 	}
 	
+	public func download(tracks: [Track], parentFolder: String = "") -> DownloadErrors {
+		var errors = DownloadErrors()
+		for track in tracks {
+			let r = download(track: track, parentFolder: parentFolder)
+			if !r {
+				errors.affectedTracks.insert(track)
+			}
+		}
+		return errors
+	}
+	
 	public func download(video: Video, parentFolder: String = "") -> Bool {
 		guard let url = video.getVideoUrl(session: session) else { return false }
 		print("Downloading Video \(video.title)")
@@ -88,15 +99,10 @@ public class Helpers {
 	}
 	
 	public func download(album: Album, parentFolder: String = "") -> DownloadErrors {
-		guard let tracks = session.getAlbumTracks(albumId: album.id) else { return DownloadErrors(affectedAlbums: [album]) }
-		var error = DownloadErrors()
-		for track in tracks {
-			let r = download(track: track, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title)")
-			if !r {
-				error.affectedTracks.append(track)
-			}
+		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
+			return DownloadErrors(affectedAlbums: [album])
 		}
-		return error
+		return download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title)")
 	}
 	
 	public func downloadAllAlbums(from artist: Artist, parentFolder: String = "") -> DownloadErrors {
@@ -106,8 +112,8 @@ public class Helpers {
 		var error = DownloadErrors()
 		for album in albums {
 			let r = download(album: album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)")
-			error.affectedAlbums.append(contentsOf: r.affectedAlbums)
-			error.affectedTracks.append(contentsOf: r.affectedTracks)
+			error.affectedAlbums.formUnion(r.affectedAlbums)
+			error.affectedTracks.formUnion(r.affectedTracks)
 		}
 		return error
 	}
@@ -116,15 +122,7 @@ public class Helpers {
 		guard let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) else {
 			return DownloadErrors(affectedPlaylists: [playlist])
 		}
-		var error = DownloadErrors()
-		for track in tracks {
-			let r = download(track: track,
-								  parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
-			if !r {
-				error.affectedTracks.append(track)
-			}
-		}
-		return error
+		return download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
 	}
 }
 

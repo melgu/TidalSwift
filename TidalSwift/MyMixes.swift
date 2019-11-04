@@ -395,6 +395,15 @@ struct MixContextMenu: View {
 			}) {
 				Text("Add to Playlist …")
 			}
+			Divider()
+			Button(action: {
+				print("Download")
+				if let tracks = self.session.getMixPlaylistTracks(mixId: self.mix.id) {
+					_ = self.session.helpers?.download(tracks: tracks, parentFolder: self.mix.title)
+				}
+			}) {
+				Text("Download")
+			}
 		}
 	}
 }
