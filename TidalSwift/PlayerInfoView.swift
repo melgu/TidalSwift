@@ -128,10 +128,7 @@ struct PlayerInfoView: View {
 								value: self.playbackInfo.volume,
 								view: Rectangle()
 									.foregroundColor(.secondary)
-									.frame(height: 4),
-								configuration: .init(
-									offsets: 8
-								)
+									.frame(height: 4)
 							)
 								.background(Color.secondary)
 								.frame(height: 4)
@@ -191,14 +188,12 @@ struct ProgressBar : View {
 				view: Rectangle()
 					.foregroundColor(.playbackProgressBarForeground(for: colorScheme))
 					.frame(height: 5),
-				configuration: .init(
-					offsets: 8
-				)
+				mask: Rectangle()
 			)
 				.background(Color.playbackProgressBarBackground(for: colorScheme))
 				.frame(height: 5)
 				.cornerRadius(3),
-				 thumb: EmptyView(),
+				thumb: EmptyView(),
 				configuration: .init(
 					options: .interactiveTrack,
 					thumbSize: .zero
@@ -208,20 +203,8 @@ struct ProgressBar : View {
 						self.player.seek(to: Double(self.playbackInfo.fraction))
 					}
 		}
-			
 		)
 			.frame(height: 5)
-//		HorizontalValueSlider(value: $playbackInfo.fraction, onEditingChanged: {ended  in
-//			if ended {
-//				//				print("Changed: \(self.playbackInfo.fraction)")
-//				self.player.seek(to: Double(self.playbackInfo.fraction))
-//			}
-//		})
-//			.height(5)
-//			.thickness(5)
-//			.valueColor(.playbackProgressBarForeground(for: colorScheme))
-//			.trackColor(.playbackProgressBarBackground(for: colorScheme))
-//			.thumbSize(CGSize(width: 0, height: 0))
 	}
 }
 
