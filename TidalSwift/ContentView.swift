@@ -37,12 +37,6 @@ struct ContentView: View {
 	}
 }
 
-struct EmptyView: View {
-	var body: some View {
-		Spacer()
-	}
-}
-
 //struct ContentView_Previews: PreviewProvider {
 //	static var previews: some View {
 //		ContentView()
