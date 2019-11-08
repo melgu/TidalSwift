@@ -122,14 +122,26 @@ struct PlayerInfoView: View {
 							.onTapGesture {
 								self.player.toggleMute()
 						}
-						HorizontalValueSlider(value: self.$playbackInfo.volume, in: 0.0...1.0)
-							.trackColor(.secondary)
-							.valueColor(.secondary)
-							.thumbSize(CGSize(width: 15, height: 15))
-							.thumbBorderWidth(0.5)
-							.thumbBorderColor(Color(hue: 0, saturation: 0, brightness: 0.7))
-							.thumbShadowRadius(0)
-							.thumbShadowColor(Color(.displayP3, white: 0, opacity: 0.2))
+						HSlider(value: self.$playbackInfo.volume, in: 0.0...1.0,
+								track:
+							HTrack(
+								value: self.playbackInfo.volume,
+								view: Rectangle()
+									.foregroundColor(.secondary)
+									.frame(height: 4),
+								configuration: .init(
+									offsets: 8
+								)
+							)
+								.background(Color.secondary)
+								.frame(height: 4)
+								.cornerRadius(3),
+								configuration: .init(
+									options: .interactiveTrack,
+									thumbSize: CGSize(width: 15, height: 15)
+							)
+							
+						)
 							.frame(width: 80)
 							.layoutPriority(1)
 					}
@@ -172,17 +184,44 @@ struct ProgressBar : View {
 	@Environment(\.colorScheme) var colorScheme: ColorScheme
 	
 	var body: some View {
-		HorizontalValueSlider(value: $playbackInfo.fraction, onEditingChanged: {ended  in
-			if ended {
-				//				print("Changed: \(self.playbackInfo.fraction)")
-				self.player.seek(to: Double(self.playbackInfo.fraction))
-			}
-		})
-			.height(5)
-			.thickness(5)
-			.valueColor(.playbackProgressBarForeground(for: colorScheme))
-			.trackColor(.playbackProgressBarBackground(for: colorScheme))
-			.thumbSize(CGSize(width: 0, height: 0))
+		HSlider(value: $playbackInfo.fraction,
+				track:
+			HTrack(
+				value: playbackInfo.fraction,
+				view: Rectangle()
+					.foregroundColor(.playbackProgressBarForeground(for: colorScheme))
+					.frame(height: 5),
+				configuration: .init(
+					offsets: 8
+				)
+			)
+				.background(Color.playbackProgressBarBackground(for: colorScheme))
+				.frame(height: 5)
+				.cornerRadius(3),
+				 thumb: EmptyView(),
+				configuration: .init(
+					options: .interactiveTrack,
+					thumbSize: .zero
+			),
+				onEditingChanged: { ended  in
+					if ended {
+						self.player.seek(to: Double(self.playbackInfo.fraction))
+					}
+		}
+			
+		)
+			.frame(height: 5)
+//		HorizontalValueSlider(value: $playbackInfo.fraction, onEditingChanged: {ended  in
+//			if ended {
+//				//				print("Changed: \(self.playbackInfo.fraction)")
+//				self.player.seek(to: Double(self.playbackInfo.fraction))
+//			}
+//		})
+//			.height(5)
+//			.thickness(5)
+//			.valueColor(.playbackProgressBarForeground(for: colorScheme))
+//			.trackColor(.playbackProgressBarBackground(for: colorScheme))
+//			.thumbSize(CGSize(width: 0, height: 0))
 	}
 }
 

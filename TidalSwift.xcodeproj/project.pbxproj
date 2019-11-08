@@ -29,7 +29,6 @@
 		B01B09CB234ADADB007A4E15 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CA234ADADB007A4E15 /* CreditsView.swift */; };
 		B01B09CD234B15D6007A4E15 /* Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CC234B15D6007A4E15 /* Lyrics.swift */; };
 		B01B09CF234B1C7B007A4E15 /* LyricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CE234B1C7B007A4E15 /* LyricsView.swift */; };
-		B02382452348497F00BC2B0C /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = B02382442348497F00BC2B0C /* Sliders */; };
 		B02382472348543E00BC2B0C /* NewReleases.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02382462348543E00BC2B0C /* NewReleases.swift */; };
 		B039D69F2317480C00E6784F /* CoverWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B039D69E2317480C00E6784F /* CoverWindowController.swift */; };
 		B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F420A230DF66200587A4A /* PlaybackInfo.swift */; };
@@ -46,6 +45,9 @@
 		B08B819B235F85C3001C35C9 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
 		B08B819C235F85C3001C35C9 /* TidalSwiftLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B08B81A0235F88B2001C35C9 /* ArtistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08B819F235F88B2001C35C9 /* ArtistView.swift */; };
+		B09CB16A23751D0700677763 /* ImageIOSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B09CB16923751D0700677763 /* ImageIOSwiftUI */; };
+		B09CB16D23751D4100677763 /* Grid in Frameworks */ = {isa = PBXBuildFile; productRef = B09CB16C23751D4100677763 /* Grid */; };
+		B09CB17023751D6700677763 /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = B09CB16F23751D6700677763 /* Sliders */; };
 		B0A1E2752349C65900BBC4F0 /* ArtistBio.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2742349C65900BBC4F0 /* ArtistBio.swift */; };
 		B0A1E2772349DB0100BBC4F0 /* ResizableWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2762349DB0100BBC4F0 /* ResizableWindowController.swift */; };
 		B0A1E2792349EDE900BBC4F0 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2782349EDE900BBC4F0 /* Colors.swift */; };
@@ -80,8 +82,6 @@
 		B0E80793230615AE00E43B5D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0E80792230615AE00E43B5D /* Preview Assets.xcassets */; };
 		B0E80796230615AE00E43B5D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E80794230615AE00E43B5D /* Main.storyboard */; };
 		B0E807A2230615AF00E43B5D /* TidalSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E807A1230615AF00E43B5D /* TidalSwiftTests.swift */; };
-		B0F20E3A230A8D21005F0576 /* ImageIOSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B0F20E39230A8D21005F0576 /* ImageIOSwiftUI */; };
-		B0F20E3D230A9771005F0576 /* Grid in Frameworks */ = {isa = PBXBuildFile; productRef = B0F20E3C230A9771005F0576 /* Grid */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -221,10 +221,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0F20E3A230A8D21005F0576 /* ImageIOSwiftUI in Frameworks */,
-				B02382452348497F00BC2B0C /* Sliders in Frameworks */,
+				B09CB17023751D6700677763 /* Sliders in Frameworks */,
 				B08B819B235F85C3001C35C9 /* TidalSwiftLib.framework in Frameworks */,
-				B0F20E3D230A9771005F0576 /* Grid in Frameworks */,
+				B09CB16A23751D0700677763 /* ImageIOSwiftUI in Frameworks */,
+				B09CB16D23751D4100677763 /* Grid in Frameworks */,
 				B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -452,9 +452,9 @@
 			);
 			name = TidalSwift;
 			packageProductDependencies = (
-				B0F20E39230A8D21005F0576 /* ImageIOSwiftUI */,
-				B0F20E3C230A9771005F0576 /* Grid */,
-				B02382442348497F00BC2B0C /* Sliders */,
+				B09CB16923751D0700677763 /* ImageIOSwiftUI */,
+				B09CB16C23751D4100677763 /* Grid */,
+				B09CB16F23751D6700677763 /* Sliders */,
 			);
 			productName = TidalSwift;
 			productReference = B0E80789230615AD00E43B5D /* TidalSwift.app */;
@@ -517,9 +517,9 @@
 			);
 			mainGroup = B0E582C5223764A400ADAE6C;
 			packageReferences = (
-				B0F20E38230A8D21005F0576 /* XCRemoteSwiftPackageReference "ImageIOSwift" */,
-				B0F20E3B230A9771005F0576 /* XCRemoteSwiftPackageReference "grid" */,
-				B02382432348497F00BC2B0C /* XCRemoteSwiftPackageReference "sliders" */,
+				B09CB16823751D0700677763 /* XCRemoteSwiftPackageReference "ImageIOSwift" */,
+				B09CB16B23751D4100677763 /* XCRemoteSwiftPackageReference "Grid" */,
+				B09CB16E23751D6700677763 /* XCRemoteSwiftPackageReference "Sliders" */,
 			);
 			productRefGroup = B0E582CF223764A500ADAE6C /* Products */;
 			projectDirPath = "";
@@ -1108,47 +1108,47 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B02382432348497F00BC2B0C /* XCRemoteSwiftPackageReference "sliders" */ = {
+		B09CB16823751D0700677763 /* XCRemoteSwiftPackageReference "ImageIOSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:spacenation/sliders.git";
+			repositoryURL = "git@github.com:davbeck/ImageIOSwift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.3;
+				minimumVersion = 1.0.2;
 			};
 		};
-		B0F20E38230A8D21005F0576 /* XCRemoteSwiftPackageReference "ImageIOSwift" */ = {
+		B09CB16B23751D4100677763 /* XCRemoteSwiftPackageReference "Grid" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/davbeck/ImageIOSwift.git";
+			repositoryURL = "git@github.com:SwiftUIExtensions/Grid.git";
 			requirement = {
-				branch = 1.0.0;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.6.4;
 			};
 		};
-		B0F20E3B230A9771005F0576 /* XCRemoteSwiftPackageReference "grid" */ = {
+		B09CB16E23751D6700677763 /* XCRemoteSwiftPackageReference "Sliders" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/spacenation/grid";
+			repositoryURL = "git@github.com:SwiftUIExtensions/Sliders.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B02382442348497F00BC2B0C /* Sliders */ = {
+		B09CB16923751D0700677763 /* ImageIOSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B02382432348497F00BC2B0C /* XCRemoteSwiftPackageReference "sliders" */;
-			productName = Sliders;
-		};
-		B0F20E39230A8D21005F0576 /* ImageIOSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B0F20E38230A8D21005F0576 /* XCRemoteSwiftPackageReference "ImageIOSwift" */;
+			package = B09CB16823751D0700677763 /* XCRemoteSwiftPackageReference "ImageIOSwift" */;
 			productName = ImageIOSwiftUI;
 		};
-		B0F20E3C230A9771005F0576 /* Grid */ = {
+		B09CB16C23751D4100677763 /* Grid */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B0F20E3B230A9771005F0576 /* XCRemoteSwiftPackageReference "grid" */;
+			package = B09CB16B23751D4100677763 /* XCRemoteSwiftPackageReference "Grid" */;
 			productName = Grid;
+		};
+		B09CB16F23751D6700677763 /* Sliders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B09CB16E23751D6700677763 /* XCRemoteSwiftPackageReference "Sliders" */;
+			productName = Sliders;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
