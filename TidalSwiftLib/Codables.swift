@@ -33,8 +33,8 @@ public struct Subscription: Decodable {
 }
 
 public struct SubscriptionType: Decodable {
-	let type: String
-	let offlineGracePeriod: Int
+	public let type: String
+	public let offlineGracePeriod: Int
 }
 
 struct AudioUrl: Decodable {
@@ -454,7 +454,7 @@ struct FavoritesResponse: Decodable {
 	let updatedFavoriteVideos: Date?
 }
 
-public struct User: Decodable {
+public struct User: Decodable, Identifiable {
 	public let id: Int
 	public let username: String
 	public let firstName: String

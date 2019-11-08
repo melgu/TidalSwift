@@ -370,7 +370,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	// MARK: - Account
 	
 	@IBAction func accountInfo(_ sender: Any) {
-		print("accountInfo")
+		guard let userId = sc.session.userId else { return }
+		guard let title = sc.session.getUser(userId: userId)?.username else { return }
+		let controller = ResizableWindowController(rootView:
+			AccountInfoView(session: sc.session)
+		)
+		controller.window?.title = title
+		controller.showWindow(nil)
 	}
 	@IBAction func logout(_ sender: Any) {
 		logout()
