@@ -53,6 +53,7 @@ struct TrackRow: View {
 	var widthFactorArtist: CGFloat
 	var widthFactorAlbum: CGFloat
 	
+	@EnvironmentObject var playbackInfo: PlaybackInfo
 	@State var t: Bool = false
 	
 	init(track: Track, showCover: Bool = false, showArtist: Bool, showAlbum: Bool,
@@ -92,6 +93,9 @@ struct TrackRow: View {
 			HStack {
 				HStack {
 					HStack {
+						if self.playbackInfo.queue[self.playbackInfo.currentIndex].track == self.track {
+							Text("􀊃")
+						}
 						if self.showCover {
 							if self.coverUrl != nil {
 								URLImageSourceView(
