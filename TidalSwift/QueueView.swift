@@ -28,15 +28,23 @@ struct QueueView: View {
 					Text("Empty Queue")
 						.foregroundColor(.secondary)
 				} else {
-					ForEach(0..<playbackInfo.queue.count) { i in
-						Text("\(self.playbackInfo.queue[i].title) - \(self.playbackInfo.queue[i].artists.formArtistString())")
-							.fontWeight(i == self.playbackInfo.currentIndex ? .bold : .regular)
-							.lineLimit(1)
-							.onTapGesture(count: 2) {
-								self.player.play(atIndex: i)
-						}
-						.contextMenu {
-							TrackContextMenu(track: self.playbackInfo.queue[i], session: self.session, player: self.player)
+					ForEach(playbackInfo.queue) { item in
+						HStack {
+							Text("\(item.track.title) - \(item.track.artists.formArtistString())")
+								.fontWeight(item.id == self.playbackInfo.currentIndex ? .bold : .regular)
+								.lineLimit(1)
+								.onTapGesture(count: 2) {
+									self.player.play(atIndex: item.id)
+							}
+							.contextMenu {
+								TrackContextMenu(track: item.track, session: self.session, player: self.player)
+							}
+							Spacer(minLength: 5)
+							Text("􀁏")
+								.foregroundColor(.secondary)
+								.onTapGesture {
+									self.player.removeTrack(atIndex: item.id)
+							}
 						}
 					}
 				}
@@ -45,6 +53,11 @@ struct QueueView: View {
 			.padding()
 		}
 	}
+}
+
+struct QueueItem: Codable, Identifiable {
+	let id: Int
+	let track: Track
 }
 
 //struct QueueView_Previews: PreviewProvider {
