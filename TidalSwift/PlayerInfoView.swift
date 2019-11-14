@@ -24,11 +24,11 @@ struct PlayerInfoView: View {
 					HStack {
 						if !self.player.playbackInfo.queue.isEmpty {
 							HStack {
-								if self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320) != nil {
+								if self.playbackInfo.queue[self.playbackInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 320) != nil {
 									URLImageSourceView(
-										self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 320)!,
+										self.playbackInfo.queue[self.playbackInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 320)!,
 										isAnimationEnabled: true,
-										label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)
+										label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.album.title)
 									)
 										.frame(width: 30, height: 30)
 										.cornerRadius(CORNERRADIUS)
@@ -36,12 +36,12 @@ struct PlayerInfoView: View {
 											print("Big Cover")
 											let controller = CoverWindowController(rootView:
 												URLImageSourceView(
-													self.playbackInfo.queue[self.playbackInfo.currentIndex].getCoverUrl(session: self.session, resolution: 1280)!,
+													self.playbackInfo.queue[self.playbackInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 1280)!,
 													isAnimationEnabled: true,
-													label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)
+													label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.album.title)
 												)
 											)
-											controller.window?.title = self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title
+											controller.window?.title = self.playbackInfo.queue[self.playbackInfo.currentIndex].track.album.title
 											controller.showWindow(nil)
 									}
 								} else {
@@ -52,7 +52,7 @@ struct PlayerInfoView: View {
 								
 								VStack(alignment: .leading) {
 									HStack {
-										Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].title)
+										Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.title)
 										Text(self.player.currentQualityString())
 											.fontWeight(.light)
 											.foregroundColor(.orange)
@@ -62,14 +62,14 @@ struct PlayerInfoView: View {
 										
 										
 									}
-									Text("\(self.playbackInfo.queue[self.playbackInfo.currentIndex].artists.formArtistString()) – \(self.playbackInfo.queue[self.playbackInfo.currentIndex].album.title)")
+									Text("\(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.artists.formArtistString()) – \(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.album.title)")
 										.foregroundColor(.secondary)
 								}
 								Spacer()
 									.layoutPriority(-1)
 							}
 							.contextMenu {
-								TrackContextMenu(track: self.playbackInfo.queue[self.playbackInfo.currentIndex], session: self.session, player: self.player)
+								TrackContextMenu(track: self.playbackInfo.queue[self.playbackInfo.currentIndex].track, session: self.session, player: self.player)
 							}
 						} else {
 							Spacer()
@@ -146,7 +146,7 @@ struct PlayerInfoView: View {
 					Text("􀌮")
 						.onTapGesture {
 							if !self.playbackInfo.queue.isEmpty {
-								Lyrics.showLyricsWindow(for: self.playbackInfo.queue[self.playbackInfo.currentIndex])
+								Lyrics.showLyricsWindow(for: self.playbackInfo.queue[self.playbackInfo.currentIndex].track)
 							}
 					}
 					Text("􀋱")

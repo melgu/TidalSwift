@@ -223,12 +223,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var addToFavorites: NSMenuItem!
 	@IBAction func addToFavorites(_ sender: Any) {
-		sc.session.favorites?.addTrack(trackId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].id)
+		sc.session.favorites?.addTrack(trackId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].track.id)
 		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
 	}
 	@IBOutlet weak var removeFromFavorites: NSMenuItem!
 	@IBAction func removeFromFavorites(_ sender: Any) {
-		sc.session.favorites?.removeTrack(trackId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].id)
+		sc.session.favorites?.removeTrack(trackId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].track.id)
 		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
 	}
 	
@@ -238,12 +238,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBOutlet weak var albumAddFavorites: NSMenuItem!
 	@IBAction func albumAddFavorites(_ sender: Any) {
-		sc.session.favorites?.addAlbum(albumId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].album.id)
+		sc.session.favorites?.addAlbum(albumId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].track.album.id)
 		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
 	}
 	@IBOutlet weak var albumRemoveFavorites: NSMenuItem!
 	@IBAction func albumRemoveFavorites(_ sender: Any) {
-		sc.session.favorites?.removeAlbum(albumId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].album.id)
+		sc.session.favorites?.removeAlbum(albumId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].track.album.id)
 		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
 	}
 	
@@ -270,7 +270,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			albumAddFavorites.isEnabled = true
 		}
 		
-		let trackIsInFavorites = sc.player.playbackInfo.queue[currentIndex].isInFavorites(session: sc.session)
+		let trackIsInFavorites = sc.player.playbackInfo.queue[currentIndex].track.isInFavorites(session: sc.session)
 		if trackIsInFavorites != nil && trackIsInFavorites! {
 			addToFavorites.isHidden = true
 			removeFromFavorites.isHidden = false
@@ -386,7 +386,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBAction func lyrics(_ sender: Any) {
 		if !self.sc.player.playbackInfo.queue.isEmpty {
-			Lyrics.showLyricsWindow(for: self.sc.player.playbackInfo.queue[self.sc.player.playbackInfo.currentIndex])
+			Lyrics.showLyricsWindow(for: self.sc.player.playbackInfo.queue[self.sc.player.playbackInfo.currentIndex].track)
 		}
 	}
 	@IBAction func queue(_ sender: Any) {

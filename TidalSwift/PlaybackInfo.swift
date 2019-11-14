@@ -11,7 +11,7 @@ import TidalSwiftLib
 
 final class PlaybackInfo: ObservableObject {
 	var nonShuffledQueue = [Track]()
-	@Published var queue = [Track]()
+	@Published var queue = [QueueItem]()
 	@Published var currentIndex: Int = 0
 	@Published var fraction: CGFloat = 0.0
 	@Published var playing: Bool = false
@@ -37,7 +37,7 @@ extension CaseIterable where Self: Equatable {
 
 struct CodablePlaybackInfo: Codable {
 	var nonShuffledQueue: [Track]
-	var queue: [Track]
+	var queue: [QueueItem]
 	var currentIndex: Int
 	var fraction: CGFloat
 	var playing: Bool
