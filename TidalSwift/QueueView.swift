@@ -15,6 +15,14 @@ struct QueueView: View {
 	
 	@EnvironmentObject var playbackInfo: PlaybackInfo
 	
+	func calculateTotalTime(for tracks: [Track]) -> Int {
+		var result = 0
+		for track in tracks {
+			result += track.duration
+		}
+		return result
+	}
+	
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
@@ -22,7 +30,14 @@ struct QueueView: View {
 					Text("Queue")
 						.font(.title)
 						.padding(.bottom)
-					Spacer(minLength: 0)
+					Spacer(minLength: 5)
+					VStack(alignment: .leading) {
+						Text("\(playbackInfo.queue.count) Tracks")
+							.foregroundColor(.secondary)
+						Text(secondsToHoursMinutesSecondsString(seconds: calculateTotalTime(for: playbackInfo.queue.map { $0.track } )))
+							.foregroundColor(.secondary)
+						Spacer()
+					}
 				}
 				if playbackInfo.queue.isEmpty {
 					Text("Empty Queue")
