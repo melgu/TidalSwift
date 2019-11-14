@@ -334,6 +334,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		shuffle.state = enabled ? .on : .off
 	}
 	
+	@IBAction func toggleRepeat(_ sender: Any) {
+		sc.player.playbackInfo.repeatState = sc.player.playbackInfo.repeatState.next()
+	}
 	@IBOutlet weak var repeatOff: NSMenuItem!
 	@IBAction func repeatOff(_ sender: Any) {
 		sc.player.playbackInfo.repeatState = .off

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15400"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15505"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -241,10 +241,14 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="ftz-FW-wZZ"/>
-                                        <menuItem title="Shuffle" id="TVq-ul-LaF">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        <menuItem title="Shuffle" keyEquivalent="s" id="TVq-ul-LaF">
                                             <connections>
                                                 <action selector="shuffle:" target="Voe-Tx-rLC" id="HZn-YP-6HU"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Toggle Repeat" hidden="YES" keyEquivalent="r" allowsKeyEquivalentWhenHidden="YES" id="JyT-MV-F2N" userLabel="Toggle Repeat">
+                                            <connections>
+                                                <action selector="toggleRepeat:" target="Voe-Tx-rLC" id="VfV-CQ-pvO"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Repeat" id="LEj-9a-dVJ">
