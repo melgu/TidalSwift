@@ -23,17 +23,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	let loginInfo = LoginInfo()
 	
 	// Secondary Windows
-	let lyricsViewController: NSWindowController
-	let queueViewController: NSWindowController
-	let viewHistoryViewController: NSWindowController
-//	let playbackHistoryViewController: NSWindowController
-	
+	var lyricsViewController: NSWindowController
+	var queueViewController: NSWindowController
+	var viewHistoryViewController: NSWindowController
+//	var playbackHistoryViewController: NSWindowController
 	
 	override init() {
 		let session = Session(config: nil)
 		let player = Player(session: session)
 		sc = SessionContainer(session: session, player: player)
 		
+		// Init Secondary Windows (cannot use method func because self is not initialized yet
 		lyricsViewController = ResizableWindowController(rootView:
 			LyricsView()
 				.environmentObject(sc.player.playbackInfo)
@@ -45,7 +45,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				.environmentObject(sc.player.playbackInfo)
 		)
 		queueViewController.window?.title = "Queue"
-
+		
+		viewHistoryViewController = ResizableWindowController(rootView:
+			ViewHistoryView()
+				.environmentObject(viewState)
+		)
+		viewHistoryViewController.window?.title = "View History"
+		
+//		playbackHistoryViewController = ResizableWindowController(rootView:
+//			LyricsView()
+//				.environmentObject(sc)
+//		)
+//		playbackHistoryViewController.window?.title = "Playback History"
+		
+		super.init()
+	}
+	
+	func initSecondaryWindows() {
+		lyricsViewController = ResizableWindowController(rootView:
+			LyricsView()
+				.environmentObject(sc.player.playbackInfo)
+		)
+		lyricsViewController.window?.title = "Lyrics"
+		
+		queueViewController = ResizableWindowController(rootView:
+			QueueView(session: sc.session, player: sc.player)
+				.environmentObject(sc.player.playbackInfo)
+		)
+		queueViewController.window?.title = "Queue"
+		
 		viewHistoryViewController = ResizableWindowController(rootView:
 			ViewHistoryView()
 				.environmentObject(viewState)
@@ -57,8 +85,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //			.environmentObject(sc)
 //		)
 //		playbackHistoryViewController.window?.title = "Playback History"
-		
-		super.init()
+	}
+	
+	func closeAllSecondaryWindows() {
+		lyricsViewController.close()
+		queueViewController.close()
+		viewHistoryViewController.close()
+//		playbackHistoryViewController.close()
 	}
 	
 	func login(username: String, password: String, quality: AudioQuality) {
@@ -73,6 +106,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			sc.session.saveConfig()
 			sc.session.saveSession()
 			sc.player = Player(session: sc.session)
+			initSecondaryWindows()
 		} else {
 			loginInfo.wrongLogin = true
 		}
@@ -81,6 +115,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	func logout() {
 		print("Logout")
 		closeModals()
+		closeAllSecondaryWindows()
 		sc.player.clearQueue()
 		sc.session.deletePersistentInformation()
 		viewState.clear()

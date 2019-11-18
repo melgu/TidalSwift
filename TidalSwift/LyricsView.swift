@@ -10,6 +10,8 @@ import SwiftUI
 import TidalSwiftLib
 
 struct LyricsView: View {
+	@EnvironmentObject var playbackInfo: PlaybackInfo
+	
 	var track: Track? {
 		if !playbackInfo.queue.isEmpty {
 			return playbackInfo.queue[playbackInfo.currentIndex].track
@@ -24,8 +26,6 @@ struct LyricsView: View {
 			return nil
 		}
 	}
-	
-	@EnvironmentObject var playbackInfo: PlaybackInfo
 	
 	var body: some View {
 		ScrollView {
