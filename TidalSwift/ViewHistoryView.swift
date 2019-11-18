@@ -50,15 +50,15 @@ struct ViewHistoryViewRow: View {
 	init(view: TidalSwiftView) {
 		self.view = view
 		
-		text = view.viewType.rawValue
+		text = view.viewType?.rawValue ?? ""
 		if view.viewType == .artist {
-			text += ": \(view.artist?.name ?? "Missing Name")"
+			text += ": \(view.artist?.name ?? "Missing Artist Name")"
 		} else if view.viewType == .album {
-			text += ": \(view.album?.title ?? "Missing Name")"
+			text += ": \(view.album?.title ?? "Missing Album Title")"
 		} else if view.viewType == .playlist {
-			text += ": \(view.playlist?.title ?? "Missing Name")"
+			text += ": \(view.playlist?.title ?? "Missing Playlist Title")"
 		} else if view.viewType == .mix {
-			text += ": \(view.mix?.title ?? "Missing Name")"
+			text += ": \(view.mix?.title ?? "Missing Mix Title")"
 		}
 	}
 	

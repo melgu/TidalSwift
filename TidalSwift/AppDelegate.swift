@@ -88,7 +88,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				if let tempStack = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
 					viewState.stack = tempStack
 					if viewState.stack.count > 0 {
-						viewState.viewType = tempStack.last!.viewType.rawValue
+						viewState.viewType = tempStack.last!.viewType
 						viewState.searchTerm = tempStack.last!.searchTerm
 						viewState.fixedSearchTerm = tempStack.last!.searchTerm
 						viewState.artist = tempStack.last!.artist
@@ -121,7 +121,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		_ = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: repeatLabel(repeatState:))
 		_ = sc.player.playbackInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
 		_ = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
-		_ = viewState.$viewType.receive(on: DispatchQueue.main).sink(receiveValue: { print("View: \($0 ?? "nil")") })
+		_ = viewState.$viewType.receive(on: DispatchQueue.main).sink(receiveValue: { print("View: \($0?.rawValue ?? "nil")") })
 		
 		// Swift UI Stuff
 		window = NSWindow(

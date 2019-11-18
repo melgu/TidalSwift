@@ -27,15 +27,15 @@ struct MasterDetailView: View {
 			get: { self.viewState.searchTerm },
 			set: { self.viewState.searchTerm = $0 }
 		)
-		let selectionBinding = Binding<String?>(
+		let selectionBinding = Binding<ViewType?>(
 			get: { self.viewState.viewType },
 			set: {
-				print("View: \($0 ?? "nil")")
+				print("View: \($0?.rawValue ?? "nil")")
 				self.viewState.clear()
 				if $0 != nil {
-					self.viewState.push(view: TidalSwiftView(viewType: ViewType(rawValue: $0!)!))
+					self.viewState.push(view: TidalSwiftView(viewType: $0!))
 				} else {
-					self.viewState.push(view: TidalSwiftView(viewType: .none, searchTerm: self.viewState.fixedSearchTerm))
+					self.viewState.push(view: TidalSwiftView(viewType: nil, searchTerm: self.viewState.fixedSearchTerm))
 				}
 		})
 		return NavigationView {
@@ -48,14 +48,10 @@ struct MasterDetailView: View {
 }
 
 struct MasterView: View {
-	@Binding var selection: String?
+	@Binding var selection: ViewType?
 	@Binding var searchText: String
 	
 	let session: Session
-	
-	private let news = ["New Releases", "My Mixes"]
-	private let favorites = ["Playlists", "Albums", "Tracks", "Videos", "Artists"]
-//	private let views = ["SingleAlbum", "SinglePlaylist"]
 	
 	@EnvironmentObject var viewState: ViewState
 	
@@ -66,7 +62,7 @@ struct MasterView: View {
 				if self.searchText != "" {
 					print("Search Commit: \(self.searchText)")
 					self.viewState.fixedSearchTerm = self.searchText
-					self.selection = "Search"
+					self.selection = .search
 //					let window = (NSApp.delegate as? AppDelegate)?.window
 //					window?.makeFirstResponder(window?.initialFirstResponder)
 				}
@@ -76,14 +72,14 @@ struct MasterView: View {
 				.padding([.leading, .trailing], 5)
 			List(selection: $selection) {
 				Section(header: Text("News")) {
-					ForEach(news, id: \.self) { viewType in
-						Text(viewType)
-					}
+					Text("New Releases").tag(ViewType.newReleases)
+					Text("My Mixes").tag(ViewType.myMixes)
 				}
 				Section(header: Text("Favorites")) {
-					ForEach(favorites, id: \.self) { viewType in
-						Text(viewType)
-					}
+					Text("Playlists").tag(ViewType.favoritePlaylists)
+					Text("Albums").tag(ViewType.favoriteAlbums)
+					Text("Tracks").tag(ViewType.favoriteTracks)
+					Text("Videos").tag(ViewType.favoriteVideos)
 				}
 			}.listStyle(SidebarListStyle())
 		}
@@ -107,43 +103,42 @@ struct DetailView: View {
 			PlayerInfoView(session: session, player: player)
 			HStack {
 				// Search
-				if viewState.viewType == "Search" {
+				if viewState.viewType == .search {
 					SearchView(searchText: self.viewState.fixedSearchTerm, session: session, player: player)
 				}
 				
 				// News
-				else if viewState.viewType == "New Releases" {
+				else if viewState.viewType == .newReleases {
 					NewReleases(session: session, player: player)
-				} else if viewState.viewType == "My Mixes" {
+				} else if viewState.viewType == .myMixes {
 					MyMixes(session: session, player: player)
 				}
 				
 				// Favorites
-				else if viewState.viewType == "Playlists" {
+				else if viewState.viewType == .favoritePlaylists {
 					FavoritePlaylists(session: session, player: player)
-				} else if viewState.viewType == "Albums" {
+				} else if viewState.viewType == .favoriteAlbums {
 					FavoriteAlbums(session: session, player: player)
-				} else if viewState.viewType == "Tracks" {
+				} else if viewState.viewType == .favoriteTracks {
 					FavoriteTracks(session: session, player: player)
-				} else if viewState.viewType == "Videos" {
+				} else if viewState.viewType == .favoriteVideos {
 					FavoriteVideos(session: session, player: player)
-				} else if viewState.viewType == "Artists" {
+				} else if viewState.viewType == .favoriteArtists {
 					FavoriteArtists(session: session, player: player)
-				}  else if viewState.viewType == "SingleArtist" {
+				}  else if viewState.viewType == .artist {
 					ArtistView(artist: viewState.artist, session: session, player: player)
-				} else if viewState.viewType == "SingleAlbum" {
+				} else if viewState.viewType == .album {
 					AlbumView(album: viewState.album, session: session, player: player)
-				} else if viewState.viewType == "SinglePlaylist" {
+				} else if viewState.viewType == .playlist {
 					PlaylistView(playlist: viewState.playlist, session: session, player: player)
-				} else if viewState.viewType == "SingleMix" {
+				} else if viewState.viewType == .mix {
 					MixPlaylistView(mix: viewState.mix, session: session, player: player)
 				}
 			}
-			if viewState.viewType == "" || viewState.viewType == nil {
+			if viewState.viewType == nil {
 				Spacer()
 			}
 		}
-//		.frame(width: 800, height: 700)
 	}
 }
 

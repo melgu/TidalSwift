@@ -15,29 +15,29 @@ enum ViewType: String, Codable {
 	case newReleases = "New Releases"
 	case myMixes = "My Mixes"
 	
-	case favoriteArtists = "Artists"
-	case favoriteAlbums = "Albums"
-	case favoritePlaylists = "Playlists"
-	case favoriteTracks = "Tracks"
-	case favoriteVideos = "Videos"
+	case favoriteArtists = "Favorite Artists"
+	case favoriteAlbums = "Favorite Albums"
+	case favoritePlaylists = "Favorite Playlists"
+	case favoriteTracks = "Favorite Tracks"
+	case favoriteVideos = "Favorite Videos"
 	
-	case artist = "SingleArtist"
-	case album = "SingleAlbum"
-	case playlist = "SinglePlaylist"
-	case mix = "SingleMix"
+	case artist = "Artist"
+	case album = "Album"
+	case playlist = "Playlist"
+	case mix = "Mix"
 	
-	case none = ""
+//	case none = ""
 }
 
 struct TidalSwiftView: Codable, Equatable, Identifiable {
-	var id: String { viewType.rawValue +
+	var id: String { (viewType?.rawValue ?? "nil") +
 		String(describing: artist?.id) +
 		String(describing: album?.id) +
 		String(describing: playlist?.uuid) +
 		String(describing: mix?.id)
 	}
 	
-	var viewType: ViewType
+	var viewType: ViewType?
 	var searchTerm: String = ""
 	var artist: Artist? = nil
 	var album: Album? = nil
@@ -64,7 +64,7 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 }
 
 final class ViewState: ObservableObject {
-	@Published var viewType: String?
+	@Published var viewType: ViewType?
 	var searchTerm: String = ""
 	@Published var fixedSearchTerm: String = ""
 	@Published var artist: Artist?
@@ -82,7 +82,7 @@ final class ViewState: ObservableObject {
 		
 		stack.append(tempView)
 		addToHistory(view)
-		viewType = tempView.viewType.rawValue
+		viewType = tempView.viewType
 		artist = tempView.artist
 		album = tempView.album
 		playlist = tempView.playlist
@@ -112,13 +112,13 @@ final class ViewState: ObservableObject {
 	func pop() {
 		stack.removeLast()
 		if stack.count > 0 {
-			viewType = stack.last!.viewType.rawValue
+			viewType = stack.last!.viewType
 			artist = stack.last!.artist
 			album = stack.last!.album
 			playlist = stack.last!.playlist
 			mix = stack.last!.mix
 		} else {
-			viewType = ""
+			viewType = nil
 			artist = nil
 			album = nil
 			playlist = nil
@@ -128,7 +128,7 @@ final class ViewState: ObservableObject {
 	
 	func clear() {
 		stack.removeAll()
-		viewType = ""
+		viewType = nil
 		searchTerm = ""
 	}
 	
