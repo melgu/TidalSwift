@@ -22,10 +22,41 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	// Login
 	let loginInfo = LoginInfo()
 	
+	// Secondary Windows
+	let lyricsViewController: NSWindowController
+	let queueViewController: NSWindowController
+	let viewHistoryViewController: NSWindowController
+//	let playbackHistoryViewController: NSWindowController
+	
+	
 	override init() {
 		let session = Session(config: nil)
 		let player = Player(session: session)
 		sc = SessionContainer(session: session, player: player)
+		
+		lyricsViewController = ResizableWindowController(rootView:
+			LyricsView()
+				.environmentObject(sc.player.playbackInfo)
+		)
+		lyricsViewController.window?.title = "Lyrics"
+		
+		queueViewController = ResizableWindowController(rootView:
+			QueueView(session: sc.session, player: sc.player)
+				.environmentObject(sc.player.playbackInfo)
+		)
+		queueViewController.window?.title = "Queue"
+
+		viewHistoryViewController = ResizableWindowController(rootView:
+			ViewHistoryView()
+				.environmentObject(viewState)
+		)
+		viewHistoryViewController.window?.title = "View History"
+		
+//		playbackHistoryViewController = ResizableWindowController(rootView:
+//			LyricsView()
+//			.environmentObject(sc)
+//		)
+//		playbackHistoryViewController.window?.title = "Playback History"
 		
 		super.init()
 	}
@@ -381,21 +412,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	// MARK: - View
 	
 	@IBAction func lyrics(_ sender: Any) {
-		if !self.sc.player.playbackInfo.queue.isEmpty {
-			Lyrics.showLyricsWindow(for: self.sc.player.playbackInfo.queue[self.sc.player.playbackInfo.currentIndex].track)
-		}
+		lyricsViewController.showWindow(nil)
 	}
 	@IBAction func queue(_ sender: Any) {
-		sc.player.showQueueWindow()
+		queueViewController.showWindow(nil)
 	}
 	
 	@IBAction func viewHistory(_ sender: Any) {
-		let controller = ResizableWindowController(rootView:
-			ViewHistoryView()
-				.environmentObject(viewState)
-		)
-		controller.window?.title = "View History"
-		controller.showWindow(nil)
+		viewHistoryViewController.showWindow(nil)
 	}
 	
 	@IBAction func playbackHistory(_ sender: Any) {

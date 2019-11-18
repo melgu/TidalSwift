@@ -10,46 +10,65 @@ import SwiftUI
 import TidalSwiftLib
 
 struct LyricsView: View {
-	let track: Track
-	let lyrics: String?
-	
-	init(track: Track) {
-		self.track = track
-		self.lyrics = Lyrics.getLyrics(for: track)
+	var track: Track? {
+		if !playbackInfo.queue.isEmpty {
+			return playbackInfo.queue[playbackInfo.currentIndex].track
+		} else {
+			return nil
+		}
 	}
+	var lyrics: String? {
+		if let track = track {
+			return Lyrics.getLyrics(for: track)
+		} else {
+			return nil
+		}
+	}
+	
+	@EnvironmentObject var playbackInfo: PlaybackInfo
 	
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
-				HStack {
-					Text(track.title)
-						.font(.title)
+				if track != nil {
+					HStack {
+						Text(track!.title)
+							.font(.title)
+							.padding(.bottom)
+						Spacer(minLength: 0)
+					}
+					Text(track!.artists.formArtistString())
+						.font(.headline)
 						.padding(.bottom)
-					Spacer(minLength: 0)
-				}
-				Text(track.artists.formArtistString())
-					.font(.headline)
-					.padding(.bottom)
-				if lyrics != nil {
-					Text(lyrics!)
-						.contextMenu {
-							Button(action: {
-								print("Copy")
-								let pb = NSPasteboard.init(name: NSPasteboard.Name.general)
-								pb.declareTypes([.string], owner: nil)
-								pb.setString(self.lyrics!, forType: .string)
-							}) {
-								Text("Copy")
-							}
+					if lyrics != nil {
+						Text(lyrics!)
+							.contextMenu {
+								Button(action: {
+									print("Copy")
+									let pb = NSPasteboard.init(name: NSPasteboard.Name.general)
+									pb.declareTypes([.string], owner: nil)
+									pb.setString(self.lyrics!, forType: .string)
+								}) {
+									Text("Copy")
+								}
+						}
+					} else {
+						Text("No Lyrics available")
+							.foregroundColor(.secondary)
 					}
 				} else {
-					Text("No Lyrics available")
-						.foregroundColor(.secondary)
+					HStack {
+						Text("No track")
+							.font(.title)
+							.padding(.bottom)
+						Spacer(minLength: 0)
+					}
 				}
 				Spacer(minLength: 0)
 			}
 			.padding()
 		}
+		
 	}
 }
 

@@ -6,6 +6,7 @@
 //  Copyright © 2019 Melvin Gundlach. All rights reserved.
 //
 
+import Cocoa
 import Foundation
 import AVFoundation
 import TidalSwiftLib
@@ -421,11 +422,7 @@ class Player {
 	}
 	
 	func showQueueWindow() {
-		let controller = ResizableWindowController(rootView:
-			QueueView(session: session, player: self)
-				.environmentObject(playbackInfo)
-		)
-		controller.window?.title = "Queue"
-		controller.showWindow(nil)
+		unowned let appDelegate = NSApp.delegate as? AppDelegate
+		appDelegate?.queue(self)
 	}
 }

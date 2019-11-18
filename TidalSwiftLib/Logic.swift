@@ -1544,8 +1544,6 @@ func displayError(title: String, content: String) {
 	// Comment out while unit testing to prevent pop-ups
 	
 	print("\(title). \(content)")
-//	let appDelegate = NSApplication.shared.delegate as! AppDelegate
-//	appDelegate.mainViewController?.errorDialog(title: title, text: content)
 }
 
 public func readDemoLoginCredentials() -> LoginCredentials {

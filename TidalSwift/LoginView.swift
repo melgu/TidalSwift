@@ -52,7 +52,7 @@ struct LoginView: View {
 	
 	func login() {
 		print("Login \(username) : \(password)")
-		let appDelegate = NSApp.delegate as? AppDelegate
+		unowned let appDelegate = NSApp.delegate as? AppDelegate
 		appDelegate?.login(username: username, password: password, quality: quality)
 	}
 }
