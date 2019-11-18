@@ -40,7 +40,7 @@ struct QueueView: View {
 						}
 						Spacer(minLength: 0)
 					}
-					VStack(alignment: .leading) {
+					VStack(alignment: .trailing) {
 						Text("\(playbackInfo.queue.count) Tracks")
 							.foregroundColor(.secondary)
 						Text(secondsToHoursMinutesSecondsString(seconds: calculateTotalTime(for: playbackInfo.queue.map { $0.track } )))
