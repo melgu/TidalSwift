@@ -80,6 +80,7 @@ struct MasterView: View {
 					Text("Albums").tag(ViewType.favoriteAlbums)
 					Text("Tracks").tag(ViewType.favoriteTracks)
 					Text("Videos").tag(ViewType.favoriteVideos)
+					Text("Artists").tag(ViewType.favoriteArtists)
 				}
 			}.listStyle(SidebarListStyle())
 		}
