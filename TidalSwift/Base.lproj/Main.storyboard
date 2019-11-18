@@ -290,32 +290,6 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="View" id="HyV-fh-RgO">
                                     <items>
-                                        <menuItem title="Lyrics" id="PP0-UT-15s">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="lyrics:" target="Voe-Tx-rLC" id="WUn-Qp-7Iy"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Queue" id="JNV-9r-eZc">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="queue:" target="Voe-Tx-rLC" id="GQ9-SM-c6a"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="ziq-vb-GMY"/>
-                                        <menuItem title="View History" id="1LM-69-iXw">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="viewHistory:" target="Voe-Tx-rLC" id="Vhn-01-eup"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Playback History" id="9mF-f1-st8">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="playbackHistory:" target="Voe-Tx-rLC" id="Y65-hL-cXG"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="eHX-D8-UBb"/>
                                         <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>
@@ -379,6 +353,32 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="eu3-7i-yIM"/>
+                                        <menuItem title="Lyrics" id="PP0-UT-15s">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="lyrics:" target="Voe-Tx-rLC" id="WUn-Qp-7Iy"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Queue" id="JNV-9r-eZc">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="queue:" target="Voe-Tx-rLC" id="GQ9-SM-c6a"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="ziq-vb-GMY"/>
+                                        <menuItem title="View History" id="1LM-69-iXw">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="viewHistory:" target="Voe-Tx-rLC" id="Vhn-01-eup"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Playback History" id="9mF-f1-st8">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="playbackHistory:" target="Voe-Tx-rLC" id="Y65-hL-cXG"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="UfW-ZF-RDK"/>
                                         <menuItem title="Bring All to Front" id="LE2-aR-0XJ">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
