@@ -132,6 +132,7 @@ struct AlbumGridItem: View {
 		.onTapGesture(count: 2) {
 			print("Second Click. \(self.album.title)")
 			self.player.add(album: self.album, .now)
+			self.player.play()
 		}
 		.onTapGesture(count: 1) {
 			print("First Click. \(self.album.title)")

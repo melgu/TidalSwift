@@ -83,6 +83,7 @@ struct MixGridItem: View {
 			print("Second Click. \(self.mix.title)")
 			if let tracks = self.session.getMixPlaylistTracks(mixId: self.mix.id) {
 				self.player.add(tracks: tracks, .now)
+				self.player.play()
 			}
 		}
 		.onTapGesture(count: 1) {

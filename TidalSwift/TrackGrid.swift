@@ -61,6 +61,7 @@ struct TrackGridItem: View {
 		.onTapGesture(count: 2) {
 			print("\(self.track.title)")
 			self.player.add(track: self.track, .now)
+			self.player.play()
 		}
 		.contextMenu {
 			TrackContextMenu(track: self.track, session: self.session, player: self.player)

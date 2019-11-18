@@ -67,6 +67,7 @@ struct ArtistGridItem: View {
 		.onTapGesture(count: 2) {
 			print("\(self.artist.name)")
 			self.player.add(artist: self.artist, .now)
+			self.player.play()
 		}
 		.onTapGesture(count: 1) {
 			print("First Click. \(self.artist.name)")
