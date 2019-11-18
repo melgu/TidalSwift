@@ -10,7 +10,7 @@ import SwiftUI
 import TidalSwiftLib
 
 struct QueueView: View {
-	let session: Session
+	unowned let session: Session
 	unowned let player: Player
 	
 	@EnvironmentObject var playbackInfo: PlaybackInfo

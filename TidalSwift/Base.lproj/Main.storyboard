@@ -303,6 +303,19 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="ziq-vb-GMY"/>
+                                        <menuItem title="View History" id="1LM-69-iXw">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="viewHistory:" target="Voe-Tx-rLC" id="Vhn-01-eup"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Playback History" id="9mF-f1-st8">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="playbackHistory:" target="Voe-Tx-rLC" id="Y65-hL-cXG"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="eHX-D8-UBb"/>
                                         <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>

@@ -41,6 +41,7 @@
 		B0755F802305F86900CD2387 /* SDAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */; };
 		B07685B9232079C800538D55 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07685B8232079C800538D55 /* SearchView.swift */; };
 		B07685BD2320C12D00538D55 /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07685BC2320C12D00538D55 /* QueueView.swift */; };
+		B08642072381C71D005402D1 /* ViewHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08642062381C71D005402D1 /* ViewHistoryView.swift */; };
 		B08AB537230ACACA004CBBE8 /* AlbumGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */; };
 		B08B819B235F85C3001C35C9 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
 		B08B819C235F85C3001C35C9 /* TidalSwiftLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -152,6 +153,7 @@
 		B07685B8232079C800538D55 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		B07685BC2320C12D00538D55 /* QueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueView.swift; sourceTree = "<group>"; };
 		B07C5EF522C8797A00710752 /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadata.swift; sourceTree = "<group>"; };
+		B08642062381C71D005402D1 /* ViewHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHistoryView.swift; sourceTree = "<group>"; };
 		B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumGrid.swift; sourceTree = "<group>"; };
 		B08B819F235F88B2001C35C9 /* ArtistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistView.swift; sourceTree = "<group>"; };
 		B0A1E2742349C65900BBC4F0 /* ArtistBio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistBio.swift; sourceTree = "<group>"; };
@@ -327,6 +329,7 @@
 				B0E8078D230615AD00E43B5D /* ContentView.swift */,
 				B016FAF323575CB200ECE565 /* LoginView.swift */,
 				B05E18CA23570DF600F96030 /* ViewState.swift */,
+				B08642062381C71D005402D1 /* ViewHistoryView.swift */,
 				B014CA52236742E600282931 /* SessionContainer.swift */,
 				B0D974CA230C031E00695388 /* MasterDetailView.swift */,
 				B0CDC77423664A1500E90FBF /* MyMixes.swift */,
@@ -629,6 +632,7 @@
 				B0CAD8D92348333000A9BAA6 /* TrackGrid.swift in Sources */,
 				B07685BD2320C12D00538D55 /* QueueView.swift in Sources */,
 				B01B09CF234B1C7B007A4E15 /* LyricsView.swift in Sources */,
+				B08642072381C71D005402D1 /* ViewHistoryView.swift in Sources */,
 				B0D974CD230CC1D200695388 /* Favorites.swift in Sources */,
 				B0A85FFB230DDB28000C4C4E /* Player.swift in Sources */,
 				B07685B9232079C800538D55 /* SearchView.swift in Sources */,

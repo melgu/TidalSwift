@@ -29,13 +29,38 @@ enum ViewType: String, Codable {
 	case none = ""
 }
 
-struct TidalSwiftView: Codable {
+struct TidalSwiftView: Codable, Equatable, Identifiable {
+	var id: String { viewType.rawValue +
+		String(describing: artist?.id) +
+		String(describing: album?.id) +
+		String(describing: playlist?.uuid) +
+		String(describing: mix?.id)
+	}
+	
 	var viewType: ViewType
 	var searchTerm: String = ""
 	var artist: Artist? = nil
 	var album: Album? = nil
 	var playlist: Playlist? = nil
 	var mix: MixesItem? = nil
+	
+	static func == (lhs: TidalSwiftView, rhs: TidalSwiftView) -> Bool {
+		if lhs.viewType == rhs.viewType {
+			if lhs.viewType == .artist {
+				return lhs.artist == rhs.artist
+			} else if lhs.viewType == .album {
+				return lhs.album == rhs.album
+			} else if lhs.viewType == .playlist {
+				return lhs.playlist == rhs.playlist
+			} else if lhs.viewType == .mix {
+				return lhs.mix == rhs.mix
+			} else {
+				return true
+			}
+		} else {
+			return false
+		}
+	}
 }
 
 final class ViewState: ObservableObject {
@@ -48,12 +73,15 @@ final class ViewState: ObservableObject {
 	@Published var mix: MixesItem?
 	
 	var stack: [TidalSwiftView] = []
+	@Published var history: [TidalSwiftView] = []
+	var maxHistoryItems: Int = 100
 	
 	func push(view: TidalSwiftView) {
 		var tempView = view
 		tempView.searchTerm = searchTerm
 		
 		stack.append(tempView)
+		addToHistory(view)
 		viewType = tempView.viewType.rawValue
 		artist = tempView.artist
 		album = tempView.album
@@ -102,5 +130,21 @@ final class ViewState: ObservableObject {
 		stack.removeAll()
 		viewType = ""
 		searchTerm = ""
+	}
+	
+	func addToHistory(_ view: TidalSwiftView) {
+		// Ensure View only exists once in History
+		history.removeAll(where: { $0 == view })
+		
+		history.append(view)
+		
+		// Enforce Maximum
+		if history.count >= maxHistoryItems {
+			history.removeFirst(history.count - maxHistoryItems)
+		}
+	}
+	
+	func clearHistory() {
+		history.removeAll()
 	}
 }
