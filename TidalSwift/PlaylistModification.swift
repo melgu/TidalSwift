@@ -11,11 +11,14 @@ import TidalSwiftLib
 
 final class PlaylistEditingValues: ObservableObject {
 	@Published var showAddTracksModal: Bool = false
-	@Published var tracksToAdd: [Track] = []
+	@Published var tracks: [Track] = []
+	
+	@Published var showRemoveTracksModal: Bool = false
+	@Published var indexToRemove: Int? = nil
 	
 	@Published var showDeleteModal: Bool = false
 	@Published var showEditModal: Bool = false
-	@Published var playlistToModify: Playlist?
+	@Published var playlist: Playlist?
 }
 
 struct AddToPlaylistView: View {
@@ -38,7 +41,7 @@ struct AddToPlaylistView: View {
 		ScrollView {
 			VStack {
 				if playlists != nil {
-					Text("\(playlistEditingValues.tracksToAdd.count) \(playlistEditingValues.tracksToAdd.count > 1 ? "tracks" : "track")")
+					Text("\(playlistEditingValues.tracks.count) \(playlistEditingValues.tracks.count > 1 ? "tracks" : "track")")
 					Picker(selection: $selectedPlaylist, label: Spacer(minLength: 0)) {
 						ForEach(playlists!) { playlist in
 							Text(playlist.title).tag(playlist.uuid)
@@ -68,7 +71,7 @@ struct AddToPlaylistView: View {
 					}
 					Button(action: {
 						print("Add to \(self.selectedPlaylist)")
-						guard !self.playlistEditingValues.tracksToAdd.isEmpty else {
+						guard !self.playlistEditingValues.tracks.isEmpty else {
 							print("Tried to add zero tracks to a playlist")
 							return
 						}
@@ -84,7 +87,7 @@ struct AddToPlaylistView: View {
 							}
 							self.selectedPlaylist = playlist.uuid
 						}
-						let ids = self.playlistEditingValues.tracksToAdd.map { $0.id }
+						let ids = self.playlistEditingValues.tracks.map { $0.id }
 						let success = self.session.addTracks(ids, to: self.selectedPlaylist, duplicate: false)
 						if success {
 							self.playlistEditingValues.showAddTracksModal = false
@@ -100,6 +103,40 @@ struct AddToPlaylistView: View {
 	}
 }
 
+struct RemoveFromPlaylistView: View {
+	let session: Session
+	
+	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	
+	var body: some View {
+		VStack {
+			Text("Delete \(self.playlistEditingValues.tracks[0].title) from \(playlistEditingValues.playlist!.title)?")
+			
+			HStack {
+				Button(action: {
+					print("Cancel")
+					self.playlistEditingValues.showRemoveTracksModal = false
+				}) {
+					Text("Cancel")
+				}
+				Button(action: {
+					let i = self.playlistEditingValues.indexToRemove!
+					let uuid = self.playlistEditingValues.playlist!.uuid
+					print("Delete Index \(i) from \(self.playlistEditingValues.playlist!.title)")
+					let success = self.session.removeTrack(index: i, from: uuid)
+					if success {
+						self.playlistEditingValues.showRemoveTracksModal = false
+					}
+				}) {
+					Text("Delete")
+				}
+			}
+		}
+		.padding()
+	}
+}
+
+
 struct DeletePlaylist: View {
 	let session: Session
 	
@@ -107,7 +144,7 @@ struct DeletePlaylist: View {
 	
 	var body: some View {
 		VStack {
-			Text("Delete \(self.playlistEditingValues.playlistToModify!.title)?")
+			Text("Delete \(self.playlistEditingValues.playlist!.title)?")
 			
 			HStack {
 				Button(action: {
@@ -117,8 +154,8 @@ struct DeletePlaylist: View {
 					Text("Cancel")
 				}
 				Button(action: {
-					print("Delete \(self.playlistEditingValues.playlistToModify!.title)")
-					let success = self.session.deletePlaylist(playlistId: self.playlistEditingValues.playlistToModify!.uuid)
+					print("Delete \(self.playlistEditingValues.playlist!.title)")
+					let success = self.session.deletePlaylist(playlistId: self.playlistEditingValues.playlist!.uuid)
 					if success {
 						self.playlistEditingValues.showDeleteModal = false
 					}
@@ -142,14 +179,14 @@ struct EditPlaylist: View {
 	
 	var body: some View {
 		VStack {
-			Text("Edit \(self.playlistEditingValues.playlistToModify!.title)")
+			Text("Edit \(self.playlistEditingValues.playlist!.title)")
 			TextField("New Playlist", text: $playlistName)
 				.onAppear {
-					self.playlistName = self.playlistEditingValues.playlistToModify!.title
+					self.playlistName = self.playlistEditingValues.playlist!.title
 			}
 			TextField("Optional Playlist Description", text: $playlistDescription)
 				.onAppear {
-					self.playlistDescription = self.playlistEditingValues.playlistToModify!.description ?? ""
+					self.playlistDescription = self.playlistEditingValues.playlist!.description ?? ""
 			}
 			HStack {
 				Button(action: {
@@ -159,8 +196,8 @@ struct EditPlaylist: View {
 					Text("Cancel")
 				}
 				Button(action: {
-					print("Rename \(self.playlistEditingValues.playlistToModify!.title)")
-					let success = self.session.editPlaylist(playlistId: self.playlistEditingValues.playlistToModify!.uuid,
+					print("Rename \(self.playlistEditingValues.playlist!.title)")
+					let success = self.session.editPlaylist(playlistId: self.playlistEditingValues.playlist!.uuid,
 															title: self.playlistName, description: self.playlistDescription)
 					if success {
 						self.playlistEditingValues.showEditModal = false

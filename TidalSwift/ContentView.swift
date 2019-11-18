@@ -26,6 +26,10 @@ struct ContentView: View {
 				AddToPlaylistView(session: self.sc.session)
 					.environmentObject(self.playlistEditingValues)
 			})
+			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showRemoveTracksModal) {
+				RemoveFromPlaylistView(session: self.sc.session)
+					.environmentObject(self.playlistEditingValues)
+			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showDeleteModal) {
 				DeletePlaylist(session: self.sc.session)
 					.environmentObject(self.playlistEditingValues)

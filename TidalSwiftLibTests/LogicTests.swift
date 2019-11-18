@@ -1589,21 +1589,21 @@ class LogicTests: XCTestCase {
 		}
 
 		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
-			playlist.item.uuid == demoPlaylistId
+			playlist.playlist.uuid == demoPlaylistId
 		})!)
 
 		let r1 = favorites.addPlaylist(playlistId: demoPlaylistId)
 		XCTAssert(r1)
 
 		XCTAssert((favorites.playlists()?.contains { (playlist) -> Bool in
-			playlist.item.uuid == demoPlaylistId
+			playlist.playlist.uuid == demoPlaylistId
 		})!)
 
 		let r2 = favorites.removePlaylist(playlistId: demoPlaylistId)
 		XCTAssert(r2)
 
 		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
-			playlist.item.uuid == demoPlaylistId
+			playlist.playlist.uuid == demoPlaylistId
 		})!)
 	}
 	

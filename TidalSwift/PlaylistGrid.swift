@@ -109,14 +109,14 @@ struct PlaylistContextMenu: View {
 				if playlist.creator.id == session.userId { // My playlist
 					Button(action: {
 						print("Edit Playlist")
-						self.playlistEditingValues.playlistToModify = self.playlist
+						self.playlistEditingValues.playlist = self.playlist
 						self.playlistEditingValues.showEditModal = true
 					}) {
 						Text("Edit Playlist")
 					}
 					Button(action: {
 						print("Delete Playlist")
-						self.playlistEditingValues.playlistToModify = self.playlist
+						self.playlistEditingValues.playlist = self.playlist
 						self.playlistEditingValues.showDeleteModal = true
 					}) {
 						Text("Delete Playlist")
@@ -145,7 +145,7 @@ struct PlaylistContextMenu: View {
 				Button(action: {
 					print("Add \(self.playlist.title) to Playlist")
 					if let tracks = self.session.getPlaylistTracks(playlistId: self.playlist.uuid) {
-						self.playlistEditingValues.tracksToAdd = tracks
+						self.playlistEditingValues.tracks = tracks
 						self.playlistEditingValues.showAddTracksModal = true
 					}
 				}) {

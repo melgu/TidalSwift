@@ -16,6 +16,7 @@ struct PlaylistView: View {
 	let player: Player
 	
 	let tracks: [Track]?
+	let isUserPlaylist: Bool
 	
 	@EnvironmentObject var viewState: ViewState
 	@State var t: Bool = false
@@ -27,8 +28,10 @@ struct PlaylistView: View {
 		
 		if let playlist = playlist {
 			self.tracks = session.getPlaylistTracks(playlistId: playlist.id)
+			self.isUserPlaylist = playlist.creator.id == session.userId
 		} else {
 			self.tracks = nil
+			self.isUserPlaylist = false
 		}
 	}
 	
@@ -125,7 +128,8 @@ struct PlaylistView: View {
 					
 					
 					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false,
-							  showArtist: true, showAlbum: true, session: session, player: player)
+							  showArtist: true, showAlbum: true, playlist: isUserPlaylist ? playlist : nil,
+							  session: session, player: player)
 				}
 			}
 		}

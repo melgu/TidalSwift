@@ -136,7 +136,8 @@ struct AlbumView: View {
 					Divider()
 					
 					TrackList(tracks: tracks!, showCover: false, showAlbumTrackNumber: true,
-							  showArtist: true, showAlbum: false, session: session, player: player)
+							  showArtist: true, showAlbum: false, playlist: nil,
+							  session: session, player: player)
 				}
 			}
 		}

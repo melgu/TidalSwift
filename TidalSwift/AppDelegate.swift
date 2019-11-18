@@ -224,6 +224,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	func closeModals() {
 		loginInfo.showModal = false
 		playlistEditingValues.showAddTracksModal = false
+		playlistEditingValues.showRemoveTracksModal = false
 		playlistEditingValues.showDeleteModal = false
 		playlistEditingValues.showEditModal = false
 	}
