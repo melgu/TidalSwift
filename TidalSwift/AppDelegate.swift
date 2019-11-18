@@ -26,7 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var lyricsViewController: NSWindowController
 	var queueViewController: NSWindowController
 	var viewHistoryViewController: NSWindowController
-//	var playbackHistoryViewController: NSWindowController
+	var playbackHistoryViewController: NSWindowController
 	
 	override init() {
 		let session = Session(config: nil)
@@ -42,6 +42,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		queueViewController = ResizableWindowController(rootView:
 			QueueView(session: sc.session, player: sc.player)
+				.environmentObject(sc)
 				.environmentObject(sc.player.playbackInfo)
 		)
 		queueViewController.window?.title = "Queue"
@@ -52,11 +53,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		)
 		viewHistoryViewController.window?.title = "View History"
 		
-//		playbackHistoryViewController = ResizableWindowController(rootView:
-//			LyricsView()
-//				.environmentObject(sc)
-//		)
-//		playbackHistoryViewController.window?.title = "Playback History"
+		playbackHistoryViewController = ResizableWindowController(rootView:
+			PlaybackHistoryView()
+				.environmentObject(sc)
+				.environmentObject(sc.player.playbackInfo)
+		)
+		playbackHistoryViewController.window?.title = "Playback History"
 		
 		super.init()
 	}
@@ -80,18 +82,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		)
 		viewHistoryViewController.window?.title = "View History"
 		
-//		playbackHistoryViewController = ResizableWindowController(rootView:
-//			LyricsView()
-//			.environmentObject(sc)
-//		)
-//		playbackHistoryViewController.window?.title = "Playback History"
+		playbackHistoryViewController = ResizableWindowController(rootView:
+			PlaybackHistoryView()
+				.environmentObject(sc)
+				.environmentObject(sc.player.playbackInfo)
+		)
+		playbackHistoryViewController.window?.title = "Playback History"
 	}
 	
 	func closeAllSecondaryWindows() {
 		lyricsViewController.close()
 		queueViewController.close()
 		viewHistoryViewController.close()
-//		playbackHistoryViewController.close()
+		playbackHistoryViewController.close()
 	}
 	
 	func login(username: String, password: String, quality: AudioQuality) {
@@ -140,6 +143,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 					sc.player.playbackInfo.volume = tempPI.volume
 					sc.player.playbackInfo.shuffle = tempPI.shuffle
 					sc.player.playbackInfo.repeatState = tempPI.repeatState
+					sc.player.playbackInfo.history = tempPI.history
+					sc.player.playbackInfo.maxHistoryItems = tempPI.maxHistoryItems
 					
 					sc.player.play(atIndex: tempPI.currentIndex)
 					sc.player.pause()
@@ -238,7 +243,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 											playing: sc.player.playbackInfo.playing,
 											volume: sc.player.playbackInfo.volume,
 											shuffle: sc.player.playbackInfo.shuffle,
-											repeatState: sc.player.playbackInfo.repeatState)
+											repeatState: sc.player.playbackInfo.repeatState,
+											history: sc.player.playbackInfo.history,
+											maxHistoryItems: sc.player.playbackInfo.maxHistoryItems)
 		let playbackInfoData = try? JSONEncoder().encode(codablePI)
 		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
 		
@@ -247,6 +254,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		UserDefaults.standard.set(viewStackData, forKey: "ViewStateStack")
 		let viewHistoryData = try? JSONEncoder().encode(viewState.history)
 		UserDefaults.standard.set(viewHistoryData, forKey: "ViewStateHistory")
+		UserDefaults.standard.set(viewState.maxHistoryItems, forKey: "ViewStateHistoryMaxItems")
 		
 		UserDefaults.standard.synchronize()
 		
@@ -444,23 +452,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		sc.player.clearQueue()
 	}
 	
-	// MARK: - View
-	
-	@IBAction func lyrics(_ sender: Any) {
-		lyricsViewController.showWindow(nil)
-	}
-	@IBAction func queue(_ sender: Any) {
-		queueViewController.showWindow(nil)
-	}
-	
-	@IBAction func viewHistory(_ sender: Any) {
-		viewHistoryViewController.showWindow(nil)
-	}
-	
-	@IBAction func playbackHistory(_ sender: Any) {
-		print("Playback History")
-	}
-	
 	// MARK: - Account
 	
 	@IBAction func accountInfo(_ sender: Any) {
@@ -474,6 +465,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBAction func logout(_ sender: Any) {
 		logout()
+	}
+	
+	// MARK: - Window
+	
+	@IBAction func lyrics(_ sender: Any) {
+		lyricsViewController.showWindow(nil)
+	}
+	@IBAction func queue(_ sender: Any) {
+		queueViewController.showWindow(nil)
+	}
+	
+	@IBAction func viewHistory(_ sender: Any) {
+		viewHistoryViewController.showWindow(nil)
+	}
+	
+	@IBAction func playbackHistory(_ sender: Any) {
+		playbackHistoryViewController.showWindow(nil)
 	}
 }
 
