@@ -145,9 +145,8 @@ struct PlayerInfoView: View {
 					Spacer()
 					Text("􀌮")
 						.onTapGesture {
-							if !self.playbackInfo.queue.isEmpty {
-								Lyrics.showLyricsWindow(for: self.playbackInfo.queue[self.playbackInfo.currentIndex].track)
-							}
+							unowned let appDelegate = NSApp.delegate as? AppDelegate
+							appDelegate?.lyrics(self)
 					}
 					Text("􀋱")
 						.onTapGesture {

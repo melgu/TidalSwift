@@ -15,14 +15,6 @@ struct LyricsObject: Decodable {
 }
 
 class Lyrics {
-	static func showLyricsWindow(for track: Track) {
-		let controller = ResizableWindowController(rootView:
-			LyricsView(track: track)
-		)
-		controller.window?.title = "\(track.title) – \(track.artists.formArtistString())"
-		controller.showWindow(nil)
-	}
-	
 	static func getLyrics(for track: Track) -> String? {
 		guard let artist = track.artists.first else {
 			return ""
@@ -74,8 +66,8 @@ class Lyrics {
 			return nil
 		}
 		
-		if lyricsResponse.err != "none" {
-			print(lyricsResponse.err)
+		if lyricsResponse.err != "none" && lyricsResponse.err != "not found" {
+			print("Lyrics Error: \(lyricsResponse.err)")
 		}
 		
 		if lyricsResponse.lyric == "Unfortunately, we are not licensed to display the full lyrics for this song at the moment. Hopefully we will be able to in the future. Until then... how about a random page?" {

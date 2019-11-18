@@ -20,10 +20,13 @@ struct ViewHistoryView: View {
 						.font(.title)
 						.padding(.bottom)
 					Spacer(minLength: 5)
-					Button(action: {
-						self.viewState.clearHistory()
-					}) {
-						Text("Clear")
+					VStack {
+						Button(action: {
+							self.viewState.clearHistory()
+						}) {
+							Text("Clear")
+						}
+						Spacer(minLength: 0)
 					}
 				}
 				if viewState.history.isEmpty {
