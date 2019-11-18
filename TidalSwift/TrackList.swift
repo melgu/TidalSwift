@@ -93,7 +93,8 @@ struct TrackRow: View {
 			HStack {
 				HStack {
 					HStack {
-						if self.playbackInfo.queue[self.playbackInfo.currentIndex].track == self.track {
+						if !self.playbackInfo.queue.isEmpty &&
+							self.playbackInfo.queue[self.playbackInfo.currentIndex].track == self.track {
 							Text("􀊃")
 						}
 						if self.showCover {
