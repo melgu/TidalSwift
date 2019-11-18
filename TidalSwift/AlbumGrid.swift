@@ -214,7 +214,7 @@ struct AlbumContextMenu: View {
 					Button(action: {
 						print("Add \(self.album.title) to Playlist")
 						if let tracks = self.session.getAlbumTracks(albumId: self.album.id) {
-							self.playlistEditingValues.tracksToAdd = tracks
+							self.playlistEditingValues.tracks = tracks
 							self.playlistEditingValues.showAddTracksModal = true
 						}
 					}) {

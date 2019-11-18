@@ -16,6 +16,7 @@ struct TrackList: View {
 	let showAlbumTrackNumber: Bool
 	let showArtist: Bool
 	let showAlbum: Bool
+	let playlist: Playlist? // Has to be nil if not displaying User Playlist
 	let session: Session
 	let player: Player
 	
@@ -31,7 +32,7 @@ struct TrackList: View {
 							self.player.play(atIndex: i)
 					}
 					.contextMenu {
-						TrackContextMenu(track: self.tracks[i], session: self.session, player: self.player)
+						TrackContextMenu(track: self.tracks[i], indexInPlaylist: self.playlist != nil ? i : nil, playlist: self.playlist, session: self.session, player: self.player)
 					}
 					Divider()
 				}

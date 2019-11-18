@@ -167,7 +167,8 @@ struct MixPlaylistView: View {
 					Divider()
 					
 					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false,
-							  showArtist: true, showAlbum: true, session: session, player: player)
+							  showArtist: true, showAlbum: true, playlist: nil,
+							  session: session, player: player)
 				}
 			}
 		}
@@ -389,7 +390,7 @@ struct MixContextMenu: View {
 			Button(action: {
 				print("Add \(self.mix.title) to Playlist")
 				if let tracks = self.session.getMixPlaylistTracks(mixId: self.mix.id) {
-					self.playlistEditingValues.tracksToAdd = tracks
+					self.playlistEditingValues.tracks = tracks
 					self.playlistEditingValues.showAddTracksModal = true
 				}
 			}) {

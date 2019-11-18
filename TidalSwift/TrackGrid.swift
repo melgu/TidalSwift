@@ -70,6 +70,8 @@ struct TrackGridItem: View {
 
 struct TrackContextMenu: View {
 	let track: Track
+	let indexInPlaylist: Int? // This having a value implies TrackList is User Playlist
+	let playlist: Playlist?
 	let session: Session
 	let player: Player
 	
@@ -79,10 +81,12 @@ struct TrackContextMenu: View {
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	@State var t: Bool = false
 	
-	init(track: Track, session: Session, player: Player) {
+	init(track: Track, indexInPlaylist: Int? = nil, playlist: Playlist? = nil, session: Session, player: Player) {
 		self.track = track
 		self.session = session
 		self.player = player
+		self.indexInPlaylist = indexInPlaylist
+		self.playlist = playlist
 		
 		self.trackIsInFavorites = track.isInFavorites(session: session)
 	}
@@ -153,10 +157,21 @@ struct TrackContextMenu: View {
 				if track.streamReady {
 					Button(action: {
 						print("Add \(self.track.title) to Playlist")
-						self.playlistEditingValues.tracksToAdd = [self.track]
+						self.playlistEditingValues.tracks = [self.track]
 						self.playlistEditingValues.showAddTracksModal = true
 					}) {
 						Text("Add to Playlist …")
+					}
+				}
+				if indexInPlaylist != nil {
+					Button(action: {
+						print("Remove \(self.track.title) from Playlist")
+						self.playlistEditingValues.tracks = [self.track]
+						self.playlistEditingValues.indexToRemove = self.indexInPlaylist
+						self.playlistEditingValues.playlist = self.playlist
+						self.playlistEditingValues.showRemoveTracksModal = true
+					}) {
+						Text("Remove from Playlist …")
 					}
 				}
 				Divider()
