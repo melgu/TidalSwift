@@ -11,7 +11,7 @@ import TidalSwiftLib
 
 struct LyricsView: View {
 	let track: Track
-	let lyrics: String
+	let lyrics: String?
 	
 	init(track: Track) {
 		self.track = track
@@ -30,18 +30,16 @@ struct LyricsView: View {
 				Text(track.artists.formArtistString())
 					.font(.headline)
 					.padding(.bottom)
-				if lyrics != "" {
-					Text(lyrics)
+				if lyrics != nil {
+					Text(lyrics!)
 						.contextMenu {
-							if lyrics != "" {
-								Button(action: {
-									print("Copy")
-									let pb = NSPasteboard.init(name: NSPasteboard.Name.general)
-									pb.declareTypes([.string], owner: nil)
-									pb.setString(self.lyrics, forType: .string)
-								}) {
-									Text("Copy")
-								}
+							Button(action: {
+								print("Copy")
+								let pb = NSPasteboard.init(name: NSPasteboard.Name.general)
+								pb.declareTypes([.string], owner: nil)
+								pb.setString(self.lyrics!, forType: .string)
+							}) {
+								Text("Copy")
 							}
 					}
 				} else {
