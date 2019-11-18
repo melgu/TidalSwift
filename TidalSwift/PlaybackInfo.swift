@@ -18,6 +18,39 @@ final class PlaybackInfo: ObservableObject {
 	@Published var volume: Float = 1.0
 	@Published var shuffle: Bool = false
 	@Published var repeatState: RepeatState = .off
+	
+	@Published var history: [QueueItem] = []
+	var maxHistoryItems: Int = 100
+	
+	func assignQueueIndices() {
+		for i in 0..<queue.count {
+			queue[i] = QueueItem(id: i, track: queue[i].track)
+		}
+	}
+	
+	func addToHistory(track: Track) {
+		// Ensure Track only exists once in History
+		history.removeAll(where: { $0.track == track })
+		
+		history.append(QueueItem(id: 0, track: track))
+		
+		// Enforce Maximum
+		if history.count >= maxHistoryItems {
+			history.removeFirst(history.count - maxHistoryItems)
+		}
+		
+		assignHistoryIndices()
+	}
+	
+	func assignHistoryIndices() {
+		for i in 0..<history.count {
+			history[i] = QueueItem(id: i, track: history[i].track)
+		}
+	}
+	
+	func clearHistory() {
+		history.removeAll()
+	}
 }
 
 enum RepeatState: Int, CaseIterable, Codable {
@@ -44,4 +77,7 @@ struct CodablePlaybackInfo: Codable {
 	var volume: Float
 	var shuffle: Bool
 	var repeatState: RepeatState
+	
+	var history: [QueueItem]
+	var maxHistoryItems: Int
 }

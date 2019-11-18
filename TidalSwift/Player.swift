@@ -44,8 +44,10 @@ class Player {
 	
 	func play() {
 		if (!playbackInfo.queue.isEmpty) {
+//			print("Play: \(playbackInfo.queue[playbackInfo.currentIndex].track.title)")
 			avPlayer.play()
 			playbackInfo.playing = true
+			playbackInfo.addToHistory(track: playbackInfo.queue[playbackInfo.currentIndex].track)
 		}
 	}
 	
@@ -89,9 +91,9 @@ class Player {
 		
 		playbackInfo.currentIndex -= 1
 		if playbackInfo.queue[playbackInfo.currentIndex].track.streamReady {
-			print("previous(): \(playbackInfo.currentIndex) - \(playbackInfo.queue.count)")
+//			print("previous(): \(playbackInfo.currentIndex) - \(playbackInfo.queue.count)")
 			avSetItem(from: playbackInfo.queue[playbackInfo.currentIndex].track)
-			print("previous() done")
+//			print("previous() done")
 		} else {
 			print("Not possible to stream \(playbackInfo.queue[playbackInfo.currentIndex].track.title)")
 			previous()
@@ -101,12 +103,11 @@ class Player {
 	func next() {
 		if playbackInfo.repeatState == .single {
 			seek(to: 0)
-//			play()
 			return
 		}
 		
 		if playbackInfo.currentIndex >= playbackInfo.queue.count - 1 {
-			print("next(): \(playbackInfo.currentIndex) Last - \(queueCount())")
+//			print("next(): \(playbackInfo.currentIndex) Last - \(playbackInfo.queue.count)")
 			if playbackInfo.repeatState == .all {
 				playbackInfo.currentIndex = 0
 			} else {
@@ -118,7 +119,7 @@ class Player {
 			playbackInfo.currentIndex += 1
 		}
 		if playbackInfo.queue[playbackInfo.currentIndex].track.streamReady {
-			print("next(): \(playbackInfo.currentIndex) - \(queueCount())")
+//			print("next(): \(playbackInfo.currentIndex) - \(queueCount())")
 			avSetItem(from: playbackInfo.queue[playbackInfo.currentIndex].track)
 		} else {
 			print("Not possible to stream \(playbackInfo.queue[playbackInfo.currentIndex].track.title)")
@@ -137,7 +138,7 @@ class Player {
 		} else {
 			let i = playbackInfo.nonShuffledQueue.firstIndex(where: { $0 == playbackInfo.queue[playbackInfo.currentIndex].track })!
 			playbackInfo.queue = playbackInfo.nonShuffledQueue.map { QueueItem(id: 0, track: $0) }
-			assignQueueIndices()
+			playbackInfo.assignQueueIndices()
 			playbackInfo.currentIndex = i
 		}
 	}
@@ -151,7 +152,7 @@ class Player {
 	}
 	
 	private func avSetItem(from track: Track) {
-		print("avSetItem(): \(track.title)")
+//		print("avSetItem(): \(track.title)")
 		let wasPlaying = playbackInfo.playing
 		pause()
 		
@@ -165,17 +166,21 @@ class Player {
 			return
 		}
 		failedItems = 0
+		
+		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: avPlayer.currentItem)
+		
 		let item = AVPlayerItem(url: url)
 		NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(sender:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: item)
 		avPlayer.replaceCurrentItem(with: item)
 		
 		if wasPlaying {
+//			print("Was playing...")
 			play()
 		}
 	}
 	
 	@objc func playerDidFinishPlaying(sender: Notification) {
-		print("Song finished playing")
+//		print("Song finished playing")
 		next()
 	}
 	
@@ -220,7 +225,6 @@ class Player {
 	}
 	
 	func add(tracks: [Track], _ when: When) {
-//		let ts = cleanTracks(tracks)
 		if when == .now {
 			addNow(tracks: tracks)
 		} else if when == .next {
@@ -231,9 +235,11 @@ class Player {
 	}
 	
 	private func addNow(tracks: [Track]) {
+//		print("addNow(): \(tracks.count)")
 		if tracks.isEmpty {
 			return
 		}
+//		pause()
 		clearQueue()
 		if playbackInfo.shuffle {
 			playbackInfo.nonShuffledQueue = tracks
@@ -241,11 +247,12 @@ class Player {
 		} else {
 			addLast(tracks: tracks)
 		}
-		print("addNow(): \(playbackInfo.queue.count)")
-		play()
+//		play()
+//		print("addNow() finished. Items in Queue: \(playbackInfo.queue.count)")
 	}
 	
 	private func addNext(tracks: [Track]) {
+//		print("addNext(): \(tracks.count)")
 		if tracks.isEmpty {
 			return
 		}
@@ -257,11 +264,12 @@ class Player {
 		} else {
 			playbackInfo.queue.insert(contentsOf: newQueueItems, at: playbackInfo.currentIndex + 1)
 		}
-		assignQueueIndices()
-		print("addNext(): Total \(playbackInfo.queue.count)")
+		playbackInfo.assignQueueIndices()
+//		print("addNext() finished. Items in Queue: \(playbackInfo.queue.count)")
 	}
 	
 	private func addLast(tracks: [Track]) {
+//		print("addLast(): \(tracks.count)")
 		if tracks.isEmpty {
 			return
 		}
@@ -273,18 +281,12 @@ class Player {
 		
 		let newQueueItems = tracks.map { QueueItem(id: 0, track: $0) }
 		playbackInfo.queue.append(contentsOf: newQueueItems)
-		assignQueueIndices()
+		playbackInfo.assignQueueIndices()
 		if wasEmtpy {
 			avSetItem(from: playbackInfo.queue[playbackInfo.currentIndex].track)
 		}
-		print("addLast(): \(playbackInfo.queue.count)")
+//		print("addLast() finished. Items in Queue: \(playbackInfo.queue.count)")
 	}
-	
-//	private func cleanTracks(_ tracks: [Track]) -> [Track] {
-//		var ts = tracks
-//		ts.removeAll(where: { !$0.streamReady })
-//		return ts
-//	}
 	
 	func removeTrack(atIndex: Int) {
 		if playbackInfo.shuffle {
@@ -294,7 +296,7 @@ class Player {
 			playbackInfo.nonShuffledQueue.remove(at: atIndex)
 		}
 		playbackInfo.queue.remove(at: atIndex)
-		assignQueueIndices()
+		playbackInfo.assignQueueIndices()
 		
 		if atIndex == playbackInfo.currentIndex {
 			if playbackInfo.queue.count > 0 {
@@ -321,12 +323,6 @@ class Player {
 	
 	func queueCount() -> Int {
 		return playbackInfo.queue.count
-	}
-	
-	private func assignQueueIndices() {
-		for i in 0..<playbackInfo.queue.count {
-			playbackInfo.queue[i] = QueueItem(id: i, track: playbackInfo.queue[i].track)
-		}
 	}
 	
 	func fraction() -> Double {
@@ -419,10 +415,5 @@ class Player {
 		case .master:
 			return "MASTER"
 		}
-	}
-	
-	func showQueueWindow() {
-		unowned let appDelegate = NSApp.delegate as? AppDelegate
-		appDelegate?.queue(self)
 	}
 }

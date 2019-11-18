@@ -150,7 +150,8 @@ struct PlayerInfoView: View {
 					}
 					Text("􀋱")
 						.onTapGesture {
-							self.player.showQueueWindow()
+							unowned let appDelegate = NSApp.delegate as? AppDelegate
+							appDelegate?.queue(self)
 					}
 				}
 			}

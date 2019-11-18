@@ -13,6 +13,7 @@ struct QueueView: View {
 	unowned let session: Session
 	unowned let player: Player
 	
+	@EnvironmentObject var sc: SessionContainer
 	@EnvironmentObject var playbackInfo: PlaybackInfo
 	
 	func calculateTotalTime(for tracks: [Track]) -> Int {
@@ -31,6 +32,14 @@ struct QueueView: View {
 						.font(.title)
 						.padding(.bottom)
 					Spacer(minLength: 5)
+					VStack {
+						Button(action: {
+							self.sc.player.clearQueue()
+						}) {
+							Text("Clear")
+						}
+						Spacer(minLength: 0)
+					}
 					VStack(alignment: .leading) {
 						Text("\(playbackInfo.queue.count) Tracks")
 							.foregroundColor(.secondary)

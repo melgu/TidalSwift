@@ -63,7 +63,7 @@ struct MasterView: View {
 					print("Search Commit: \(self.searchText)")
 					self.viewState.fixedSearchTerm = self.searchText
 					self.selection = .search
-//					let window = (NSApp.delegate as? AppDelegate)?.window
+//					unowned let window = (NSApp.delegate as? AppDelegate)?.window
 //					window?.makeFirstResponder(window?.initialFirstResponder)
 				}
 			})
