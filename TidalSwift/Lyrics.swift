@@ -23,7 +23,7 @@ class Lyrics {
 		controller.showWindow(nil)
 	}
 	
-	static func getLyrics(for track: Track) -> String {
+	static func getLyrics(for track: Track) -> String? {
 		guard let artist = track.artists.first else {
 			return ""
 		}
@@ -60,7 +60,7 @@ class Lyrics {
 		
 		guard let content = downloadedContent else {
 			print("Lyrics failed (HTTP Error)")
-			return ""
+			return nil
 		}
 		
 		var optionalLyricsResponse: LyricsObject?
@@ -71,7 +71,7 @@ class Lyrics {
 		}
 		
 		guard let lyricsResponse = optionalLyricsResponse else {
-			return ""
+			return nil
 		}
 		
 		if lyricsResponse.err != "none" {
@@ -79,7 +79,7 @@ class Lyrics {
 		}
 		
 		if lyricsResponse.lyric == "Unfortunately, we are not licensed to display the full lyrics for this song at the moment. Hopefully we will be able to in the future. Until then... how about a random page?" {
-			return ""
+			return nil
 		}
 		
 		return lyricsResponse.lyric
