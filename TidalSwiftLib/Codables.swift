@@ -504,11 +504,15 @@ struct MixesPagedList: Decodable {
 	let dataApiPath: String
 }
 
-public struct MixesItem: Codable {
+public struct MixesItem: Codable, Equatable, Identifiable {
 	public let id: String
 	public let title: String
 	public let subTitle: String
 	public let graphic: MixesGraphic
+	
+	public static func == (lhs: MixesItem, rhs: MixesItem) -> Bool {
+		lhs.id == rhs.id
+	}
 }
 
 public enum MixesGraphicType: String, Codable {

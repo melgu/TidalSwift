@@ -83,8 +83,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				}
 			}
 			
-			// Retrieve View State
-			if let data = UserDefaults.standard.data(forKey: "ViewState") {
+			// Retrieve View Stack
+			if let data = UserDefaults.standard.data(forKey: "ViewStateStack") {
 				if let tempStack = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
 					viewState.stack = tempStack
 					if viewState.stack.count > 0 {
@@ -96,6 +96,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 						viewState.playlist = tempStack.last!.playlist
 						viewState.mix = tempStack.last!.mix
 					}
+				}
+			}
+			
+			if let data = UserDefaults.standard.data(forKey: "ViewStateHistory") {
+				if let tempHistory = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
+					viewState.history = tempHistory
 				}
 			}
 		}
@@ -170,9 +176,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let playbackInfoData = try? JSONEncoder().encode(codablePI)
 		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
 		
-		// Save View State
+		// Save View Stack & History
 		let viewStackData = try? JSONEncoder().encode(viewState.stack)
-		UserDefaults.standard.set(viewStackData, forKey: "ViewState")
+		UserDefaults.standard.set(viewStackData, forKey: "ViewStateStack")
+		let viewHistoryData = try? JSONEncoder().encode(viewState.history)
+		UserDefaults.standard.set(viewHistoryData, forKey: "ViewStateHistory")
 		
 		UserDefaults.standard.synchronize()
 		
@@ -370,6 +378,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		sc.player.clearQueue()
 	}
 	
+	// MARK: - View
+	
+	@IBAction func lyrics(_ sender: Any) {
+		if !self.sc.player.playbackInfo.queue.isEmpty {
+			Lyrics.showLyricsWindow(for: self.sc.player.playbackInfo.queue[self.sc.player.playbackInfo.currentIndex].track)
+		}
+	}
+	@IBAction func queue(_ sender: Any) {
+		sc.player.showQueueWindow()
+	}
+	
+	@IBAction func viewHistory(_ sender: Any) {
+		let controller = ResizableWindowController(rootView:
+			ViewHistoryView()
+				.environmentObject(viewState)
+		)
+		controller.window?.title = "View History"
+		controller.showWindow(nil)
+	}
+	
+	@IBAction func playbackHistory(_ sender: Any) {
+		print("Playback History")
+	}
+	
 	// MARK: - Account
 	
 	@IBAction func accountInfo(_ sender: Any) {
@@ -383,17 +415,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBAction func logout(_ sender: Any) {
 		logout()
-	}
-	
-	// MARK: - View
-	
-	@IBAction func lyrics(_ sender: Any) {
-		if !self.sc.player.playbackInfo.queue.isEmpty {
-			Lyrics.showLyricsWindow(for: self.sc.player.playbackInfo.queue[self.sc.player.playbackInfo.currentIndex].track)
-		}
-	}
-	@IBAction func queue(_ sender: Any) {
-		sc.player.showQueueWindow()
 	}
 }
 
