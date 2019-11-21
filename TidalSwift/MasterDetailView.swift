@@ -30,7 +30,7 @@ struct MasterDetailView: View {
 		let selectionBinding = Binding<ViewType?>(
 			get: { self.viewState.viewType },
 			set: {
-				print("View: \($0?.rawValue ?? "nil")")
+//				print("Selection View: \($0?.rawValue ?? "nil")")
 				self.viewState.clear()
 				if $0 != nil {
 					self.viewState.push(view: TidalSwiftView(viewType: $0!))
@@ -58,14 +58,16 @@ struct MasterView: View {
 	var body: some View {
 		VStack {
 			TextField("Search", text: $searchText, onCommit: {
-				print("Search Commit")
 				if self.searchText != "" {
-					print("Search Commit: \(self.searchText)")
+//					print("Search Commit: \(self.searchText)")
 					self.viewState.fixedSearchTerm = self.searchText
 					self.selection = .search
 //					unowned let window = (NSApp.delegate as? AppDelegate)?.window
 //					window?.makeFirstResponder(window?.initialFirstResponder)
 				}
+//				else {
+//					print("Search Commit on Empty")
+//				}
 			})
 				.textFieldStyle(RoundedBorderTextFieldStyle())
 				.padding(.top, 10)

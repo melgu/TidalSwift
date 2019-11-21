@@ -192,7 +192,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		_ = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: repeatLabel(repeatState:))
 		_ = sc.player.playbackInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
 		_ = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
-		_ = viewState.$viewType.receive(on: DispatchQueue.main).sink(receiveValue: { print("View: \($0?.rawValue ?? "nil")") })
+//		_ = viewState.$viewType.receive(on: DispatchQueue.main).sink(receiveValue: { print("viewState Type: \($0?.rawValue ?? "nil")") })
 		
 		// Swift UI Stuff
 		window = NSWindow(

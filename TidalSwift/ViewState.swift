@@ -87,6 +87,8 @@ final class ViewState: ObservableObject {
 		album = tempView.album
 		playlist = tempView.playlist
 		mix = tempView.mix
+		
+//		print("View Push: Search: \(searchTerm)")
 	}
 	
 	func push(artist: Artist) {
@@ -129,7 +131,7 @@ final class ViewState: ObservableObject {
 	func clear() {
 		stack.removeAll()
 		viewType = nil
-		searchTerm = ""
+//		searchTerm = ""
 	}
 	
 	func addToHistory(_ view: TidalSwiftView) {
