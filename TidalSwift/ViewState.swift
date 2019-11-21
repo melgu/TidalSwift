@@ -64,30 +64,16 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 }
 
 final class ViewState: ObservableObject {
-	@Published var viewType: ViewType?
 	var searchTerm: String = ""
-	@Published var fixedSearchTerm: String = ""
-	@Published var artist: Artist?
-	@Published var album: Album?
-	@Published var playlist: Playlist?
-	@Published var mix: MixesItem?
-	
-	var stack: [TidalSwiftView] = []
+	@Published var stack: [TidalSwiftView] = []
 	@Published var history: [TidalSwiftView] = []
 	var maxHistoryItems: Int = 100
 	
 	func push(view: TidalSwiftView) {
 		var tempView = view
 		tempView.searchTerm = searchTerm
-		
 		stack.append(tempView)
 		addToHistory(view)
-		viewType = tempView.viewType
-		artist = tempView.artist
-		album = tempView.album
-		playlist = tempView.playlist
-		mix = tempView.mix
-		
 //		print("View Push: Search: \(searchTerm)")
 	}
 	
@@ -113,25 +99,10 @@ final class ViewState: ObservableObject {
 	
 	func pop() {
 		stack.removeLast()
-		if stack.count > 0 {
-			viewType = stack.last!.viewType
-			artist = stack.last!.artist
-			album = stack.last!.album
-			playlist = stack.last!.playlist
-			mix = stack.last!.mix
-		} else {
-			viewType = nil
-			artist = nil
-			album = nil
-			playlist = nil
-			mix = nil
-		}
 	}
 	
 	func clear() {
 		stack.removeAll()
-		viewType = nil
-//		searchTerm = ""
 	}
 	
 	func addToHistory(_ view: TidalSwiftView) {
