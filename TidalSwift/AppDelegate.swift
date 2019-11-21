@@ -163,12 +163,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 					}
 				}
 			}
+			viewState.searchTerm = UserDefaults.standard.string(forKey: "SearchTerm") ?? ""
 			
 			if let data = UserDefaults.standard.data(forKey: "ViewStateHistory") {
 				if let tempHistory = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
 					viewState.history = tempHistory
 				}
 			}
+			viewState.maxHistoryItems = UserDefaults.standard.integer(forKey: "ViewStateHistoryMaxItems")
 		}
 		
 		// Space for Play/Pause
@@ -244,7 +246,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let playbackInfoData = try? JSONEncoder().encode(codablePI)
 		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
 		
-		// Save View Stack & History
+		UserDefaults.standard.set(viewState.searchTerm, forKey: "SearchTerm")
 		let viewStackData = try? JSONEncoder().encode(viewState.stack)
 		UserDefaults.standard.set(viewStackData, forKey: "ViewStateStack")
 		let viewHistoryData = try? JSONEncoder().encode(viewState.history)

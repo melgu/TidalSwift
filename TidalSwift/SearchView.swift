@@ -14,11 +14,11 @@ struct SearchView: View {
 	let session: Session
 	let player: Player
 	
-	init(searchText: String, session: Session, player: Player) {
-		print("init SearchView: \(searchText)")
+	init(searchTerm: String, session: Session, player: Player) {
+		print("init SearchView: \(searchTerm)")
 		self.session = session
 		self.player = player
-		searchResult = session.search(for: searchText)
+		searchResult = session.search(for: searchTerm)
 	}
 	
 	var body: some View {

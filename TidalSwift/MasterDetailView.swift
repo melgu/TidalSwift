@@ -37,7 +37,7 @@ struct MasterDetailView: View {
 				}
 		})
 		return NavigationView {
-			MasterView(selection: selectionBinding, searchText: searchTerm, session: session)
+			MasterView(selection: selectionBinding, searchTerm: searchTerm, session: session)
 			DetailView(session: session, player: player)
 				.frame(minWidth: 580)
 		}
@@ -47,7 +47,7 @@ struct MasterDetailView: View {
 
 struct MasterView: View {
 	@Binding var selection: ViewType?
-	@Binding var searchText: String
+	@Binding var searchTerm: String
 	
 	let session: Session
 	
@@ -55,18 +55,7 @@ struct MasterView: View {
 	
 	var body: some View {
 		VStack {
-			TextField("Search", text: $searchText, onCommit: {
-				if self.searchText != "" {
-//					print("Search Commit: \(self.searchText)")
-					self.selection = .search
-//					unowned let window = (NSApp.delegate as? AppDelegate)?.window
-//					window?.makeFirstResponder(window?.initialFirstResponder)
-				}
-//				else {
-//					print("Search Commit on Empty")
-//				}
-			})
-				.textFieldStyle(RoundedBorderTextFieldStyle())
+			SearchField(searchTerm: $searchTerm, selection: $selection)
 				.padding(.top, 10)
 				.padding([.leading, .trailing], 5)
 			List(selection: $selection) {
@@ -83,6 +72,26 @@ struct MasterView: View {
 				}
 			}.listStyle(SidebarListStyle())
 		}
+	}
+}
+
+struct SearchField: View {
+	@Binding var searchTerm: String
+	@Binding var selection: ViewType?
+	
+	var body: some View {
+		TextField("Search", text: $searchTerm, onCommit: {
+			if self.searchTerm != "" {
+//				print("Search Commit: \(self.searchTerm)")
+				self.selection = .search
+//				unowned let window = (NSApp.delegate as? AppDelegate)?.window
+//				window?.makeFirstResponder(window?.initialFirstResponder)
+			}
+//			else {
+//				print("Search Commit on Empty")
+//			}
+		})
+			.textFieldStyle(RoundedBorderTextFieldStyle())
 	}
 }
 
@@ -107,7 +116,7 @@ struct DetailView: View {
 				HStack {
 					// Search
 					if viewState.stack.last!.viewType == .search {
-						SearchView(searchText: viewState.stack.last!.searchTerm, session: session, player: player)
+						SearchView(searchTerm: viewState.stack.last!.searchTerm, session: session, player: player)
 					}
 						
 					// News
