@@ -22,7 +22,6 @@ struct SearchView: View {
 	}
 	
 	var body: some View {
-		
 		ScrollView([.vertical]) {
 			VStack(alignment: .leading) {
 				if searchResult != nil {
@@ -174,16 +173,3 @@ struct SearchViewVideos: View {
 		}
 	}
 }
-
-//public let artists: [Artist]
-//public let albums: [Album]
-//public let playlists: [Playlist]
-//public let tracks: [Track]
-//public let videos: [Video]
-//public let topHit: TopHit?
-
-//struct SearchView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SearchView()
-//    }
-//}

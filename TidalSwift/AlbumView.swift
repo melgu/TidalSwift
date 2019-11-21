@@ -143,19 +143,3 @@ struct AlbumView: View {
 		}
 	}
 }
-
-//struct AlbumView_Previews: PreviewProvider {
-//
-//	static var previews: some View {
-//		AlbumView(session: getSession(), album: getAlbum())
-////		.frame(width: 500, height: 300)
-////			.environment(\.colorScheme, .light)
-////		Group {
-////			AlbumView()
-////				.environment(\.colorScheme, .light)
-////			AlbumView()
-////				.environment(\.colorScheme, .dark)
-////		}
-//
-//	}
-//}

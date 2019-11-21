@@ -452,10 +452,3 @@ extension Color {
 		return nil
 	}
 }
-
-
-//struct MyMixes_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MyMixes()
-//    }
-//}

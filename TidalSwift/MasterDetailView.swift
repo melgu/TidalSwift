@@ -144,10 +144,3 @@ struct DetailView: View {
 		}
 	}
 }
-
-
-//struct MasterDetailView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MasterDetailView()
-//    }
-//}

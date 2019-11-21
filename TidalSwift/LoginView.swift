@@ -56,9 +56,3 @@ struct LoginView: View {
 		appDelegate?.login(username: username, password: password, quality: quality)
 	}
 }
-
-//struct LoginView_Previews: PreviewProvider {
-//	static var previews: some View {
-//		LoginView()
-//	}
-//}

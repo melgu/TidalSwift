@@ -72,9 +72,3 @@ struct ViewHistoryViewRow: View {
 		}
 	}
 }
-
-//struct ViewHistoryView_Previews: PreviewProvider {
-//	static var previews: some View {
-//		ViewHistoryView()
-//	}
-//}

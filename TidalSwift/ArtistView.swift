@@ -159,9 +159,3 @@ struct ArtistView: View {
 //		}
 	}
 }
-
-//struct ArtistView_Previews: PreviewProvider {
-//	static var previews: some View {
-//		ArtistView()
-//	}
-//}

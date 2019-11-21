@@ -185,9 +185,3 @@ struct SubscriptionInfoView: View {
 		}
 	}
 }
-
-//struct AccountInfoView_Previews: PreviewProvider {
-//	static var previews: some View {
-//		AccountInfoView()
-//	}
-//}

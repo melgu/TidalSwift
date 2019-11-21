@@ -186,9 +186,3 @@ struct ArtistContextMenu: View {
 		}
 	}
 }
-
-//struct ArtistGrid_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ArtistGrid()
-//    }
-//}
