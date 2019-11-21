@@ -136,7 +136,9 @@ struct AlbumGridItem: View {
 		}
 		.onTapGesture(count: 1) {
 			print("First Click. \(self.album.title)")
-			self.viewState.push(album: self.album)
+			if self.album.streamReady != nil && self.album.streamReady! {
+				self.viewState.push(album: self.album)
+			}
 		}
 		.contextMenu {
 			AlbumContextMenu(album: self.album, session: session, player: player)
@@ -221,9 +223,7 @@ struct AlbumContextMenu: View {
 					}) {
 						Text("Add to Playlist …")
 					}
-				}
-				Divider()
-				if album.streamReady != nil && album.streamReady! {
+					Divider()
 					Group {
 						Button(action: {
 							print("Offline")
