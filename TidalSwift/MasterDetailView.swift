@@ -13,8 +13,6 @@ struct MasterDetailView: View {
     let session: Session
 	let player: Player
 	
-//	@State var fixedSearchText: String = ""
-	
 	@EnvironmentObject var viewState: ViewState
 	
 	init(session: Session, player: Player) {
@@ -28,14 +26,14 @@ struct MasterDetailView: View {
 			set: { self.viewState.searchTerm = $0 }
 		)
 		let selectionBinding = Binding<ViewType?>(
-			get: { self.viewState.viewType },
+			get: { self.viewState.stack.last?.viewType },
 			set: {
 //				print("Selection View: \($0?.rawValue ?? "nil")")
 				self.viewState.clear()
 				if $0 != nil {
 					self.viewState.push(view: TidalSwiftView(viewType: $0!))
 				} else {
-					self.viewState.push(view: TidalSwiftView(viewType: nil, searchTerm: self.viewState.fixedSearchTerm))
+					self.viewState.push(view: TidalSwiftView(viewType: nil, searchTerm: searchTerm.wrappedValue))
 				}
 		})
 		return NavigationView {
@@ -60,7 +58,6 @@ struct MasterView: View {
 			TextField("Search", text: $searchText, onCommit: {
 				if self.searchText != "" {
 //					print("Search Commit: \(self.searchText)")
-					self.viewState.fixedSearchTerm = self.searchText
 					self.selection = .search
 //					unowned let window = (NSApp.delegate as? AppDelegate)?.window
 //					window?.makeFirstResponder(window?.initialFirstResponder)
@@ -104,42 +101,45 @@ struct DetailView: View {
 	var body: some View {
 		VStack {
 			PlayerInfoView(session: session, player: player)
-			HStack {
-				// Search
-				if viewState.viewType == .search {
-					SearchView(searchText: self.viewState.fixedSearchTerm, session: session, player: player)
-				}
-				
-				// News
-				else if viewState.viewType == .newReleases {
-					NewReleases(session: session, player: player)
-				} else if viewState.viewType == .myMixes {
-					MyMixes(session: session, player: player)
-				}
-				
-				// Favorites
-				else if viewState.viewType == .favoritePlaylists {
-					FavoritePlaylists(session: session, player: player)
-				} else if viewState.viewType == .favoriteAlbums {
-					FavoriteAlbums(session: session, player: player)
-				} else if viewState.viewType == .favoriteTracks {
-					FavoriteTracks(session: session, player: player)
-				} else if viewState.viewType == .favoriteVideos {
-					FavoriteVideos(session: session, player: player)
-				} else if viewState.viewType == .favoriteArtists {
-					FavoriteArtists(session: session, player: player)
-				}  else if viewState.viewType == .artist {
-					ArtistView(artist: viewState.artist, session: session, player: player)
-				} else if viewState.viewType == .album {
-					AlbumView(album: viewState.album, session: session, player: player)
-				} else if viewState.viewType == .playlist {
-					PlaylistView(playlist: viewState.playlist, session: session, player: player)
-				} else if viewState.viewType == .mix {
-					MixPlaylistView(mix: viewState.mix, session: session, player: player)
-				}
-			}
-			if viewState.viewType == nil {
+			if viewState.stack.isEmpty || viewState.stack.last!.viewType == nil {
 				Spacer()
+			} else {
+				HStack {
+					// Search
+					if viewState.stack.last!.viewType == .search {
+						SearchView(searchText: viewState.stack.last!.searchTerm, session: session, player: player)
+					}
+						
+					// News
+					else if viewState.stack.last!.viewType == .newReleases {
+						NewReleases(session: session, player: player)
+					} else if viewState.stack.last!.viewType == .myMixes {
+						MyMixes(session: session, player: player)
+					}
+						
+					// Favorites
+					else if viewState.stack.last!.viewType == .favoritePlaylists {
+						FavoritePlaylists(session: session, player: player)
+					} else if viewState.stack.last!.viewType == .favoriteAlbums {
+						FavoriteAlbums(session: session, player: player)
+					} else if viewState.stack.last!.viewType == .favoriteTracks {
+						FavoriteTracks(session: session, player: player)
+					} else if viewState.stack.last!.viewType == .favoriteVideos {
+						FavoriteVideos(session: session, player: player)
+					} else if viewState.stack.last!.viewType == .favoriteArtists {
+						FavoriteArtists(session: session, player: player)
+						
+					// Single Things
+					}  else if viewState.stack.last!.viewType == .artist {
+						ArtistView(artist: viewState.stack.last!.artist, session: session, player: player)
+					} else if viewState.stack.last!.viewType == .album {
+						AlbumView(album: viewState.stack.last!.album, session: session, player: player)
+					} else if viewState.stack.last!.viewType == .playlist {
+						PlaylistView(playlist: viewState.stack.last!.playlist, session: session, player: player)
+					} else if viewState.stack.last!.viewType == .mix {
+						MixPlaylistView(mix: viewState.stack.last!.mix, session: session, player: player)
+					}
+				}
 			}
 		}
 	}

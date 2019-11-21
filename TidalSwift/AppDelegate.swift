@@ -159,13 +159,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				if let tempStack = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
 					viewState.stack = tempStack
 					if viewState.stack.count > 0 {
-						viewState.viewType = tempStack.last!.viewType
 						viewState.searchTerm = tempStack.last!.searchTerm
-						viewState.fixedSearchTerm = tempStack.last!.searchTerm
-						viewState.artist = tempStack.last!.artist
-						viewState.album = tempStack.last!.album
-						viewState.playlist = tempStack.last!.playlist
-						viewState.mix = tempStack.last!.mix
 					}
 				}
 			}
