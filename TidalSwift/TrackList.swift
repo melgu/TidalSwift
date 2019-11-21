@@ -21,22 +21,18 @@ struct TrackList: View {
 	let player: Player
 	
 	var body: some View {
-		HStack {
-			VStack(alignment: .leading) {
-				ForEach(0..<tracks.count) { i in
-					TrackRow(track: self.tracks[i], showCover: self.showCover, showArtist: self.showArtist, showAlbum: self.showAlbum,
-							 trackNumber: self.showAlbumTrackNumber ? nil : i, session: self.session)
-						.onTapGesture(count: 2) {
-							print("\(self.tracks[i].title)")
-							self.player.add(tracks: self.tracks, .now)
-							self.player.play(atIndex: i)
-					}
-					.contextMenu {
-						TrackContextMenu(track: self.tracks[i], indexInPlaylist: self.playlist != nil ? i : nil, playlist: self.playlist, session: self.session, player: self.player)
-					}
-					Divider()
-				}
+		ForEach(0..<tracks.count) { i in
+			TrackRow(track: self.tracks[i], showCover: self.showCover, showArtist: self.showArtist, showAlbum: self.showAlbum,
+					 trackNumber: self.showAlbumTrackNumber ? nil : i, session: self.session)
+				.onTapGesture(count: 2) {
+					print("\(self.tracks[i].title)")
+					self.player.add(tracks: self.tracks, .now)
+					self.player.play(atIndex: i)
 			}
+			.contextMenu {
+				TrackContextMenu(track: self.tracks[i], indexInPlaylist: self.playlist != nil ? i : nil, playlist: self.playlist, session: self.session, player: self.player)
+			}
+			Divider()
 		}
 	}
 }
@@ -177,14 +173,3 @@ struct TrackRow: View {
 		
 	}
 }
-
-//struct TrackRow_Previews: PreviewProvider {
-//	static var previews: some View {
-//		Group {
-//			TrackRow()
-//				.previewDisplayName("With Cover")
-//			TrackRow()
-//				.previewDisplayName("Without Cover")
-//		}
-//	}
-//}

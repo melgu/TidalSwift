@@ -207,9 +207,3 @@ struct ProgressBar : View {
 			.frame(height: 5)
 	}
 }
-
-//struct PlayerInfoView_Previews: PreviewProvider {
-//	static var previews: some View {
-//		PlayerInfoView()
-//	}
-//}

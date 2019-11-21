@@ -71,9 +71,3 @@ struct LyricsView: View {
 		
 	}
 }
-
-//struct LyricsView_Previews: PreviewProvider {
-//	static var previews: some View {
-//		LyricsView()
-//	}
-//}

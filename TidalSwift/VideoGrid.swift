@@ -212,9 +212,3 @@ struct VideoContextMenu: View {
 		}
 	}
 }
-
-//struct VideoGrid_Previews: PreviewProvider {
-//    static var previews: some View {
-//        VideoGrid()
-//    }
-//}

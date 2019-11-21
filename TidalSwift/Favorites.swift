@@ -159,9 +159,3 @@ struct FavoriteArtists: View {
 func favoriteArtists2Artists(_ favoriteArtists: [FavoriteArtist]) -> [Artist] {
 	favoriteArtists.map { $0.item }
 }
-
-//struct Favorites_Previews: PreviewProvider {
-//    static var previews: some View {
-//        Favorites()
-//    }
-//}

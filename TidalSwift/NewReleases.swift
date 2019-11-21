@@ -37,9 +37,3 @@ struct NewReleases: View {
 		}
 	}
 }
-
-//struct NewReleases_Previews: PreviewProvider {
-//	static var previews: some View {
-//		NewReleases()
-//	}
-//}

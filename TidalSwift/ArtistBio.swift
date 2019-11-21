@@ -57,9 +57,3 @@ struct ArtistBioView: View {
 		}
 	}
 }
-
-//struct ArtistBio_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ArtistBio()
-//    }
-//}
