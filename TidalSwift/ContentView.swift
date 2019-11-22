@@ -19,6 +19,7 @@ struct ContentView: View {
 	var body: some View {
 		MasterDetailView(session: sc.session, player: sc.player)
 			.environmentObject(sc.player.playbackInfo)
+			.environmentObject(sc.player.queueInfo)
 			.background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
 				LoginView().environmentObject(self.loginInfo)
 			})
