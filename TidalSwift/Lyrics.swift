@@ -15,7 +15,14 @@ struct LyricsObject: Decodable {
 }
 
 class Lyrics {
-	static func getLyrics(for track: Track) -> String? {
+	var lastTrack: Track? = nil
+	var lastLyrics: String? = nil
+	
+	func getLyrics(for track: Track) -> String? {
+		if track == lastTrack {
+			return lastLyrics
+		}
+		
 		guard let artist = track.artists.first else {
 			return ""
 		}
@@ -74,6 +81,8 @@ class Lyrics {
 			return nil
 		}
 		
+		lastTrack = track
+		lastLyrics = lyricsResponse.lyric
 		return lyricsResponse.lyric
 	}
 }
