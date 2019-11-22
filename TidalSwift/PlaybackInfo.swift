@@ -10,14 +10,17 @@ import SwiftUI
 import TidalSwiftLib
 
 final class PlaybackInfo: ObservableObject {
-	var nonShuffledQueue = [Track]()
-	@Published var queue = [QueueItem]()
-	@Published var currentIndex: Int = 0
 	@Published var fraction: CGFloat = 0.0
 	@Published var playing: Bool = false
 	@Published var volume: Float = 1.0
 	@Published var shuffle: Bool = false
 	@Published var repeatState: RepeatState = .off
+}
+
+final class QueueInfo: ObservableObject {
+	var nonShuffledQueue = [Track]()
+	@Published var queue = [QueueItem]()
+	@Published var currentIndex: Int = 0
 	
 	@Published var history: [QueueItem] = []
 	var maxHistoryItems: Int = 100
@@ -69,14 +72,17 @@ extension CaseIterable where Self: Equatable {
 }
 
 struct CodablePlaybackInfo: Codable {
-	var nonShuffledQueue: [Track]
-	var queue: [QueueItem]
-	var currentIndex: Int
+	// PlaybackInfo
 	var fraction: CGFloat
 	var playing: Bool
 	var volume: Float
 	var shuffle: Bool
 	var repeatState: RepeatState
+	
+	// QueueInfo
+	var nonShuffledQueue: [Track]
+	var queue: [QueueItem]
+	var currentIndex: Int
 	
 	var history: [QueueItem]
 	var maxHistoryItems: Int

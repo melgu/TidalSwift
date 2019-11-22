@@ -16,19 +16,20 @@ struct PlayerInfoView: View {
 	let player: Player
 	
 	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@EnvironmentObject var queueInfo: QueueInfo
 	
 	var body: some View {
 		VStack {
 			GeometryReader { metrics in
 				HStack {
 					HStack {
-						if !self.player.playbackInfo.queue.isEmpty {
+						if !self.player.queueInfo.queue.isEmpty {
 							HStack {
-								if self.playbackInfo.queue[self.playbackInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 320) != nil {
+								if self.queueInfo.queue[self.queueInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 320) != nil {
 									URLImageSourceView(
-										self.playbackInfo.queue[self.playbackInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 320)!,
+										self.queueInfo.queue[self.queueInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 320)!,
 										isAnimationEnabled: true,
-										label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.album.title)
+										label: Text(self.queueInfo.queue[self.queueInfo.currentIndex].track.album.title)
 									)
 										.frame(width: 30, height: 30)
 										.cornerRadius(CORNERRADIUS)
@@ -36,12 +37,12 @@ struct PlayerInfoView: View {
 											print("Big Cover")
 											let controller = CoverWindowController(rootView:
 												URLImageSourceView(
-													self.playbackInfo.queue[self.playbackInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 1280)!,
+													self.queueInfo.queue[self.queueInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 1280)!,
 													isAnimationEnabled: true,
-													label: Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.album.title)
+													label: Text(self.queueInfo.queue[self.queueInfo.currentIndex].track.album.title)
 												)
 											)
-											controller.window?.title = self.playbackInfo.queue[self.playbackInfo.currentIndex].track.album.title
+											controller.window?.title = self.queueInfo.queue[self.queueInfo.currentIndex].track.album.title
 											controller.showWindow(nil)
 									}
 								} else {
@@ -52,7 +53,7 @@ struct PlayerInfoView: View {
 								
 								VStack(alignment: .leading) {
 									HStack {
-										Text(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.title)
+										Text(self.queueInfo.queue[self.queueInfo.currentIndex].track.title)
 										Text(self.player.currentQualityString())
 											.fontWeight(.light)
 											.foregroundColor(.orange)
@@ -62,14 +63,14 @@ struct PlayerInfoView: View {
 										
 										
 									}
-									Text("\(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.artists.formArtistString()) – \(self.playbackInfo.queue[self.playbackInfo.currentIndex].track.album.title)")
+									Text("\(self.queueInfo.queue[self.queueInfo.currentIndex].track.artists.formArtistString()) – \(self.queueInfo.queue[self.queueInfo.currentIndex].track.album.title)")
 										.foregroundColor(.secondary)
 								}
 								Spacer()
 									.layoutPriority(-1)
 							}
 							.contextMenu {
-								TrackContextMenu(track: self.playbackInfo.queue[self.playbackInfo.currentIndex].track, session: self.session, player: self.player)
+								TrackContextMenu(track: self.queueInfo.queue[self.queueInfo.currentIndex].track, session: self.session, player: self.player)
 							}
 						} else {
 							Spacer()

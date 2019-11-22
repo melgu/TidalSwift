@@ -11,7 +11,7 @@ import TidalSwiftLib
 
 struct PlaybackHistoryView: View {
 	@EnvironmentObject var sc: SessionContainer
-	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@EnvironmentObject var queueInfo: QueueInfo
 	
 	var body: some View {
 		ScrollView {
@@ -23,25 +23,25 @@ struct PlaybackHistoryView: View {
 					Spacer(minLength: 5)
 					VStack {
 						Button(action: {
-							self.playbackInfo.clearHistory()
+							self.queueInfo.clearHistory()
 						}) {
 							Text("Clear")
 						}
 						Spacer(minLength: 0)
 					}
 				}
-				if playbackInfo.history.isEmpty {
+				if queueInfo.history.isEmpty {
 					Text("Empty History")
 						.foregroundColor(.secondary)
 				} else {
-					ForEach(playbackInfo.history) { item in
+					ForEach(queueInfo.history) { item in
 						HStack {
 							Text("\(item.track.title) - \(item.track.artists.formArtistString())")
-								.fontWeight(item.id == self.playbackInfo.history.count-1 ? .bold : .regular)
+								.fontWeight(item.id == self.queueInfo.history.count-1 ? .bold : .regular)
 								.lineLimit(1)
 								.onTapGesture(count: 2) {
 									self.sc.player.clearQueue()
-									self.sc.player.add(tracks: self.playbackInfo.history.map { $0.track }, .last)
+									self.sc.player.add(tracks: self.queueInfo.history.map { $0.track }, .last)
 									self.sc.player.play(atIndex: item.id)
 							}
 							.contextMenu {

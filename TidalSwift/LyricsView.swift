@@ -12,11 +12,11 @@ import TidalSwiftLib
 struct LyricsView: View {
 	let lyricsHandler = Lyrics()
 	
-	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@EnvironmentObject var queueInfo: QueueInfo
 	
 	var track: Track? {
-		if !playbackInfo.queue.isEmpty {
-			return playbackInfo.queue[playbackInfo.currentIndex].track
+		if !queueInfo.queue.isEmpty {
+			return queueInfo.queue[queueInfo.currentIndex].track
 		} else {
 			return nil
 		}

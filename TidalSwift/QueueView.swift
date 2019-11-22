@@ -14,7 +14,7 @@ struct QueueView: View {
 	unowned let player: Player
 	
 	@EnvironmentObject var sc: SessionContainer
-	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@EnvironmentObject var queueInfo: QueueInfo
 	
 	func calculateTotalTime(for tracks: [Track]) -> Int {
 		var result = 0
@@ -41,21 +41,21 @@ struct QueueView: View {
 						Spacer(minLength: 0)
 					}
 					VStack(alignment: .trailing) {
-						Text("\(playbackInfo.queue.count) Tracks")
+						Text("\(queueInfo.queue.count) Tracks")
 							.foregroundColor(.secondary)
-						Text(secondsToHoursMinutesSecondsString(seconds: calculateTotalTime(for: playbackInfo.queue.map { $0.track } )))
+						Text(secondsToHoursMinutesSecondsString(seconds: calculateTotalTime(for: queueInfo.queue.map { $0.track } )))
 							.foregroundColor(.secondary)
 						Spacer()
 					}
 				}
-				if playbackInfo.queue.isEmpty {
+				if queueInfo.queue.isEmpty {
 					Text("Empty Queue")
 						.foregroundColor(.secondary)
 				} else {
-					ForEach(playbackInfo.queue) { item in
+					ForEach(queueInfo.queue) { item in
 						HStack {
 							Text("\(item.track.title) - \(item.track.artists.formArtistString())")
-								.fontWeight(item.id == self.playbackInfo.currentIndex ? .bold : .regular)
+								.fontWeight(item.id == self.queueInfo.currentIndex ? .bold : .regular)
 								.lineLimit(1)
 								.onTapGesture(count: 2) {
 									self.player.play(atIndex: item.id)

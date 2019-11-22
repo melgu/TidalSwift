@@ -36,14 +36,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		// Init Secondary Windows (cannot use method func because self is not initialized yet
 		lyricsViewController = ResizableWindowController(rootView:
 			LyricsView()
-				.environmentObject(sc.player.playbackInfo)
+				.environmentObject(sc.player.queueInfo)
 		)
 		lyricsViewController.window?.title = "Lyrics"
 		
 		queueViewController = ResizableWindowController(rootView:
 			QueueView(session: sc.session, player: sc.player)
 				.environmentObject(sc)
-				.environmentObject(sc.player.playbackInfo)
+				.environmentObject(sc.player.queueInfo)
 		)
 		queueViewController.window?.title = "Queue"
 		
@@ -56,7 +56,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playbackHistoryViewController = ResizableWindowController(rootView:
 			PlaybackHistoryView()
 				.environmentObject(sc)
-				.environmentObject(sc.player.playbackInfo)
+				.environmentObject(sc.player.queueInfo)
 		)
 		playbackHistoryViewController.window?.title = "Playback History"
 		
@@ -66,13 +66,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	func initSecondaryWindows() {
 		lyricsViewController = ResizableWindowController(rootView:
 			LyricsView()
-				.environmentObject(sc.player.playbackInfo)
+				.environmentObject(sc.player.queueInfo)
 		)
 		lyricsViewController.window?.title = "Lyrics"
 		
 		queueViewController = ResizableWindowController(rootView:
 			QueueView(session: sc.session, player: sc.player)
-				.environmentObject(sc.player.playbackInfo)
+				.environmentObject(sc.player.queueInfo)
 		)
 		queueViewController.window?.title = "Queue"
 		
@@ -85,7 +85,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playbackHistoryViewController = ResizableWindowController(rootView:
 			PlaybackHistoryView()
 				.environmentObject(sc)
-				.environmentObject(sc.player.playbackInfo)
+				.environmentObject(sc.player.queueInfo)
 		)
 		playbackHistoryViewController.window?.title = "Playback History"
 	}
@@ -138,13 +138,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			// Retrieve Playback State
 			if let data = UserDefaults.standard.data(forKey: "PlaybackInfo") {
 				if let tempPI = try? JSONDecoder().decode(CodablePlaybackInfo.self, from: data) {
-					sc.player.playbackInfo.nonShuffledQueue = tempPI.nonShuffledQueue
-					sc.player.playbackInfo.queue = tempPI.queue
+					// PlaybackInfo
 					sc.player.playbackInfo.volume = tempPI.volume
 					sc.player.playbackInfo.shuffle = tempPI.shuffle
 					sc.player.playbackInfo.repeatState = tempPI.repeatState
-					sc.player.playbackInfo.history = tempPI.history
-					sc.player.playbackInfo.maxHistoryItems = tempPI.maxHistoryItems
+					
+					// QueueInfo
+					sc.player.queueInfo.nonShuffledQueue = tempPI.nonShuffledQueue
+					sc.player.queueInfo.queue = tempPI.queue
+					sc.player.queueInfo.history = tempPI.history
+					sc.player.queueInfo.maxHistoryItems = tempPI.maxHistoryItems
 					
 					sc.player.play(atIndex: tempPI.currentIndex)
 					sc.player.pause()
@@ -186,7 +189,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		_ = sc.player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
 		_ = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffleState(enabled:))
 		_ = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: repeatLabel(repeatState:))
-		_ = sc.player.playbackInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
+		_ = sc.player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
 		_ = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
 		
 		// Combine Debug Stuff
@@ -237,16 +240,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		closeModals()
 		
 		// Save Playback State
-		let codablePI = CodablePlaybackInfo(nonShuffledQueue: sc.player.playbackInfo.nonShuffledQueue,
-											queue: sc.player.playbackInfo.queue,
-											currentIndex: sc.player.playbackInfo.currentIndex,
-											fraction: sc.player.playbackInfo.fraction,
+		let codablePI = CodablePlaybackInfo(fraction: sc.player.playbackInfo.fraction,
 											playing: sc.player.playbackInfo.playing,
 											volume: sc.player.playbackInfo.volume,
 											shuffle: sc.player.playbackInfo.shuffle,
 											repeatState: sc.player.playbackInfo.repeatState,
-											history: sc.player.playbackInfo.history,
-											maxHistoryItems: sc.player.playbackInfo.maxHistoryItems)
+											nonShuffledQueue: sc.player.queueInfo.nonShuffledQueue,
+											queue: sc.player.queueInfo.queue,
+											currentIndex: sc.player.queueInfo.currentIndex,
+											history: sc.player.queueInfo.history,
+											maxHistoryItems: sc.player.queueInfo.maxHistoryItems)
 		let playbackInfoData = try? JSONEncoder().encode(codablePI)
 		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
 		
@@ -306,13 +309,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var addToFavorites: NSMenuItem!
 	@IBAction func addToFavorites(_ sender: Any) {
-		sc.session.favorites?.addTrack(trackId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].track.id)
-		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
+		sc.session.favorites?.addTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
+		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
 	}
 	@IBOutlet weak var removeFromFavorites: NSMenuItem!
 	@IBAction func removeFromFavorites(_ sender: Any) {
-		sc.session.favorites?.removeTrack(trackId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].track.id)
-		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
+		sc.session.favorites?.removeTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
+		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
 	}
 	
 	@IBOutlet weak var addToPlaylist: NSMenuItem!
@@ -321,17 +324,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBOutlet weak var albumAddFavorites: NSMenuItem!
 	@IBAction func albumAddFavorites(_ sender: Any) {
-		sc.session.favorites?.addAlbum(albumId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].track.album.id)
-		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
+		sc.session.favorites?.addAlbum(albumId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.album.id)
+		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
 	}
 	@IBOutlet weak var albumRemoveFavorites: NSMenuItem!
 	@IBAction func albumRemoveFavorites(_ sender: Any) {
-		sc.session.favorites?.removeAlbum(albumId: sc.player.playbackInfo.queue[sc.player.playbackInfo.currentIndex].track.album.id)
-		favoriteLabel(currentIndex: sc.player.playbackInfo.currentIndex)
+		sc.session.favorites?.removeAlbum(albumId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.album.id)
+		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
 	}
 	
 	func favoriteLabel(currentIndex: Int) {
-		if sc.player.playbackInfo.queue.isEmpty {
+		if sc.player.queueInfo.queue.isEmpty {
 			goToAlbum.isEnabled = false
 			goToArtist.isEnabled = false
 			
@@ -353,7 +356,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			albumAddFavorites.isEnabled = true
 		}
 		
-		let trackIsInFavorites = sc.player.playbackInfo.queue[currentIndex].track.isInFavorites(session: sc.session)
+		let trackIsInFavorites = sc.player.queueInfo.queue[currentIndex].track.isInFavorites(session: sc.session)
 		if trackIsInFavorites != nil && trackIsInFavorites! {
 			addToFavorites.isHidden = true
 			removeFromFavorites.isHidden = false
