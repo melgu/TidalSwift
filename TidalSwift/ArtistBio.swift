@@ -10,13 +10,12 @@ import SwiftUI
 import TidalSwiftLib
 
 struct ArtistBioView: View {
-	let artist: Artist
-	let bio: ArtistBio?
+	let session: Session
 	
-	init(artist: Artist, session: Session) {
-		self.artist = artist
-		self.bio = artist.bio(session: session)
-	}
+	@State var artist: Artist
+	@State var bio: ArtistBio?
+	@State var workItem: DispatchWorkItem?
+	@State var loadingState: LoadingState = .loading
 	
 	var body: some View {
 		ScrollView {
@@ -47,13 +46,40 @@ struct ArtistBioView: View {
 							}
 						}
 					}
+				} else if loadingState == .loading {
+					LoadingSpinner()
 				} else {
 					Text("No Bio available")
 						.foregroundColor(.secondary)
+					Spacer(minLength: 0)
 				}
-				Spacer(minLength: 0)
+				
 			}
 			.padding()
+		}
+		.onAppear() {
+			self.workItem = self.createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+		}
+		.onDisappear() {
+			self.workItem?.cancel()
+		}
+	}
+	
+	func createWorkItem() -> DispatchWorkItem {
+		return DispatchWorkItem {
+			let t = self.artist.bio(session: self.session)
+			
+			if t != nil {
+				DispatchQueue.main.async {
+					self.bio = t
+					self.loadingState = .successful
+				}
+			} else {
+				DispatchQueue.main.async {
+					self.loadingState = .error
+				}
+			}
 		}
 	}
 }

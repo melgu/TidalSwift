@@ -80,16 +80,11 @@ struct SearchField: View {
 	@Binding var selection: ViewType?
 	
 	var body: some View {
-		TextField("Search", text: $searchTerm, onCommit: {
-			if self.searchTerm != "" {
-//				print("Search Commit: \(self.searchTerm)")
-				self.selection = .search
-//				unowned let window = (NSApp.delegate as? AppDelegate)?.window
-//				window?.makeFirstResponder(window?.initialFirstResponder)
-			}
-//			else {
-//				print("Search Commit on Empty")
-//			}
+		TextField("Search", text: $searchTerm, onEditingChanged: {_ in
+			print("Search Change: \(self.searchTerm)")
+			self.selection = .search
+//			unowned let window = (NSApp.delegate as? AppDelegate)?.window
+//			window?.makeFirstResponder(window?.initialFirstResponder)
 		})
 			.textFieldStyle(RoundedBorderTextFieldStyle())
 	}
@@ -116,7 +111,7 @@ struct DetailView: View {
 				HStack {
 					// Search
 					if viewState.stack.last!.viewType == .search {
-						SearchView(searchTerm: viewState.stack.last!.searchTerm, session: session, player: player)
+						SearchView(session: session, player: player)
 					}
 						
 					// News
@@ -140,13 +135,13 @@ struct DetailView: View {
 						
 					// Single Things
 					}  else if viewState.stack.last!.viewType == .artist {
-						ArtistView(artist: viewState.stack.last!.artist, session: session, player: player)
+						ArtistView(session: session, player: player, artist: viewState.stack.last!.artist)
 					} else if viewState.stack.last!.viewType == .album {
-						AlbumView(album: viewState.stack.last!.album, session: session, player: player)
+						AlbumView(session: session, player: player, album: viewState.stack.last!.album)
 					} else if viewState.stack.last!.viewType == .playlist {
-						PlaylistView(playlist: viewState.stack.last!.playlist, session: session, player: player)
+						PlaylistView(session: session, player: player, playlist: viewState.stack.last!.playlist)
 					} else if viewState.stack.last!.viewType == .mix {
-						MixPlaylistView(mix: viewState.stack.last!.mix, session: session, player: player)
+						MixPlaylistView(session: session, player: player, mix: viewState.stack.last!.mix)
 					}
 				}
 			}

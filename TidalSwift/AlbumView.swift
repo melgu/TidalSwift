@@ -11,32 +11,16 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct AlbumView: View {
-	let album: Album?
 	let session: Session
 	let player: Player
 	
-	let tracks: [Track]?
+	@State var album: Album?
+	@State var tracks: [Track]?
+	@State var workItem: DispatchWorkItem?
+	@State var loadingState: LoadingState = .loading
 	
 	@EnvironmentObject var viewState: ViewState
 	@State var t: Bool = false
-	
-	init(album: Album?, session: Session, player: Player) {
-		if let album = album {
-			if album.releaseDate == nil {
-				print("Reloading Album: \(album.title)")
-				self.album = session.getAlbum(albumId: album.id)
-			} else {
-				self.album = album
-			}
-			self.tracks = session.getAlbumTracks(albumId: album.id)
-		} else {
-			self.album = nil
-			self.tracks = nil
-		}
-		
-		self.session = session
-		self.player = player
-	}
 	
 	var body: some View {
 		ScrollView {
@@ -51,12 +35,7 @@ struct AlbumView: View {
 					.padding(.leading, 10)
 					Spacer()
 				}
-				if album == nil {
-					HStack {
-						Spacer()
-					}
-					Spacer()
-				} else {
+				if album != nil && tracks != nil {
 					HStack {
 						URLImageSourceView(
 							album!.getCoverUrl(session: session, resolution: 320)!,
@@ -87,7 +66,7 @@ struct AlbumView: View {
 									.foregroundColor(.secondary)
 									.onTapGesture {
 										let controller = ResizableWindowController(rootView:
-											CreditsView(album: self.album!, session: self.session)
+											CreditsView(session: self.session, album: self.album!)
 										)
 										controller.window?.title = "Credits – \(self.album!.title)"
 										controller.showWindow(nil)
@@ -138,6 +117,46 @@ struct AlbumView: View {
 					TrackList(tracks: tracks!, showCover: false, showAlbumTrackNumber: true,
 							  showArtist: true, showAlbum: false, playlist: nil,
 							  session: session, player: player)
+				} else if loadingState == .loading {
+					LoadingSpinner()
+				} else {
+					Text("Problems fetching album")
+						.font(.largeTitle)
+				}
+			}
+		}
+		.onAppear() {
+			self.workItem = self.createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+		}
+		.onDisappear() {
+			self.workItem?.cancel()
+		}
+	}
+	
+	func createWorkItem() -> DispatchWorkItem {
+		return DispatchWorkItem {
+			var tAlbum: Album?
+			var tTracks: [Track]?
+			if let album = self.album {
+				if album.releaseDate == nil {
+					print("Album incomplete. Loading complete album: \(album.title)")
+					tAlbum = self.session.getAlbum(albumId: album.id)
+				} else {
+					tAlbum = self.album
+				}
+				tTracks = self.session.getAlbumTracks(albumId: album.id)
+				
+				if tTracks != nil {
+					DispatchQueue.main.async {
+						self.album = tAlbum
+						self.tracks = tTracks
+						self.loadingState = .successful
+					}
+				} else {
+					DispatchQueue.main.async {
+						self.loadingState = .error
+					}
 				}
 			}
 		}

@@ -11,13 +11,16 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct ArtistView: View {
-	let artist: Artist?
 	let session: Session
 	let player: Player
 	
-	let albums: [Album]?
-	let videos: [Video]?
-	let topTracks: [Track]?
+	@State var artist: Artist?
+	@State var albums: [Album]?
+	@State var videos: [Video]?
+	@State var topTracks: [Track]?
+	
+	@State var workItem: DispatchWorkItem?
+	@State var loadingState: LoadingState = .loading
 	
 	enum BottomSectionType {
 		case albums
@@ -27,28 +30,6 @@ struct ArtistView: View {
 	@EnvironmentObject var viewState: ViewState
 	@State var bottomSectionType: BottomSectionType = .albums
 	@State var t: Bool = false
-	
-	init(artist: Artist?, session: Session, player: Player) {
-		if let artist = artist {
-			if artist.url == nil {
-				print("Reloading Artist: \(artist.name)")
-				self.artist = session.getArtist(artistId: artist.id)
-			} else {
-				self.artist = artist
-			}
-			self.albums = session.getArtistAlbums(artistId: artist.id)
-			self.videos = session.getArtistVideos(artistId: artist.id)
-			self.topTracks = session.getArtistTopTracks(artistId: artist.id, limit: 30, offset: 0)
-		} else {
-			self.artist = nil
-			self.albums = nil
-			self.videos = nil
-			self.topTracks = nil
-		}
-		
-		self.session = session
-		self.player = player
-	}
 	
 	var body: some View {
 //		ScrollView { // TODO: Comment back in, when Grid supports nesting inside a ScrollView
@@ -63,12 +44,7 @@ struct ArtistView: View {
 					.padding(.leading, 10)
 					Spacer()
 				}
-				if artist == nil {
-					HStack {
-						Spacer()
-					}
-					Spacer()
-				} else {
+				if loadingState == .successful {
 					HStack {
 						if artist!.getPictureUrl(session: session, resolution: 320) != nil {
 							URLImageSourceView(
@@ -101,7 +77,7 @@ struct ArtistView: View {
 									.foregroundColor(.secondary)
 									.onTapGesture {
 										let controller = ResizableWindowController(rootView:
-											ArtistBioView(artist: self.artist!, session: self.session)
+											ArtistBioView(session: self.session, artist: self.artist!)
 										)
 										controller.window?.title = "Bio – \(self.artist!.name)"
 										controller.showWindow(nil)
@@ -154,8 +130,55 @@ struct ArtistView: View {
 					} else if bottomSectionType == .videos {
 						VideoGrid(videos: videos!, showArtists: false, session: session, player: player)
 					}
+				} else if loadingState == .loading {
+					LoadingSpinner()
+				} else {
+					Text("Problems fetching Artist")
+						.font(.largeTitle)
 				}
 			}
 //		}
+		.onAppear() {
+			self.workItem = self.createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+		}
+		.onDisappear() {
+			self.workItem?.cancel()
+		}
+	}
+	
+	func createWorkItem() -> DispatchWorkItem {
+		return DispatchWorkItem {
+			var tArtist: Artist?
+			var tTopTracks: [Track]?
+			var tAlbums: [Album]?
+			var tVideos: [Video]?
+			
+			if let artist = self.artist {
+				if artist.url == nil {
+					print("Reloading Artist: \(artist.name)")
+					tArtist = self.session.getArtist(artistId: artist.id)
+				} else {
+					tArtist = artist
+				}
+				tTopTracks = self.session.getArtistTopTracks(artistId: artist.id, limit: 30, offset: 0)
+				tAlbums = self.session.getArtistAlbums(artistId: artist.id)
+				tVideos = self.session.getArtistVideos(artistId: artist.id)
+				
+				if tTopTracks != nil && tAlbums != nil && tVideos != nil {
+					DispatchQueue.main.async {
+						self.artist = tArtist
+						self.topTracks = tTopTracks
+						self.albums = tAlbums
+						self.videos = tVideos
+						self.loadingState = .successful
+					}
+				} else {
+					DispatchQueue.main.async {
+						self.loadingState = .error
+					}
+				}
+			}
+		}
 	}
 }

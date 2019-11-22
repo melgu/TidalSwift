@@ -11,29 +11,17 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct PlaylistView: View {
-	let playlist: Playlist?
 	let session: Session
 	let player: Player
 	
-	let tracks: [Track]?
-	let isUserPlaylist: Bool
+	@State var playlist: Playlist?
+	@State var isUserPlaylist: Bool?
+	@State var tracks: [Track]?
+	@State var workItem: DispatchWorkItem?
+	@State var loadingState: LoadingState = .loading
 	
 	@EnvironmentObject var viewState: ViewState
 	@State var t: Bool = false
-	
-	init(playlist: Playlist?, session: Session, player: Player) {
-		self.playlist = playlist
-		self.session = session
-		self.player = player
-		
-		if let playlist = playlist {
-			self.tracks = session.getPlaylistTracks(playlistId: playlist.id)
-			self.isUserPlaylist = playlist.creator.id == session.userId
-		} else {
-			self.tracks = nil
-			self.isUserPlaylist = false
-		}
-	}
 	
 	var body: some View {
 		ScrollView {
@@ -48,12 +36,7 @@ struct PlaylistView: View {
 					.padding(.leading, 10)
 					Spacer()
 				}
-				if playlist == nil {
-					HStack {
-						Spacer()
-					}
-					Spacer()
-				} else {
+				if loadingState == .successful {
 					HStack {
 						URLImageSourceView(
 							playlist!.getImageUrl(session: session, resolution: 320)!,
@@ -128,8 +111,43 @@ struct PlaylistView: View {
 					
 					
 					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false,
-							  showArtist: true, showAlbum: true, playlist: isUserPlaylist ? playlist : nil,
+							  showArtist: true, showAlbum: true, playlist: isUserPlaylist! ? playlist : nil,
 							  session: session, player: player)
+				} else if loadingState == .loading {
+					LoadingSpinner()
+				} else {
+					Text("Problems fetching Playlist")
+						.font(.largeTitle)
+				}
+			}
+		}
+		.onAppear() {
+			self.workItem = self.createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+		}
+		.onDisappear() {
+			self.workItem?.cancel()
+		}
+	}
+	
+	func createWorkItem() -> DispatchWorkItem {
+		return DispatchWorkItem {
+			var tIsUserPlaylist: Bool?
+			var tTracks: [Track]?
+			if let playlist = self.playlist {
+				tIsUserPlaylist = playlist.creator.id == self.session.userId
+				tTracks = self.session.getPlaylistTracks(playlistId: playlist.id)
+				
+				if tTracks != nil {
+					DispatchQueue.main.async {
+						self.isUserPlaylist = tIsUserPlaylist
+						self.tracks = tTracks
+						self.loadingState = .successful
+					}
+				} else {
+					DispatchQueue.main.async {
+						self.loadingState = .error
+					}
 				}
 			}
 		}
