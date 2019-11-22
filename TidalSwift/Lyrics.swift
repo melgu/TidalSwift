@@ -82,7 +82,25 @@ class Lyrics {
 		}
 		
 		lastTrack = track
-		lastLyrics = lyricsResponse.lyric
-		return lyricsResponse.lyric
+		lastLyrics = String(htmlEncodedString: lyricsResponse.lyric.replacingOccurrences(of: "\n", with: "<br>"))
+		return lastLyrics
+	}
+}
+
+extension String {
+	init(htmlEncodedString: String) {
+		self.init()
+		
+		guard let data = htmlEncodedString.data(using: .utf8) else {
+			self = htmlEncodedString
+			return
+		}
+		
+		let decoded = try? NSAttributedString(data: data, options: [
+            .documentType: NSAttributedString.DocumentType.html,
+            .characterEncoding: String.Encoding.utf8.rawValue
+        ], documentAttributes: nil).string
+
+        self = decoded ?? htmlEncodedString
 	}
 }
