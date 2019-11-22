@@ -15,14 +15,9 @@ struct MyMixes: View {
 	let session: Session
 	let player: Player
 	
-	let mixes: [MixesItem]?
-	
-	init(session: Session, player: Player) {
-		self.session = session
-		self.player = player
-		
-		self.mixes = session.getMixes()
-	}
+	@State var mixes: [MixesItem]?
+	@State var workItem: DispatchWorkItem?
+	@State var loadingState: LoadingState = .loading
 	
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -32,9 +27,32 @@ struct MyMixes: View {
 			
 			if mixes != nil {
 				MixGrid(mixes: mixes!, session: session, player: player)
+			} else if loadingState == .loading {
+				LoadingSpinner()
 			} else {
 				Text("Problems fetching Mixes")
 					.font(.largeTitle)
+			}
+		}
+		.onAppear() {
+			self.workItem = self.createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+		}
+		.onDisappear() {
+			self.workItem?.cancel()
+		}
+	}
+	
+	func createWorkItem() -> DispatchWorkItem {
+		return DispatchWorkItem {
+			let t = self.session.getMixes()
+			DispatchQueue.main.async {
+				if t != nil {
+					self.mixes = t
+					self.loadingState = .successful
+				} else {
+					self.loadingState = .error
+				}
 			}
 		}
 	}
@@ -97,25 +115,15 @@ struct MixGridItem: View {
 }
 
 struct MixPlaylistView: View {
-	let mix: MixesItem?
 	let session: Session
 	let player: Player
 	
-	let tracks: [Track]?
+	@State var mix: MixesItem?
+	@State var tracks: [Track]?
+	@State var workItem: DispatchWorkItem?
+	@State var loadingState: LoadingState = .loading
 	
 	@EnvironmentObject var viewState: ViewState
-	
-	init(mix: MixesItem?, session: Session, player: Player) {
-		self.mix = mix
-		self.session = session
-		self.player = player
-		
-		if let mix = mix {
-			self.tracks = session.getMixPlaylistTracks(mixId: mix.id)
-		} else {
-			self.tracks = nil
-		}
-	}
 	
 	var body: some View {
 		ScrollView {
@@ -130,12 +138,7 @@ struct MixPlaylistView: View {
 					.padding(.leading, 10)
 					Spacer()
 				}
-				if mix == nil {
-					HStack {
-						Spacer()
-					}
-					Spacer()
-				} else {
+				if loadingState == .successful {
 					HStack {
 						MixImage(mix: mix!, session: session)
 							.frame(width: 100, height: 100)
@@ -170,6 +173,38 @@ struct MixPlaylistView: View {
 					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false,
 							  showArtist: true, showAlbum: true, playlist: nil,
 							  session: session, player: player)
+				} else if loadingState == .loading {
+					LoadingSpinner()
+				} else {
+					Text("Problems fetching Playlist")
+						.font(.largeTitle)
+				}
+			}
+		}
+		.onAppear() {
+			self.workItem = self.createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+		}
+		.onDisappear() {
+			self.workItem?.cancel()
+		}
+	}
+	
+	func createWorkItem() -> DispatchWorkItem {
+		return DispatchWorkItem {
+			var t: [Track]?
+			if let mix = self.mix {
+				t = self.session.getMixPlaylistTracks(mixId: mix.id)
+				
+				if t != nil {
+					DispatchQueue.main.async {
+						self.tracks = t
+						self.loadingState = .successful
+					}
+				} else {
+					DispatchQueue.main.async {
+						self.loadingState = .error
+					}
 				}
 			}
 		}

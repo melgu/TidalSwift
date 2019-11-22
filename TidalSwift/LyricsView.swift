@@ -12,8 +12,14 @@ import TidalSwiftLib
 struct LyricsView: View {
 	let lyricsHandler = Lyrics()
 	
+	@State var lyrics: String?
+	
+	@State var workItem: DispatchWorkItem?
+	@State var loadingState: LoadingState = .loading
+	
 	@EnvironmentObject var queueInfo: QueueInfo
 	
+	@State var lastTrack: Track?
 	var track: Track? {
 		if !queueInfo.queue.isEmpty {
 			return queueInfo.queue[queueInfo.currentIndex].track
@@ -21,16 +27,12 @@ struct LyricsView: View {
 			return nil
 		}
 	}
-	var lyrics: String? {
-		if let track = track {
-			return lyricsHandler.getLyrics(for: track)
-		} else {
-			return nil
-		}
-	}
 	
 	var body: some View {
-		ScrollView {
+		_ = queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
+		_ = queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
+		
+		return ScrollView {
 			VStack(alignment: .leading) {
 				if track != nil {
 					HStack {
@@ -42,7 +44,7 @@ struct LyricsView: View {
 					Text(track!.artists.formArtistString())
 						.font(.headline)
 						.padding(.bottom)
-					if lyrics != nil {
+					if loadingState == .successful {
 						Text(lyrics!)
 							.contextMenu {
 								Button(action: {
@@ -54,9 +56,11 @@ struct LyricsView: View {
 									Text("Copy")
 								}
 						}
+					} else if loadingState == .loading {
+						LoadingSpinner()
 					} else {
 						Text("No Lyrics available")
-							.foregroundColor(.secondary)
+						.foregroundColor(.secondary)
 					}
 				} else {
 					HStack {
@@ -70,6 +74,45 @@ struct LyricsView: View {
 			}
 			.padding()
 		}
+		.onAppear() {
+			self.fetchLyrics()
+		}
+		.onDisappear() {
+			self.workItem?.cancel()
+		}
+	}
+	
+	func fetchLyrics() {
+		if track == lastTrack {
+			return
+		}
+		lastTrack = track
+		workItem?.cancel()
+		loadingState = .loading
+		workItem = createWorkItem()
+		if workItem != nil {
+			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
+		}
 		
+	}
+	
+	func createWorkItem() -> DispatchWorkItem {
+		return DispatchWorkItem {
+			guard let track = self.track else {
+				DispatchQueue.main.async {
+					self.loadingState = .error
+				}
+				return
+			}
+			let t = self.lyricsHandler.getLyrics(for: track)
+			DispatchQueue.main.async {
+				if t != nil {
+					self.lyrics = t
+					self.loadingState = .successful
+				} else {
+					self.loadingState = .error
+				}
+			}
+		}
 	}
 }

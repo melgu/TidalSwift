@@ -11,31 +11,17 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct AccountInfoView: View {
-	let user: User?
-	let subscription: Subscription?
-	let session: Session
+	@State var session: Session
+	@State var user: User?
+	@State var subscription: Subscription?
 	
-	init(session: Session) {
-		if let userId = session.userId {
-			self.user = session.getUser(userId: userId)
-		} else {
-			self.user = nil
-		}
-		self.subscription = session.getSubscriptionInfo()
-		self.session = session
-	}
+	@State var workItem: DispatchWorkItem?
+	@State var loadingState: LoadingState = .loading
 	
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
-				if self.user == nil || self.subscription == nil {
-					HStack {
-						Text("Cannot access user or subscription info")
-							.foregroundColor(.secondary)
-						Spacer(minLength: 0)
-					}
-					Spacer(minLength: 0)
-				} else {
+				if loadingState == .successful {
 					HStack {
 						VStack {
 							Text("User")
@@ -62,6 +48,43 @@ struct AccountInfoView: View {
 						.padding()
 						Spacer(minLength: 0)
 					}
+				} else if loadingState == .loading {
+					LoadingSpinner()
+				} else {
+					Text("Cannot access user or subscription info")
+						.foregroundColor(.secondary)
+					Spacer(minLength: 0)
+				}
+			}
+		}
+		.onAppear() {
+			self.workItem = self.createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+		}
+		.onDisappear() {
+			self.workItem?.cancel()
+		}
+	}
+	
+	func createWorkItem() -> DispatchWorkItem {
+		return DispatchWorkItem {
+			var tUser: User?
+			var tSubscription: Subscription?
+			
+			if let userId = self.session.userId {
+				tUser = self.session.getUser(userId: userId)
+			}
+			tSubscription = self.session.getSubscriptionInfo()
+			
+			if tUser != nil && tSubscription != nil {
+				DispatchQueue.main.async {
+					self.user = tUser
+					self.subscription = tSubscription
+					self.loadingState = .successful
+				}
+			} else {
+				DispatchQueue.main.async {
+					self.loadingState = .error
 				}
 			}
 		}

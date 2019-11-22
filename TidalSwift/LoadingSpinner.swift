@@ -10,17 +10,33 @@ import SwiftUI
 
 struct LoadingSpinner: View {
 	
+	@State var animate = false
+	
 	var body: some View {
-		ZStack {
-			Text("􀊯")
-				.font(.title)
-				.foregroundColor(.white)
-//				.rotationEffect(.degrees(360))
-//				.animation(.linear(duration: 3))
-				.frame(width: 50, height: 50)
-				.background(Color.secondary)
+		VStack {
+			Spacer(minLength: 0)
+			HStack {
+				Spacer(minLength: 0)
+				
+				Text("􀊯")
+					.font(.title)
+					.rotationEffect(animate ? .degrees(360) : .degrees(0))
+					.animation(Animation.linear(duration: 1).repeatForever(autoreverses: false))
+					.onAppear {
+						self.animate.toggle()
+				}
+				
+				Spacer(minLength: 0)
+			}
+			Spacer(minLength: 0)
 		}
 	}
+}
+
+enum LoadingState {
+	case loading
+	case successful
+	case error
 }
 
 #if DEBUG

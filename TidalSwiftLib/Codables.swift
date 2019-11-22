@@ -224,6 +224,7 @@ public enum PlaylistType: String, Codable {
 	case user = "USER"
 	case editorial = "EDITORIAL"
 	case artist = "ARTIST"
+	case podcast = "PODCAST"
 	// Haven't seen others yet
 }
 

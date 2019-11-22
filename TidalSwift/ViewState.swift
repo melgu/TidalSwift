@@ -64,7 +64,7 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 }
 
 final class ViewState: ObservableObject {
-	var searchTerm: String = ""
+	@Published var searchTerm: String = ""
 	@Published var stack: [TidalSwiftView] = []
 	@Published var history: [TidalSwiftView] = []
 	var maxHistoryItems: Int = 100

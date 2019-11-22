@@ -7,24 +7,31 @@
 //
 
 import SwiftUI
+import Combine
 import TidalSwiftLib
 
 struct SearchView: View {
-	let searchResult: SearchResponse?
 	let session: Session
 	let player: Player
 	
-	init(searchTerm: String, session: Session, player: Player) {
-		print("init SearchView: \(searchTerm)")
+	@State var searchResult: SearchResponse?
+	@State var workItem: DispatchWorkItem?
+	@State var loadingState: LoadingState = .loading
+	
+	@State var lastSearchTerm: String?
+	@EnvironmentObject var viewState: ViewState
+	
+	init(session: Session, player: Player) {
+		print("init SearchView")
 		self.session = session
 		self.player = player
-		searchResult = session.search(for: searchTerm)
 	}
 	
 	var body: some View {
-		ScrollView([.vertical]) {
+		_ = viewState.$searchTerm.receive(on: DispatchQueue.main).sink(receiveValue: doSearch(searchTerm:))
+		return ScrollView([.vertical]) {
 			VStack(alignment: .leading) {
-				if searchResult != nil {
+				if loadingState == .successful {
 					if !searchResult!.artists.isEmpty {
 						SearchViewArtists(artists: searchResult!.artists, session: session, player: player)
 						Divider()
@@ -49,12 +56,47 @@ struct SearchView: View {
 						Text("No Results")
 							.font(.callout)
 					}
+				} else if loadingState == .loading {
+					LoadingSpinner()
 				} else {
 					Spacer()
 					Text("Problems searching.")
-						.font(.callout)
+						.font(.largeTitle)
 				}
 				Spacer()
+			}
+		}
+		.onAppear() {
+			self.doSearch(searchTerm: self.viewState.searchTerm)
+		}
+		.onDisappear() {
+			self.workItem?.cancel()
+		}
+	}
+	
+	func doSearch(searchTerm: String) {
+		if searchTerm == lastSearchTerm || searchTerm.isEmpty {
+			return
+		}
+		lastSearchTerm = searchTerm
+		workItem?.cancel()
+		loadingState = .loading
+		workItem = createWorkItem()
+		if workItem != nil {
+			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
+		}
+	}
+	
+	func createWorkItem() -> DispatchWorkItem {
+		return DispatchWorkItem {
+			let t = self.session.search(for: self.viewState.searchTerm)
+			DispatchQueue.main.async {
+				if t != nil {
+					self.searchResult = t
+					self.loadingState = .successful
+				} else {
+					self.loadingState = .error
+				}
 			}
 		}
 	}

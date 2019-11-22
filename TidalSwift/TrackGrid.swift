@@ -218,7 +218,7 @@ struct TrackContextMenu: View {
 					Button(action: {
 						print("Credits")
 						let controller = ResizableWindowController(rootView:
-							CreditsView(track: self.track, session: self.session)
+							CreditsView(session: self.session, track: self.track)
 						)
 						controller.window?.title = "Credits – \(self.track.title)"
 						controller.showWindow(nil)
