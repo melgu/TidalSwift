@@ -176,7 +176,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		// Space for Play/Pause
 		// Currently deactivated, because no way to know, if currently writing text in a TextField
 //		NSEvent.addLocalMonitorForEvents(matching: .keyUp) { event in
-//			if event.characters == " " {
+//			if event.characters == " " { [unowned self] in
 //				self.player.togglePlay()
 //			}
 //			return event
@@ -188,7 +188,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		_ = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: repeatLabel(repeatState:))
 		_ = sc.player.playbackInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
 		_ = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
+		
+		// Combine Debug Stuff
 //		_ = viewState.$viewType.receive(on: DispatchQueue.main).sink(receiveValue: { print("viewState Type: \($0?.rawValue ?? "nil")") })
+//		_ = sc.$session.receive(on: DispatchQueue.main).sink(receiveValue: { _ in print("sc.session sink") })
+//		_ = sc.$player.receive(on: DispatchQueue.main).sink(receiveValue: { _ in print("sc.player sink") })
 		
 		// Swift UI Stuff
 		window = NSWindow(

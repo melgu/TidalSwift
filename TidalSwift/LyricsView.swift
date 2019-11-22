@@ -10,6 +10,8 @@ import SwiftUI
 import TidalSwiftLib
 
 struct LyricsView: View {
+	let lyricsHandler = Lyrics()
+	
 	@EnvironmentObject var playbackInfo: PlaybackInfo
 	
 	var track: Track? {
@@ -21,7 +23,7 @@ struct LyricsView: View {
 	}
 	var lyrics: String? {
 		if let track = track {
-			return Lyrics.getLyrics(for: track)
+			return lyricsHandler.getLyrics(for: track)
 		} else {
 			return nil
 		}

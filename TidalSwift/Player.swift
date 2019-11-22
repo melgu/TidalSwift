@@ -326,7 +326,6 @@ class Player {
 	}
 	
 	func fraction() -> Double {
-		
 		guard let totalTime = avPlayer.currentItem?.duration.seconds else {
 			return 0
 		}
