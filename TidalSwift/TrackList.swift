@@ -92,7 +92,7 @@ struct TrackRow: View {
 					HStack {
 						if !self.queueInfo.queue.isEmpty &&
 							self.queueInfo.queue[self.queueInfo.currentIndex].track == self.track {
-							Text("􀊃")
+							Text("􀊄")
 						}
 						if self.showCover {
 							if self.coverUrl != nil {
