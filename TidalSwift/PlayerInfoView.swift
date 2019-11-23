@@ -189,7 +189,6 @@ struct ProgressBar : View {
 			HTrack(
 				value: playbackInfo.fraction,
 				view: Rectangle()
-					.foregroundColor(.black)
 					.foregroundColor(.playbackProgressBarForeground(for: colorScheme))
 					.frame(height: 5),
 				mask: Rectangle()
