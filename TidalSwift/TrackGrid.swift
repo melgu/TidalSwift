@@ -75,8 +75,6 @@ struct TrackContextMenu: View {
 	let session: Session
 	let player: Player
 	
-	let trackIsInFavorites: Bool?
-	
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	@State var t: Bool = false
@@ -87,8 +85,6 @@ struct TrackContextMenu: View {
 		self.player = player
 		self.indexInPlaylist = indexInPlaylist
 		self.playlist = playlist
-		
-		self.trackIsInFavorites = track.isInFavorites(session: session)
 	}
 	
 	var body: some View {
@@ -136,7 +132,7 @@ struct TrackContextMenu: View {
 			Divider()
 			Group {
 				if t || !t {
-					if trackIsInFavorites != nil && trackIsInFavorites! {
+					if track.isInFavorites(session: session)! {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeTrack(trackId: self.track.id)
