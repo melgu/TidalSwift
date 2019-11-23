@@ -19,7 +19,6 @@ struct TrackGridItem: View {
 	var body: some View {
 		VStack {
 			if track.album.getCoverUrl(session: session, resolution: 320) != nil {
-				//				Rectangle()
 				URLImageSourceView(
 					track.album.getCoverUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,

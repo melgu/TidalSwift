@@ -57,7 +57,6 @@ struct AlbumGridItem: View {
 	var body: some View {
 		VStack {
 			if album.getCoverUrl(session: session, resolution: 320) != nil {
-//				Rectangle()
 				URLImageSourceView(
 					album.getCoverUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -70,6 +69,7 @@ struct AlbumGridItem: View {
 			} else {
 				ZStack {
 					Rectangle()
+						.foregroundColor(.black)
 //						.resizable()
 //						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)

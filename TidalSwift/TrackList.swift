@@ -105,6 +105,7 @@ struct TrackRow: View {
 									.cornerRadius(CORNERRADIUS)
 							} else {
 								Rectangle()
+									.foregroundColor(.black)
 									.frame(width: 30, height: 30)
 									.cornerRadius(CORNERRADIUS)
 							}

@@ -47,6 +47,7 @@ struct PlayerInfoView: View {
 									}
 								} else {
 									Rectangle()
+										.foregroundColor(.black)
 										.frame(width: 30, height: 30)
 										.cornerRadius(CORNERRADIUS)
 								}
@@ -128,6 +129,7 @@ struct PlayerInfoView: View {
 							HTrack(
 								value: self.playbackInfo.volume,
 								view: Rectangle()
+									.foregroundColor(.black)
 									.foregroundColor(.secondary)
 									.frame(height: 4)
 							)
@@ -187,6 +189,7 @@ struct ProgressBar : View {
 			HTrack(
 				value: playbackInfo.fraction,
 				view: Rectangle()
+					.foregroundColor(.black)
 					.foregroundColor(.playbackProgressBarForeground(for: colorScheme))
 					.frame(height: 5),
 				mask: Rectangle()
