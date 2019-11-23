@@ -62,6 +62,10 @@ struct AlbumView: View {
 								Text(album!.title)
 									.font(.title)
 									.lineLimit(2)
+								Text(album!.attributeString)
+									.padding(.leading, -5)
+									.foregroundColor(.secondary)
+									.layoutPriority(1)
 								Text("􀅴")
 									.foregroundColor(.secondary)
 									.onTapGesture {

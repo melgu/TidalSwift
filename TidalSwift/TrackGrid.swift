@@ -42,11 +42,10 @@ struct TrackGridItem: View {
 			HStack {
 				Text(track.title)
 					.lineLimit(1)
-				if track.explicit {
-					Text("􀂝")
-						.foregroundColor(.secondary)
-						.layoutPriority(1)
-				}
+				Text(track.attributeString)
+					.padding(.leading, -5)
+					.foregroundColor(.secondary)
+					.layoutPriority(1)
 			}
 			.frame(width: 160)
 			if showArtist {
@@ -233,5 +232,20 @@ struct TrackContextMenu: View {
 				}
 			}
 		}
+	}
+}
+
+extension Track {
+	var attributeString: String {
+		var s = ""
+		if self.explicit {
+			s += "􀂝"
+		}
+		if self.audioQuality == .master {
+			s += "􀂭"
+		} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
+			s += "􀑈"
+		}
+		return s
 	}
 }
