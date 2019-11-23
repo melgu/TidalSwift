@@ -92,11 +92,10 @@ struct AlbumGridItem: View {
 			HStack {
 				Text(album.title)
 					.lineLimit(1)
-				if album.explicit != nil && album.explicit! {
-					Text("􀂝")
-						.foregroundColor(.secondary)
-						.layoutPriority(1)
-				}
+				Text(album.attributeString)
+					.padding(.leading, -5)
+					.foregroundColor(.secondary)
+					.layoutPriority(1)
 			}
 			.frame(width: 160)
 			if showArtists {
@@ -272,5 +271,20 @@ struct AlbumContextMenu: View {
 				}
 			}
 		}
+	}
+}
+
+extension Album {
+	var attributeString: String {
+		var s = ""
+		if self.explicit ?? false {
+			s += "􀂝"
+		}
+		if self.audioQuality == .master {
+			s += "􀂭"
+		} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
+			s += "􀑈"
+		}
+		return s
 	}
 }

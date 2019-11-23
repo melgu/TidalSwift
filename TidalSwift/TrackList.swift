@@ -114,11 +114,10 @@ struct TrackRow: View {
 								.foregroundColor(.secondary)
 						}
 						Text(self.track.title)
-						if self.track.explicit {
-							Text("􀂝")
-								.foregroundColor(.secondary)
-								.layoutPriority(1)
-						}
+						Text(self.track.attributeString)
+							.padding(.leading, -5)
+							.foregroundColor(.secondary)
+							.layoutPriority(1)
 						Spacer(minLength: 5)
 					}
 					.frame(width: metrics.size.width * self.widthFactorTrack)
