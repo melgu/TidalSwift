@@ -89,6 +89,7 @@ struct PlaylistView: View {
 								}
 								
 							}
+							Text(playlist!.description ?? "")
 							Text(playlist!.creator.name ?? "")
 							Text("Created: \(DateFormatter.dateOnly.string(from: playlist!.created))")
 								.foregroundColor(.secondary)
