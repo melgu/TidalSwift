@@ -49,6 +49,7 @@ struct ArtistGridItem: View {
 			} else {
 				ZStack {
 					Rectangle()
+						.foregroundColor(.black)
 						.frame(width: 160, height: 160)
 						.cornerRadius(CORNERRADIUS)
 						.shadow(radius: SHADOWRADIUS, y: SHADOWY)

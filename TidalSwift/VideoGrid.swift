@@ -39,7 +39,6 @@ struct VideoGridItem: View {
 	var body: some View {
 		VStack {
 			if video.getImageUrl(session: session, resolution: 320) != nil {
-//				Rectangle()
 				URLImageSourceView(
 					video.getImageUrl(session: session, resolution: 320)!,
 					isAnimationEnabled: true,
@@ -52,6 +51,7 @@ struct VideoGridItem: View {
 			} else {
 				ZStack {
 					Rectangle()
+						.foregroundColor(.black)
 						.frame(width: 160, height: 160)
 						.cornerRadius(CORNERRADIUS)
 						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
