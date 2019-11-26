@@ -30,19 +30,26 @@ enum ViewType: String, Codable {
 }
 
 struct TidalSwiftView: Codable, Equatable, Identifiable {
-	var id: String { (viewType?.rawValue ?? "nil") +
+	var id: String { viewType.rawValue +
 		String(describing: artist?.id) +
 		String(describing: album?.id) +
 		String(describing: playlist?.uuid) +
 		String(describing: mix?.id)
 	}
 	
-	var viewType: ViewType?
+	var viewType: ViewType
 	var searchTerm: String = ""
 	var artist: Artist? = nil
 	var album: Album? = nil
 	var playlist: Playlist? = nil
 	var mix: MixesItem? = nil
+	
+	// Offline
+	var playlists: [Playlist]? = nil
+	var artists: [Artist]? = nil
+	var albums: [Album]? = nil
+	var tracks: [Track]? = nil
+	var videos: [Video]? = nil
 	
 	static func == (lhs: TidalSwiftView, rhs: TidalSwiftView) -> Bool {
 		if lhs.viewType == rhs.viewType {
