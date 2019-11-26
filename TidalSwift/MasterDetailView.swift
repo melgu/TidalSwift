@@ -32,8 +32,6 @@ struct MasterDetailView: View {
 				self.viewState.clear()
 				if $0 != nil {
 					self.viewState.push(view: TidalSwiftView(viewType: $0!))
-				} else {
-					self.viewState.push(view: TidalSwiftView(viewType: nil, searchTerm: searchTerm.wrappedValue))
 				}
 		})
 		return NavigationView {
@@ -105,7 +103,7 @@ struct DetailView: View {
 	var body: some View {
 		VStack {
 			PlayerInfoView(session: session, player: player)
-			if viewState.stack.isEmpty || viewState.stack.last!.viewType == nil {
+			if viewState.stack.isEmpty {
 				Spacer()
 			} else {
 				HStack {

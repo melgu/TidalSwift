@@ -364,7 +364,7 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	}
 }
 
-public struct Video: Decodable, Equatable, Identifiable, Hashable {
+public struct Video: Codable, Equatable, Identifiable, Hashable {
 	public let id: Int
 	public let title: String
 	public let volumeNumber: Int
