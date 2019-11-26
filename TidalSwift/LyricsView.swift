@@ -57,7 +57,7 @@ struct LyricsView: View {
 								}
 						}
 					} else if loadingState == .loading {
-						LoadingSpinner()
+						FullscreenLoadingSpinner()
 					} else {
 						Text("No Lyrics available")
 						.foregroundColor(.secondary)

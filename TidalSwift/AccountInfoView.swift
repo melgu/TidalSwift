@@ -49,7 +49,7 @@ struct AccountInfoView: View {
 						Spacer(minLength: 0)
 					}
 				} else if loadingState == .loading {
-					LoadingSpinner()
+					FullscreenLoadingSpinner()
 				} else {
 					Text("Cannot access user or subscription info")
 						.foregroundColor(.secondary)

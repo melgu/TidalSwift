@@ -85,6 +85,8 @@ struct ArtistContextMenu: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var viewState: ViewState
+	
 	@State var t: Bool = false
 	
 	var body: some View {
@@ -113,6 +115,7 @@ struct ArtistContextMenu: View {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeArtist(artistId: self.artist.id)
+							self.viewState.refreshCurrentView()
 							self.t.toggle()
 						}) {
 							Text("Remove from Favorites")

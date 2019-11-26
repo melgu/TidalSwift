@@ -29,7 +29,7 @@ struct MasterDetailView: View {
 			get: { self.viewState.stack.last?.viewType },
 			set: {
 //				print("Selection View: \($0?.rawValue ?? "nil")")
-				self.viewState.clear()
+				self.viewState.clearQueue()
 				if $0 != nil {
 					self.viewState.push(view: TidalSwiftView(viewType: $0!))
 				}
@@ -78,7 +78,7 @@ struct SearchField: View {
 	@Binding var selection: ViewType?
 	
 	var body: some View {
-		TextField("Search", text: $searchTerm, onEditingChanged: {_ in
+		TextField("Search", text: $searchTerm, onEditingChanged: { _ in
 			print("Search Change: \(self.searchTerm)")
 			self.selection = .search
 //			unowned let window = (NSApp.delegate as? AppDelegate)?.window
@@ -133,13 +133,13 @@ struct DetailView: View {
 						
 					// Single Things
 					}  else if viewState.stack.last!.viewType == .artist {
-						ArtistView(session: session, player: player, artist: viewState.stack.last!.artist)
+						ArtistView(session: session, player: player)
 					} else if viewState.stack.last!.viewType == .album {
-						AlbumView(session: session, player: player, album: viewState.stack.last!.album)
+						AlbumView(session: session, player: player)
 					} else if viewState.stack.last!.viewType == .playlist {
-						PlaylistView(session: session, player: player, playlist: viewState.stack.last!.playlist)
+						PlaylistView(session: session, player: player)
 					} else if viewState.stack.last!.viewType == .mix {
-						MixPlaylistView(session: session, player: player, mix: viewState.stack.last!.mix)
+						MixPlaylistView(session: session, player: player)
 					}
 				}
 			}

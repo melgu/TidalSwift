@@ -14,45 +14,22 @@ struct NewReleases: View {
 	let session: Session
 	let player: Player
 	
-	@State var albums: [Album]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack(alignment: .leading) {
-			Text("New Releases")
-				.font(.largeTitle)
-				.padding(.horizontal)
-			
-			if albums != nil {
-				AlbumGrid(albums: albums!, showArtists: true, showReleaseDate: true, session: session, player: player)
-			} else if loadingState == .loading {
-				LoadingSpinner()
-			} else {
-				Text("Problems fetching favorite albums")
+			HStack {
+				Text("New Releases")
 					.font(.largeTitle)
+				Spacer()
+				LoadingSpinner()
 			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			let t = self.session.helpers?.newReleasesFromFavoriteArtists(number: 40)
-			DispatchQueue.main.async {
-				if t != nil {
-					self.albums = t
-					self.loadingState = .successful
-				} else {
-					self.loadingState = .error
-				}
+			.padding(.horizontal)
+			
+			if viewState.stack.last!.albums != nil {
+				AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, showReleaseDate: true, session: session, player: player)
 			}
+			Spacer(minLength: 0)
 		}
 	}
 }

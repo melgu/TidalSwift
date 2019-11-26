@@ -16,7 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var window: NSWindow!
 	
 	var sc: SessionContainer
-	var viewState = ViewState()
+	var viewState: ViewState
 	var playlistEditingValues = PlaylistEditingValues()
 	
 	// Login
@@ -33,15 +33,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let player = Player(session: session)
 		sc = SessionContainer(session: session, player: player)
 		
+		var cache = ViewCache()
+		if let data = UserDefaults.standard.data(forKey: "ViewCache") {
+			if let tempCache = try? JSONDecoder().decode(ViewCache.self, from: data) {
+				cache = tempCache
+			}
+		}
+		
+		viewState = ViewState(session: session, cache: cache)
+		
 		// Init Secondary Windows (cannot use method func because self is not initialized yet
 		lyricsViewController = ResizableWindowController(rootView:
 			LyricsView()
+				.environmentObject(viewState)
 				.environmentObject(sc.player.queueInfo)
 		)
 		lyricsViewController.window?.title = "Lyrics"
 		
 		queueViewController = ResizableWindowController(rootView:
 			QueueView(session: sc.session, player: sc.player)
+				.environmentObject(viewState)
 				.environmentObject(sc)
 				.environmentObject(sc.player.queueInfo)
 		)
@@ -55,6 +66,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		playbackHistoryViewController = ResizableWindowController(rootView:
 			PlaybackHistoryView()
+				.environmentObject(viewState)
 				.environmentObject(sc)
 				.environmentObject(sc.player.queueInfo)
 		)
@@ -66,12 +78,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	func initSecondaryWindows() {
 		lyricsViewController = ResizableWindowController(rootView:
 			LyricsView()
+				.environmentObject(viewState)
 				.environmentObject(sc.player.queueInfo)
 		)
 		lyricsViewController.window?.title = "Lyrics"
 		
 		queueViewController = ResizableWindowController(rootView:
 			QueueView(session: sc.session, player: sc.player)
+				.environmentObject(viewState)
+				.environmentObject(sc)
 				.environmentObject(sc.player.queueInfo)
 		)
 		queueViewController.window?.title = "Queue"
@@ -84,6 +99,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		playbackHistoryViewController = ResizableWindowController(rootView:
 			PlaybackHistoryView()
+				.environmentObject(viewState)
 				.environmentObject(sc)
 				.environmentObject(sc.player.queueInfo)
 		)
@@ -121,15 +137,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		closeAllSecondaryWindows()
 		sc.player.clearQueue()
 		sc.session.deletePersistentInformation()
-		viewState.clear()
+		viewState.clearQueue()
 		loginInfo.showModal = true
 	}
 	
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
 		
-		sc.session.loadSession()
-		let loggedIn = sc.session.checkLogin()
+		let loggedIn = sc.session.loadSession()
+//		let loggedIn = sc.session.checkLogin()
 		print("Login Succesful: \(loggedIn)")
 		
 		loginInfo.showModal = !loggedIn
@@ -197,6 +213,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //		_ = sc.$session.receive(on: DispatchQueue.main).sink(receiveValue: { _ in print("sc.session sink") })
 //		_ = sc.$player.receive(on: DispatchQueue.main).sink(receiveValue: { _ in print("sc.player sink") })
 		
+		viewState.refreshCurrentView()
+		
 		// Swift UI Stuff
 		window = NSWindow(
 			contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
@@ -260,6 +278,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		UserDefaults.standard.set(viewHistoryData, forKey: "ViewStateHistory")
 		UserDefaults.standard.set(viewState.maxHistoryItems, forKey: "ViewStateHistoryMaxItems")
 		
+		// View Cache
+		let viewCacheData = try? JSONEncoder().encode(viewState.cache)
+		UserDefaults.standard.set(viewCacheData, forKey: "ViewCache")
+		
 		UserDefaults.standard.synchronize()
 		
 		NSApp.terminate(nil)
@@ -301,36 +323,50 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var goToAlbum: NSMenuItem!
 	@IBAction func goToAlbum(_ sender: Any) {
 		print("Go to Album")
+		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
+		viewState.push(album: track.album)
 	}
 	@IBOutlet weak var goToArtist: NSMenuItem!
 	@IBAction func goToArtist(_ sender: Any) {
-		print("Go to Artist")
+		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
+		if !track.artists.isEmpty {
+			print("Go to \(track.artists[0].name)")
+			viewState.push(artist: track.artists[0])
+		}
+		// TODO: Not just the first artist
 	}
 	
 	@IBOutlet weak var addToFavorites: NSMenuItem!
 	@IBAction func addToFavorites(_ sender: Any) {
 		sc.session.favorites?.addTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
 		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
+		viewState.refreshCurrentView()
 	}
 	@IBOutlet weak var removeFromFavorites: NSMenuItem!
 	@IBAction func removeFromFavorites(_ sender: Any) {
 		sc.session.favorites?.removeTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
 		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
+		viewState.refreshCurrentView()
 	}
 	
 	@IBOutlet weak var addToPlaylist: NSMenuItem!
 	@IBAction func addToPlaylist(_ sender: Any) {
-		print("Add to Playlist")
+		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
+		print("Add \(track.title) to Playlist")
+		self.playlistEditingValues.tracks = [track]
+		self.playlistEditingValues.showAddTracksModal = true
 	}
 	@IBOutlet weak var albumAddFavorites: NSMenuItem!
 	@IBAction func albumAddFavorites(_ sender: Any) {
 		sc.session.favorites?.addAlbum(albumId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.album.id)
 		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
+		viewState.refreshCurrentView()
 	}
 	@IBOutlet weak var albumRemoveFavorites: NSMenuItem!
 	@IBAction func albumRemoveFavorites(_ sender: Any) {
 		sc.session.favorites?.removeAlbum(albumId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.album.id)
 		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
+		viewState.refreshCurrentView()
 	}
 	
 	func favoriteLabel(currentIndex: Int) {
@@ -365,7 +401,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			removeFromFavorites.isHidden = true
 		}
 		
-		if trackIsInFavorites != nil && trackIsInFavorites! {
+		let albumIsInFavorites = sc.player.queueInfo.queue[currentIndex].track.album.isInFavorites(session: sc.session)
+		if albumIsInFavorites != nil && albumIsInFavorites! {
 			albumAddFavorites.isHidden = true
 			albumRemoveFavorites.isHidden = false
 		} else {

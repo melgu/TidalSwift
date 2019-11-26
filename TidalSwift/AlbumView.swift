@@ -14,12 +14,8 @@ struct AlbumView: View {
 	let session: Session
 	let player: Player
 	
-	@State var album: Album?
-	@State var tracks: [Track]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
-	
 	@EnvironmentObject var viewState: ViewState
+	
 	@State var t: Bool = false
 	
 	var body: some View {
@@ -33,14 +29,15 @@ struct AlbumView: View {
 						Text("􀆉")
 					}
 					.padding(.leading, 10)
-					Spacer()
+					Spacer(minLength: 0)
+					LoadingSpinner()
 				}
-				if album != nil && tracks != nil {
+				if viewState.stack.last!.album != nil && viewState.stack.last!.tracks != nil {
 					HStack {
 						URLImageSourceView(
-							album!.getCoverUrl(session: session, resolution: 320)!,
+							viewState.stack.last!.album!.getCoverUrl(session: session, resolution: 320)!,
 							isAnimationEnabled: true,
-							label: Text(album!.title)
+							label: Text(viewState.stack.last!.album!.title)
 						)
 							.frame(width: 100, height: 100)
 							.cornerRadius(CORNERRADIUS)
@@ -48,21 +45,21 @@ struct AlbumView: View {
 							.onTapGesture {
 								let controller = CoverWindowController(rootView:
 									URLImageSourceView(
-										self.album!.getCoverUrl(session: self.session, resolution: 1280)!,
+										self.viewState.stack.last!.album!.getCoverUrl(session: self.session, resolution: 1280)!,
 										isAnimationEnabled: true,
-										label: Text(self.album!.title)
+										label: Text(self.viewState.stack.last!.album!.title)
 									)
 								)
-								controller.window?.title = self.album!.title
+								controller.window?.title = self.viewState.stack.last!.album!.title
 								controller.showWindow(nil)
 						}
 						
 						VStack(alignment: .leading) {
 							HStack {
-								Text(album!.title)
+								Text(viewState.stack.last!.album!.title)
 									.font(.title)
 									.lineLimit(2)
-								Text(album!.attributeString)
+								Text(viewState.stack.last!.album!.attributeString)
 									.padding(.leading, -5)
 									.foregroundColor(.secondary)
 									.layoutPriority(1)
@@ -70,18 +67,18 @@ struct AlbumView: View {
 									.foregroundColor(.secondary)
 									.onTapGesture {
 										let controller = ResizableWindowController(rootView:
-											CreditsView(session: self.session, album: self.album!)
+											CreditsView(session: self.session, album: self.viewState.stack.last!.album!)
 										)
-										controller.window?.title = "Credits – \(self.album!.title)"
+										controller.window?.title = "Credits – \(self.viewState.stack.last!.album!.title)"
 										controller.showWindow(nil)
 								}
 								if t || !t {
-									if album!.isInFavorites(session: session)! {
+									if viewState.stack.last!.album!.isInFavorites(session: session)! {
 										Text("􀊵")
 											.foregroundColor(.secondary)
 											.onTapGesture {
 												print("Remove from Favorites")
-												self.session.favorites!.removeAlbum(albumId: self.album!.id)
+												self.session.favorites!.removeAlbum(albumId: self.viewState.stack.last!.album!.id)
 												self.t.toggle()
 										}
 									} else {
@@ -89,26 +86,26 @@ struct AlbumView: View {
 											.foregroundColor(.secondary)
 											.onTapGesture {
 												print("Add to Favorites")
-												self.session.favorites!.addAlbum(albumId: self.album!.id)
+												self.session.favorites!.addAlbum(albumId: self.viewState.stack.last!.album!.id)
 												self.t.toggle()
 										}
 									}
 								}
 							}
-							Text(album!.artists?.formArtistString() ?? "")
-							if album!.releaseDate != nil {
-								Text(DateFormatter.dateOnly.string(from: album!.releaseDate!))
+							Text(viewState.stack.last!.album!.artists?.formArtistString() ?? "")
+							if viewState.stack.last!.album!.releaseDate != nil {
+								Text(DateFormatter.dateOnly.string(from: viewState.stack.last!.album!.releaseDate!))
 							}
 						}
 						Spacer()
 							.layoutPriority(-1)
 						VStack(alignment: .leading) {
-							if album!.numberOfTracks != nil {
-								Text("\(album!.numberOfTracks!) Tracks")
+							if viewState.stack.last!.album!.numberOfTracks != nil {
+								Text("\(viewState.stack.last!.album!.numberOfTracks!) Tracks")
 									.foregroundColor(.secondary)
 							}
-							if album!.duration != nil {
-								Text(secondsToHoursMinutesSecondsString(seconds: album!.duration!))
+							if viewState.stack.last!.album!.duration != nil {
+								Text(secondsToHoursMinutesSecondsString(seconds: viewState.stack.last!.album!.duration!))
 									.foregroundColor(.secondary)
 							}
 							Spacer()
@@ -118,49 +115,11 @@ struct AlbumView: View {
 					.padding(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
 					Divider()
 					
-					TrackList(tracks: tracks!, showCover: false, showAlbumTrackNumber: true,
+					TrackList(tracks: viewState.stack.last!.tracks!, showCover: false, showAlbumTrackNumber: true,
 							  showArtist: true, showAlbum: false, playlist: nil,
 							  session: session, player: player)
-				} else if loadingState == .loading {
-					LoadingSpinner()
-				} else {
-					Text("Problems fetching album")
-						.font(.largeTitle)
-				}
-			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			var tAlbum: Album?
-			var tTracks: [Track]?
-			if let album = self.album {
-				if album.releaseDate == nil {
-					print("Album incomplete. Loading complete album: \(album.title)")
-					tAlbum = self.session.getAlbum(albumId: album.id)
-				} else {
-					tAlbum = self.album
-				}
-				tTracks = self.session.getAlbumTracks(albumId: album.id)
-				
-				if tTracks != nil {
-					DispatchQueue.main.async {
-						self.album = tAlbum
-						self.tracks = tTracks
-						self.loadingState = .successful
-					}
-				} else {
-					DispatchQueue.main.async {
-						self.loadingState = .error
-					}
+					
+					Spacer(minLength: 0)
 				}
 			}
 		}

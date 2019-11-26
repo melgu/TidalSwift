@@ -13,53 +13,22 @@ struct FavoritePlaylists: View {
 	let session: Session
 	let player: Player
 	
-	@State var playlists: [Playlist]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack(alignment: .leading) {
-			Text("Favorite Playlists")
-				.font(.largeTitle)
-				.padding(.horizontal)
-			
-			if playlists != nil {
-				PlaylistGrid(playlists: playlists!, session: session, player: player)
-			} else if loadingState == .loading {
-				LoadingSpinner()
-			} else {
-				Text("Problems fetching favorite playlists")
+			HStack {
+				Text("Favorite Playlists")
 					.font(.largeTitle)
+				Spacer()
+				LoadingSpinner()
 			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			guard let favorites = self.session.favorites else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
+			.padding(.horizontal)
+			
+			if viewState.stack.last!.playlists != nil {
+				PlaylistGrid(playlists: viewState.stack.last!.playlists!, session: session, player: player)
 			}
-			guard let favT = favorites.playlists() else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
-			}
-			let t = favoritePlaylists2Playlists(favT)
-			DispatchQueue.main.async {
-				self.playlists = t
-				self.loadingState = .successful
-			}
+			Spacer(minLength: 0)
 		}
 	}
 }
@@ -82,53 +51,22 @@ struct FavoriteAlbums: View {
 	let session: Session
 	let player: Player
 	
-	@State var albums: [Album]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack(alignment: .leading) {
-			Text("Favorite Albums")
-				.font(.largeTitle)
-				.padding(.horizontal)
-			
-			if albums != nil {
-				AlbumGrid(albums: albums!, showArtists: true, session: session, player: player)
-			} else if loadingState == .loading {
-				LoadingSpinner()
-			} else {
-				Text("Problems fetching favorite albums")
+			HStack {
+				Text("Favorite Albums")
 					.font(.largeTitle)
+				Spacer()
+				LoadingSpinner()
 			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			guard let favorites = self.session.favorites else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
+			.padding(.horizontal)
+			
+			if viewState.stack.last!.albums != nil {
+				AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, session: session, player: player)
 			}
-			guard let favT = favorites.albums(order: .dateAdded, orderDirection: .descending) else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
-			}
-			let t = favoriteAlbums2Albums(favT)
-			DispatchQueue.main.async {
-				self.albums = t
-				self.loadingState = .successful
-			}
+			Spacer(minLength: 0)
 		}
 	}
 }
@@ -141,57 +79,26 @@ struct FavoriteTracks: View {
 	let session: Session
 	let player: Player
 	
-	@State var tracks: [Track]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack(alignment: .leading) {
-			Text("Favorite Tracks")
-				.font(.largeTitle)
-				.padding(.horizontal)
+			HStack {
+				Text("Favorite Tracks")
+					.font(.largeTitle)
+				Spacer()
+				LoadingSpinner()
+			}
+			.padding(.horizontal)
 			
-			if tracks != nil {
+			if viewState.stack.last!.tracks != nil {
 				ScrollView {
-					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false,
+					TrackList(tracks: viewState.stack.last!.tracks!, showCover: true, showAlbumTrackNumber: false,
 							  showArtist: true, showAlbum: true, playlist: nil,
 							  session: session, player: player)
 				}
-			} else if loadingState == .loading {
-				LoadingSpinner()
-			} else {
-				Text("Problems fetching favorite tracks")
-					.font(.largeTitle)
-				Spacer()
 			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			guard let favorites = self.session.favorites else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
-			}
-			guard let favT = favorites.tracks(order: .dateAdded, orderDirection: .descending) else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
-			}
-			let t = favoriteTracks2Tracks(favT)
-			DispatchQueue.main.async {
-				self.tracks = t
-			}
+			Spacer(minLength: 0)
 		}
 	}
 }
@@ -204,53 +111,23 @@ struct FavoriteVideos: View {
 	let session: Session
 	let player: Player
 	
-	@State var videos: [Video]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack(alignment: .leading) {
-			Text("Favorite Videos")
-				.font(.largeTitle)
-				.padding(.horizontal)
-			
-			if videos != nil {
-				VideoGrid(videos: videos!,
-						  showArtists: true, session: session, player: player)
-			} else if loadingState == .loading {
-				LoadingSpinner()
-			} else {
-				Text("Problems fetching favorite videos")
+			HStack {
+				Text("Favorite Videos")
 					.font(.largeTitle)
+				Spacer()
+				LoadingSpinner()
 			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			guard let favorites = self.session.favorites else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
+			.padding(.horizontal)
+			
+			if viewState.stack.last!.videos != nil {
+				VideoGrid(videos: viewState.stack.last!.videos!,
+						  showArtists: true, session: session, player: player)
 			}
-			guard let favT = favorites.videos(order: .dateAdded, orderDirection: .descending) else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
-			}
-			let t = favoriteVideos2Videos(favT)
-			DispatchQueue.main.async {
-				self.videos = t
-			}
+			Spacer(minLength: 0)
 		}
 	}
 }
@@ -263,53 +140,22 @@ struct FavoriteArtists: View {
 	let session: Session
 	let player: Player
 	
-	@State var artists: [Artist]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack(alignment: .leading) {
-			Text("Favorite Artists")
-				.font(.largeTitle)
-				.padding(.horizontal)
-			
-			if artists != nil {
-				ArtistGrid(artists: artists!, session: session, player: player)
-			} else if loadingState == .loading {
-				LoadingSpinner()
-			} else {
-				Text("Problems fetching favorite artists")
+			HStack {
+				Text("Favorite Artists")
 					.font(.largeTitle)
+				Spacer()
+				LoadingSpinner()
 			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-		
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			guard let favorites = self.session.favorites else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
+			.padding(.horizontal)
+			
+			if viewState.stack.last!.artists != nil {
+				ArtistGrid(artists: viewState.stack.last!.artists!, session: session, player: player)
 			}
-			guard let favT = favorites.artists() else {
-				DispatchQueue.main.async {
-					self.loadingState = .error
-				}
-				return
-			}
-			let t = favoriteArtists2Artists(favT)
-			DispatchQueue.main.async {
-				self.artists = t
-			}
+			Spacer(minLength: 0)
 		}
 	}
 }
