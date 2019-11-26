@@ -194,10 +194,11 @@ struct AlbumContextMenu: View {
 			}
 			Group {
 				if t || !t {
-					if album.isInFavorites(session: session)! {
+					if album.isInFavorites(session: session) ?? false {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeAlbum(albumId: self.album.id)
+							self.viewState.refreshCurrentView()
 							self.t.toggle()
 						}) {
 							Text("Remove from Favorites")

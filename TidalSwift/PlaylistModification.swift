@@ -107,6 +107,7 @@ struct RemoveFromPlaylistView: View {
 	let session: Session
 	
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack {
@@ -126,6 +127,7 @@ struct RemoveFromPlaylistView: View {
 					let success = self.session.removeTrack(index: i, from: uuid)
 					if success {
 						self.playlistEditingValues.showRemoveTracksModal = false
+						self.viewState.refreshCurrentView()
 					}
 				}) {
 					Text("Delete")
@@ -141,6 +143,7 @@ struct DeletePlaylist: View {
 	let session: Session
 	
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack {
@@ -158,6 +161,7 @@ struct DeletePlaylist: View {
 					let success = self.session.deletePlaylist(playlistId: self.playlistEditingValues.playlist!.uuid)
 					if success {
 						self.playlistEditingValues.showDeleteModal = false
+						self.viewState.refreshCurrentView()
 					}
 				}) {
 					Text("Delete")
@@ -172,6 +176,7 @@ struct EditPlaylist: View {
 	let session: Session
 	
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@EnvironmentObject var viewState: ViewState
 	
 	@State var playlistName: String = ""
 	@State var playlistDescription: String = ""
@@ -201,6 +206,7 @@ struct EditPlaylist: View {
 															title: self.playlistName, description: self.playlistDescription)
 					if success {
 						self.playlistEditingValues.showEditModal = false
+						self.viewState.refreshCurrentView()
 					}
 				}) {
 					Text("Rename")

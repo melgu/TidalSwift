@@ -15,45 +15,22 @@ struct MyMixes: View {
 	let session: Session
 	let player: Player
 	
-	@State var mixes: [MixesItem]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack(alignment: .leading) {
+			HStack {
 			Text("My Mixes")
 				.font(.largeTitle)
+			Spacer()
+			LoadingSpinner()
+			}
 				.padding(.horizontal)
 			
-			if mixes != nil {
-				MixGrid(mixes: mixes!, session: session, player: player)
-			} else if loadingState == .loading {
-				LoadingSpinner()
-			} else {
-				Text("Problems fetching Mixes")
-					.font(.largeTitle)
+			if viewState.stack.last!.mixes != nil {
+				MixGrid(mixes: viewState.stack.last!.mixes!, session: session, player: player)
 			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			let t = self.session.getMixes()
-			DispatchQueue.main.async {
-				if t != nil {
-					self.mixes = t
-					self.loadingState = .successful
-				} else {
-					self.loadingState = .error
-				}
-			}
+			Spacer(minLength: 0)
 		}
 	}
 }
@@ -118,11 +95,6 @@ struct MixPlaylistView: View {
 	let session: Session
 	let player: Player
 	
-	@State var mix: MixesItem?
-	@State var tracks: [Track]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
-	
 	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
@@ -138,74 +110,43 @@ struct MixPlaylistView: View {
 					.padding(.leading, 10)
 					Spacer()
 				}
-				if loadingState == .successful {
+				if viewState.stack.last!.tracks != nil {
 					HStack {
-						MixImage(mix: mix!, session: session)
+						MixImage(mix: viewState.stack.last!.mix!, session: session)
 							.frame(width: 100, height: 100)
 							.cornerRadius(CORNERRADIUS)
 							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 							.onTapGesture {
 								let controller = CoverWindowController(rootView:
 									URLImageSourceView(
-										self.mix!.graphic.images[0].getImageUrl(session: self.session, resolution: 320)!,
+										self.viewState.stack.last!.mix!.graphic.images[0].getImageUrl(session: self.session, resolution: 320)!,
 										isAnimationEnabled: true,
-										label: Text(self.mix!.title)
+										label: Text(self.viewState.stack.last!.mix!.title)
 									)
 								)
-								controller.window?.title = self.mix!.title
+								controller.window?.title = self.viewState.stack.last!.mix!.title
 								controller.showWindow(nil)
 						}
 						
 						VStack(alignment: .leading) {
-							Text(mix!.title)
+							Text(viewState.stack.last!.mix!.title)
 								.font(.title)
 								.lineLimit(2)
-							Text(mix!.subTitle)
+							Text(viewState.stack.last!.mix!.subTitle)
 								.foregroundColor(.secondary)
 						}
 						Spacer(minLength: 0)
-							.layoutPriority(-1)
+						LoadingSpinner()
 					}
 					.frame(height: 100)
 					.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
 					Divider()
 					
-					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false,
+					TrackList(tracks: viewState.stack.last!.tracks!, showCover: true, showAlbumTrackNumber: false,
 							  showArtist: true, showAlbum: true, playlist: nil,
 							  session: session, player: player)
-				} else if loadingState == .loading {
-					LoadingSpinner()
-				} else {
-					Text("Problems fetching Playlist")
-						.font(.largeTitle)
 				}
-			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			var t: [Track]?
-			if let mix = self.mix {
-				t = self.session.getMixPlaylistTracks(mixId: mix.id)
-				
-				if t != nil {
-					DispatchQueue.main.async {
-						self.tracks = t
-						self.loadingState = .successful
-					}
-				} else {
-					DispatchQueue.main.async {
-						self.loadingState = .error
-					}
-				}
+				Spacer(minLength: 0)
 			}
 		}
 	}

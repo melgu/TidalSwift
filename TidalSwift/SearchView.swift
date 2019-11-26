@@ -14,11 +14,6 @@ struct SearchView: View {
 	let session: Session
 	let player: Player
 	
-	@State var searchResult: SearchResponse?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
-	
-	@State var lastSearchTerm: String?
 	@EnvironmentObject var viewState: ViewState
 	
 	init(session: Session, player: Player) {
@@ -28,75 +23,46 @@ struct SearchView: View {
 	}
 	
 	var body: some View {
-		_ = viewState.$searchTerm.receive(on: DispatchQueue.main).sink(receiveValue: doSearch(searchTerm:))
 		return ScrollView([.vertical]) {
 			VStack(alignment: .leading) {
-				if loadingState == .successful {
-					if !searchResult!.artists.isEmpty {
-						SearchViewArtists(artists: searchResult!.artists, session: session, player: player)
+				HStack {
+					Text("Search")
+						.font(.largeTitle)
+					Spacer()
+					LoadingSpinner()
+				}
+				.padding([.horizontal, .bottom])
+				
+				if viewState.stack.last!.searchResponse != nil {
+					if !viewState.stack.last!.searchResponse!.artists.isEmpty {
+						SearchViewArtists(artists: viewState.stack.last!.searchResponse!.artists, session: session, player: player)
 						Divider()
 					}
-					if !searchResult!.albums.isEmpty {
-						SearchViewAlbums(albums: searchResult!.albums, session: session, player: player)
+					if !viewState.stack.last!.searchResponse!.albums.isEmpty {
+						SearchViewAlbums(albums: viewState.stack.last!.searchResponse!.albums, session: session, player: player)
 						Divider()
 					}
-					if !searchResult!.playlists.isEmpty {
-						SearchViewPlaylists(playlists: searchResult!.playlists, session: session, player: player)
+					if !viewState.stack.last!.searchResponse!.playlists.isEmpty {
+						SearchViewPlaylists(playlists: viewState.stack.last!.searchResponse!.playlists, session: session, player: player)
 						Divider()
 					}
-					if !searchResult!.tracks.isEmpty {
-						SearchViewTracks(tracks: searchResult!.tracks, session: session, player: player)
+					if !viewState.stack.last!.searchResponse!.tracks.isEmpty {
+						SearchViewTracks(tracks: viewState.stack.last!.searchResponse!.tracks, session: session, player: player)
 						Divider()
 					}
-					if !searchResult!.videos.isEmpty {
-						SearchViewVideos(videos: searchResult!.videos, session: session, player: player)
+					if !viewState.stack.last!.searchResponse!.videos.isEmpty {
+						SearchViewVideos(videos: viewState.stack.last!.searchResponse!.videos, session: session, player: player)
 					}
-					if searchResult!.artists.isEmpty && searchResult!.albums.isEmpty && searchResult!.playlists.isEmpty &&
-					   searchResult!.tracks.isEmpty && searchResult!.videos.isEmpty {
+					if viewState.stack.last!.searchResponse!.artists.isEmpty
+						&& viewState.stack.last!.searchResponse!.albums.isEmpty
+						&& viewState.stack.last!.searchResponse!.playlists.isEmpty
+						&& viewState.stack.last!.searchResponse!.tracks.isEmpty
+						&& viewState.stack.last!.searchResponse!.videos.isEmpty {
 						Text("No Results")
 							.font(.callout)
 					}
-				} else if loadingState == .loading {
-					LoadingSpinner()
-				} else {
-					Spacer()
-					Text("Problems searching.")
-						.font(.largeTitle)
 				}
-				Spacer()
-			}
-		}
-		.onAppear() {
-			self.doSearch(searchTerm: self.viewState.searchTerm)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func doSearch(searchTerm: String) {
-		if searchTerm == lastSearchTerm || searchTerm.isEmpty {
-			return
-		}
-		lastSearchTerm = searchTerm
-		workItem?.cancel()
-		loadingState = .loading
-		workItem = createWorkItem()
-		if workItem != nil {
-			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			let t = self.session.search(for: self.viewState.searchTerm)
-			DispatchQueue.main.async {
-				if t != nil {
-					self.searchResult = t
-					self.loadingState = .successful
-				} else {
-					self.loadingState = .error
-				}
+				Spacer(minLength: 0)
 			}
 		}
 	}
@@ -110,7 +76,7 @@ struct SearchViewArtists: View {
 	var body: some View {
 		VStack(alignment: .leading) {
 			Text("Artists")
-				.font(.largeTitle)
+				.font(.title)
 				.padding(.horizontal)
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
@@ -132,7 +98,7 @@ struct SearchViewAlbums: View {
 	var body: some View {
 		VStack(alignment: .leading) {
 			Text("Albums")
-				.font(.largeTitle)
+				.font(.title)
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
@@ -155,7 +121,7 @@ struct SearchViewPlaylists: View {
 	var body: some View {
 		VStack(alignment: .leading) {
 			Text("Playlists")
-				.font(.largeTitle)
+				.font(.title)
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
@@ -178,7 +144,7 @@ struct SearchViewTracks: View {
 	var body: some View {
 		VStack(alignment: .leading) {
 			Text("Tracks")
-				.font(.largeTitle)
+				.font(.title)
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
@@ -201,7 +167,7 @@ struct SearchViewVideos: View {
 	var body: some View {
 		VStack(alignment: .leading) {
 			Text("Videos")
-				.font(.largeTitle)
+				.font(.title)
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {

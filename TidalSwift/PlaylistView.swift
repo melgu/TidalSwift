@@ -14,14 +14,13 @@ struct PlaylistView: View {
 	let session: Session
 	let player: Player
 	
-	@State var playlist: Playlist?
-	@State var isUserPlaylist: Bool?
-	@State var tracks: [Track]?
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
-	
 	@EnvironmentObject var viewState: ViewState
+	
 	@State var t: Bool = false
+	
+	var isUserPlaylist: Bool {
+		viewState.stack.last!.playlist!.creator.id == session.userId
+	}
 	
 	var body: some View {
 		ScrollView {
@@ -34,14 +33,15 @@ struct PlaylistView: View {
 						Text("􀆉")
 					}
 					.padding(.leading, 10)
-					Spacer()
+					Spacer(minLength: 0)
+					LoadingSpinner()
 				}
-				if loadingState == .successful {
+				if viewState.stack.last!.tracks != nil {
 					HStack {
 						URLImageSourceView(
-							playlist!.getImageUrl(session: session, resolution: 320)!,
+							viewState.stack.last!.playlist!.getImageUrl(session: session, resolution: 320)!,
 							isAnimationEnabled: true,
-							label: Text(playlist!.title)
+							label: Text(viewState.stack.last!.playlist!.title)
 						)
 							.frame(width: 100, height: 100)
 							.cornerRadius(CORNERRADIUS)
@@ -49,18 +49,18 @@ struct PlaylistView: View {
 							.onTapGesture {
 								let controller = CoverWindowController(rootView:
 									URLImageSourceView(
-										self.playlist!.getImageUrl(session: self.session, resolution: 750)!,
+										self.viewState.stack.last!.playlist!.getImageUrl(session: self.session, resolution: 750)!,
 										isAnimationEnabled: true,
-										label: Text(self.playlist!.title)
+										label: Text(self.viewState.stack.last!.playlist!.title)
 									)
 								)
-								controller.window?.title = self.playlist!.title
+								controller.window?.title = self.viewState.stack.last!.playlist!.title
 								controller.showWindow(nil)
 						}
 						
 						VStack(alignment: .leading) {
 							HStack {
-								Text(playlist!.title)
+								Text(viewState.stack.last!.playlist!.title)
 									.font(.title)
 									.lineLimit(2)
 //								Text("􀅴")
@@ -69,12 +69,12 @@ struct PlaylistView: View {
 //										// Nothing yet
 //								}
 								if t || !t {
-									if playlist!.isInFavorites(session: session)! {
+									if viewState.stack.last!.playlist!.isInFavorites(session: session)! {
 										Text("􀊵")
 											.foregroundColor(.secondary)
 											.onTapGesture {
 												print("Remove from Favorites")
-												self.session.favorites!.removePlaylist(playlistId: self.playlist!.uuid)
+												self.session.favorites!.removePlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
 												self.t.toggle()
 										}
 									} else {
@@ -82,26 +82,26 @@ struct PlaylistView: View {
 											.foregroundColor(.secondary)
 											.onTapGesture {
 												print("Add to Favorites")
-												self.session.favorites!.addPlaylist(playlistId: self.playlist!.uuid)
+												self.session.favorites!.addPlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
 												self.t.toggle()
 										}
 									}
 								}
 								
 							}
-							Text(playlist!.description ?? "")
-							Text(playlist!.creator.name ?? "")
-							Text("Created: \(DateFormatter.dateOnly.string(from: playlist!.created))")
+							Text(viewState.stack.last!.playlist!.description ?? "")
+							Text(viewState.stack.last!.playlist!.creator.name ?? "")
+							Text("Created: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.created))")
 								.foregroundColor(.secondary)
-							Text("Last updated: \(DateFormatter.dateOnly.string(from: playlist!.lastUpdated))")
+							Text("Last updated: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.lastUpdated))")
 								.foregroundColor(.secondary)
 						}
 						Spacer()
 							.layoutPriority(-1)
 						VStack(alignment: .leading) {
-							Text("\(playlist!.numberOfTracks) Tracks")
+							Text("\(viewState.stack.last!.playlist!.numberOfTracks) Tracks")
 								.foregroundColor(.secondary)
-							Text(secondsToHoursMinutesSecondsString(seconds: playlist!.duration))
+							Text(secondsToHoursMinutesSecondsString(seconds: viewState.stack.last!.playlist!.duration))
 								.foregroundColor(.secondary)
 							Spacer()
 						}
@@ -111,45 +111,12 @@ struct PlaylistView: View {
 					Divider()
 					
 					
-					TrackList(tracks: tracks!, showCover: true, showAlbumTrackNumber: false,
-							  showArtist: true, showAlbum: true, playlist: isUserPlaylist! ? playlist : nil,
+					TrackList(tracks: viewState.stack.last!.tracks!, showCover: true, showAlbumTrackNumber: false,
+							  showArtist: true, showAlbum: true, playlist: isUserPlaylist ? viewState.stack.last!.playlist : nil,
 							  session: session, player: player)
-				} else if loadingState == .loading {
-					LoadingSpinner()
-				} else {
-					Text("Problems fetching Playlist")
-						.font(.largeTitle)
 				}
-			}
-		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			var tIsUserPlaylist: Bool?
-			var tTracks: [Track]?
-			if let playlist = self.playlist {
-				tIsUserPlaylist = playlist.creator.id == self.session.userId
-				tTracks = self.session.getPlaylistTracks(playlistId: playlist.id)
 				
-				if tTracks != nil {
-					DispatchQueue.main.async {
-						self.isUserPlaylist = tIsUserPlaylist
-						self.tracks = tTracks
-						self.loadingState = .successful
-					}
-				} else {
-					DispatchQueue.main.async {
-						self.loadingState = .error
-					}
-				}
+				Spacer(minLength: 0)
 			}
 		}
 	}

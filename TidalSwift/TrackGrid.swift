@@ -131,10 +131,11 @@ struct TrackContextMenu: View {
 			Divider()
 			Group {
 				if t || !t {
-					if track.isInFavorites(session: session)! {
+					if track.isInFavorites(session: session) ?? false {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeTrack(trackId: self.track.id)
+							self.viewState.refreshCurrentView()
 							self.t.toggle()
 						}) {
 							Text("Remove from Favorites")
@@ -143,6 +144,7 @@ struct TrackContextMenu: View {
 						Button(action: {
 							print("Add to Favorites")
 							self.session.favorites!.addTrack(trackId: self.track.id)
+							self.viewState.refreshCurrentView()
 							self.t.toggle()
 						}) {
 							Text("Add to Favorites")

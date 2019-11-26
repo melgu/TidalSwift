@@ -167,13 +167,13 @@ public class Session {
 		
 	}
 	
-	public func loadSession() {
+	public func loadSession() -> Bool {
 		let persistentInformationOptional: [String: String]? =
 			UserDefaults.standard.dictionary(forKey: "Session Information") as? [String: String]
 		
 		guard let persistentInformation = persistentInformationOptional else {
 			displayError(title: "Couldn't load Session", content: "Persistent Session Information doesn't exist")
-			return
+			return false
 		}
 		
 		sessionId = persistentInformation["sessionId"]
@@ -181,6 +181,7 @@ public class Session {
 		userId = Int(persistentInformation["userId"]!)
 		favorites = Favorites(session: self, userId: userId!)
 		helpers = Helpers(session: self)
+		return true
 	}
 	
 	public func saveSession() {

@@ -14,20 +14,13 @@ struct ArtistView: View {
 	let session: Session
 	let player: Player
 	
-	@State var artist: Artist?
-	@State var albums: [Album]?
-	@State var videos: [Video]?
-	@State var topTracks: [Track]?
-	
-	@State var workItem: DispatchWorkItem?
-	@State var loadingState: LoadingState = .loading
+	@EnvironmentObject var viewState: ViewState
 	
 	enum BottomSectionType {
 		case albums
 		case videos
 	}
 	
-	@EnvironmentObject var viewState: ViewState
 	@State var bottomSectionType: BottomSectionType = .albums
 	@State var t: Bool = false
 	
@@ -42,15 +35,17 @@ struct ArtistView: View {
 						Text("􀆉")
 					}
 					.padding(.leading, 10)
-					Spacer()
+					Spacer(minLength: 0)
+					LoadingSpinner()
 				}
-				if loadingState == .successful {
+				
+				if viewState.stack.last!.tracks != nil && viewState.stack.last!.albums != nil && viewState.stack.last!.videos != nil {
 					HStack {
-						if artist!.getPictureUrl(session: session, resolution: 320) != nil {
+						if viewState.stack.last!.artist!.getPictureUrl(session: session, resolution: 320) != nil {
 							URLImageSourceView(
-								artist!.getPictureUrl(session: session, resolution: 320)!,
+								viewState.stack.last!.artist!.getPictureUrl(session: session, resolution: 320)!,
 								isAnimationEnabled: true,
-								label: Text(artist!.name)
+								label: Text(viewState.stack.last!.artist!.name)
 							)
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
@@ -58,37 +53,37 @@ struct ArtistView: View {
 								.onTapGesture {
 									let controller = CoverWindowController(rootView:
 										URLImageSourceView(
-											self.artist!.getPictureUrl(session: self.session, resolution: 750)!,
+											self.viewState.stack.last!.artist!.getPictureUrl(session: self.session, resolution: 750)!,
 											isAnimationEnabled: true,
-											label: Text(self.artist!.name)
+											label: Text(self.viewState.stack.last!.artist!.name)
 										)
 									)
-									controller.window?.title = self.artist!.name
+									controller.window?.title = self.viewState.stack.last!.artist!.name
 									controller.showWindow(nil)
 							}
 						}
 						
 						VStack(alignment: .leading) {
 							HStack {
-								Text(artist!.name)
+								Text(viewState.stack.last!.artist!.name)
 									.font(.title)
 									.lineLimit(2)
 								Text("􀅴")
 									.foregroundColor(.secondary)
 									.onTapGesture {
 										let controller = ResizableWindowController(rootView:
-											ArtistBioView(session: self.session, artist: self.artist!)
+											ArtistBioView(session: self.session, artist: self.viewState.stack.last!.artist!)
 										)
-										controller.window?.title = "Bio – \(self.artist!.name)"
+										controller.window?.title = "Bio – \(self.viewState.stack.last!.artist!.name)"
 										controller.showWindow(nil)
 								}
 								if t || !t {
-									if artist!.isInFavorites(session: session)! {
+									if viewState.stack.last!.artist!.isInFavorites(session: session)! {
 										Text("􀊵")
 											.foregroundColor(.secondary)
 											.onTapGesture {
 												print("Remove from Favorites")
-												self.session.favorites!.removeArtist(artistId: self.artist!.id)
+												self.session.favorites!.removeArtist(artistId: self.viewState.stack.last!.artist!.id)
 												self.t.toggle()
 										}
 									} else {
@@ -96,7 +91,7 @@ struct ArtistView: View {
 											.foregroundColor(.secondary)
 											.onTapGesture {
 												print("Add to Favorites")
-												self.session.favorites!.addArtist(artistId: self.artist!.id)
+												self.session.favorites!.addArtist(artistId: self.viewState.stack.last!.artist!.id)
 												self.t.toggle()
 										}
 									}
@@ -111,7 +106,7 @@ struct ArtistView: View {
 					Divider()
 					
 					ScrollView {
-						TrackList(tracks: topTracks!, showCover: true, showAlbumTrackNumber: false,
+						TrackList(tracks: viewState.stack.last!.tracks!, showCover: true, showAlbumTrackNumber: false,
 								  showArtist: true, showAlbum: true, playlist: nil,
 								  session: session, player: player)
 					}
@@ -126,59 +121,13 @@ struct ArtistView: View {
 						.padding(.horizontal)
 					}
 					if bottomSectionType == .albums {
-						AlbumGrid(albums: albums!, showArtists: false, showReleaseDate: true, session: session, player: player)
+						AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: false, showReleaseDate: true, session: session, player: player)
 					} else if bottomSectionType == .videos {
-						VideoGrid(videos: videos!, showArtists: false, session: session, player: player)
+						VideoGrid(videos: viewState.stack.last!.videos!, showArtists: false, session: session, player: player)
 					}
-				} else if loadingState == .loading {
-					LoadingSpinner()
-				} else {
-					Text("Problems fetching Artist")
-						.font(.largeTitle)
 				}
+				Spacer(minLength: 0)
 			}
 //		}
-		.onAppear() {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
-		}
-		.onDisappear() {
-			self.workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
-			var tArtist: Artist?
-			var tTopTracks: [Track]?
-			var tAlbums: [Album]?
-			var tVideos: [Video]?
-			
-			if let artist = self.artist {
-				if artist.url == nil {
-					print("Reloading Artist: \(artist.name)")
-					tArtist = self.session.getArtist(artistId: artist.id)
-				} else {
-					tArtist = artist
-				}
-				tTopTracks = self.session.getArtistTopTracks(artistId: artist.id, limit: 30, offset: 0)
-				tAlbums = self.session.getArtistAlbums(artistId: artist.id)
-				tVideos = self.session.getArtistVideos(artistId: artist.id)
-				
-				if tTopTracks != nil && tAlbums != nil && tVideos != nil {
-					DispatchQueue.main.async {
-						self.artist = tArtist
-						self.topTracks = tTopTracks
-						self.albums = tAlbums
-						self.videos = tVideos
-						self.loadingState = .successful
-					}
-				} else {
-					DispatchQueue.main.async {
-						self.loadingState = .error
-					}
-				}
-			}
-		}
 	}
 }

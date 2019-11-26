@@ -416,12 +416,12 @@ public struct Video: Codable, Equatable, Identifiable, Hashable {
 	}
 }
 
-public struct TopHit: Decodable {
+public struct TopHit: Codable, Equatable {
 	public let value: TopHitValue
 	public let type: String
 }
 
-public struct TopHitValue: Decodable {
+public struct TopHitValue: Codable, Equatable {
 	public let id: Int?
 	public let uuid: String?
 	public let popularity: Int
@@ -436,7 +436,7 @@ struct SearchResult: Decodable {
 	let topHit: TopHit?
 }
 
-public struct SearchResponse {
+public struct SearchResponse: Codable, Equatable {
 	public let artists: [Artist]
 	public let albums: [Album]
 	public let playlists: [Playlist]

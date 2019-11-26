@@ -146,6 +146,7 @@ struct VideoContextMenu: View {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeVideo(videoId: self.video.id)
+							self.viewState.refreshCurrentView()
 							self.t.toggle()
 						}) {
 							Text("Remove from Favorites")

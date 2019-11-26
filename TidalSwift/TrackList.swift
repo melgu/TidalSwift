@@ -11,7 +11,7 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct TrackList: View {
-	let tracks: [Track]
+	@State var tracks: [Track]
 	let showCover: Bool
 	let showAlbumTrackNumber: Bool
 	let showArtist: Bool
@@ -50,6 +50,7 @@ struct TrackRow: View {
 	var widthFactorArtist: CGFloat
 	var widthFactorAlbum: CGFloat
 	
+	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var queueInfo: QueueInfo
 	@State var t: Bool = false
 	
@@ -149,11 +150,12 @@ struct TrackRow: View {
 							controller.showWindow(nil)
 					}
 					if self.t || !self.t {
-						if self.track.isInFavorites(session: self.session)! {
+						if self.track.isInFavorites(session: self.session) ?? false {
 							Text("􀊵")
 								.onTapGesture {
 									print("Remove from Favorites")
 									self.session.favorites!.removeTrack(trackId: self.track.id)
+									self.viewState.refreshCurrentView()
 									self.t.toggle()
 							}
 						} else {
