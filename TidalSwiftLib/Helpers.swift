@@ -19,7 +19,7 @@ public struct DownloadErrors {
 
 public class Helpers {
 	unowned let session: Session
-	let offline: Offline
+	public let offline: Offline
 	let metadata: Metadata
 	
 	public init(session: Session) {
@@ -221,6 +221,13 @@ public class Offline {
 	unowned let session: Session
 	let mainPath = "TidalSwift Offline Library"
 	
+	// [Track: ByHowManyNeeded]
+	var db: [Track: Int] = [:] {
+		didSet {
+			saveDB()
+		}
+	}
+	
 	public init(session: Session) {
 		self.session = session
 		
@@ -235,9 +242,45 @@ public class Offline {
 		} catch {
 			displayError(title: "Error while creating Offline management class", content: "Error: \(error)")
 		}
+		if let data = UserDefaults.standard.data(forKey: "OfflineDB") {
+			if let tempDB = try? JSONDecoder().decode([Track: Int].self, from: data) {
+				self.db = tempDB
+			} else {
+				self.db = [:]
+			}
+		}
 	}
 	
-	public func addTrack(track: Track) -> Bool {
+	public func saveDB() {
+		let data = try? JSONEncoder().encode(db)
+		UserDefaults.standard.set(data, forKey: "OfflineDB")
+		UserDefaults.standard.synchronize()
+	}
+	
+	public func numberOfOfflineTracks() -> Int {
+		return db.count
+	}
+	
+	public func allOfflineTracks() -> [Track]? {
+		return db.map { (track, _) in track }
+	}
+	
+	public var offlineDB: [Track: Int] { return db }
+	
+	// MARK: - Single Track
+	
+	public func isTrackOffline(track: Track) -> Bool {
+		return db[track] != nil
+	}
+	
+	public func add(track: Track) -> Bool {
+		print("Offline: Add Track \(track.id) - \(track.title)")
+		if let counter = db[track] {
+			db[track] = counter + 1
+			print("Offline: Track \(track.title) already exists. Counter: \(db[track] ?? 0)")
+			return true
+		}
+		
 		guard let url = track.getAudioUrl(session: session) else {
 			return false
 		}
@@ -246,11 +289,28 @@ public class Offline {
 			return false
 		}
 		let response = Network.download(url, path: path)
+		if response.ok {
+			db[track] = 1
+			print("Offline: Add Track \(track.title) successful. Counter: \(db[track] ?? 0)")
+		}
 		return response.ok
 	}
 	
-	// Warning: Does not check if song is still needed present in other offline album, playlist or other
-	public func removeTrack(track: Track) {
+	public func remove(track: Track) {
+		print("Offline: Remove Track \(track.id) - \(track.title). Counter: \(db[track] ?? 0)")
+		if let counter = db[track] {
+			if counter <= 1 { // Would be 0 after decrement
+				print("Offline: \(track.title). Counter 0, deleting.")
+				db.removeValue(forKey: track)
+				// Remove from db instead of setting 0 to save space and allow simpler counting
+			} else {
+				db[track] = counter - 1
+				print("Offline: \(track.title). Counter above 0, so not removing. New counter \(db[track] ?? 0)")
+				return
+			}
+		} else {
+			displayError(title: "Error while removing offline track", content: "Missing Counter. Trying to delete anyways.")
+		}
 		do {
 			var path = try FileManager.default.url(for: .musicDirectory,
 												   in: .userDomainMask,
@@ -262,8 +322,99 @@ public class Offline {
 				try FileManager.default.removeItem(at: path)
 			}
 		} catch {
-			displayError(title: "Error while removing Offline track", content: "Error: \(error)")
+			displayError(title: "Error while removing offline track", content: "Error: \(error)")
 		}
 	}
-
+	
+	// MARK: - Multiple Tracks
+	
+	public func areTracksOffline(tracks: [Track]) -> Bool {
+		for track in tracks {
+			if !isTrackOffline(track: track) {
+				return false
+			}
+		}
+		return true
+	}
+	
+	// Returns true if at least one of the track is offline afterwards.
+	// WARNING: Doesn't guarantee that all tracks are offline.
+	public func add(tracks: [Track]) -> Bool {
+		var result = false
+		for track in tracks {
+			let r = add(track: track)
+			result = result || r
+		}
+		return result
+	}
+	
+	public func remove(tracks: [Track]) {
+		for track in tracks {
+			remove(track: track)
+		}
+	}
+	
+	public func removeAll() {
+		print("Removing all \(db.count) offline tracks")
+		db = [:]
+		
+		do {
+			var path = try FileManager.default.url(for: .musicDirectory,
+												   in: .userDomainMask,
+												   appropriateFor: nil,
+												   create: false)
+			path.appendPathComponent(mainPath)
+			if FileManager.default.fileExists(atPath: path.relativePath) {
+				try FileManager.default.removeItem(at: path)
+			}
+		} catch {
+			displayError(title: "Error while removing all offline tracks", content: "Error: \(error)")
+		}
+	}
+	
+	// MARK: - Album
+	
+	public func isAlbumOffline(album: Album) -> Bool? {
+		if let tracks = session.getAlbumTracks(albumId: album.id) {
+			return areTracksOffline(tracks: tracks)
+		} else {
+			return nil
+		}
+	}
+	
+	public func add(album: Album) -> Bool {
+		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
+			return false
+		}
+		return add(tracks: tracks)
+	}
+	
+	public func remove(album: Album) {
+		if let tracks = session.getAlbumTracks(albumId: album.id) {
+			return remove(tracks: tracks)
+		}
+	}
+	
+	// MARK: - Playlist
+	
+	public func isPlaylistOffline(playlist: Playlist) -> Bool? {
+		if let tracks = session.getPlaylistTracks(playlistId: playlist.id) {
+			return areTracksOffline(tracks: tracks)
+		} else {
+			return nil
+		}
+	}
+	
+	public func add(playlist: Playlist) -> Bool {
+		guard let tracks = session.getPlaylistTracks(playlistId: playlist.id) else {
+			return false
+		}
+		return add(tracks: tracks)
+	}
+	
+	public func remove(playlist: Playlist) {
+		if let tracks = session.getPlaylistTracks(playlistId: playlist.id) {
+			return remove(tracks: tracks)
+		}
+	}
 }

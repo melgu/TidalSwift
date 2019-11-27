@@ -291,6 +291,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBAction func downloadTrack(_ sender: Any) {
 		print("Menu: downloadTrack")
+		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
+		_ = sc.session.helpers?.download(track: track)
 	}
 	@IBAction func downloadAlbum(_ sender: Any) {
 		print("Menu: downloadAlbum")
@@ -301,15 +303,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var albumToggleOffline: NSMenuItem!
 	@IBAction func albumToggleOffline(_ sender: Any) {
-		albumToggleOffline.state = albumToggleOffline.state == .on ? .off : .on
+//		albumToggleOffline.state = albumToggleOffline.state == .on ? .off : .on
 	}
 	@IBOutlet weak var trackToggleOffline: NSMenuItem!
 	@IBAction func trackToggleOffline(_ sender: Any) {
-		trackToggleOffline.state = trackToggleOffline.state == .on ? .off : .on
+//		trackToggleOffline.state = trackToggleOffline.state == .on ? .off : .on
 	}
 	@IBOutlet weak var playlistToggleOffline: NSMenuItem!
 	@IBAction func playlistToggleOffline(_ sender: Any) {
-		playlistToggleOffline.state = playlistToggleOffline.state == .on ? .off : .on
+//		playlistToggleOffline.state = playlistToggleOffline.state == .on ? .off : .on
 	}
 	
 	// MARK: - Edit

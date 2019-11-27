@@ -174,10 +174,27 @@ struct TrackContextMenu: View {
 				Divider()
 				if track.streamReady {
 					Group {
-						Button(action: {
-							print("Offline")
-						}) {
-							Text("Offline")
+						if t || !t {
+							if track.isOffline(session: session) ?? false {
+								Button(action: {
+									print("Remove from Offline")
+									self.session.helpers?.offline.remove(track: self.track)
+									self.viewState.refreshCurrentView()
+									self.t.toggle()
+								}) {
+									Text("Remove from Offline")
+								}
+							} else {
+								Button(action: {
+									print("Add to Offline")
+									let success = self.session.helpers?.offline.add(track: self.track)
+									print("Add to Offline: \((success != nil ? success! : false) ? "successful" : "unsuccessful")")
+									self.viewState.refreshCurrentView()
+									self.t.toggle()
+								}) {
+									Text("Add to Offline")
+								}
+							}
 						}
 						Button(action: {
 							print("Download")
