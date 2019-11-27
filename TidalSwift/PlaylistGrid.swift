@@ -45,6 +45,8 @@ struct PlaylistGridItem: View {
 					)
 						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)
+						.contentShape(Rectangle())
+						.clipped()
 						.cornerRadius(CORNERRADIUS)
 						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 				} else {
