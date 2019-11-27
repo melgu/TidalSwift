@@ -70,14 +70,16 @@ struct PlayerInfoView: View {
 								Spacer()
 									.layoutPriority(-1)
 							}
-							.contextMenu {
-								TrackContextMenu(track: self.queueInfo.queue[self.queueInfo.currentIndex].track, session: self.session, player: self.player)
-							}
 						} else {
 							Spacer()
 						}
 					}
 					.frame(width: metrics.size.width / 2 - 100)
+					.contextMenu {
+						if !self.queueInfo.queue.isEmpty {
+							TrackContextMenu(track: self.queueInfo.queue[self.queueInfo.currentIndex].track, session: self.session, player: self.player)
+						}
+					}
 					
 					VStack {
 						HStack {

@@ -37,73 +37,92 @@ struct PlaylistView: View {
 					LoadingSpinner()
 				}
 				if viewState.stack.last!.tracks != nil {
-					HStack {
-						URLImageSourceView(
-							viewState.stack.last!.playlist!.getImageUrl(session: session, resolution: 320)!,
-							isAnimationEnabled: true,
-							label: Text(viewState.stack.last!.playlist!.title)
-						)
-							.frame(width: 100, height: 100)
-							.cornerRadius(CORNERRADIUS)
-							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-							.onTapGesture {
-								let controller = CoverWindowController(rootView:
-									URLImageSourceView(
-										self.viewState.stack.last!.playlist!.getImageUrl(session: self.session, resolution: 750)!,
-										isAnimationEnabled: true,
-										label: Text(self.viewState.stack.last!.playlist!.title)
+					ZStack(alignment: .bottomTrailing) {
+						HStack {
+							URLImageSourceView(
+								viewState.stack.last!.playlist!.getImageUrl(session: session, resolution: 320)!,
+								isAnimationEnabled: true,
+								label: Text(viewState.stack.last!.playlist!.title)
+							)
+								.frame(width: 100, height: 100)
+								.cornerRadius(CORNERRADIUS)
+								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+								.onTapGesture {
+									let controller = CoverWindowController(rootView:
+										URLImageSourceView(
+											self.viewState.stack.last!.playlist!.getImageUrl(session: self.session, resolution: 750)!,
+											isAnimationEnabled: true,
+											label: Text(self.viewState.stack.last!.playlist!.title)
+										)
 									)
-								)
-								controller.window?.title = self.viewState.stack.last!.playlist!.title
-								controller.showWindow(nil)
-						}
-						
-						VStack(alignment: .leading) {
-							HStack {
-								Text(viewState.stack.last!.playlist!.title)
-									.font(.title)
-									.lineLimit(2)
-//								Text("􀅴")
-//									.foregroundColor(.secondary)
-//									.onTapGesture {
-//										// Nothing yet
-//								}
-								if t || !t {
-									if viewState.stack.last!.playlist!.isInFavorites(session: session)! {
-										Text("􀊵")
-											.foregroundColor(.secondary)
-											.onTapGesture {
-												print("Remove from Favorites")
-												self.session.favorites!.removePlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
-												self.t.toggle()
-										}
-									} else {
-										Text("􀊴")
-											.foregroundColor(.secondary)
-											.onTapGesture {
-												print("Add to Favorites")
-												self.session.favorites!.addPlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
-												self.t.toggle()
+									controller.window?.title = self.viewState.stack.last!.playlist!.title
+									controller.showWindow(nil)
+							}
+							
+							VStack(alignment: .leading) {
+								HStack {
+									Text(viewState.stack.last!.playlist!.title)
+										.font(.title)
+										.lineLimit(2)
+									if t || !t {
+										if viewState.stack.last!.playlist!.isInFavorites(session: session)! {
+											Text("􀊵")
+												.foregroundColor(.secondary)
+												.onTapGesture {
+													print("Remove from Favorites")
+													self.session.favorites!.removePlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
+													self.t.toggle()
+											}
+										} else {
+											Text("􀊴")
+												.foregroundColor(.secondary)
+												.onTapGesture {
+													print("Add to Favorites")
+													self.session.favorites!.addPlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
+													self.t.toggle()
+											}
 										}
 									}
+									
 								}
-								
+								Text(viewState.stack.last!.playlist!.description ?? "")
+								Text(viewState.stack.last!.playlist!.creator.name ?? "")
+								Text("Created: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.created))")
+									.foregroundColor(.secondary)
+								Text("Last updated: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.lastUpdated))")
+									.foregroundColor(.secondary)
 							}
-							Text(viewState.stack.last!.playlist!.description ?? "")
-							Text(viewState.stack.last!.playlist!.creator.name ?? "")
-							Text("Created: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.created))")
-								.foregroundColor(.secondary)
-							Text("Last updated: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.lastUpdated))")
-								.foregroundColor(.secondary)
-						}
-						Spacer()
-							.layoutPriority(-1)
-						VStack(alignment: .leading) {
-							Text("\(viewState.stack.last!.playlist!.numberOfTracks) Tracks")
-								.foregroundColor(.secondary)
-							Text(secondsToHoursMinutesSecondsString(seconds: viewState.stack.last!.playlist!.duration))
-								.foregroundColor(.secondary)
 							Spacer()
+								.layoutPriority(-1)
+							VStack(alignment: .leading) {
+								Text("\(viewState.stack.last!.playlist!.numberOfTracks) Tracks")
+									.foregroundColor(.secondary)
+								Text(secondsToHoursMinutesSecondsString(seconds: viewState.stack.last!.playlist!.duration))
+									.foregroundColor(.secondary)
+								Spacer()
+							}
+						}
+						if t || !t {
+							if viewState.stack.last!.playlist!.isOffline(session: session) ?? false {
+								Text("􀇃")
+									.font(.title)
+									.onTapGesture {
+										print("Remove from Offline")
+										self.viewState.stack.last!.playlist!.removeOffline(session: self.session)
+										self.viewState.refreshCurrentView()
+										self.t.toggle()
+								}
+							} else {
+								Text("􀇂")
+									.font(.title)
+									.onTapGesture {
+										print("Add to Offline")
+										let success = self.viewState.stack.last!.playlist!.addOffline(session: self.session)
+										print("Add to Offline: \(success ? "successful" : "unsuccessful")")
+										self.viewState.refreshCurrentView()
+										self.t.toggle()
+								}
+							}
 						}
 					}
 					.frame(height: 100)

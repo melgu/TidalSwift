@@ -88,6 +88,25 @@ struct FavoriteTracks: View {
 					.font(.largeTitle)
 				Spacer()
 				LoadingSpinner()
+				if session.helpers?.offline.saveFavoritesOffline ?? false {
+					Text("􀇃")
+						.font(.title)
+						.onTapGesture {
+							print("Remove from Offline")
+							self.session.helpers?.offline.saveFavoritesOffline = false
+							self.session.helpers?.offline.syncFavoriteTracks()
+							self.viewState.refreshCurrentView()
+					}
+				} else {
+					Text("􀇂")
+						.font(.title)
+						.onTapGesture {
+							print("Add to Offline")
+							self.session.helpers?.offline.saveFavoritesOffline = true
+							self.session.helpers?.offline.syncFavoriteTracks()
+							self.viewState.refreshCurrentView()
+					}
+				}
 			}
 			.padding(.horizontal)
 			

@@ -74,7 +74,6 @@ extension CaseIterable where Self: Equatable {
 struct CodablePlaybackInfo: Codable {
 	// PlaybackInfo
 	var fraction: CGFloat
-	var playing: Bool
 	var volume: Float
 	var shuffle: Bool
 	var repeatState: RepeatState

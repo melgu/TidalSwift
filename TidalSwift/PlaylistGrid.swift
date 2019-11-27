@@ -36,28 +36,37 @@ struct PlaylistGridItem: View {
 	
 	var body: some View {
 		VStack {
-			if playlist.getImageUrl(session: session, resolution: 320) != nil {
-				URLImageSourceView(
-					playlist.getImageUrl(session: session, resolution: 320)!,
-					isAnimationEnabled: true,
-					label: Text(playlist.title)
-				)
-					.aspectRatio(contentMode: .fill)
-					.frame(width: 160, height: 160)
-					.cornerRadius(CORNERRADIUS)
-					.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-			} else {
-				ZStack {
-					Rectangle()
-						.foregroundColor(.black)
+			ZStack(alignment: .bottomTrailing) {
+				if playlist.getImageUrl(session: session, resolution: 320) != nil {
+					URLImageSourceView(
+						playlist.getImageUrl(session: session, resolution: 320)!,
+						isAnimationEnabled: true,
+						label: Text(playlist.title)
+					)
+						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)
 						.cornerRadius(CORNERRADIUS)
 						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-					Text(playlist.title)
+				} else {
+					ZStack {
+						Rectangle()
+							.foregroundColor(.black)
+							.frame(width: 160, height: 160)
+							.cornerRadius(CORNERRADIUS)
+							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+						Text(playlist.title)
+							.foregroundColor(.white)
+							.multilineTextAlignment(.center)
+							.lineLimit(2)
+							.frame(width: 160)
+					}
+				}
+				if playlist.isOffline(session: session) ?? false {
+					Text("􀇃")
+						.font(.title)
 						.foregroundColor(.white)
-						.multilineTextAlignment(.center)
-						.lineLimit(2)
-						.frame(width: 160)
+						.shadow(radius: SHADOWRADIUS)
+						.padding(5)
 				}
 			}
 			Text(playlist.title)
@@ -84,7 +93,9 @@ struct PlaylistContextMenu: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	
 	@State var t: Bool = false
 	
 	var body: some View {
@@ -155,19 +166,37 @@ struct PlaylistContextMenu: View {
 				}
 			}
 			Divider()
-//			Group {
-				Button(action: {
-					print("Offline")
-				}) {
-					Text("Offline")
+			Group {
+				if t || !t {
+					if self.playlist.isOffline(session: session) ?? false {
+						Button(action: {
+							print("Remove from Offline")
+							self.playlist.removeOffline(session: self.session)
+							self.viewState.refreshCurrentView()
+							self.t.toggle()
+						}) {
+							Text("Remove from Offline")
+						}
+					} else {
+						Button(action: {
+							print("Add to Offline")
+							let success = self.playlist.addOffline(session: self.session)
+							print("Add to Offline: \(success ? "successful" : "unsuccessful")")
+							self.viewState.refreshCurrentView()
+							self.t.toggle()
+						}) {
+							Text("Add to Offline")
+						}
+					}
 				}
+				
 				Button(action: {
 					print("Download")
 					_ = self.session.helpers?.download(playlist: self.playlist)
 				}) {
 					Text("Download")
 				}
-//			}
+			}
 			Divider()
 			Group {
 				if playlist.getImageUrl(session: self.session, resolution: 750) != nil {
