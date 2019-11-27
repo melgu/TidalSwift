@@ -349,43 +349,50 @@ public class Offline {
 	
 	// MARK: - Single Track
 	
+	public func url(for track: Track) -> URL? {
+		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id).m4a") else {
+			return nil
+		}
+		return URL(fileURLWithPath: path.path)
+	}
+	
 	public func isTrackOffline(track: Track) -> Bool {
 		return db.tracks[track] != nil
 	}
 	
 	private func add(track: Track) -> Bool {
-		print("Offline: Add Track \(track.id) - \(track.title)")
+//		print("Offline: Add Track \(track.id) - \(track.title)")
 		if let counter = db.tracks[track] {
 			db.tracks[track] = counter + 1
-			print("Offline: Track \(track.title) already exists. Counter: \(db.tracks[track] ?? 0)")
+//			print("Offline: Track \(track.title) already exists. Counter: \(db.tracks[track] ?? 0)")
 			return true
 		}
 		
 		guard let url = track.getAudioUrl(session: session) else {
 			return false
 		}
-		let optionalPath = buildPath(baseLocation: .music, parentFolder: mainPath, name: String(track.id))
+		let optionalPath = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id).m4a")
 		guard let path = optionalPath else {
 			return false
 		}
 		let response = Network.download(url, path: path)
 		if response.ok {
 			db.tracks[track] = 1
-			print("Offline: Add Track \(track.title) successful. Counter: \(db.tracks[track] ?? 0)")
+//			print("Offline: Add Track \(track.title) successful. Counter: \(db.tracks[track] ?? 0)")
 		}
 		return response.ok
 	}
 	
 	private func remove(track: Track) {
-		print("Offline: Remove Track \(track.id) - \(track.title). Counter: \(db.tracks[track] ?? 0)")
+//		print("Offline: Remove Track \(track.id) - \(track.title). Counter: \(db.tracks[track] ?? 0)")
 		if let counter = db.tracks[track] {
 			if counter <= 1 { // Would be 0 after decrement
-				print("Offline: \(track.title). Counter 0, deleting.")
+//				print("Offline: \(track.title). Counter 0, deleting.")
 				db.tracks.removeValue(forKey: track)
 				// Remove from db.tracks instead of setting 0 to save space and allow simpler counting
 			} else {
 				db.tracks[track] = counter - 1
-				print("Offline: \(track.title). Counter above 0, so not removing. New counter \(db.tracks[track] ?? 0)")
+//				print("Offline: \(track.title). Counter above 0, so not removing. New counter \(db.tracks[track] ?? 0)")
 				return
 			}
 		} else {
@@ -397,7 +404,7 @@ public class Offline {
 												   appropriateFor: nil,
 												   create: false)
 			path.appendPathComponent(mainPath)
-			path.appendPathComponent(String(track.id))
+			path.appendPathComponent("\(track.id).m4a")
 			if FileManager.default.fileExists(atPath: path.relativePath) {
 				try FileManager.default.removeItem(at: path)
 			}
