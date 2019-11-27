@@ -8,6 +8,7 @@
 
 import Cocoa
 import SwiftUI
+import Combine
 import TidalSwiftLib
 
 @NSApplicationMain
@@ -27,6 +28,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var queueViewController: NSWindowController
 	var viewHistoryViewController: NSWindowController
 	var playbackHistoryViewController: NSWindowController
+	
+	var timerCancellable: AnyCancellable?
+	var savePlaybackInfoOnNextTick = false
+	var saveViewStateOnNextTick = false
 	
 	override init() {
 		let session = Session(config: nil)
@@ -208,6 +213,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		_ = sc.player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
 		_ = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
 		
+		// State Persisting
+		timerCancellable = Timer.publish(every: 10, on: .main, in: .default)
+			.autoconnect()
+			.sink { _ in
+				if self.savePlaybackInfoOnNextTick {
+					self.savePlaybackInfoOnNextTick = false
+					print("savePlaybackState()")
+					DispatchQueue.global(qos: .background).async {
+						self.savePlaybackState()
+					}
+				}
+				if self.saveViewStateOnNextTick {
+					self.saveViewStateOnNextTick = false
+					print("saveViewStateSync()")
+					DispatchQueue.global(qos: .background).async {
+						self.saveViewState()
+					}
+				}
+		}
+		_ = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.savePlaybackInfoOnNextTick = true })
+		_ = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.savePlaybackInfoOnNextTick = true })
+		_ = sc.player.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.savePlaybackInfoOnNextTick = true })
+		_ = sc.player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.savePlaybackInfoOnNextTick = true })
+		
+		_ = viewState.$stack.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.saveViewStateOnNextTick = true })
+		
 		// Combine Debug Stuff
 //		_ = viewState.$viewType.receive(on: DispatchQueue.main).sink(receiveValue: { print("viewState Type: \($0?.rawValue ?? "nil")") })
 //		_ = sc.$session.receive(on: DispatchQueue.main).sink(receiveValue: { _ in print("sc.session sink") })
@@ -242,6 +273,47 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		return true
 	}
 	
+	func savePlaybackState() {
+		let codablePI = CodablePlaybackInfo(fraction: sc.player.playbackInfo.fraction,
+											volume: sc.player.playbackInfo.volume,
+											shuffle: sc.player.playbackInfo.shuffle,
+											repeatState: sc.player.playbackInfo.repeatState,
+											nonShuffledQueue: sc.player.queueInfo.nonShuffledQueue,
+											queue: sc.player.queueInfo.queue,
+											currentIndex: sc.player.queueInfo.currentIndex,
+											history: sc.player.queueInfo.history,
+											maxHistoryItems: sc.player.queueInfo.maxHistoryItems)
+		let playbackInfoData = try? JSONEncoder().encode(codablePI)
+		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
+		
+		UserDefaults.standard.synchronize()
+	}
+	
+	func saveViewState() {
+		UserDefaults.standard.set(viewState.searchTerm, forKey: "SearchTerm")
+		let viewStackData = try? JSONEncoder().encode(viewState.stack)
+		UserDefaults.standard.set(viewStackData, forKey: "ViewStateStack")
+		let viewHistoryData = try? JSONEncoder().encode(viewState.history)
+		UserDefaults.standard.set(viewHistoryData, forKey: "ViewStateHistory")
+		UserDefaults.standard.set(viewState.maxHistoryItems, forKey: "ViewStateHistoryMaxItems")
+		
+		UserDefaults.standard.synchronize()
+	}
+	
+	func saveViewCache() {
+		// View Cache
+		let viewCacheData = try? JSONEncoder().encode(viewState.cache)
+		UserDefaults.standard.set(viewCacheData, forKey: "ViewCache")
+		
+		UserDefaults.standard.synchronize()
+	}
+	
+	func saveState() {
+		savePlaybackState()
+		saveViewState()
+		saveViewCache()
+	}
+	
 	func closeModals() {
 		loginInfo.showModal = false
 		playlistEditingValues.showAddTracksModal = false
@@ -255,35 +327,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBAction func Quit(_ sender: Any) {
 		print("Exiting...")
+		timerCancellable?.cancel()
 		closeModals()
-		
-		// Save Playback State
-		let codablePI = CodablePlaybackInfo(fraction: sc.player.playbackInfo.fraction,
-											playing: sc.player.playbackInfo.playing,
-											volume: sc.player.playbackInfo.volume,
-											shuffle: sc.player.playbackInfo.shuffle,
-											repeatState: sc.player.playbackInfo.repeatState,
-											nonShuffledQueue: sc.player.queueInfo.nonShuffledQueue,
-											queue: sc.player.queueInfo.queue,
-											currentIndex: sc.player.queueInfo.currentIndex,
-											history: sc.player.queueInfo.history,
-											maxHistoryItems: sc.player.queueInfo.maxHistoryItems)
-		let playbackInfoData = try? JSONEncoder().encode(codablePI)
-		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
-		
-		UserDefaults.standard.set(viewState.searchTerm, forKey: "SearchTerm")
-		let viewStackData = try? JSONEncoder().encode(viewState.stack)
-		UserDefaults.standard.set(viewStackData, forKey: "ViewStateStack")
-		let viewHistoryData = try? JSONEncoder().encode(viewState.history)
-		UserDefaults.standard.set(viewHistoryData, forKey: "ViewStateHistory")
-		UserDefaults.standard.set(viewState.maxHistoryItems, forKey: "ViewStateHistoryMaxItems")
-		
-		// View Cache
-		let viewCacheData = try? JSONEncoder().encode(viewState.cache)
-		UserDefaults.standard.set(viewCacheData, forKey: "ViewCache")
-		
-		UserDefaults.standard.synchronize()
-		
+		saveState()
 		NSApp.terminate(nil)
 	}
 	

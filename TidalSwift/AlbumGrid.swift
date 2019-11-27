@@ -45,6 +45,7 @@ struct AlbumGridItem: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	@EnvironmentObject var sc: SessionContainer
 	
 	init(album: Album, showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
 		self.album = album
@@ -56,37 +57,44 @@ struct AlbumGridItem: View {
 	
 	var body: some View {
 		VStack {
-			if album.getCoverUrl(session: session, resolution: 320) != nil {
-				URLImageSourceView(
-					album.getCoverUrl(session: session, resolution: 320)!,
-					isAnimationEnabled: true,
-					label: Text(album.title)
-				)
-					.aspectRatio(contentMode: .fill)
-					.frame(width: 160, height: 160)
-					.cornerRadius(CORNERRADIUS)
-					.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-			} else {
-				ZStack {
-					Rectangle()
-						.foregroundColor(.black)
-//						.resizable()
-//						.aspectRatio(contentMode: .fill)
+			ZStack(alignment: .bottomTrailing) {
+				if album.getCoverUrl(session: session, resolution: 320) != nil {
+					URLImageSourceView(
+						album.getCoverUrl(session: session, resolution: 320)!,
+						isAnimationEnabled: true,
+						label: Text(album.title)
+					)
+						.aspectRatio(contentMode: .fill)
 						.frame(width: 160, height: 160)
 						.cornerRadius(CORNERRADIUS)
 						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-					if album.streamReady != nil && album.streamReady! {
-						Text(album.title)
-							.foregroundColor(.white)
-							.multilineTextAlignment(.center)
-							.lineLimit(5)
-							.frame(width: 160)
-					} else {
-						Text("Album not available")
-							.foregroundColor(.white)
-							.multilineTextAlignment(.center)
-							.frame(width: 160)
+				} else {
+					ZStack {
+						Rectangle()
+							.foregroundColor(.black)
+							.frame(width: 160, height: 160)
+							.cornerRadius(CORNERRADIUS)
+							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+						if album.streamReady != nil && album.streamReady! {
+							Text(album.title)
+								.foregroundColor(.white)
+								.multilineTextAlignment(.center)
+								.lineLimit(5)
+								.frame(width: 160)
+						} else {
+							Text("Album not available")
+								.foregroundColor(.white)
+								.multilineTextAlignment(.center)
+								.frame(width: 160)
+						}
 					}
+				}
+				if album.isOffline(session: sc.session) ?? false {
+					Text("􀇃")
+						.font(.title)
+						.foregroundColor(.white)
+						.shadow(radius: SHADOWRADIUS)
+						.padding(5)
 				}
 			}
 			HStack {
@@ -225,11 +233,29 @@ struct AlbumContextMenu: View {
 					}
 					Divider()
 					Group {
-						Button(action: {
-							print("Offline")
-						}) {
-							Text("Offline")
+						if t || !t {
+							if self.album.isOffline(session: session) ?? false {
+								Button(action: {
+									print("Remove from Offline")
+									self.album.removeOffline(session: self.session)
+									self.viewState.refreshCurrentView()
+									self.t.toggle()
+								}) {
+									Text("Remove from Offline")
+								}
+							} else {
+								Button(action: {
+									print("Add to Offline")
+									let success = self.album.addOffline(session: self.session)
+									print("Add to Offline: \(success ? "successful" : "unsuccessful")")
+									self.viewState.refreshCurrentView()
+									self.t.toggle()
+								}) {
+									Text("Add to Offline")
+								}
+							}
 						}
+						
 						Button(action: {
 							print("Download")
 							_ = self.session.helpers?.download(album: self.album)

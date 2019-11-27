@@ -215,16 +215,92 @@ func convertToALAC(path: URL) {
 
 // MARK: - Offline
 
-// TODO: Database to keep track which files are needed multiple times
-// Abstract that from the library user.
-public class Offline {
-	unowned let session: Session
-	let mainPath = "TidalSwift Offline Library"
-	
+public class OfflineDB {
 	// [Track: ByHowManyNeeded]
-	var db: [Track: Int] = [:] {
+	var tracks: [Track: Int] = [:] {
 		didSet {
-			saveDB()
+			save()
+		}
+	}
+	var favoriteTracks: [Track] = [] { // Used for Favorites
+		didSet {
+			save()
+		}
+	}
+	var albums: [Album] = [] {
+		didSet {
+			save()
+		}
+	}
+	var playlists: [Playlist] = [] {
+		didSet {
+			save()
+		}
+	}
+	
+	init() {
+		if let data = UserDefaults.standard.data(forKey: "OfflineDB:Tracks") {
+			if let temp = try? JSONDecoder().decode([Track: Int].self, from: data) {
+				self.tracks = temp
+			} else {
+				self.tracks = [:]
+			}
+		}
+		if let data = UserDefaults.standard.data(forKey: "OfflineDB:FavoriteTracks") {
+			if let temp = try? JSONDecoder().decode([Track].self, from: data) {
+				self.favoriteTracks = temp
+			} else {
+				self.favoriteTracks = []
+			}
+		}
+		if let data = UserDefaults.standard.data(forKey: "OfflineDB:Albums") {
+			if let temp = try? JSONDecoder().decode([Album].self, from: data) {
+				self.albums = temp
+			} else {
+				self.albums = []
+			}
+		}
+		if let data = UserDefaults.standard.data(forKey: "OfflineDB:Playlists") {
+			if let temp = try? JSONDecoder().decode([Playlist].self, from: data) {
+				self.playlists = temp
+			} else {
+				self.playlists = []
+			}
+		}
+	}
+	
+	func clear() {
+		tracks = [:]
+		favoriteTracks = []
+		albums = []
+		playlists = []
+	}
+	
+	private func save() {
+		let tracksData = try? JSONEncoder().encode(tracks)
+		UserDefaults.standard.set(tracksData, forKey: "OfflineDB:Tracks")
+		UserDefaults.standard.synchronize()
+		let favoriteTracksData = try? JSONEncoder().encode(favoriteTracks)
+		UserDefaults.standard.set(favoriteTracksData, forKey: "OfflineDB:FavoriteTracks")
+		UserDefaults.standard.synchronize()
+		let albumsData = try? JSONEncoder().encode(albums)
+		UserDefaults.standard.set(albumsData, forKey: "OfflineDB:Albums")
+		UserDefaults.standard.synchronize()
+		let playlistsData = try? JSONEncoder().encode(tracks)
+		UserDefaults.standard.set(playlistsData, forKey: "OfflineDB:Playlist")
+		UserDefaults.standard.synchronize()
+	}
+}
+
+public class Offline {
+	private unowned let session: Session
+	private let mainPath = "TidalSwift Offline Library"
+	
+	private let db = OfflineDB()
+	public var saveFavoritesOffline: Bool {
+		didSet {
+			UserDefaults.standard.set(saveFavoritesOffline, forKey: "SaveFavoritesOffline")
+			UserDefaults.standard.synchronize()
 		}
 	}
 	
@@ -238,46 +314,50 @@ public class Offline {
 												   appropriateFor: nil,
 												   create: false)
 			path.appendPathComponent(mainPath)
-			try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
+			if !FileManager.default.fileExists(atPath: path.relativePath) {
+				print("Offline Library Folder doesn't exist. Creating. Also resetting DB.")
+				try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
+				db.clear()
+			}
 		} catch {
 			displayError(title: "Error while creating Offline management class", content: "Error: \(error)")
 		}
-		if let data = UserDefaults.standard.data(forKey: "OfflineDB") {
-			if let tempDB = try? JSONDecoder().decode([Track: Int].self, from: data) {
-				self.db = tempDB
-			} else {
-				self.db = [:]
-			}
-		}
-	}
-	
-	public func saveDB() {
-		let data = try? JSONEncoder().encode(db)
-		UserDefaults.standard.set(data, forKey: "OfflineDB")
-		UserDefaults.standard.synchronize()
+		
+		saveFavoritesOffline = UserDefaults.standard.bool(forKey: "SaveFavoritesOffline")
 	}
 	
 	public func numberOfOfflineTracks() -> Int {
-		return db.count
+		return db.tracks.count
 	}
-	
 	public func allOfflineTracks() -> [Track]? {
-		return db.map { (track, _) in track }
+		return db.tracks.map { (track, _) in track }
 	}
 	
-	public var offlineDB: [Track: Int] { return db }
+	public func numberOfOfflineAlbums() -> Int {
+		return db.albums.count
+	}
+	public func allOfflineAlbums() -> [Album]? {
+		return db.albums
+	}
+	
+	public func numberOfOfflinePlaylists() -> Int {
+		return db.playlists.count
+	}
+	public func allOfflinePlaylists() -> [Playlist]? {
+		return db.playlists
+	}
 	
 	// MARK: - Single Track
 	
 	public func isTrackOffline(track: Track) -> Bool {
-		return db[track] != nil
+		return db.tracks[track] != nil
 	}
 	
-	public func add(track: Track) -> Bool {
+	private func add(track: Track) -> Bool {
 		print("Offline: Add Track \(track.id) - \(track.title)")
-		if let counter = db[track] {
-			db[track] = counter + 1
-			print("Offline: Track \(track.title) already exists. Counter: \(db[track] ?? 0)")
+		if let counter = db.tracks[track] {
+			db.tracks[track] = counter + 1
+			print("Offline: Track \(track.title) already exists. Counter: \(db.tracks[track] ?? 0)")
 			return true
 		}
 		
@@ -290,22 +370,22 @@ public class Offline {
 		}
 		let response = Network.download(url, path: path)
 		if response.ok {
-			db[track] = 1
-			print("Offline: Add Track \(track.title) successful. Counter: \(db[track] ?? 0)")
+			db.tracks[track] = 1
+			print("Offline: Add Track \(track.title) successful. Counter: \(db.tracks[track] ?? 0)")
 		}
 		return response.ok
 	}
 	
-	public func remove(track: Track) {
-		print("Offline: Remove Track \(track.id) - \(track.title). Counter: \(db[track] ?? 0)")
-		if let counter = db[track] {
+	private func remove(track: Track) {
+		print("Offline: Remove Track \(track.id) - \(track.title). Counter: \(db.tracks[track] ?? 0)")
+		if let counter = db.tracks[track] {
 			if counter <= 1 { // Would be 0 after decrement
 				print("Offline: \(track.title). Counter 0, deleting.")
-				db.removeValue(forKey: track)
-				// Remove from db instead of setting 0 to save space and allow simpler counting
+				db.tracks.removeValue(forKey: track)
+				// Remove from db.tracks instead of setting 0 to save space and allow simpler counting
 			} else {
-				db[track] = counter - 1
-				print("Offline: \(track.title). Counter above 0, so not removing. New counter \(db[track] ?? 0)")
+				db.tracks[track] = counter - 1
+				print("Offline: \(track.title). Counter above 0, so not removing. New counter \(db.tracks[track] ?? 0)")
 				return
 			}
 		} else {
@@ -339,8 +419,8 @@ public class Offline {
 	
 	// Returns true if at least one of the track is offline afterwards.
 	// WARNING: Doesn't guarantee that all tracks are offline.
-	public func add(tracks: [Track]) -> Bool {
-		var result = false
+	private func add(tracks: [Track]) -> Bool {
+		var result = true
 		for track in tracks {
 			let r = add(track: track)
 			result = result || r
@@ -348,15 +428,14 @@ public class Offline {
 		return result
 	}
 	
-	public func remove(tracks: [Track]) {
+	private func remove(tracks: [Track]) {
 		for track in tracks {
 			remove(track: track)
 		}
 	}
 	
 	public func removeAll() {
-		print("Removing all \(db.count) offline tracks")
-		db = [:]
+		print("Removing all \(db.tracks.count) tracks in \(db.albums.count) albums & \(db.playlists.count) playlists")
 		
 		do {
 			var path = try FileManager.default.url(for: .musicDirectory,
@@ -370,51 +449,82 @@ public class Offline {
 		} catch {
 			displayError(title: "Error while removing all offline tracks", content: "Error: \(error)")
 		}
+		
+		db.clear()
+	}
+	
+	// MARK: - Favorite Tracks
+	
+	public func syncFavoriteTracks() {
+		var tracks: [Track] = []
+		if saveFavoritesOffline {
+			if let favTracks = session.favorites?.tracks() {
+				tracks = favTracks.map { $0.item }
+			} else {
+				displayError(title: "Error while synchronizing Favorite Tracks", content: "")
+				return
+			}
+		}
+		
+		var toAdd: [Track] = []
+		for track in tracks {
+			if !db.favoriteTracks.contains(track) {
+				toAdd.append(track)
+			}
+		}
+		
+		var toRemove: [Track] = []
+		for track in db.favoriteTracks {
+			if !tracks.contains(track) {
+				toRemove.append(track)
+			}
+		}
+		
+		if add(tracks: toAdd) {
+			remove(tracks: toRemove)
+			db.favoriteTracks = tracks
+		}
 	}
 	
 	// MARK: - Album
 	
 	public func isAlbumOffline(album: Album) -> Bool? {
-		if let tracks = session.getAlbumTracks(albumId: album.id) {
-			return areTracksOffline(tracks: tracks)
-		} else {
-			return nil
-		}
+		return db.albums.contains(album)
 	}
 	
 	public func add(album: Album) -> Bool {
 		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
 			return false
 		}
+		db.albums.append(album)
 		return add(tracks: tracks)
 	}
 	
 	public func remove(album: Album) {
 		if let tracks = session.getAlbumTracks(albumId: album.id) {
-			return remove(tracks: tracks)
+			remove(tracks: tracks)
+			db.albums.removeAll(where: { $0 == album })
 		}
 	}
 	
 	// MARK: - Playlist
 	
 	public func isPlaylistOffline(playlist: Playlist) -> Bool? {
-		if let tracks = session.getPlaylistTracks(playlistId: playlist.id) {
-			return areTracksOffline(tracks: tracks)
-		} else {
-			return nil
-		}
+		db.playlists.contains(playlist)
 	}
 	
 	public func add(playlist: Playlist) -> Bool {
 		guard let tracks = session.getPlaylistTracks(playlistId: playlist.id) else {
 			return false
 		}
+		db.playlists.append(playlist)
 		return add(tracks: tracks)
 	}
 	
 	public func remove(playlist: Playlist) {
 		if let tracks = session.getPlaylistTracks(playlistId: playlist.id) {
-			return remove(tracks: tracks)
+			remove(tracks: tracks)
+			db.playlists.removeAll(where: { $0 == playlist })
 		}
 	}
 }

@@ -200,7 +200,7 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 		return session.helpers?.offline.isAlbumOffline(album: self)
 	}
 	
-	public func saveOffline(session: Session) -> Bool {
+	public func addOffline(session: Session) -> Bool {
 		return session.helpers?.offline.add(album: self) ?? false
 	}
 	
@@ -291,7 +291,7 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 		return session.helpers?.offline.isPlaylistOffline(playlist: self)
 	}
 	
-	public func saveOffline(session: Session) -> Bool {
+	public func addOffline(session: Session) -> Bool {
 		return session.helpers?.offline.add(playlist: self) ?? false
 	}
 	
@@ -377,14 +377,6 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	
 	public func isOffline(session: Session) -> Bool? {
 		return session.helpers?.offline.isTrackOffline(track: self)
-	}
-	
-	public func saveOffline(session: Session) -> Bool {
-		return session.helpers?.offline.add(track: self) ?? false
-	}
-	
-	public func removeOffline(session: Session) {
-		session.helpers?.offline.remove(track: self)
 	}
 	
 	public func radio(session: Session) -> [Track]? {

@@ -141,6 +141,10 @@ struct TrackRow: View {
 				Group {
 					Text(secondsToHoursMinutesSecondsString(seconds: self.track.duration))
 					Spacer()
+					if self.track.isOffline(session: self.session) ?? false {
+						Text("􀇃")
+							.foregroundColor(.secondary)
+					}
 					Text("􀅴")
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:
@@ -150,22 +154,6 @@ struct TrackRow: View {
 							controller.showWindow(nil)
 					}
 					if self.t || !self.t {
-						if self.track.isOffline(session: self.session) ?? false {
-							Text("􀇃")
-								.onTapGesture {
-									print("Remove from Offline")
-									self.session.helpers?.offline.remove(track: self.track)
-									self.t.toggle()
-							}
-						} else {
-							Text("􀇂")
-								.onTapGesture {
-									print("Add to Offline")
-									let success = self.session.helpers?.offline.add(track: self.track)
-									print("Add to Offline: \((success != nil ? success! : false) ? "successful" : "unsuccessful")")
-									self.t.toggle()
-							}
-						}
 						if self.track.isInFavorites(session: self.session) ?? false {
 							Text("􀊵")
 								.onTapGesture {

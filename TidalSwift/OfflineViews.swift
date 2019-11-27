@@ -365,6 +365,8 @@ extension ViewState {
 			view.loadingState = .successful
 			self.cache.favoriteTracks = t
 			
+			self.session.helpers?.offline.syncFavoriteTracks()
+			
 			self.replaceCurrentView(with: view)
 		}
 	}
