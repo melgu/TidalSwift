@@ -387,12 +387,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var addToFavorites: NSMenuItem!
 	@IBAction func addToFavorites(_ sender: Any) {
 		sc.session.favorites?.addTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
+		sc.session.helpers?.offline.syncFavoriteTracks()
 		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
 		viewState.refreshCurrentView()
 	}
 	@IBOutlet weak var removeFromFavorites: NSMenuItem!
 	@IBAction func removeFromFavorites(_ sender: Any) {
 		sc.session.favorites?.removeTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
+		sc.session.helpers?.offline.syncFavoriteTracks()
 		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
 		viewState.refreshCurrentView()
 	}

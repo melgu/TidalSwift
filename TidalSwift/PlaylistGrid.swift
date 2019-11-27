@@ -138,7 +138,7 @@ struct PlaylistContextMenu: View {
 					}
 				} else {
 					if t || !t {
-						if playlist.isInFavorites(session: session)! {
+						if playlist.isInFavorites(session: session) ?? false {
 							Button(action: {
 								print("Remove from Favorites")
 								self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
