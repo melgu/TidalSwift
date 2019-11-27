@@ -135,6 +135,7 @@ struct TrackContextMenu: View {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeTrack(trackId: self.track.id)
+							self.session.helpers?.offline.syncFavoriteTracks()
 							self.viewState.refreshCurrentView()
 							self.t.toggle()
 						}) {
@@ -144,6 +145,7 @@ struct TrackContextMenu: View {
 						Button(action: {
 							print("Add to Favorites")
 							self.session.favorites!.addTrack(trackId: self.track.id)
+							self.session.helpers?.offline.syncFavoriteTracks()
 							self.viewState.refreshCurrentView()
 							self.t.toggle()
 						}) {
