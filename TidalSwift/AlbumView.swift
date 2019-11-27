@@ -137,7 +137,7 @@ struct AlbumView: View {
 						}
 					}
 					.frame(height: 100)
-					.padding(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+					.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 					Divider()
 					
 					TrackList(tracks: viewState.stack.last!.tracks!, showCover: false, showAlbumTrackNumber: true,
