@@ -350,6 +350,9 @@ public class Offline {
 	// MARK: - Single Track
 	
 	public func url(for track: Track) -> URL? {
+		if !db.tracks.contains(where: { (t, _) in t == track }) {
+			return nil
+		}
 		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id).m4a") else {
 			return nil
 		}
