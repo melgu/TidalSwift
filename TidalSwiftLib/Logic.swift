@@ -1021,15 +1021,6 @@ public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
 		return addTracks([trackId], to: playlistId, duplicate: duplicate)
 	}
 	
-//	public func addTrack(_ trackId: Int, to playlistId: String, duplicate: Bool) -> Bool {
-//		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/items")!
-//		var parameters = sessionParameters
-//		parameters["trackIds"] = "\(trackId)"
-//		parameters["onDupes"] = duplicate ? "ADD" : "FAIL"
-//		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId))
-//		return response.ok
-//	}
-	
 	public func removeTrack(index: Int, from playlistId: String) -> Bool {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/items/\(index)")!
 		var parameters = sessionParameters
