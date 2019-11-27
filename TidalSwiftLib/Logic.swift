@@ -292,7 +292,6 @@ public class Session {
 		return searchResultResponse
 	}
 	
-	// Only works for music tracks (no videos at the moment)
 	func getAudioUrl(trackId: Int) -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(config.quality.rawValue)"
