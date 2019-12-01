@@ -92,6 +92,9 @@ extension ViewState {
 	}
 	
 	func doSearch(term: String) {
+		if stack.last?.viewType != .search {
+			return
+		}
 		if searchTerm == lastSearchTerm || searchTerm.isEmpty {
 			return
 		}
