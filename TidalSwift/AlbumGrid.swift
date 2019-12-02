@@ -284,6 +284,7 @@ struct AlbumContextMenu: View {
 						print("Credits")
 						let controller = ResizableWindowController(rootView:
 							CreditsView(session: self.session, album: self.album)
+								.environmentObject(self.viewState)
 						)
 						controller.window?.title = "Credits – \(self.album.title)"
 						controller.showWindow(nil)

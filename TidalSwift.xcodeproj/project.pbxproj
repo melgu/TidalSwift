@@ -54,6 +54,7 @@
 		B0A1E2772349DB0100BBC4F0 /* ResizableWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2762349DB0100BBC4F0 /* ResizableWindowController.swift */; };
 		B0A1E2792349EDE900BBC4F0 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2782349EDE900BBC4F0 /* Colors.swift */; };
 		B0A67AA72395CB1100BD3921 /* WrappedTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A67AA62395CB1100BD3921 /* WrappedTrack.swift */; };
+		B0A67AA92395D40E00BD3921 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A67AA82395D40E00BD3921 /* BackButton.swift */; };
 		B0A85FFB230DDB28000C4C4E /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFA230DDB28000C4C4E /* Player.swift */; };
 		B0A85FFD230DE2E3000C4C4E /* VideoPlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFC230DE2E3000C4C4E /* VideoPlayerController.swift */; };
 		B0B6578B23706A7A00729358 /* AccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B6578A23706A7A00729358 /* AccountInfoView.swift */; };
@@ -166,6 +167,7 @@
 		B0A1E2782349EDE900BBC4F0 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MP42Foundation.framework; sourceTree = "<group>"; };
 		B0A67AA62395CB1100BD3921 /* WrappedTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedTrack.swift; sourceTree = "<group>"; };
+		B0A67AA82395D40E00BD3921 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		B0A85FFA230DDB28000C4C4E /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		B0A85FFC230DE2E3000C4C4E /* VideoPlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerController.swift; sourceTree = "<group>"; };
 		B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAVAssetExportSession.h; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 				B08B819F235F88B2001C35C9 /* ArtistView.swift */,
 				B0C3E6A623061FDA006CABED /* AlbumView.swift */,
 				B0C3E6A923061FDA006CABED /* PlaylistView.swift */,
+				B0A67AA82395D40E00BD3921 /* BackButton.swift */,
 				B0C3E6A823061FDA006CABED /* TrackList.swift */,
 				B0A1E2742349C65900BBC4F0 /* ArtistBio.swift */,
 				B01B09CA234ADADB007A4E15 /* CreditsView.swift */,
@@ -658,6 +661,7 @@
 				B08B81A0235F88B2001C35C9 /* ArtistView.swift in Sources */,
 				B01B09CD234B15D6007A4E15 /* Lyrics.swift in Sources */,
 				B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */,
+				B0A67AA92395D40E00BD3921 /* BackButton.swift in Sources */,
 				B0CDC77523664A1500E90FBF /* MyMixes.swift in Sources */,
 				B0A85FFD230DE2E3000C4C4E /* VideoPlayerController.swift in Sources */,
 				B0CDC7732362649300E90FBF /* PlaylistModification.swift in Sources */,
