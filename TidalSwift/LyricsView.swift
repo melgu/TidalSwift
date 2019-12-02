@@ -48,10 +48,8 @@ struct LyricsView: View {
 						Text(lyrics!)
 							.contextMenu {
 								Button(action: {
-									print("Copy")
-									let pb = NSPasteboard.init(name: NSPasteboard.Name.general)
-									pb.declareTypes([.string], owner: nil)
-									pb.setString(self.lyrics!, forType: .string)
+									print("Copy Lyrics")
+									Pasteboard.copy(string: self.lyrics!)
 								}) {
 									Text("Copy")
 								}
