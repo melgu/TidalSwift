@@ -19,7 +19,7 @@ class MetadataTests: XCTestCase {
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 		
-		session.loadSession()
+		_ = session.loadSession()
 		if !session.checkLogin() {
 			_ = session.login()
 		}
