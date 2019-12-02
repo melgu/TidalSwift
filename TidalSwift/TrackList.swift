@@ -149,6 +149,7 @@ struct TrackRow: View {
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:
 								CreditsView(session: self.session, track: self.track)
+									.environmentObject(self.viewState)
 							)
 							controller.window?.title = "Credits – \(self.track.title)"
 							controller.showWindow(nil)

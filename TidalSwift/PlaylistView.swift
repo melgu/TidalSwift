@@ -23,119 +23,112 @@ struct PlaylistView: View {
 	}
 	
 	var body: some View {
-		ScrollView {
-			VStack(alignment: .leading) {
-				HStack {
-					Button(action: {
-						print("Back")
-						self.viewState.pop()
-					}) {
-						Text("􀆉")
-					}
-					.padding(.leading, 10)
-					Spacer(minLength: 0)
-					LoadingSpinner()
-				}
-				if viewState.stack.last!.tracks != nil {
-					ZStack(alignment: .bottomTrailing) {
-						HStack {
-							URLImageSourceView(
-								viewState.stack.last!.playlist!.getImageUrl(session: session, resolution: 320)!,
-								isAnimationEnabled: true,
-								label: Text(viewState.stack.last!.playlist!.title)
-							)
-								.frame(width: 100, height: 100)
-								.cornerRadius(CORNERRADIUS)
-								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-								.onTapGesture {
-									let controller = CoverWindowController(rootView:
-										URLImageSourceView(
-											self.viewState.stack.last!.playlist!.getImageUrl(session: self.session, resolution: 750)!,
-											isAnimationEnabled: true,
-											label: Text(self.viewState.stack.last!.playlist!.title)
+		ZStack {
+			ScrollView {
+				VStack(alignment: .leading) {
+					if viewState.stack.last!.tracks != nil {
+						ZStack(alignment: .bottomTrailing) {
+							HStack {
+								URLImageSourceView(
+									viewState.stack.last!.playlist!.getImageUrl(session: session, resolution: 320)!,
+									isAnimationEnabled: true,
+									label: Text(viewState.stack.last!.playlist!.title)
+								)
+									.frame(width: 100, height: 100)
+									.cornerRadius(CORNERRADIUS)
+									.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+									.onTapGesture {
+										let controller = CoverWindowController(rootView:
+											URLImageSourceView(
+												self.viewState.stack.last!.playlist!.getImageUrl(session: self.session, resolution: 750)!,
+												isAnimationEnabled: true,
+												label: Text(self.viewState.stack.last!.playlist!.title)
+											)
 										)
-									)
-									controller.window?.title = self.viewState.stack.last!.playlist!.title
-									controller.showWindow(nil)
-							}
-							
-							VStack(alignment: .leading) {
-								HStack {
-									Text(viewState.stack.last!.playlist!.title)
-										.font(.title)
-										.lineLimit(2)
-									if t || !t {
-										if viewState.stack.last!.playlist!.isInFavorites(session: session)! {
-											Text("􀊵")
-												.foregroundColor(.secondary)
-												.onTapGesture {
-													print("Remove from Favorites")
-													self.session.favorites!.removePlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
-													self.t.toggle()
-											}
-										} else {
-											Text("􀊴")
-												.foregroundColor(.secondary)
-												.onTapGesture {
-													print("Add to Favorites")
-													self.session.favorites!.addPlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
-													self.t.toggle()
+										controller.window?.title = self.viewState.stack.last!.playlist!.title
+										controller.showWindow(nil)
+								}
+								
+								VStack(alignment: .leading) {
+									HStack {
+										Text(viewState.stack.last!.playlist!.title)
+											.font(.title)
+											.lineLimit(2)
+										if t || !t {
+											if viewState.stack.last!.playlist!.isInFavorites(session: session)! {
+												Text("􀊵")
+													.foregroundColor(.secondary)
+													.onTapGesture {
+														print("Remove from Favorites")
+														self.session.favorites!.removePlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
+														self.t.toggle()
+												}
+											} else {
+												Text("􀊴")
+													.foregroundColor(.secondary)
+													.onTapGesture {
+														print("Add to Favorites")
+														self.session.favorites!.addPlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
+														self.t.toggle()
+												}
 											}
 										}
+										
 									}
-									
+									Text(viewState.stack.last!.playlist!.description ?? "")
+									Text(viewState.stack.last!.playlist!.creator.name ?? "")
+									Text("Created: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.created))")
+										.foregroundColor(.secondary)
+									Text("Last updated: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.lastUpdated))")
+										.foregroundColor(.secondary)
 								}
-								Text(viewState.stack.last!.playlist!.description ?? "")
-								Text(viewState.stack.last!.playlist!.creator.name ?? "")
-								Text("Created: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.created))")
-									.foregroundColor(.secondary)
-								Text("Last updated: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.lastUpdated))")
-									.foregroundColor(.secondary)
-							}
-							Spacer()
-								.layoutPriority(-1)
-							VStack(alignment: .leading) {
-								Text("\(viewState.stack.last!.playlist!.numberOfTracks) Tracks")
-									.foregroundColor(.secondary)
-								Text(secondsToHoursMinutesSecondsString(seconds: viewState.stack.last!.playlist!.duration))
-									.foregroundColor(.secondary)
 								Spacer()
-							}
-						}
-						if t || !t {
-							if viewState.stack.last!.playlist!.isOffline(session: session) ?? false {
-								Text("􀇃")
-									.font(.title)
-									.onTapGesture {
-										print("Remove from Offline")
-										self.viewState.stack.last!.playlist!.removeOffline(session: self.session)
-										self.viewState.refreshCurrentView()
-										self.t.toggle()
-								}
-							} else {
-								Text("􀇂")
-									.font(.title)
-									.onTapGesture {
-										print("Add to Offline")
-										self.viewState.stack.last!.playlist!.addOffline(session: self.session)
-										self.viewState.refreshCurrentView()
-										self.t.toggle()
+									.layoutPriority(-1)
+								VStack(alignment: .leading) {
+									Text("\(viewState.stack.last!.playlist!.numberOfTracks) Tracks")
+										.foregroundColor(.secondary)
+									Text(secondsToHoursMinutesSecondsString(seconds: viewState.stack.last!.playlist!.duration))
+										.foregroundColor(.secondary)
+									Spacer()
 								}
 							}
+							if t || !t {
+								if viewState.stack.last!.playlist!.isOffline(session: session) ?? false {
+									Text("􀇃")
+										.font(.title)
+										.onTapGesture {
+											print("Remove from Offline")
+											self.viewState.stack.last!.playlist!.removeOffline(session: self.session)
+											self.viewState.refreshCurrentView()
+											self.t.toggle()
+									}
+								} else {
+									Text("􀇂")
+										.font(.title)
+										.onTapGesture {
+											print("Add to Offline")
+											self.viewState.stack.last!.playlist!.addOffline(session: self.session)
+											self.viewState.refreshCurrentView()
+											self.t.toggle()
+									}
+								}
+							}
 						}
+						.frame(height: 100)
+						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+						Divider()
+						
+						
+						TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrap(), showCover: true, showAlbumTrackNumber: false,
+								  showArtist: true, showAlbum: true, playlist: isUserPlaylist ? viewState.stack.last!.playlist : nil,
+								  session: session, player: player)
 					}
-					.frame(height: 100)
-					.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
-					Divider()
 					
-					
-					TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrap(), showCover: true, showAlbumTrackNumber: false,
-							  showArtist: true, showAlbum: true, playlist: isUserPlaylist ? viewState.stack.last!.playlist : nil,
-							  session: session, player: player)
+					Spacer(minLength: 0)
 				}
-				
-				Spacer(minLength: 0)
+				.padding(.top, 40)
 			}
+			BackButton()
 		}
 	}
 }

@@ -25,20 +25,9 @@ struct ArtistView: View {
 	@State var t: Bool = false
 	
 	var body: some View {
-//		ScrollView { // TODO: Comment back in, when Grid supports nesting inside a ScrollView
+		ZStack {
+//			ScrollView { // TODO: Comment back in, when Grid supports nesting inside a ScrollView
 			VStack(alignment: .leading) {
-				HStack {
-					Button(action: {
-						print("Back")
-						self.viewState.pop()
-					}) {
-						Text("􀆉")
-					}
-					.padding(.leading, 10)
-					Spacer(minLength: 0)
-					LoadingSpinner()
-				}
-				
 				if viewState.stack.last!.tracks != nil && viewState.stack.last!.albums != nil && viewState.stack.last!.videos != nil {
 					HStack {
 						if viewState.stack.last!.artist!.getPictureUrl(session: session, resolution: 320) != nil {
@@ -73,6 +62,7 @@ struct ArtistView: View {
 									.onTapGesture {
 										let controller = ResizableWindowController(rootView:
 											ArtistBioView(session: self.session, artist: self.viewState.stack.last!.artist!)
+												.environmentObject(self.viewState)
 										)
 										controller.window?.title = "Bio – \(self.viewState.stack.last!.artist!.name)"
 										controller.showWindow(nil)
@@ -128,6 +118,9 @@ struct ArtistView: View {
 				}
 				Spacer(minLength: 0)
 			}
-//		}
+			.padding(.top, 50) // Has to be 50 instead of 40 like the others to look the same
+//			}
+			BackButton()
+		}
 	}
 }
