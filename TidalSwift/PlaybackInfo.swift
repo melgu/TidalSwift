@@ -19,15 +19,15 @@ final class PlaybackInfo: ObservableObject {
 
 final class QueueInfo: ObservableObject {
 	var nonShuffledQueue = [Track]()
-	@Published var queue = [QueueItem]()
+	@Published var queue = [WrappedTrack]()
 	@Published var currentIndex: Int = 0
 	
-	@Published var history: [QueueItem] = []
+	@Published var history: [WrappedTrack] = []
 	var maxHistoryItems: Int = 100
 	
 	func assignQueueIndices() {
 		for i in 0..<queue.count {
-			queue[i] = QueueItem(id: i, track: queue[i].track)
+			queue[i] = WrappedTrack(id: i, track: queue[i].track)
 		}
 	}
 	
@@ -35,7 +35,7 @@ final class QueueInfo: ObservableObject {
 		// Ensure Track only exists once in History
 		history.removeAll(where: { $0.track == track })
 		
-		history.append(QueueItem(id: 0, track: track))
+		history.append(WrappedTrack(id: 0, track: track))
 		
 		// Enforce Maximum
 		if history.count >= maxHistoryItems {
@@ -47,7 +47,7 @@ final class QueueInfo: ObservableObject {
 	
 	func assignHistoryIndices() {
 		for i in 0..<history.count {
-			history[i] = QueueItem(id: i, track: history[i].track)
+			history[i] = WrappedTrack(id: i, track: history[i].track)
 		}
 	}
 	
@@ -80,9 +80,9 @@ struct CodablePlaybackInfo: Codable {
 	
 	// QueueInfo
 	var nonShuffledQueue: [Track]
-	var queue: [QueueItem]
+	var queue: [WrappedTrack]
 	var currentIndex: Int
 	
-	var history: [QueueItem]
+	var history: [WrappedTrack]
 	var maxHistoryItems: Int
 }

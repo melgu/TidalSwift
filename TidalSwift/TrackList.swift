@@ -11,7 +11,7 @@ import TidalSwiftLib
 import ImageIOSwiftUI
 
 struct TrackList: View {
-	@State var tracks: [Track]
+	let wrappedTracks: [WrappedTrack]
 	let showCover: Bool
 	let showAlbumTrackNumber: Bool
 	let showArtist: Bool
@@ -21,16 +21,16 @@ struct TrackList: View {
 	let player: Player
 	
 	var body: some View {
-		ForEach(0..<tracks.count) { i in
-			TrackRow(track: self.tracks[i], showCover: self.showCover, showArtist: self.showArtist, showAlbum: self.showAlbum,
-					 trackNumber: self.showAlbumTrackNumber ? nil : i, session: self.session)
+		ForEach(wrappedTracks) { wrappedTrack in
+			TrackRow(track: wrappedTrack.track, showCover: self.showCover, showArtist: self.showArtist, showAlbum: self.showAlbum,
+					 trackNumber: self.showAlbumTrackNumber ? nil : wrappedTrack.id, session: self.session)
 				.onTapGesture(count: 2) {
-					print("\(self.tracks[i].title)")
-					self.player.add(tracks: self.tracks, .now)
-					self.player.play(atIndex: i)
+					print("\(wrappedTrack.track.title)")
+					self.player.add(tracks: self.wrappedTracks.unwrapped(), .now)
+					self.player.play(atIndex: wrappedTrack.id)
 			}
 			.contextMenu {
-				TrackContextMenu(track: self.tracks[i], indexInPlaylist: self.playlist != nil ? i : nil, playlist: self.playlist, session: self.session, player: self.player)
+				TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: self.playlist != nil ? wrappedTrack.id : nil, playlist: self.playlist, session: self.session, player: self.player)
 			}
 			Divider()
 		}

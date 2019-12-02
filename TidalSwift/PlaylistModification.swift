@@ -48,7 +48,9 @@ struct AddToPlaylistView: View {
 							Text(playlist.title).tag(playlist.uuid)
 						}
 						VStack {
-							TextField("New Playlist", text: $newPlaylistName)
+							TextField("New Playlist", text: $newPlaylistName, onEditingChanged: { _ in
+								self.selectedPlaylist = "_newPlaylist"
+							})
 							if !newPlaylistName.isEmpty {
 								TextField("Optional Playlist Description", text: $newPlaylistDescription)
 							}

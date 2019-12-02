@@ -138,7 +138,7 @@ class Player {
 				queueInfo.queue[queueInfo.currentIndex+1..<queueInfo.queue.count].shuffled()
 		} else {
 			let i = queueInfo.nonShuffledQueue.firstIndex(where: { $0 == queueInfo.queue[queueInfo.currentIndex].track })!
-			queueInfo.queue = queueInfo.nonShuffledQueue.map { QueueItem(id: 0, track: $0) }
+			queueInfo.queue = queueInfo.nonShuffledQueue.map { WrappedTrack(id: 0, track: $0) }
 			queueInfo.assignQueueIndices()
 			queueInfo.currentIndex = i
 		}
@@ -264,7 +264,7 @@ class Player {
 			return
 		}
 		queueInfo.nonShuffledQueue.insert(contentsOf: tracks, at: queueInfo.currentIndex)
-		let newQueueItems = tracks.map { QueueItem(id: 0, track: $0) }
+		let newQueueItems = tracks.map { WrappedTrack(id: 0, track: $0) }
 		if queueInfo.queue.isEmpty {
 			queueInfo.queue.insert(contentsOf: newQueueItems, at: queueInfo.currentIndex)
 			avSetItem(from: queueInfo.queue[0].track)
@@ -286,7 +286,7 @@ class Player {
 			queueInfo.nonShuffledQueue.append(contentsOf: tracks)
 		}
 		
-		let newQueueItems = tracks.map { QueueItem(id: 0, track: $0) }
+		let newQueueItems = tracks.map { WrappedTrack(id: 0, track: $0) }
 		queueInfo.queue.append(contentsOf: newQueueItems)
 		queueInfo.assignQueueIndices()
 		if wasEmtpy {

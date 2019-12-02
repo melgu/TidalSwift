@@ -106,7 +106,7 @@ struct ArtistView: View {
 					Divider()
 					
 					ScrollView {
-						TrackList(tracks: viewState.stack.last!.tracks!, showCover: true, showAlbumTrackNumber: false,
+						TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrap(), showCover: true, showAlbumTrackNumber: false,
 								  showArtist: true, showAlbum: true, playlist: nil,
 								  session: session, player: player)
 					}
