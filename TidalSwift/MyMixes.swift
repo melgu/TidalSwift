@@ -142,7 +142,7 @@ struct MixPlaylistView: View {
 					.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
 					Divider()
 					
-					TrackList(tracks: viewState.stack.last!.tracks!, showCover: true, showAlbumTrackNumber: false,
+					TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrap(), showCover: true, showAlbumTrackNumber: false,
 							  showArtist: true, showAlbum: true, playlist: nil,
 							  session: session, player: player)
 				}

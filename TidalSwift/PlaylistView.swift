@@ -129,7 +129,7 @@ struct PlaylistView: View {
 					Divider()
 					
 					
-					TrackList(tracks: viewState.stack.last!.tracks!, showCover: true, showAlbumTrackNumber: false,
+					TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrap(), showCover: true, showAlbumTrackNumber: false,
 							  showArtist: true, showAlbum: true, playlist: isUserPlaylist ? viewState.stack.last!.playlist : nil,
 							  session: session, player: player)
 				}

@@ -78,8 +78,3 @@ struct QueueView: View {
 		}
 	}
 }
-
-struct QueueItem: Codable, Identifiable {
-	let id: Int
-	let track: Track
-}
