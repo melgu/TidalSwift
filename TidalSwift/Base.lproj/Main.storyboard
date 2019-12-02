@@ -334,6 +334,13 @@
                                                 <action selector="logout:" target="Voe-Tx-rLC" id="XcD-d4-fyY"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="WE8-MI-3Wg"/>
+                                        <menuItem title="Remove all Offline Content" id="oIg-R8-gJJ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="removeAllOfflineContent:" target="Voe-Tx-rLC" id="gXW-B7-Yb9"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

@@ -237,6 +237,11 @@ public class OfflineDB {
 			save()
 		}
 	}
+	var playlistTracks: [Playlist: [Track]] = [:] {
+		didSet {
+			save()
+		}
+	}
 	
 	init() {
 		if let data = UserDefaults.standard.data(forKey: "OfflineDB:Tracks") {
@@ -267,6 +272,13 @@ public class OfflineDB {
 				self.playlists = []
 			}
 		}
+		if let data = UserDefaults.standard.data(forKey: "OfflineDB:PlaylistTracks") {
+			if let temp = try? JSONDecoder().decode([Playlist: [Track]].self, from: data) {
+				self.playlistTracks = temp
+			} else {
+				self.playlistTracks = [:]
+			}
+		}
 	}
 	
 	func clear() {
@@ -274,6 +286,7 @@ public class OfflineDB {
 		favoriteTracks = []
 		albums = []
 		playlists = []
+		playlistTracks = [:]
 	}
 	
 	private func save() {
@@ -286,8 +299,11 @@ public class OfflineDB {
 		let albumsData = try? JSONEncoder().encode(albums)
 		UserDefaults.standard.set(albumsData, forKey: "OfflineDB:Albums")
 		UserDefaults.standard.synchronize()
-		let playlistsData = try? JSONEncoder().encode(tracks)
-		UserDefaults.standard.set(playlistsData, forKey: "OfflineDB:Playlist")
+		let playlistsData = try? JSONEncoder().encode(playlists)
+		UserDefaults.standard.set(playlistsData, forKey: "OfflineDB:Playlists")
+		UserDefaults.standard.synchronize()
+		let playlistTracksData = try? JSONEncoder().encode(playlistTracks)
+		UserDefaults.standard.set(playlistTracksData, forKey: "OfflineDB:PlaylistTracks")
 		UserDefaults.standard.synchronize()
 	}
 }
@@ -297,7 +313,7 @@ public class Offline {
 	private let mainPath = "TidalSwift Offline Library"
 	
 	private let db = OfflineDB()
-	public var saveFavoritesOffline: Bool {
+	public var saveFavoritesOffline: Bool = false {
 		didSet {
 			UserDefaults.standard.set(saveFavoritesOffline, forKey: "SaveFavoritesOffline")
 			UserDefaults.standard.synchronize()
@@ -460,6 +476,7 @@ public class Offline {
 			displayError(title: "Error while removing all offline tracks", content: "Error: \(error)")
 		}
 		
+		saveFavoritesOffline = false
 		db.clear()
 	}
 	
@@ -493,12 +510,14 @@ public class Offline {
 		if add(tracks: toAdd) {
 			remove(tracks: toRemove)
 			db.favoriteTracks = tracks
+		} else {
+			displayError(title: "Error while synchronizing Favorite Tracks", content: "Couldn't add missing tracks to Offline.")
 		}
 	}
 	
 	// MARK: - Album
 	
-	public func isAlbumOffline(album: Album) -> Bool? {
+	public func isAlbumOffline(album: Album) -> Bool {
 		return db.albums.contains(album)
 	}
 	
@@ -519,22 +538,55 @@ public class Offline {
 	
 	// MARK: - Playlist
 	
-	public func isPlaylistOffline(playlist: Playlist) -> Bool? {
+	public func isPlaylistOffline(playlist: Playlist) -> Bool {
 		db.playlists.contains(playlist)
 	}
 	
-	public func add(playlist: Playlist) -> Bool {
-		guard let tracks = session.getPlaylistTracks(playlistId: playlist.id) else {
-			return false
+	public func syncPlaylist(_ playlist: Playlist) {
+		var tracks: [Track] = []
+		let dbTracks: [Track] = db.playlistTracks[playlist] ?? []
+		
+		if db.playlists.contains(playlist) {
+			// Playlist marked for Offline
+			if let playlistTracks = session.getPlaylistTracks(playlistId: playlist.id) {
+				tracks = playlistTracks
+			} else {
+				displayError(title: "Error while synchronizing Playlist Tracks", content: "Couldn't load playlist tracks from Tidal API.")
+				return
+			}
+		} else {
+			print("Playlist isn't marked to be offline, so deleting offline tracks, if there are any")
 		}
-		db.playlists.append(playlist)
-		return add(tracks: tracks)
+		
+		var toAdd: [Track] = []
+		for track in tracks {
+			if !dbTracks.contains(track) {
+				toAdd.append(track)
+			}
+		}
+		
+		var toRemove: [Track] = []
+		for track in dbTracks {
+			if !tracks.contains(track) {
+				toRemove.append(track)
+			}
+		}
+		
+		if add(tracks: toAdd) {
+			remove(tracks: toRemove)
+			db.playlistTracks[playlist] = tracks
+		} else {
+			displayError(title: "Error while synchronizing Playlist Tracks", content: "Couldn't add missing playlist tracks to Offline.")
+		}
 	}
 	
+	public func add(playlist: Playlist) {
+		db.playlists.append(playlist)
+		syncPlaylist(playlist)
+	}
+
 	public func remove(playlist: Playlist) {
-		if let tracks = session.getPlaylistTracks(playlistId: playlist.id) {
-			remove(tracks: tracks)
-			db.playlists.removeAll(where: { $0 == playlist })
-		}
+		db.playlists.removeAll(where: { $0 == playlist })
+		syncPlaylist(playlist)
 	}
 }

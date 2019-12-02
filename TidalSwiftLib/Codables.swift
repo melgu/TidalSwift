@@ -291,8 +291,8 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 		return session.helpers?.offline.isPlaylistOffline(playlist: self)
 	}
 	
-	public func addOffline(session: Session) -> Bool {
-		return session.helpers?.offline.add(playlist: self) ?? false
+	public func addOffline(session: Session) {
+		session.helpers?.offline.add(playlist: self)
 	}
 	
 	public func removeOffline(session: Session) {

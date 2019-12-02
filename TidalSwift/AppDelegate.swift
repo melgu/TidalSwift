@@ -557,6 +557,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func logout(_ sender: Any) {
 		logout()
 	}
+	@IBAction func removeAllOfflineContent(_ sender: Any) {
+		sc.session.helpers?.offline.removeAll()
+		viewState.refreshCurrentView()
+	}
 	
 	// MARK: - Window
 	

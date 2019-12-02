@@ -53,7 +53,7 @@ extension ViewState {
 	// Only replaces if actually different
 	func replaceCurrentView(with view: TidalSwiftView) {
 		DispatchQueue.main.async {
-			print("ViewState replaceCurrentView(): \(self.stack.last?.viewType.rawValue ?? "nil")")
+			print("replaceCurrentView(): \(self.stack.last?.viewType.rawValue ?? "nil")")
 			var tempView = view
 			tempView.searchTerm = self.searchTerm
 			if self.stack.isEmpty {
@@ -561,9 +561,11 @@ extension ViewState {
 			if view.tracks != nil {
 				view.loadingState = .successful
 				self.cache.playlistTracks[playlist.id] = view.tracks
+				self.session.helpers?.offline.syncPlaylist(playlist)
 			} else {
 				view.loadingState = .error
 			}
+			
 			self.replaceCurrentView(with: view)
 		}
 	}
