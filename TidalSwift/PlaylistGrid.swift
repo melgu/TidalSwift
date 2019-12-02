@@ -127,14 +127,14 @@ struct PlaylistContextMenu: View {
 						self.playlistEditingValues.playlist = self.playlist
 						self.playlistEditingValues.showEditModal = true
 					}) {
-						Text("Edit Playlist")
+						Text("Edit Playlist …")
 					}
 					Button(action: {
 						print("Delete Playlist")
 						self.playlistEditingValues.playlist = self.playlist
 						self.playlistEditingValues.showDeleteModal = true
 					}) {
-						Text("Delete Playlist")
+						Text("Delete Playlist …")
 					}
 				} else {
 					if t || !t {
@@ -182,8 +182,7 @@ struct PlaylistContextMenu: View {
 					} else {
 						Button(action: {
 							print("Add to Offline")
-							let success = self.playlist.addOffline(session: self.session)
-							print("Add to Offline: \(success ? "successful" : "unsuccessful")")
+							self.playlist.addOffline(session: self.session)
 							self.viewState.refreshCurrentView()
 							self.t.toggle()
 						}) {

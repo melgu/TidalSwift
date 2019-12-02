@@ -26,6 +26,7 @@ struct AddToPlaylistView: View {
 	let playlists: [Playlist]?
 	
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@EnvironmentObject var viewState: ViewState
 	
 	@State var selectedPlaylist: String = "" // Playlist UUID
 	@State var newPlaylistName: String = ""
@@ -90,6 +91,10 @@ struct AddToPlaylistView: View {
 						let ids = self.playlistEditingValues.tracks.map { $0.id }
 						let success = self.session.addTracks(ids, to: self.selectedPlaylist, duplicate: false)
 						if success {
+							if let playlist = self.session.getPlaylist(playlistId: self.selectedPlaylist) {
+								self.session.helpers?.offline.syncPlaylist(playlist)
+								self.viewState.refreshCurrentView()
+							}
 							self.playlistEditingValues.showAddTracksModal = false
 						}
 					}) {
@@ -126,6 +131,7 @@ struct RemoveFromPlaylistView: View {
 					print("Delete Index \(i) from \(self.playlistEditingValues.playlist!.title)")
 					let success = self.session.removeTrack(index: i, from: uuid)
 					if success {
+						self.session.helpers?.offline.syncPlaylist(self.playlistEditingValues.playlist!)
 						self.playlistEditingValues.showRemoveTracksModal = false
 						self.viewState.refreshCurrentView()
 					}
@@ -160,6 +166,7 @@ struct DeletePlaylist: View {
 					print("Delete \(self.playlistEditingValues.playlist!.title)")
 					let success = self.session.deletePlaylist(playlistId: self.playlistEditingValues.playlist!.uuid)
 					if success {
+						self.session.helpers?.offline.remove(playlist: self.playlistEditingValues.playlist!)
 						self.playlistEditingValues.showDeleteModal = false
 						self.viewState.refreshCurrentView()
 					}
@@ -193,6 +200,11 @@ struct EditPlaylist: View {
 				.onAppear {
 					self.playlistDescription = self.playlistEditingValues.playlist!.description ?? ""
 			}
+			if session.helpers?.offline.isPlaylistOffline(playlist: playlistEditingValues.playlist!) ?? false {
+				Text("This playlist is saved offline, but won't anymore if renamed. You have to to add it to Offline items again manually, if you so desire.")
+					.foregroundColor(.secondary)
+			}
+			
 			HStack {
 				Button(action: {
 					print("Cancel")
@@ -205,6 +217,7 @@ struct EditPlaylist: View {
 					let success = self.session.editPlaylist(playlistId: self.playlistEditingValues.playlist!.uuid,
 															title: self.playlistName, description: self.playlistDescription)
 					if success {
+						self.session.helpers?.offline.remove(playlist: self.playlistEditingValues.playlist!)
 						self.playlistEditingValues.showEditModal = false
 						self.viewState.refreshCurrentView()
 					}

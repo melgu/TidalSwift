@@ -117,8 +117,7 @@ struct PlaylistView: View {
 									.font(.title)
 									.onTapGesture {
 										print("Add to Offline")
-										let success = self.viewState.stack.last!.playlist!.addOffline(session: self.session)
-										print("Add to Offline: \(success ? "successful" : "unsuccessful")")
+										self.viewState.stack.last!.playlist!.addOffline(session: self.session)
 										self.viewState.refreshCurrentView()
 										self.t.toggle()
 								}
