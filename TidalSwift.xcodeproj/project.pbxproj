@@ -55,6 +55,7 @@
 		B0A1E2792349EDE900BBC4F0 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2782349EDE900BBC4F0 /* Colors.swift */; };
 		B0A67AA72395CB1100BD3921 /* WrappedTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A67AA62395CB1100BD3921 /* WrappedTrack.swift */; };
 		B0A67AA92395D40E00BD3921 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A67AA82395D40E00BD3921 /* BackButton.swift */; };
+		B0A67AAD2395DB6700BD3921 /* Pasteboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A67AAC2395DB6700BD3921 /* Pasteboard.swift */; };
 		B0A85FFB230DDB28000C4C4E /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFA230DDB28000C4C4E /* Player.swift */; };
 		B0A85FFD230DE2E3000C4C4E /* VideoPlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFC230DE2E3000C4C4E /* VideoPlayerController.swift */; };
 		B0B6578B23706A7A00729358 /* AccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B6578A23706A7A00729358 /* AccountInfoView.swift */; };
@@ -168,6 +169,7 @@
 		B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MP42Foundation.framework; sourceTree = "<group>"; };
 		B0A67AA62395CB1100BD3921 /* WrappedTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedTrack.swift; sourceTree = "<group>"; };
 		B0A67AA82395D40E00BD3921 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
+		B0A67AAC2395DB6700BD3921 /* Pasteboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pasteboard.swift; sourceTree = "<group>"; };
 		B0A85FFA230DDB28000C4C4E /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		B0A85FFC230DE2E3000C4C4E /* VideoPlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerController.swift; sourceTree = "<group>"; };
 		B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAVAssetExportSession.h; sourceTree = "<group>"; };
@@ -336,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				B0E8078B230615AD00E43B5D /* AppDelegate.swift */,
+				B0A67AAC2395DB6700BD3921 /* Pasteboard.swift */,
 				B0E8078D230615AD00E43B5D /* ContentView.swift */,
 				B016FAF323575CB200ECE565 /* LoginView.swift */,
 				B05E18CA23570DF600F96030 /* ViewState.swift */,
@@ -654,6 +657,7 @@
 				B0A85FFB230DDB28000C4C4E /* Player.swift in Sources */,
 				B07685B9232079C800538D55 /* SearchView.swift in Sources */,
 				B039D69F2317480C00E6784F /* CoverWindowController.swift in Sources */,
+				B0A67AAD2395DB6700BD3921 /* Pasteboard.swift in Sources */,
 				B0E8078E230615AD00E43B5D /* ContentView.swift in Sources */,
 				B0CAD8DB2348358B00A9BAA6 /* VideoGrid.swift in Sources */,
 				B0E8078C230615AD00E43B5D /* AppDelegate.swift in Sources */,

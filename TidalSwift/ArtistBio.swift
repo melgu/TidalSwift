@@ -37,10 +37,8 @@ struct ArtistBioView: View {
 					.contextMenu {
 						if bio != nil {
 							Button(action: {
-								print("Copy")
-								let pb = NSPasteboard.init(name: NSPasteboard.Name.general)
-								pb.declareTypes([.string], owner: nil)
-								pb.setString(self.bio!.text, forType: .string)
+								print("Copy Artist Bio")
+								Pasteboard.copy(string: self.bio!.text)
 							}) {
 								Text("Copy")
 							}
