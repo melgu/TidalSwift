@@ -54,59 +54,13 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 	var videos: [Video]? = nil
 	
 	static func == (lhs: TidalSwiftView, rhs: TidalSwiftView) -> Bool {
-		if lhs.loadingState != rhs.loadingState {
-			return false
-		}
-		if lhs.viewType == rhs.viewType {
-			if lhs.viewType == .search {
-				return lhs.searchTerm == rhs.searchTerm
-					&& lhs.searchResponse == rhs.searchResponse
-			}
-			
-			else if lhs.viewType == .newReleases {
-				return lhs.albums == rhs.albums
-			} else if lhs.viewType == .myMixes {
-				return lhs.mixes == rhs.mixes
-			}
-			
-			else if lhs.viewType == .favoriteArtists {
-				return lhs.artists == rhs.artists
-			} else if lhs.viewType == .favoriteAlbums {
-				return lhs.albums == rhs.albums
-			} else if lhs.viewType == .favoritePlaylists {
-				return lhs.playlists == rhs.playlists
-			} else if lhs.viewType == .favoriteTracks {
-				return lhs.tracks == rhs.tracks
-			} else if lhs.viewType == .favoriteVideos {
-				return lhs.videos == rhs.videos
-			}
-			
-			else if lhs.viewType == .artist {
-				if lhs.artist == rhs.artist {
-					return lhs.tracks == rhs.tracks
-						&& lhs.albums == rhs.albums
-						&& lhs.videos == rhs.videos
-				}
-			} else if lhs.viewType == .album {
-				if lhs.album == rhs.album {
-					return lhs.tracks == rhs.tracks
-				}
-			} else if lhs.viewType == .playlist {
-				if lhs.playlist == rhs.playlist {
-					return lhs.tracks == rhs.tracks
-				}
-			} else if lhs.viewType == .mix {
-				if lhs.mix == rhs.mix {
-					return lhs.tracks == rhs.tracks
-				}
-			}
-			
-			else {
-				print("View Type \(lhs.viewType) not covered")
-				return true
-			}
-		}
-		return false
+		return lhs.viewType == rhs.viewType && lhs.artist == rhs.artist
+			&& lhs.album == rhs.album && lhs.playlist == rhs.playlist
+			&& lhs.mix == rhs.mix && lhs.loadingState == rhs.loadingState
+			&& lhs.searchResponse == rhs.searchResponse && lhs.mixes == rhs.mixes
+			&& lhs.artists == rhs.artists && lhs.albums == rhs.albums
+			&& lhs.playlists == rhs.playlists && lhs.tracks == rhs.tracks
+			&& lhs.videos == rhs.videos
 	}
 }
 
