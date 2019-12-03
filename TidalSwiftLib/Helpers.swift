@@ -588,12 +588,12 @@ public class Offline {
 	}
 	
 	public func syncPlaylist(_ playlist: Playlist) {
-		downloadStatus.downloadingTasksSet += 1
 		var tracks: [Track] = []
 		let dbTracks: [Track] = db.playlistTracks[playlist] ?? []
+		let syncThisPlaylist: Bool = db.playlists.contains(playlist)
 		
-		if db.playlists.contains(playlist) {
-			// Playlist marked for Offline
+		if syncThisPlaylist {
+			downloadStatus.downloadingTasksSet += 1
 			if let playlistTracks = session.getPlaylistTracks(playlistId: playlist.id) {
 				tracks = playlistTracks
 			} else {
@@ -625,7 +625,9 @@ public class Offline {
 		} else {
 			displayError(title: "Error while synchronizing Playlist Tracks", content: "Couldn't add missing playlist tracks to Offline.")
 		}
-		downloadStatus.downloadingTasksSet -= 1
+		if syncThisPlaylist {
+			downloadStatus.downloadingTasksSet -= 1
+		}
 	}
 	
 	public func add(playlist: Playlist) {
