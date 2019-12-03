@@ -232,9 +232,9 @@ class Player {
 		case last
 	}
 	
-	func add(tracks: [Track], _ when: When) {
+	func add(tracks: [Track], _ when: When, playAt index: Int = 0) {
 		if when == .now {
-			addNow(tracks: tracks)
+			addNow(tracks: tracks, playAt: index)
 		} else if when == .next {
 			addNext(tracks: tracks)
 		} else {
@@ -242,7 +242,8 @@ class Player {
 		}
 	}
 	
-	private func addNow(tracks: [Track]) {
+	// playAt is only important when in Shuffle, so only items after the one at the index are shuffled.
+	private func addNow(tracks: [Track], playAt index: Int) {
 //		print("addNow(): \(tracks.count)")
 		if tracks.isEmpty {
 			return
@@ -251,8 +252,10 @@ class Player {
 		clearQueue()
 		if playbackInfo.shuffle {
 			queueInfo.nonShuffledQueue = tracks.wrap()
-			addLast(tracks: tracks.shuffled())
-			
+			addLast(tracks: Array(tracks[0...index]))
+			if index+1 < tracks.count {
+				addLast(tracks: tracks[index+1..<tracks.count].shuffled())
+			}
 		} else {
 			addLast(tracks: tracks)
 		}

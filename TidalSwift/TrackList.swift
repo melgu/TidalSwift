@@ -26,7 +26,7 @@ struct TrackList: View {
 					 trackNumber: self.showAlbumTrackNumber ? nil : wrappedTrack.id, session: self.session)
 				.onTapGesture(count: 2) {
 					print("\(wrappedTrack.track.title)")
-					self.player.add(tracks: self.wrappedTracks.unwrapped(), .now)
+					self.player.add(tracks: self.wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
 					self.player.play(atIndex: wrappedTrack.id)
 			}
 			.contextMenu {
