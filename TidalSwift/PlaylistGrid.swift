@@ -217,12 +217,8 @@ struct PlaylistContextMenu: View {
 					}
 				}
 				Button(action: {
-					print("Credits")
-				}) {
-					Text("Credits")
-				}
-				Button(action: {
-					print("Share")
+					print("Share Playlist")
+					Pasteboard.copy(string: self.playlist.url.absoluteString)
 				}) {
 					Text("Share")
 				}

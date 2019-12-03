@@ -83,6 +83,13 @@ struct AlbumView: View {
 												}
 											}
 										}
+										if viewState.stack.last!.album!.url != nil {
+											Text("􀈂")
+												.foregroundColor(.secondary)
+												.onTapGesture {
+													Pasteboard.copy(string: self.viewState.stack.last!.album!.url!.absoluteString)
+											}
+										}
 									}
 									Text(viewState.stack.last!.album!.artists?.formArtistString() ?? "")
 									if viewState.stack.last!.album!.releaseDate != nil {

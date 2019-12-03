@@ -291,10 +291,13 @@ struct AlbumContextMenu: View {
 					}) {
 						Text("Credits")
 					}
-					Button(action: {
-						print("Share")
-					}) {
-						Text("Share")
+					if album.url != nil {
+						Button(action: {
+							print("Share")
+							Pasteboard.copy(string: self.album.url!.absoluteString)
+						}) {
+							Text("Share")
+						}
 					}
 				}
 			}

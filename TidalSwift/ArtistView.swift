@@ -86,6 +86,13 @@ struct ArtistView: View {
 										}
 									}
 								}
+								if viewState.stack.last!.artist!.url != nil {
+									Text("􀈂")
+										.foregroundColor(.secondary)
+										.onTapGesture {
+											Pasteboard.copy(string: self.viewState.stack.last!.artist!.url!.absoluteString)
+									}
+								}
 							}
 						}
 						Spacer(minLength: 0)
