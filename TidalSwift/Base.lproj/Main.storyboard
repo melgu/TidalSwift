@@ -70,32 +70,32 @@
                                                 <action selector="downloadTrack:" target="Voe-Tx-rLC" id="hQc-hb-TY6"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Download Album" id="XlS-7R-GwC">
+                                        <menuItem title="Download Album" hidden="YES" enabled="NO" id="XlS-7R-GwC">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="downloadAlbum:" target="Voe-Tx-rLC" id="KWP-BD-JdT"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Download Playlist" id="vsC-RH-WJL">
+                                        <menuItem title="Download Playlist" hidden="YES" enabled="NO" id="vsC-RH-WJL">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="downloadPlaylist:" target="Voe-Tx-rLC" id="X6w-8a-NAl"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="TAy-FD-ADh"/>
-                                        <menuItem title="Album Offline" id="mZ6-G2-eZo">
+                                        <menuItem title="Album Offline" hidden="YES" enabled="NO" id="mZ6-G2-eZo">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="albumToggleOffline:" target="Voe-Tx-rLC" id="mKE-J8-aui"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Track Offline" id="mfY-SC-fQc">
+                                        <menuItem title="Track Offline" hidden="YES" enabled="NO" id="mfY-SC-fQc">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="trackToggleOffline:" target="Voe-Tx-rLC" id="Y1b-jq-skx"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Playlist Offline" id="AsP-6Z-Yp5">
+                                        <menuItem title="Playlist Offline" hidden="YES" enabled="NO" id="AsP-6Z-Yp5">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="playlistToggleOffline:" target="Voe-Tx-rLC" id="QGQ-nI-pOK"/>
@@ -140,7 +140,7 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
-                                        <menuItem title="Find" keyEquivalent="f" id="4EN-yA-p0u">
+                                        <menuItem title="Find" hidden="YES" enabled="NO" keyEquivalent="f" id="4EN-yA-p0u">
                                             <connections>
                                                 <action selector="find:" target="Voe-Tx-rLC" id="tMQ-6B-34F"/>
                                             </connections>
