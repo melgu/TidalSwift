@@ -283,6 +283,12 @@
                                                 <action selector="clearQueue:" target="Voe-Tx-rLC" id="xlg-IN-s9a"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Clear Queue Forward" id="c6m-eH-2UF">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="clearQueueForward:" target="Voe-Tx-rLC" id="Peo-y8-hFH"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
