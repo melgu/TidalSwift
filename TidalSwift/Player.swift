@@ -133,12 +133,13 @@ class Player {
 			return
 		}
 		if enabled {
-			queueInfo.nonShuffledQueue = queueInfo.queue.map { $0.track }
+			queueInfo.nonShuffledQueue = queueInfo.queue
 			queueInfo.queue = queueInfo.queue[0...queueInfo.currentIndex] +
 				queueInfo.queue[queueInfo.currentIndex+1..<queueInfo.queue.count].shuffled()
+			queueInfo.assignQueueIndices()
 		} else {
-			let i = queueInfo.nonShuffledQueue.firstIndex(where: { $0 == queueInfo.queue[queueInfo.currentIndex].track })!
-			queueInfo.queue = queueInfo.nonShuffledQueue.map { WrappedTrack(id: 0, track: $0) }
+			let i = queueInfo.nonShuffledQueue.firstIndex(where: { $0 == queueInfo.queue[queueInfo.currentIndex] })!
+			queueInfo.queue = queueInfo.nonShuffledQueue
 			queueInfo.assignQueueIndices()
 			queueInfo.currentIndex = i
 		}
@@ -249,8 +250,9 @@ class Player {
 //		pause()
 		clearQueue()
 		if playbackInfo.shuffle {
-			queueInfo.nonShuffledQueue = tracks
+			queueInfo.nonShuffledQueue = tracks.wrap()
 			addLast(tracks: tracks.shuffled())
+			
 		} else {
 			addLast(tracks: tracks)
 		}
@@ -263,8 +265,8 @@ class Player {
 		if tracks.isEmpty {
 			return
 		}
-		queueInfo.nonShuffledQueue.insert(contentsOf: tracks, at: queueInfo.currentIndex)
-		let newQueueItems = tracks.map { WrappedTrack(id: 0, track: $0) }
+		queueInfo.nonShuffledQueue.insert(contentsOf: tracks.wrap(), at: queueInfo.currentIndex)
+		let newQueueItems = tracks.wrap()
 		if queueInfo.queue.isEmpty {
 			queueInfo.queue.insert(contentsOf: newQueueItems, at: queueInfo.currentIndex)
 			avSetItem(from: queueInfo.queue[0].track)
@@ -283,10 +285,10 @@ class Player {
 		let wasEmtpy = queueInfo.queue.isEmpty
 		
 		if !playbackInfo.shuffle {
-			queueInfo.nonShuffledQueue.append(contentsOf: tracks)
+			queueInfo.nonShuffledQueue.append(contentsOf: tracks.wrap())
 		}
 		
-		let newQueueItems = tracks.map { WrappedTrack(id: 0, track: $0) }
+		let newQueueItems = tracks.wrap()
 		queueInfo.queue.append(contentsOf: newQueueItems)
 		queueInfo.assignQueueIndices()
 		if wasEmtpy {
@@ -297,7 +299,7 @@ class Player {
 	
 	func removeTrack(atIndex: Int) {
 		if playbackInfo.shuffle {
-			let nonShuffledIndex = queueInfo.nonShuffledQueue.firstIndex(of: queueInfo.queue[atIndex].track)!
+			let nonShuffledIndex = queueInfo.nonShuffledQueue.firstIndex(of: queueInfo.queue[atIndex])!
 			queueInfo.nonShuffledQueue.remove(at: nonShuffledIndex)
 		} else {
 			queueInfo.nonShuffledQueue.remove(at: atIndex)
@@ -326,6 +328,12 @@ class Player {
 		queueInfo.nonShuffledQueue.removeAll()
 		
 		playbackInfo.playing = false
+	}
+	
+	// Clear only items following the current one
+	func clearQueueForward() {
+		queueInfo.queue.removeLast(queueCount() - queueInfo.currentIndex - 1)
+		queueInfo.nonShuffledQueue = queueInfo.queue
 	}
 	
 	func queueCount() -> Int {

@@ -542,6 +542,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func clearQueue(_ sender: Any) {
 		sc.player.clearQueue()
 	}
+	@IBAction func clearQueueForward(_ sender: Any) {
+		sc.player.clearQueueForward()
+	}
 	
 	// MARK: - Account
 	

@@ -9,9 +9,13 @@
 import Foundation
 import TidalSwiftLib
 
-struct WrappedTrack: Codable, Identifiable {
+struct WrappedTrack: Codable, Identifiable, Equatable {
 	let id: Int
 	let track: Track
+	
+	static func == (lhs: WrappedTrack, rhs: WrappedTrack) -> Bool {
+		lhs.track == rhs.track
+	}
 }
 
 extension Array where Element == Track {

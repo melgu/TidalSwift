@@ -18,7 +18,7 @@ final class PlaybackInfo: ObservableObject {
 }
 
 final class QueueInfo: ObservableObject {
-	var nonShuffledQueue = [Track]()
+	var nonShuffledQueue = [WrappedTrack]()
 	@Published var queue = [WrappedTrack]()
 	@Published var currentIndex: Int = 0
 	
@@ -26,8 +26,10 @@ final class QueueInfo: ObservableObject {
 	var maxHistoryItems: Int = 100
 	
 	func assignQueueIndices() {
+		// Crashes if nonShuffledQueue is shorter than Queue
 		for i in 0..<queue.count {
 			queue[i] = WrappedTrack(id: i, track: queue[i].track)
+			nonShuffledQueue[i] = WrappedTrack(id: i, track: nonShuffledQueue[i].track)
 		}
 	}
 	
@@ -79,7 +81,7 @@ struct CodablePlaybackInfo: Codable {
 	var repeatState: RepeatState
 	
 	// QueueInfo
-	var nonShuffledQueue: [Track]
+	var nonShuffledQueue: [WrappedTrack]
 	var queue: [WrappedTrack]
 	var currentIndex: Int
 	
