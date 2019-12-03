@@ -218,7 +218,8 @@ struct TrackContextMenu: View {
 						Text("Credits")
 					}
 					Button(action: {
-						print("Share")
+						print("Share Track")
+						Pasteboard.copy(string: self.track.url.absoluteString)
 					}) {
 						Text("Share")
 					}

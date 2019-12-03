@@ -168,19 +168,7 @@ struct VideoContextMenu: View {
 						Text("Add to Playlist …")
 					}
 				}
-				Divider()
 				if video.streamReady {
-					Button(action: {
-						print("Offline")
-					}) {
-						Text("Offline")
-					}
-					Button(action: {
-						print("Download")
-//						let r = self.session.helpers?.download(video: self.video)
-					}) {
-						Text("Download")
-					}
 					Divider()
 					if video.getImageUrl(session: self.session, resolution: 1280) != nil {
 						Button(action: {
@@ -197,16 +185,6 @@ struct VideoContextMenu: View {
 						}) {
 							Text("Preview Image")
 						}
-					}
-					Button(action: {
-						print("Credits")
-					}) {
-						Text("Credits")
-					}
-					Button(action: {
-						print("Share")
-					}) {
-						Text("Share")
 					}
 				}
 			}

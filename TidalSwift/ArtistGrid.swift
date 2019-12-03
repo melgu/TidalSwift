@@ -182,10 +182,13 @@ struct ArtistContextMenu: View {
 				}) {
 					Text("Bio")
 				}
-				Button(action: {
-					print("Share")
-				}) {
-					Text("Share")
+				if artist.url != nil {
+					Button(action: {
+						print("Share Artist")
+						Pasteboard.copy(string: self.artist.url!.absoluteString)
+					}) {
+						Text("Share")
+					}
 				}
 			}
 		}

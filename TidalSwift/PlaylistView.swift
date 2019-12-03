@@ -73,7 +73,11 @@ struct PlaylistView: View {
 												}
 											}
 										}
-										
+										Text("􀈂")
+											.foregroundColor(.secondary)
+											.onTapGesture {
+												Pasteboard.copy(string: self.viewState.stack.last!.playlist!.url.absoluteString)
+										}
 									}
 									Text(viewState.stack.last!.playlist!.description ?? "")
 									Text(viewState.stack.last!.playlist!.creator.name ?? "")
