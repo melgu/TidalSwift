@@ -111,9 +111,13 @@ struct PlaylistView: View {
 										.font(.title)
 										.onTapGesture {
 											print("Add to Offline")
-											self.viewState.stack.last!.playlist!.addOffline(session: self.session)
-											self.viewState.refreshCurrentView()
-											self.t.toggle()
+											DispatchQueue.global(qos: .background).async {
+												self.viewState.stack.last!.playlist!.addOffline(session: self.session)
+												DispatchQueue.main.async {
+													self.viewState.refreshCurrentView()
+													self.t.toggle()
+												}
+											}
 									}
 								}
 							}

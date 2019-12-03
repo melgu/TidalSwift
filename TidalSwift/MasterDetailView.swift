@@ -37,7 +37,7 @@ struct MasterDetailView: View {
 		return NavigationView {
 			MasterView(selection: selectionBinding, searchTerm: searchTerm, session: session)
 			DetailView(session: session, player: player)
-				.frame(minWidth: 580)
+				.frame(minWidth: 620)
 		}
 		.frame(minHeight: 500)
 	}

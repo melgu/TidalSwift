@@ -23,7 +23,6 @@ struct BackButton: View {
 				.padding(.leading, 10)
 				Spacer(minLength: 0)
 				LoadingSpinner()
-					.shadow(color: .secondary, radius: SHADOWRADIUS)
 			}
 			.frame(height: 40)
 			Spacer(minLength: 0)

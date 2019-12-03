@@ -148,6 +148,7 @@ struct PlayerInfoView: View {
 							.layoutPriority(1)
 					}
 					Spacer()
+					DownloadIndicator()
 					Text("􀌮")
 						.onTapGesture {
 							unowned let appDelegate = NSApp.delegate as? AppDelegate
