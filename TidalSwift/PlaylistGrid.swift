@@ -182,9 +182,13 @@ struct PlaylistContextMenu: View {
 					} else {
 						Button(action: {
 							print("Add to Offline")
-							self.playlist.addOffline(session: self.session)
-							self.viewState.refreshCurrentView()
-							self.t.toggle()
+							DispatchQueue.global(qos: .background).async {
+								self.playlist.addOffline(session: self.session)
+								DispatchQueue.main.async {
+									self.viewState.refreshCurrentView()
+									self.t.toggle()
+								}
+							}
 						}) {
 							Text("Add to Offline")
 						}
@@ -193,7 +197,9 @@ struct PlaylistContextMenu: View {
 				
 				Button(action: {
 					print("Download")
-					_ = self.session.helpers?.download(playlist: self.playlist)
+					DispatchQueue.global(qos: .background).async {
+						_ = self.session.helpers?.download(playlist: self.playlist)
+					}
 				}) {
 					Text("Download")
 				}

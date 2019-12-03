@@ -159,18 +159,26 @@ struct TrackRow: View {
 							Text("􀊵")
 								.onTapGesture {
 									print("Remove from Favorites")
-									self.session.favorites!.removeTrack(trackId: self.track.id)
-									self.session.helpers?.offline.syncFavoriteTracks()
-									self.viewState.refreshCurrentView()
-									self.t.toggle()
+									DispatchQueue.global(qos: .background).async {
+										self.session.favorites!.removeTrack(trackId: self.track.id)
+										self.session.helpers?.offline.syncFavoriteTracks()
+										DispatchQueue.main.async {
+											self.viewState.refreshCurrentView()
+											self.t.toggle()
+										}
+									}
 							}
 						} else {
 							Text("􀊴")
 								.onTapGesture {
 									print("Add to Favorites")
-									self.session.favorites!.addTrack(trackId: self.track.id)
-									self.session.helpers?.offline.syncFavoriteTracks()
-									self.t.toggle()
+									DispatchQueue.global(qos: .background).async {
+										self.session.favorites!.addTrack(trackId: self.track.id)
+										self.session.helpers?.offline.syncFavoriteTracks()
+										DispatchQueue.main.async {
+											self.t.toggle()
+										}
+									}
 							}
 						}
 					}

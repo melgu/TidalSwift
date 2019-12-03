@@ -7,7 +7,23 @@
 //
 
 import Foundation
+import Combine
 import SDAVAssetExportSession
+
+public final class DownloadStatus: ObservableObject {
+	@Published public var downloadingTasks: Int = 0
+	var downloadingTasksSet: Int {
+		set {
+			DispatchQueue.main.sync {
+				self.downloadingTasks = newValue
+				print("Downloading Tasks: \(newValue)")
+			}
+		}
+		get {
+			downloadingTasks
+		}
+	}
+}
 
 // TODO: Maybe present a textform or something other than this
 public struct DownloadErrors {
@@ -20,11 +36,12 @@ public struct DownloadErrors {
 public class Helpers {
 	unowned let session: Session
 	public let offline: Offline
+	public let downloadStatus = DownloadStatus()
 	let metadata: Metadata
 	
 	public init(session: Session) {
 		self.session = session
-		self.offline = Offline(session: session)
+		self.offline = Offline(session: session, downloadStatus: downloadStatus)
 		self.metadata = Metadata(session: session)
 	}
 	
@@ -61,20 +78,28 @@ public class Helpers {
 	}
 	
 	public func download(track: Track, parentFolder: String = "") -> Bool {
-		guard let url = track.getAudioUrl(session: session) else { return false }
+		downloadStatus.downloadingTasksSet += 1
+		guard let url = track.getAudioUrl(session: session) else {
+			downloadStatus.downloadingTasksSet -= 1
+			return false
+		}
 		print("Downloading \(track.title)")
 		let fileName = formFileName(track)
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: fileName)
 		guard let path = optionalPath else {
+			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
+			downloadStatus.downloadingTasksSet -= 1
 			return false
 		}
 		let response = Network.download(url, path: path, overwrite: true)
 		convertToALAC(path: path)
 		metadata.setMetadata(for: track, at: path)
+		downloadStatus.downloadingTasksSet -= 1
 		return response.ok
 	}
 	
 	public func download(tracks: [Track], parentFolder: String = "") -> DownloadErrors {
+		downloadStatus.downloadingTasksSet += 1
 		var errors = DownloadErrors()
 		for track in tracks {
 			let r = download(track: track, parentFolder: parentFolder)
@@ -82,6 +107,7 @@ public class Helpers {
 				errors.affectedTracks.insert(track)
 			}
 		}
+		downloadStatus.downloadingTasksSet -= 1
 		return errors
 	}
 	
@@ -99,14 +125,19 @@ public class Helpers {
 	}
 	
 	public func download(album: Album, parentFolder: String = "") -> DownloadErrors {
+		downloadStatus.downloadingTasksSet += 1
 		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
+			downloadStatus.downloadingTasksSet -= 1
 			return DownloadErrors(affectedAlbums: [album])
 		}
+		downloadStatus.downloadingTasksSet -= 1
 		return download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title)")
 	}
 	
 	public func downloadAllAlbums(from artist: Artist, parentFolder: String = "") -> DownloadErrors {
+		downloadStatus.downloadingTasksSet += 1
 		guard let albums = session.getArtistAlbums(artistId: artist.id) else {
+			downloadStatus.downloadingTasksSet -= 1
 			return DownloadErrors(affectedArtists: [artist])
 		}
 		var error = DownloadErrors()
@@ -115,14 +146,18 @@ public class Helpers {
 			error.affectedAlbums.formUnion(r.affectedAlbums)
 			error.affectedTracks.formUnion(r.affectedTracks)
 		}
+		downloadStatus.downloadingTasksSet -= 1
 		return error
 	}
 	
 	public func download(playlist: Playlist, parentFolder: String = "") -> DownloadErrors {
+		downloadStatus.downloadingTasksSet += 1
 		guard let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) else {
 			return DownloadErrors(affectedPlaylists: [playlist])
 		}
-		return download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
+		let errors = download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
+		downloadStatus.downloadingTasksSet -= 1
+		return errors
 	}
 }
 
@@ -310,6 +345,7 @@ public class OfflineDB {
 
 public class Offline {
 	private unowned let session: Session
+	private let downloadStatus: DownloadStatus
 	private let mainPath = "TidalSwift Offline Library"
 	
 	private let db = OfflineDB()
@@ -320,8 +356,9 @@ public class Offline {
 		}
 	}
 	
-	public init(session: Session) {
+	public init(session: Session, downloadStatus: DownloadStatus) {
 		self.session = session
+		self.downloadStatus = downloadStatus
 		
 		// Create main folder if it doesn't exist
 		do {
@@ -446,11 +483,13 @@ public class Offline {
 	// Returns true if at least one of the track is offline afterwards.
 	// WARNING: Doesn't guarantee that all tracks are offline.
 	private func add(tracks: [Track]) -> Bool {
+		downloadStatus.downloadingTasksSet += 1
 		var result = true
 		for track in tracks {
 			let r = add(track: track)
 			result = result || r
 		}
+		downloadStatus.downloadingTasksSet -= 1
 		return result
 	}
 	
@@ -483,12 +522,14 @@ public class Offline {
 	// MARK: - Favorite Tracks
 	
 	public func syncFavoriteTracks() {
+		downloadStatus.downloadingTasksSet += 1
 		var tracks: [Track] = []
 		if saveFavoritesOffline {
 			if let favTracks = session.favorites?.tracks() {
 				tracks = favTracks.map { $0.item }
 			} else {
 				displayError(title: "Error while synchronizing Favorite Tracks", content: "")
+				downloadStatus.downloadingTasksSet -= 1
 				return
 			}
 		}
@@ -513,6 +554,7 @@ public class Offline {
 		} else {
 			displayError(title: "Error while synchronizing Favorite Tracks", content: "Couldn't add missing tracks to Offline.")
 		}
+		downloadStatus.downloadingTasksSet -= 1
 	}
 	
 	// MARK: - Album
@@ -522,10 +564,13 @@ public class Offline {
 	}
 	
 	public func add(album: Album) -> Bool {
+		downloadStatus.downloadingTasksSet += 1
 		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
+			downloadStatus.downloadingTasksSet -= 1
 			return false
 		}
 		db.albums.append(album)
+		downloadStatus.downloadingTasksSet -= 1
 		return add(tracks: tracks)
 	}
 	
@@ -543,6 +588,7 @@ public class Offline {
 	}
 	
 	public func syncPlaylist(_ playlist: Playlist) {
+		downloadStatus.downloadingTasksSet += 1
 		var tracks: [Track] = []
 		let dbTracks: [Track] = db.playlistTracks[playlist] ?? []
 		
@@ -552,6 +598,7 @@ public class Offline {
 				tracks = playlistTracks
 			} else {
 				displayError(title: "Error while synchronizing Playlist Tracks", content: "Couldn't load playlist tracks from Tidal API.")
+				downloadStatus.downloadingTasksSet -= 1
 				return
 			}
 		} else {
@@ -578,6 +625,7 @@ public class Offline {
 		} else {
 			displayError(title: "Error while synchronizing Playlist Tracks", content: "Couldn't add missing playlist tracks to Offline.")
 		}
+		downloadStatus.downloadingTasksSet -= 1
 	}
 	
 	public func add(playlist: Playlist) {

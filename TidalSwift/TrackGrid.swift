@@ -134,20 +134,28 @@ struct TrackContextMenu: View {
 					if track.isInFavorites(session: session) ?? false {
 						Button(action: {
 							print("Remove from Favorites")
-							self.session.favorites!.removeTrack(trackId: self.track.id)
-							self.session.helpers?.offline.syncFavoriteTracks()
-							self.viewState.refreshCurrentView()
-							self.t.toggle()
+							DispatchQueue.global(qos: .background).async {
+								self.session.favorites!.removeTrack(trackId: self.track.id)
+								self.session.helpers?.offline.syncFavoriteTracks()
+								DispatchQueue.main.async {
+									self.viewState.refreshCurrentView()
+									self.t.toggle()
+								}
+							}
 						}) {
 							Text("Remove from Favorites")
 						}
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							self.session.favorites!.addTrack(trackId: self.track.id)
-							self.session.helpers?.offline.syncFavoriteTracks()
-							self.viewState.refreshCurrentView()
-							self.t.toggle()
+							DispatchQueue.global(qos: .background).async {
+								self.session.favorites!.addTrack(trackId: self.track.id)
+								self.session.helpers?.offline.syncFavoriteTracks()
+								DispatchQueue.main.async {
+									self.viewState.refreshCurrentView()
+									self.t.toggle()
+								}
+							}
 						}) {
 							Text("Add to Favorites")
 						}

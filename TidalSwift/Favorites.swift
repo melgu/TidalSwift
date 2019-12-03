@@ -103,8 +103,12 @@ struct FavoriteTracks: View {
 						.onTapGesture {
 							print("Add to Offline")
 							self.session.helpers?.offline.saveFavoritesOffline = true
-							self.session.helpers?.offline.syncFavoriteTracks()
-							self.viewState.refreshCurrentView()
+							DispatchQueue.global(qos: .background).async {
+								self.session.helpers?.offline.syncFavoriteTracks()
+								DispatchQueue.main.async {
+									self.viewState.refreshCurrentView()
+								}
+							}
 					}
 				}
 			}

@@ -56,6 +56,7 @@
 		B0A67AA72395CB1100BD3921 /* WrappedTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A67AA62395CB1100BD3921 /* WrappedTrack.swift */; };
 		B0A67AA92395D40E00BD3921 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A67AA82395D40E00BD3921 /* BackButton.swift */; };
 		B0A67AAD2395DB6700BD3921 /* Pasteboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A67AAC2395DB6700BD3921 /* Pasteboard.swift */; };
+		B0A67AAF2395ED5100BD3921 /* DownloadIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A67AAE2395ED5100BD3921 /* DownloadIndicator.swift */; };
 		B0A85FFB230DDB28000C4C4E /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFA230DDB28000C4C4E /* Player.swift */; };
 		B0A85FFD230DE2E3000C4C4E /* VideoPlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A85FFC230DE2E3000C4C4E /* VideoPlayerController.swift */; };
 		B0B6578B23706A7A00729358 /* AccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B6578A23706A7A00729358 /* AccountInfoView.swift */; };
@@ -170,6 +171,7 @@
 		B0A67AA62395CB1100BD3921 /* WrappedTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedTrack.swift; sourceTree = "<group>"; };
 		B0A67AA82395D40E00BD3921 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		B0A67AAC2395DB6700BD3921 /* Pasteboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pasteboard.swift; sourceTree = "<group>"; };
+		B0A67AAE2395ED5100BD3921 /* DownloadIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadIndicator.swift; sourceTree = "<group>"; };
 		B0A85FFA230DDB28000C4C4E /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		B0A85FFC230DE2E3000C4C4E /* VideoPlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerController.swift; sourceTree = "<group>"; };
 		B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAVAssetExportSession.h; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				B0A85FFA230DDB28000C4C4E /* Player.swift */,
 				B03F420A230DF66200587A4A /* PlaybackInfo.swift */,
 				B0D974D4230CD60D00695388 /* PlayerInfoView.swift */,
+				B0A67AAE2395ED5100BD3921 /* DownloadIndicator.swift */,
 				B086420823826C1A005402D1 /* PlaybackHistoryView.swift */,
 				B01B09CC234B15D6007A4E15 /* Lyrics.swift */,
 				B01B09CE234B1C7B007A4E15 /* LyricsView.swift */,
@@ -649,6 +652,7 @@
 				B0D974D5230CD60D00695388 /* PlayerInfoView.swift in Sources */,
 				B0CAD8D92348333000A9BAA6 /* TrackGrid.swift in Sources */,
 				B07685BD2320C12D00538D55 /* QueueView.swift in Sources */,
+				B0A67AAF2395ED5100BD3921 /* DownloadIndicator.swift in Sources */,
 				B01B09CF234B1C7B007A4E15 /* LyricsView.swift in Sources */,
 				B08642072381C71D005402D1 /* ViewHistoryView.swift in Sources */,
 				B0A67AA72395CB1100BD3921 /* WrappedTrack.swift in Sources */,

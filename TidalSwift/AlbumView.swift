@@ -125,10 +125,14 @@ struct AlbumView: View {
 											.font(.title)
 											.onTapGesture {
 												print("Add to Offline")
-												let success = self.viewState.stack.last!.album!.addOffline(session: self.session)
-												print("Add to Offline: \(success ? "successful" : "unsuccessful")")
-												self.viewState.refreshCurrentView()
-												self.t.toggle()
+												DispatchQueue.global(qos: .background).async {
+													let success = self.viewState.stack.last!.album!.addOffline(session: self.session)
+													DispatchQueue.main.async {
+														print("Add to Offline: \(success ? "successful" : "unsuccessful")")
+														self.viewState.refreshCurrentView()
+														self.t.toggle()
+													}
+												}
 										}
 									}
 								}

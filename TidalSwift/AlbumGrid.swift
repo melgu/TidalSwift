@@ -246,10 +246,14 @@ struct AlbumContextMenu: View {
 							} else {
 								Button(action: {
 									print("Add to Offline")
-									let success = self.album.addOffline(session: self.session)
-									print("Add to Offline: \(success ? "successful" : "unsuccessful")")
-									self.viewState.refreshCurrentView()
-									self.t.toggle()
+									DispatchQueue.global(qos: .background).async {
+										let success = self.album.addOffline(session: self.session)
+										DispatchQueue.main.async {
+											print("Add to Offline: \(success ? "successful" : "unsuccessful")")
+											self.viewState.refreshCurrentView()
+											self.t.toggle()
+										}
+									}
 								}) {
 									Text("Add to Offline")
 								}
@@ -258,7 +262,9 @@ struct AlbumContextMenu: View {
 						
 						Button(action: {
 							print("Download")
-							_ = self.session.helpers?.download(album: self.album)
+							DispatchQueue.global(qos: .background).async {
+								_ = self.session.helpers?.download(album: self.album)
+							}
 						}) {
 							Text("Download")
 						}

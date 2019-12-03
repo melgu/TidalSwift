@@ -94,8 +94,12 @@ struct AddToPlaylistView: View {
 						let success = self.session.addTracks(ids, to: self.selectedPlaylist, duplicate: false)
 						if success {
 							if let playlist = self.session.getPlaylist(playlistId: self.selectedPlaylist) {
-								self.session.helpers?.offline.syncPlaylist(playlist)
-								self.viewState.refreshCurrentView()
+								DispatchQueue.global(qos: .background).async {
+									self.session.helpers?.offline.syncPlaylist(playlist)
+									DispatchQueue.main.async {
+										self.viewState.refreshCurrentView()
+									}
+								}
 							}
 							self.playlistEditingValues.showAddTracksModal = false
 						}
@@ -133,9 +137,13 @@ struct RemoveFromPlaylistView: View {
 					print("Delete Index \(i) from \(self.playlistEditingValues.playlist!.title)")
 					let success = self.session.removeTrack(index: i, from: uuid)
 					if success {
-						self.session.helpers?.offline.syncPlaylist(self.playlistEditingValues.playlist!)
+						DispatchQueue.global(qos: .background).async {
+							self.session.helpers?.offline.syncPlaylist(self.playlistEditingValues.playlist!)
+							DispatchQueue.main.async {
+								self.viewState.refreshCurrentView()
+							}
+						}
 						self.playlistEditingValues.showRemoveTracksModal = false
-						self.viewState.refreshCurrentView()
 					}
 				}) {
 					Text("Delete")
