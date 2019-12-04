@@ -128,12 +128,14 @@ final class ViewState: ObservableObject {
 		history.append(view)
 		
 		// Enforce Maximum
-		if history.count >= maxHistoryItems {
+		if history.count > maxHistoryItems {
 			history.removeFirst(history.count - maxHistoryItems)
 		}
+		print("History count: \(history.count). Max items: \(maxHistoryItems)")
 	}
 	
 	func clearHistory() {
+		print("Clear History")
 		history.removeAll()
 		cache = ViewCache()
 	}

@@ -194,7 +194,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 					viewState.history = tempHistory
 				}
 			}
-			viewState.maxHistoryItems = UserDefaults.standard.integer(forKey: "ViewStateHistoryMaxItems")
+			let tempMaxHistoryItems = UserDefaults.standard.integer(forKey: "ViewStateHistoryMaxItems")
+			if tempMaxHistoryItems != 0 {
+				viewState.maxHistoryItems = tempMaxHistoryItems
+			} else {
+				viewState.maxHistoryItems = 100
+			}
 		}
 		
 		// Space for Play/Pause
