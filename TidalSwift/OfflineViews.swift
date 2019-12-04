@@ -51,6 +51,7 @@ extension ViewState {
 	}
 	
 	// Only replaces if actually different
+	// Also replaces View in History
 	func replaceCurrentView(with view: TidalSwiftView) {
 		DispatchQueue.main.async {
 			print("replaceCurrentView(): \(self.stack.last?.viewType.rawValue ?? "nil")")
@@ -61,11 +62,14 @@ extension ViewState {
 				return
 			}
 			if view == self.stack.last! {
-				print("replaceCurrentView(): Fetched View \(view.viewType.rawValue) is the same, so it's not replaced")
+				print("replaceCurrentView(): Fetched View \(view.viewType.rawValue) is exactly the same, so it's not replaced")
 				return
 			}
 			if self.stack.last!.id == tempView.id {
 				self.stack[self.stack.count-1] = tempView
+				if !self.history.isEmpty {
+					self.history[self.history.count-1] = tempView
+				}
 			} else {
 				print("replaceCurrentView(): Fetched View \(view.viewType.rawValue) is completely different View, so it's not replaced")
 			}
