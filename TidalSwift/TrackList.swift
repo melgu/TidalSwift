@@ -33,6 +33,7 @@ struct TrackList: View {
 				TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: self.playlist != nil ? wrappedTrack.id : nil, playlist: self.playlist, session: self.session, player: self.player)
 			}
 			Divider()
+				.padding(.horizontal)
 		}
 	}
 }
