@@ -117,6 +117,11 @@ struct TrackRow: View {
 								.foregroundColor(.secondary)
 						}
 						Text(self.track.title)
+						if self.track.version != nil {
+							Text("(\(self.track.version!))")
+								.foregroundColor(.secondary)
+								.padding(.leading, -5)
+						}
 						Text(self.track.attributeString)
 							.padding(.leading, -5)
 							.foregroundColor(.secondary)
