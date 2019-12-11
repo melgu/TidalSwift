@@ -9,12 +9,18 @@
 import SwiftUI
 
 struct FullscreenLoadingSpinner: View {
+	let externalState: LoadingState?
+	
+	init(_ externalState: LoadingState? = nil) {
+		self.externalState = externalState
+	}
+	
 	var body: some View {
 		VStack {
 			Spacer(minLength: 0)
 			HStack {
 				Spacer(minLength: 0)
-				LoadingSpinner()
+				LoadingSpinner(externalState)
 				Spacer(minLength: 0)
 			}
 			Spacer(minLength: 0)
@@ -23,13 +29,30 @@ struct FullscreenLoadingSpinner: View {
 }
 
 struct LoadingSpinner: View {
+	let externalState: LoadingState?
+	var loadingState: LoadingState {
+		if let state = externalState {
+			return state
+		} else {
+			if let view = viewState.stack.last {
+				return view.loadingState
+			} else {
+				return .loading
+			}
+		}
+	}
+	
+	init(_ externalState: LoadingState? = nil) {
+		self.externalState = externalState
+	}
+	
 	@EnvironmentObject var viewState: ViewState
 	
 	@State var animate = false
 	
 	var body: some View {
 		Group {
-			if viewState.stack.last!.loadingState == .loading {
+			if loadingState == .loading {
 				Text("􀊯")
 					.font(.title)
 					.rotationEffect(animate ? .degrees(360) : .degrees(0))
@@ -37,7 +60,7 @@ struct LoadingSpinner: View {
 					.onAppear {
 						self.animate.toggle()
 				}
-			} else if viewState.stack.last!.loadingState == .error {
+			} else if loadingState == .error {
 				Text("􀙥")
 					.font(.title)
 			}

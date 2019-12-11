@@ -45,7 +45,7 @@ struct ArtistBioView: View {
 						}
 					}
 				} else if loadingState == .loading {
-					FullscreenLoadingSpinner()
+					FullscreenLoadingSpinner(.loading)
 				} else {
 					Text("No Bio available")
 						.foregroundColor(.secondary)

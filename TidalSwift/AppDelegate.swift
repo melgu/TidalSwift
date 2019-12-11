@@ -33,6 +33,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var savePlaybackInfoOnNextTick = false
 	var saveViewStateOnNextTick = false
 	
+	var playingCancellable: AnyCancellable?
+	var shuffleCancellable: AnyCancellable?
+	var repeatCancellable: AnyCancellable?
+	var queueCancellable: AnyCancellable?
+	var currentIndexCancellable: AnyCancellable?
+	var volumeCancellable: AnyCancellable?
+	var viewStackCancellable: AnyCancellable?
+	
 	override init() {
 		let session = Session(config: nil)
 		let player = Player(session: session)
@@ -212,16 +220,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //		}
 		
 		// Combine Stuff
-		_ = sc.player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
-		_ = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffleState(enabled:))
-		_ = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: repeatLabel(repeatState:))
-		_ = sc.player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: favoriteLabel(currentIndex:))
-		_ = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
+		playingCancellable = sc.player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
+		shuffleCancellable = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
+			self.shuffleState(enabled: $0)
+			self.savePlaybackInfoOnNextTick = true
+		})
+		repeatCancellable = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self ] in
+			self.repeatLabel(repeatState: $0)
+			self.savePlaybackInfoOnNextTick = true
+		})
+		volumeCancellable = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
+		
+		queueCancellable = sc.player.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in self.savePlaybackInfoOnNextTick = true })
+		currentIndexCancellable = sc.player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
+			self.favoriteLabel(currentIndex: $0)
+			self.savePlaybackInfoOnNextTick = true
+		})
+		
+		viewStackCancellable = viewState.$stack.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			print("Save: ViewState")
+			self.saveViewStateOnNextTick = true
+		})
 		
 		// State Persisting
-		timerCancellable = Timer.publish(every: 10, on: .main, in: .default)
+		timerCancellable = Timer.publish(every: 0, on: .main, in: .default)
 			.autoconnect()
-			.sink { _ in
+			.sink { [unowned self] _ in
 				if self.savePlaybackInfoOnNextTick {
 					self.savePlaybackInfoOnNextTick = false
 					print("savePlaybackState()")
@@ -237,17 +261,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 					}
 				}
 		}
-		_ = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.savePlaybackInfoOnNextTick = true })
-		_ = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.savePlaybackInfoOnNextTick = true })
-		_ = sc.player.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.savePlaybackInfoOnNextTick = true })
-		_ = sc.player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.savePlaybackInfoOnNextTick = true })
-		
-		_ = viewState.$stack.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.saveViewStateOnNextTick = true })
-		
-		// Combine Debug Stuff
-//		_ = viewState.$viewType.receive(on: DispatchQueue.main).sink(receiveValue: { print("viewState Type: \($0?.rawValue ?? "nil")") })
-//		_ = sc.$session.receive(on: DispatchQueue.main).sink(receiveValue: { _ in print("sc.session sink") })
-//		_ = sc.$player.receive(on: DispatchQueue.main).sink(receiveValue: { _ in print("sc.player sink") })
 		
 		viewState.refreshCurrentView()
 		
@@ -327,12 +340,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playlistEditingValues.showEditModal = false
 	}
 	
+	func cancelCancellables() {
+		timerCancellable?.cancel()
+		
+		playingCancellable?.cancel()
+		shuffleCancellable?.cancel()
+		repeatCancellable?.cancel()
+		
+		queueCancellable?.cancel()
+		currentIndexCancellable?.cancel()
+		volumeCancellable?.cancel()
+		
+		viewStackCancellable?.cancel()
+	}
+	
 	// MARK: - Menu Bar
 	// MARK: - Quit
 	
 	@IBAction func Quit(_ sender: Any) {
 		print("Exiting...")
-		timerCancellable?.cancel()
+		cancelCancellables()
 		closeModals()
 		saveState()
 		NSApp.terminate(nil)
@@ -408,8 +435,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func addToPlaylist(_ sender: Any) {
 		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
 		print("Add \(track.title) to Playlist")
-		self.playlistEditingValues.tracks = [track]
-		self.playlistEditingValues.showAddTracksModal = true
+		playlistEditingValues.tracks = [track]
+		playlistEditingValues.showAddTracksModal = true
 	}
 	@IBOutlet weak var albumAddFavorites: NSMenuItem!
 	@IBAction func albumAddFavorites(_ sender: Any) {
