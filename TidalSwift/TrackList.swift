@@ -185,8 +185,7 @@ struct TrackRow: View {
 				}
 			}
 		}
-			.padding()
-			.frame(height: 30) // TODO: Is 40 no matter what when cover is shown. Why?
-		
+		.padding(.horizontal)
+		.frame(height: 30)
 	}
 }
