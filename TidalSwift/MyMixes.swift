@@ -20,12 +20,12 @@ struct MyMixes: View {
 	var body: some View {
 		VStack(alignment: .leading) {
 			HStack {
-			Text("My Mixes")
-				.font(.largeTitle)
-			Spacer()
-			LoadingSpinner()
+				Text("My Mixes")
+					.font(.largeTitle)
+				Spacer()
+				LoadingSpinner()
 			}
-				.padding(.horizontal)
+			.padding(.horizontal)
 			
 			if viewState.stack.last!.mixes != nil {
 				MixGrid(mixes: viewState.stack.last!.mixes!, session: session, player: player)
@@ -98,56 +98,50 @@ struct MixPlaylistView: View {
 	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
-		ScrollView {
-			VStack(alignment: .leading) {
-				HStack {
-					Button(action: {
-						print("Back")
-						self.viewState.pop()
-					}) {
-						Text("􀆉")
-					}
-					.padding(.leading, 10)
-					Spacer()
-				}
-				if viewState.stack.last!.tracks != nil {
-					HStack {
-						MixImage(mix: viewState.stack.last!.mix!, session: session)
-							.frame(width: 100, height: 100)
-							.cornerRadius(CORNERRADIUS)
-							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-							.onTapGesture {
-								let controller = CoverWindowController(rootView:
-									URLImageSourceView(
-										self.viewState.stack.last!.mix!.graphic.images[0].getImageUrl(session: self.session, resolution: 320)!,
-										isAnimationEnabled: true,
-										label: Text(self.viewState.stack.last!.mix!.title)
+		ZStack {
+			ScrollView {
+				VStack(alignment: .leading) {
+					if viewState.stack.last!.tracks != nil {
+						HStack {
+							MixImage(mix: viewState.stack.last!.mix!, session: session)
+								.frame(width: 100, height: 100)
+								.cornerRadius(CORNERRADIUS)
+								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+								.onTapGesture {
+									let controller = CoverWindowController(rootView:
+										URLImageSourceView(
+											self.viewState.stack.last!.mix!.graphic.images[0].getImageUrl(session: self.session, resolution: 320)!,
+											isAnimationEnabled: true,
+											label: Text(self.viewState.stack.last!.mix!.title)
+										)
 									)
-								)
-								controller.window?.title = self.viewState.stack.last!.mix!.title
-								controller.showWindow(nil)
+									controller.window?.title = self.viewState.stack.last!.mix!.title
+									controller.showWindow(nil)
+							}
+							
+							VStack(alignment: .leading) {
+								Text(viewState.stack.last!.mix!.title)
+									.font(.title)
+									.lineLimit(2)
+								Text(viewState.stack.last!.mix!.subTitle)
+									.foregroundColor(.secondary)
+							}
+							Spacer(minLength: 0)
+							LoadingSpinner()
 						}
+						.frame(height: 100)
+						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 						
-						VStack(alignment: .leading) {
-							Text(viewState.stack.last!.mix!.title)
-								.font(.title)
-								.lineLimit(2)
-							Text(viewState.stack.last!.mix!.subTitle)
-								.foregroundColor(.secondary)
-						}
-						Spacer(minLength: 0)
-						LoadingSpinner()
+						TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrap(), showCover: true, showAlbumTrackNumber: false,
+								  showArtist: true, showAlbum: true, playlist: nil,
+								  session: session, player: player)
 					}
-					.frame(height: 100)
-					.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-					Divider()
-					
-					TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrap(), showCover: true, showAlbumTrackNumber: false,
-							  showArtist: true, showAlbum: true, playlist: nil,
-							  session: session, player: player)
+					Spacer(minLength: 0)
 				}
-				Spacer(minLength: 0)
+				.padding(.top, 40)
+				
 			}
+			BackButton()
 		}
 	}
 }
