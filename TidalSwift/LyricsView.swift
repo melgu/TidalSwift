@@ -7,18 +7,21 @@
 //
 
 import SwiftUI
+import Combine
 import TidalSwiftLib
 
 struct LyricsView: View {
 	let lyricsHandler = Lyrics()
 	
-	@State var lyrics: String?
+	@EnvironmentObject var queueInfo: QueueInfo
+	
+	@State var currentIndexCancellable: AnyCancellable?
+	@State var queueCancellable: AnyCancellable?
 	
 	@State var workItem: DispatchWorkItem?
 	@State var loadingState: LoadingState = .loading
 	
-	@EnvironmentObject var queueInfo: QueueInfo
-	
+	@State var lyrics: String?
 	@State var lastTrack: Track?
 	var track: Track? {
 		if !queueInfo.queue.isEmpty {
@@ -29,10 +32,7 @@ struct LyricsView: View {
 	}
 	
 	var body: some View {
-		_ = queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
-		_ = queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
-		
-		return ScrollView {
+		ScrollView {
 			VStack(alignment: .leading) {
 				if track != nil {
 					HStack {
@@ -55,10 +55,10 @@ struct LyricsView: View {
 								}
 						}
 					} else if loadingState == .loading {
-						FullscreenLoadingSpinner()
+						FullscreenLoadingSpinner(.loading)
 					} else {
 						Text("No Lyrics available")
-						.foregroundColor(.secondary)
+							.foregroundColor(.secondary)
 					}
 				} else {
 					HStack {
@@ -73,15 +73,21 @@ struct LyricsView: View {
 			.padding()
 		}
 		.onAppear() {
+			self.currentIndexCancellable = self.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
+			self.queueCancellable = self.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
 			self.fetchLyrics()
 		}
 		.onDisappear() {
 			self.workItem?.cancel()
+			self.currentIndexCancellable?.cancel()
+			self.queueCancellable?.cancel()
 		}
 	}
 	
 	func fetchLyrics() {
+		print("Lyrics Fetch for \(track?.title ?? "nil")")
 		if track == lastTrack {
+			print("Lyrics: Same as lastTrack")
 			return
 		}
 		lastTrack = track

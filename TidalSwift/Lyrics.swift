@@ -70,6 +70,7 @@ class Lyrics {
 		}
 		
 		guard let lyricsResponse = optionalLyricsResponse else {
+			print("Lyrics failed (JSON Parse returns nil)")
 			return nil
 		}
 		
@@ -78,6 +79,9 @@ class Lyrics {
 		}
 		
 		if lyricsResponse.lyric == "Unfortunately, we are not licensed to display the full lyrics for this song at the moment. Hopefully we will be able to in the future. Until then... how about a random page?" {
+			return nil
+		}
+		if lyricsResponse.lyric == "" {
 			return nil
 		}
 		

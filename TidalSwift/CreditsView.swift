@@ -35,7 +35,7 @@ struct CreditsView: View {
 					}
 					Spacer(minLength: 0)
 				} else if loadingState == .loading {
-					FullscreenLoadingSpinner()
+					FullscreenLoadingSpinner(.loading)
 				} else {
 					Text("No Credits available")
 						.foregroundColor(.secondary)
