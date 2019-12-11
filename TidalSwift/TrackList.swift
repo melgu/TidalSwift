@@ -185,7 +185,8 @@ struct TrackRow: View {
 				}
 			}
 		}
+		.lineLimit(1)
+		.frame(height: showCover ? 30 : 16) // Values tested "by hand"
 		.padding(.horizontal)
-		.frame(height: 30)
 	}
 }
