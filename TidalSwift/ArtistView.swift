@@ -107,7 +107,7 @@ struct ArtistView: View {
 								  showArtist: true, showAlbum: true, playlist: nil,
 								  session: session, player: player)
 					}
-					.frame(height: 200)
+					.frame(height: 155)
 					
 					HStack {
 						Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {
