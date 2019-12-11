@@ -34,7 +34,10 @@ struct PlaylistView: View {
 									isAnimationEnabled: true,
 									label: Text(viewState.stack.last!.playlist!.title)
 								)
+									.aspectRatio(contentMode: .fill)
 									.frame(width: 100, height: 100)
+									.contentShape(Rectangle())
+									.clipped()
 									.cornerRadius(CORNERRADIUS)
 									.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 									.onTapGesture {
