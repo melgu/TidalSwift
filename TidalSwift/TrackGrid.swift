@@ -40,12 +40,17 @@ struct TrackGridItem: View {
 			}
 			HStack {
 				Text(track.title)
-					.lineLimit(1)
+				if self.track.version != nil {
+					Text("(\(track.version!))")
+						.foregroundColor(.secondary)
+						.padding(.leading, -5)
+				}
 				Text(track.attributeString)
 					.padding(.leading, -5)
 					.foregroundColor(.secondary)
 					.layoutPriority(1)
 			}
+			.lineLimit(1)
 			.frame(width: 160)
 			if showArtist {
 				Text(track.artists.formArtistString())
