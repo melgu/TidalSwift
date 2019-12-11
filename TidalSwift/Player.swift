@@ -8,6 +8,7 @@
 
 import Cocoa
 import Foundation
+import Combine
 import AVFoundation
 import TidalSwiftLib
 
@@ -24,6 +25,9 @@ class Player {
 	private var previousValue: Float = 1.0
 	private var failedItems = 0
 	
+	private var volumeCancellable: AnyCancellable?
+	private var shuffleCancellable: AnyCancellable?
+	
 	init(session: Session, autoplayAfterAddNow: Bool = true) {
 		self.session = session
 		self.autoplayAfterAddNow = autoplayAfterAddNow
@@ -32,8 +36,8 @@ class Player {
 			self?.playbackInfo.fraction = CGFloat(self!.fraction())
 		}
 		
-		_ = playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: setVolume(to:))
-		_ = playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffle(enabled:))
+		volumeCancellable = playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: setVolume(to:))
+		shuffleCancellable = playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffle(enabled:))
 	}
 	
 	deinit {
@@ -41,6 +45,8 @@ class Player {
 			avPlayer.removeTimeObserver(token)
 			timeObserverToken = nil
 		}
+		volumeCancellable?.cancel()
+		shuffleCancellable?.cancel()
 	}
 	
 	func play() {
