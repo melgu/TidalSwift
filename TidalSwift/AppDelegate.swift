@@ -243,7 +243,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		})
 		
 		// State Persisting
-		timerCancellable = Timer.publish(every: 0, on: .main, in: .default)
+		timerCancellable = Timer.publish(every: 10, on: .main, in: .default)
 			.autoconnect()
 			.sink { [unowned self] _ in
 				if self.savePlaybackInfoOnNextTick {
