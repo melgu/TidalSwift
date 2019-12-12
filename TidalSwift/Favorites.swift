@@ -88,13 +88,13 @@ struct FavoriteTracks: View {
 					.font(.largeTitle)
 				Spacer()
 				LoadingSpinner()
-				if session.helpers?.offline.saveFavoritesOffline ?? false {
+				if session.helpers.offline.saveFavoritesOffline {
 					Text("􀇃")
 						.font(.title)
 						.onTapGesture {
 							print("Remove from Offline")
-							self.session.helpers?.offline.saveFavoritesOffline = false
-							self.session.helpers?.offline.syncFavoriteTracks()
+							self.session.helpers.offline.saveFavoritesOffline = false
+							self.session.helpers.offline.syncFavoriteTracks()
 							self.viewState.refreshCurrentView()
 					}
 				} else {
@@ -102,9 +102,9 @@ struct FavoriteTracks: View {
 						.font(.title)
 						.onTapGesture {
 							print("Add to Offline")
-							self.session.helpers?.offline.saveFavoritesOffline = true
+							self.session.helpers.offline.saveFavoritesOffline = true
 							DispatchQueue.global(qos: .background).async {
-								self.session.helpers?.offline.syncFavoriteTracks()
+								self.session.helpers.offline.syncFavoriteTracks()
 								DispatchQueue.main.async {
 									self.viewState.refreshCurrentView()
 								}

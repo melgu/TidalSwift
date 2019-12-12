@@ -120,7 +120,7 @@ public class Session {
 	}
 	
 	public var favorites: Favorites?
-	public var helpers: Helpers?
+	public var helpers: Helpers!
 	
 	public init(config: Config?) {
 		func loadConfig() -> Config? {
@@ -164,7 +164,7 @@ public class Session {
 				self.config = Config(loginCredentials: LoginCredentials(username: "", password: ""))
 			}
 		}
-		
+		helpers = Helpers(session: self)
 	}
 	
 	public func loadSession() -> Bool {
@@ -180,7 +180,6 @@ public class Session {
 		countryCode = persistentInformation["countryCode"]
 		userId = Int(persistentInformation["userId"]!)
 		favorites = Favorites(session: self, userId: userId!)
-		helpers = Helpers(session: self)
 		return true
 	}
 	
@@ -255,7 +254,6 @@ public class Session {
 		countryCode = loginResponse.countryCode
 		userId = loginResponse.userId
 		favorites = Favorites(session: self, userId: userId!)
-		helpers = Helpers(session: self)
 		return true
 	}
 	

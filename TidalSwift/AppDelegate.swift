@@ -370,7 +370,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func downloadTrack(_ sender: Any) {
 		print("Menu: downloadTrack")
 		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
-		_ = sc.session.helpers?.download(track: track)
+		DispatchQueue.global(qos: .background).async {
+			_ = self.sc.session.helpers.download(track: track)
+		}
 	}
 	@IBAction func downloadAlbum(_ sender: Any) {
 		print("Menu: downloadAlbum")
@@ -419,14 +421,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var addToFavorites: NSMenuItem!
 	@IBAction func addToFavorites(_ sender: Any) {
 		sc.session.favorites?.addTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
-		sc.session.helpers?.offline.syncFavoriteTracks()
+		sc.session.helpers.offline.syncFavoriteTracks()
 		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
 		viewState.refreshCurrentView()
 	}
 	@IBOutlet weak var removeFromFavorites: NSMenuItem!
 	@IBAction func removeFromFavorites(_ sender: Any) {
 		sc.session.favorites?.removeTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
-		sc.session.helpers?.offline.syncFavoriteTracks()
+		sc.session.helpers.offline.syncFavoriteTracks()
 		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
 		viewState.refreshCurrentView()
 	}
@@ -590,10 +592,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		controller.showWindow(nil)
 	}
 	@IBAction func logout(_ sender: Any) {
+		removeAllOfflineContent(self)
 		logout()
 	}
 	@IBAction func removeAllOfflineContent(_ sender: Any) {
-		sc.session.helpers?.offline.removeAll()
+		sc.session.helpers.offline.removeAll()
+		viewState.clearHistory() // Also clears Cache
 		viewState.refreshCurrentView()
 	}
 	

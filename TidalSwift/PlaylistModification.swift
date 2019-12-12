@@ -95,7 +95,7 @@ struct AddToPlaylistView: View {
 						if success {
 							if let playlist = self.session.getPlaylist(playlistId: self.selectedPlaylist) {
 								DispatchQueue.global(qos: .background).async {
-									self.session.helpers?.offline.syncPlaylist(playlist)
+									self.session.helpers.offline.syncPlaylist(playlist)
 									DispatchQueue.main.async {
 										self.viewState.refreshCurrentView()
 									}
@@ -138,7 +138,7 @@ struct RemoveFromPlaylistView: View {
 					let success = self.session.removeTrack(index: i, from: uuid)
 					if success {
 						DispatchQueue.global(qos: .background).async {
-							self.session.helpers?.offline.syncPlaylist(self.playlistEditingValues.playlist!)
+							self.session.helpers.offline.syncPlaylist(self.playlistEditingValues.playlist!)
 							DispatchQueue.main.async {
 								self.viewState.refreshCurrentView()
 							}
@@ -176,7 +176,7 @@ struct DeletePlaylist: View {
 					print("Delete \(self.playlistEditingValues.playlist!.title)")
 					let success = self.session.deletePlaylist(playlistId: self.playlistEditingValues.playlist!.uuid)
 					if success {
-						self.session.helpers?.offline.remove(playlist: self.playlistEditingValues.playlist!)
+						self.session.helpers.offline.remove(playlist: self.playlistEditingValues.playlist!)
 						self.playlistEditingValues.showDeleteModal = false
 						self.viewState.refreshCurrentView()
 					}
@@ -210,7 +210,7 @@ struct EditPlaylist: View {
 				.onAppear {
 					self.playlistDescription = self.playlistEditingValues.playlist!.description ?? ""
 			}
-			if session.helpers?.offline.isPlaylistOffline(playlist: playlistEditingValues.playlist!) ?? false {
+			if session.helpers.offline.isPlaylistOffline(playlist: playlistEditingValues.playlist!) {
 				Text("This playlist is saved offline, but won't anymore if renamed. You have to to add it to Offline items again manually, if you so desire.")
 					.foregroundColor(.secondary)
 			}
@@ -227,7 +227,7 @@ struct EditPlaylist: View {
 					let success = self.session.editPlaylist(playlistId: self.playlistEditingValues.playlist!.uuid,
 															title: self.playlistName, description: self.playlistDescription)
 					if success {
-						self.session.helpers?.offline.remove(playlist: self.playlistEditingValues.playlist!)
+						self.session.helpers.offline.remove(playlist: self.playlistEditingValues.playlist!)
 						self.playlistEditingValues.showEditModal = false
 						self.viewState.refreshCurrentView()
 					}

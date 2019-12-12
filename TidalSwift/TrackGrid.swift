@@ -141,7 +141,7 @@ struct TrackContextMenu: View {
 							print("Remove from Favorites")
 							DispatchQueue.global(qos: .background).async {
 								self.session.favorites!.removeTrack(trackId: self.track.id)
-								self.session.helpers?.offline.syncFavoriteTracks()
+								self.session.helpers.offline.syncFavoriteTracks()
 								DispatchQueue.main.async {
 									self.viewState.refreshCurrentView()
 									self.t.toggle()
@@ -155,7 +155,7 @@ struct TrackContextMenu: View {
 							print("Add to Favorites")
 							DispatchQueue.global(qos: .background).async {
 								self.session.favorites!.addTrack(trackId: self.track.id)
-								self.session.helpers?.offline.syncFavoriteTracks()
+								self.session.helpers.offline.syncFavoriteTracks()
 								DispatchQueue.main.async {
 									self.viewState.refreshCurrentView()
 									self.t.toggle()
@@ -190,7 +190,9 @@ struct TrackContextMenu: View {
 				if track.streamReady {
 					Button(action: {
 						print("Download")
-						_ = self.session.helpers?.download(track: self.track)
+						DispatchQueue.global(qos: .background).async {
+							_ = self.session.helpers.download(track: self.track)
+						}
 					}) {
 						Text("Download")
 					}

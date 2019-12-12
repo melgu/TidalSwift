@@ -167,7 +167,7 @@ struct TrackRow: View {
 									print("Remove from Favorites")
 									DispatchQueue.global(qos: .background).async {
 										self.session.favorites!.removeTrack(trackId: self.track.id)
-										self.session.helpers?.offline.syncFavoriteTracks()
+										self.session.helpers.offline.syncFavoriteTracks()
 										DispatchQueue.main.async {
 											self.viewState.refreshCurrentView()
 											self.t.toggle()
@@ -180,7 +180,7 @@ struct TrackRow: View {
 									print("Add to Favorites")
 									DispatchQueue.global(qos: .background).async {
 										self.session.favorites!.addTrack(trackId: self.track.id)
-										self.session.helpers?.offline.syncFavoriteTracks()
+										self.session.helpers.offline.syncFavoriteTracks()
 										DispatchQueue.main.async {
 											self.t.toggle()
 										}

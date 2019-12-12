@@ -197,15 +197,15 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public func isOffline(session: Session) -> Bool? {
-		return session.helpers?.offline.isAlbumOffline(album: self)
+		return session.helpers.offline.isAlbumOffline(album: self)
 	}
 	
 	public func addOffline(session: Session) -> Bool {
-		return session.helpers?.offline.add(album: self) ?? false
+		return session.helpers.offline.add(album: self)
 	}
 	
 	public func removeOffline(session: Session) {
-		session.helpers?.offline.remove(album: self)
+		session.helpers.offline.remove(album: self)
 	}
 	
 	public func getCredits(session: Session) -> [Credit]? {
@@ -288,15 +288,15 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public func isOffline(session: Session) -> Bool? {
-		return session.helpers?.offline.isPlaylistOffline(playlist: self)
+		return session.helpers.offline.isPlaylistOffline(playlist: self)
 	}
 	
 	public func addOffline(session: Session) {
-		session.helpers?.offline.add(playlist: self)
+		session.helpers.offline.add(playlist: self)
 	}
 	
 	public func removeOffline(session: Session) {
-		session.helpers?.offline.remove(playlist: self)
+		session.helpers.offline.remove(playlist: self)
 	}
 	
 	public static func == (lhs: Playlist, rhs: Playlist) -> Bool {
@@ -376,7 +376,7 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public func isOffline(session: Session) -> Bool? {
-		return session.helpers?.offline.isTrackOffline(track: self)
+		return session.helpers.offline.isTrackOffline(track: self)
 	}
 	
 	public func radio(session: Session) -> [Track]? {
