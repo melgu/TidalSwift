@@ -26,7 +26,7 @@ struct NewReleases: View {
 			}
 			.padding(.horizontal)
 			
-			if viewState.stack.last!.albums != nil {
+			if viewState.stack.last?.albums != nil {
 				AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, showReleaseDate: true, session: session, player: player)
 			}
 			Spacer(minLength: 0)

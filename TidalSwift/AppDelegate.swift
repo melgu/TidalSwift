@@ -597,8 +597,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBAction func removeAllOfflineContent(_ sender: Any) {
 		sc.session.helpers.offline.removeAll()
+		viewState.clearQueue()
 		viewState.clearHistory() // Also clears Cache
-		viewState.refreshCurrentView()
 	}
 	
 	// MARK: - Window

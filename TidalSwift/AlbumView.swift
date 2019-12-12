@@ -17,12 +17,13 @@ struct AlbumView: View {
 	@EnvironmentObject var viewState: ViewState
 	
 	@State var t: Bool = false
+	@State var cloudPressed: Bool = false
 	
 	var body: some View {
 		ZStack {
 			ScrollView {
 				VStack(alignment: .leading) {
-					if viewState.stack.last!.album != nil && viewState.stack.last!.tracks != nil {
+					if viewState.stack.last?.album != nil && viewState.stack.last?.tracks != nil {
 						ZStack(alignment: .bottomTrailing) {
 							HStack {
 								URLImageSourceView(
@@ -116,23 +117,31 @@ struct AlbumView: View {
 											.font(.title)
 											.onTapGesture {
 												print("Remove from Offline")
+												self.cloudPressed = false
 												self.viewState.stack.last!.album!.removeOffline(session: self.session)
 												self.viewState.refreshCurrentView()
 												self.t.toggle()
 										}
 									} else {
-										Text("􀇂")
-											.font(.title)
-											.onTapGesture {
-												print("Add to Offline")
-												DispatchQueue.global(qos: .background).async {
-													let success = self.viewState.stack.last!.album!.addOffline(session: self.session)
-													DispatchQueue.main.async {
-														print("Add to Offline: \(success ? "successful" : "unsuccessful")")
-														self.viewState.refreshCurrentView()
-														self.t.toggle()
+										if cloudPressed {
+											Text("􀇃")
+												.font(.title)
+												.foregroundColor(.secondary)
+										} else {
+											Text("􀇂")
+												.font(.title)
+												.onTapGesture {
+													print("Add to Offline")
+													self.cloudPressed = true
+													DispatchQueue.global(qos: .background).async {
+														let success = self.viewState.stack.last!.album!.addOffline(session: self.session)
+														DispatchQueue.main.async {
+															print("Add to Offline: \(success ? "successful" : "unsuccessful")")
+															self.viewState.refreshCurrentView()
+															self.t.toggle()
+														}
 													}
-												}
+											}
 										}
 									}
 								}

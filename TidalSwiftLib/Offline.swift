@@ -12,6 +12,7 @@ import Foundation
 
 public class OfflineDB {
 	// [Track: ByHowManyNeeded]
+	let semaphore = DispatchSemaphore(value: 1)
 	var tracks: [Track: Int] = [:] {
 		didSet {
 			save()
@@ -118,6 +119,8 @@ public class Offline {
 		}
 	}
 	
+	private var dispatchQueue = DispatchQueue(label: "melgu.TidalSwift.offline", qos: .background)
+	
 	public init(session: Session, downloadStatus: DownloadStatus) {
 		self.session = session
 		self.downloadStatus = downloadStatus
@@ -179,12 +182,15 @@ public class Offline {
 	}
 	
 	private func add(track: Track) -> Bool {
-//		print("Offline: Add Track \(track.id) - \(track.title)")
+		print("Offline: Add Track \(track.id) - \(track.title)")
+		db.semaphore.wait()
 		if let counter = db.tracks[track] {
 			db.tracks[track] = counter + 1
-//			print("Offline: Track \(track.title) already exists. Counter: \(db.tracks[track] ?? 0)")
+			print("Offline: Track \(track.title) already exists. Counter: \(db.tracks[track] ?? 0)")
+			db.semaphore.signal()
 			return true
 		}
+		db.semaphore.signal()
 		
 		guard let url = track.getAudioUrl(session: session) else {
 			return false
@@ -193,10 +199,16 @@ public class Offline {
 		guard let path = optionalPath else {
 			return false
 		}
-		let response = Network.download(url, path: path)
+		var response: Response!
+		repeat {
+			response = Network.download(url, path: path)
+		} while response.statusCode == 1001
+		
 		if response.ok {
+			db.semaphore.wait()
 			db.tracks[track] = 1
-//			print("Offline: Add Track \(track.title) successful. Counter: \(db.tracks[track] ?? 0)")
+			db.semaphore.signal()
+			print("Offline: Add Track \(track.title) successful. Counter: \(db.tracks[track] ?? 0)")
 		}
 		return response.ok
 	}
@@ -245,13 +257,22 @@ public class Offline {
 	// Returns true if at least one of the track is offline afterwards.
 	// WARNING: Doesn't guarantee that all tracks are offline.
 	private func add(tracks: [Track]) -> Bool {
-		downloadStatus.downloadingTasksSet += 1
+		downloadStatus.startTask()
+		let group = DispatchGroup()
+		let semaphore = DispatchSemaphore(value: 1)
 		var result = true
 		for track in tracks {
-			let r = add(track: track)
-			result = result || r
+			group.enter()
+			dispatchQueue.async { [unowned self] in
+				let r = self.add(track: track)
+				semaphore.wait()
+				result = result || r
+				semaphore.signal()
+				group.leave()
+			}
 		}
-		downloadStatus.downloadingTasksSet -= 1
+		group.wait()
+		downloadStatus.finishTask()
 		return result
 	}
 	
@@ -279,20 +300,32 @@ public class Offline {
 		
 		saveFavoritesOffline = false
 		db.clear()
-		downloadStatus.downloadingTasks = 0
+//		downloadStatus.downloadingTasks = 0 // WARNING: downloadStatus is not exclusive to Offline
 	}
 	
 	// MARK: - Favorite Tracks
 	
+	private var favoriteTrackSyncOngoing = false
+	private var favTracksSemaphore = DispatchSemaphore(value: 1)
+	
 	public func syncFavoriteTracks() {
-		downloadStatus.downloadingTasksSet += 1
+		favTracksSemaphore.wait()
+		if favoriteTrackSyncOngoing {
+			favTracksSemaphore.signal()
+			return
+		}
+		favoriteTrackSyncOngoing = true
+		favTracksSemaphore.signal()
+		
+		
+		downloadStatus.startTask()
 		var tracks: [Track] = []
 		if saveFavoritesOffline {
 			if let favTracks = session.favorites?.tracks() {
 				tracks = favTracks.map { $0.item }
 			} else {
 				displayError(title: "Error while synchronizing Favorite Tracks", content: "")
-				downloadStatus.downloadingTasksSet -= 1
+				downloadStatus.finishTask()
 				return
 			}
 		}
@@ -317,7 +350,12 @@ public class Offline {
 		} else {
 			displayError(title: "Error while synchronizing Favorite Tracks", content: "Couldn't add missing tracks to Offline.")
 		}
-		downloadStatus.downloadingTasksSet -= 1
+		print("Favorite Tracks synchronized")
+		downloadStatus.finishTask()
+		
+		favTracksSemaphore.wait()
+		favoriteTrackSyncOngoing = false
+		favTracksSemaphore.signal()
 	}
 	
 	// MARK: - Album
@@ -327,13 +365,13 @@ public class Offline {
 	}
 	
 	public func add(album: Album) -> Bool {
-		downloadStatus.downloadingTasksSet += 1
+		downloadStatus.startTask()
 		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
-			downloadStatus.downloadingTasksSet -= 1
+			downloadStatus.finishTask()
 			return false
 		}
 		db.albums.append(album)
-		downloadStatus.downloadingTasksSet -= 1
+		downloadStatus.finishTask()
 		return add(tracks: tracks)
 	}
 	
@@ -346,22 +384,26 @@ public class Offline {
 	
 	// MARK: - Playlist
 	
+	private var playlistSemaphore = DispatchSemaphore(value: 1)
+	
 	public func isPlaylistOffline(playlist: Playlist) -> Bool {
 		db.playlists.contains(playlist)
 	}
 	
 	public func syncPlaylist(_ playlist: Playlist) {
+		playlistSemaphore.wait()
+		
 		var tracks: [Track] = []
 		let dbTracks: [Track] = db.playlistTracks[playlist] ?? []
 		let syncThisPlaylist: Bool = db.playlists.contains(playlist)
 		
 		if syncThisPlaylist {
-			downloadStatus.downloadingTasksSet += 1
+			downloadStatus.startTask()
 			if let playlistTracks = session.getPlaylistTracks(playlistId: playlist.id) {
 				tracks = playlistTracks
 			} else {
 				displayError(title: "Error while synchronizing Playlist Tracks", content: "Couldn't load playlist tracks from Tidal API.")
-				downloadStatus.downloadingTasksSet -= 1
+				downloadStatus.finishTask()
 				return
 			}
 		} else {
@@ -389,8 +431,10 @@ public class Offline {
 			displayError(title: "Error while synchronizing Playlist Tracks", content: "Couldn't add missing playlist tracks to Offline.")
 		}
 		if syncThisPlaylist {
-			downloadStatus.downloadingTasksSet -= 1
+			downloadStatus.finishTask()
 		}
+		
+		playlistSemaphore.signal()
 	}
 	
 	public func add(playlist: Playlist) {

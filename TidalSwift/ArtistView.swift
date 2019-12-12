@@ -28,7 +28,7 @@ struct ArtistView: View {
 		ZStack {
 //			ScrollView { // TODO: Comment back in, when Grid supports nesting inside a ScrollView
 			VStack(alignment: .leading) {
-				if viewState.stack.last!.tracks != nil && viewState.stack.last!.albums != nil && viewState.stack.last!.videos != nil {
+				if viewState.stack.last?.tracks != nil && viewState.stack.last?.albums != nil && viewState.stack.last?.videos != nil {
 					HStack {
 						if viewState.stack.last!.artist!.getPictureUrl(session: session, resolution: 320) != nil {
 							URLImageSourceView(

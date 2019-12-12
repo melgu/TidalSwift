@@ -26,7 +26,7 @@ struct PlaylistView: View {
 		ZStack {
 			ScrollView {
 				VStack(alignment: .leading) {
-					if viewState.stack.last!.tracks != nil {
+					if viewState.stack.last?.tracks != nil {
 						ZStack(alignment: .bottomTrailing) {
 							HStack {
 								URLImageSourceView(
@@ -114,6 +114,7 @@ struct PlaylistView: View {
 										.font(.title)
 										.onTapGesture {
 											print("Add to Offline")
+											self.t.toggle()
 											DispatchQueue.global(qos: .background).async {
 												self.viewState.stack.last!.playlist!.addOffline(session: self.session)
 												DispatchQueue.main.async {
