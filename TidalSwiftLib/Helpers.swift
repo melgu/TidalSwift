@@ -12,22 +12,17 @@ import SDAVAssetExportSession
 
 public final class DownloadStatus: ObservableObject {
 	@Published public var downloadingTasks: Int = 0
-	var downloadingTasksSet: Int {
-		set {
-			// WARNING: Never call from main queue or this will crash
-			DispatchQueue.main.sync {
-				if newValue >= 0 {
-					self.downloadingTasks = newValue
-				} else {
-					// Don't go below 0
-					// Could happen when RemoveAll() is called during active download
-					self.downloadingTasks = 0
-				}
-				print("Downloading Tasks: \(newValue)")
-			}
+	private let semaphore = DispatchSemaphore(value: 1)
+	
+	func startTask() {
+		DispatchQueue.main.sync {
+			downloadingTasks += 1
 		}
-		get {
-			downloadingTasks
+	}
+	
+	func finishTask() {
+		DispatchQueue.main.sync {
+			downloadingTasks -= 1
 		}
 	}
 }
@@ -73,8 +68,7 @@ public class Helpers {
 	
 	// MARK: - Downloading
 	
-	// TODO: Titles can be a names which the file system doesn't like
-	// TODO: Currently everything is done on the main thread synchronously
+	private var dispatchQueue = DispatchQueue(label: "melgu.TidalSwift.download", qos: .background, attributes: .concurrent)
 	
 	func formFileName(_ track: Track) -> String {
 		return "\(track.trackNumber) \(track.title) - \(track.artists.formArtistString()).m4a"
@@ -85,36 +79,47 @@ public class Helpers {
 	}
 	
 	public func download(track: Track, parentFolder: String = "") -> Bool {
-		downloadStatus.downloadingTasksSet += 1
+		downloadStatus.startTask()
 		guard let url = track.getAudioUrl(session: session) else {
-			downloadStatus.downloadingTasksSet -= 1
+			downloadStatus.finishTask()
 			return false
 		}
-		print("Downloading \(track.title)")
+		print("Downloading: \(track.title)")
 		let fileName = formFileName(track)
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: fileName)
 		guard let path = optionalPath else {
 			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
-			downloadStatus.downloadingTasksSet -= 1
+			downloadStatus.finishTask()
 			return false
 		}
 		let response = Network.download(url, path: path, overwrite: true)
 		convertToALAC(path: path)
 		metadata.setMetadata(for: track, at: path)
-		downloadStatus.downloadingTasksSet -= 1
+		print("Downloading Finished: \(track.title)")
+		downloadStatus.finishTask()
 		return response.ok
 	}
 	
 	public func download(tracks: [Track], parentFolder: String = "") -> DownloadErrors {
-		downloadStatus.downloadingTasksSet += 1
+		downloadStatus.startTask()
+		let group = DispatchGroup()
+		let semaphore = DispatchSemaphore(value: 1)
 		var errors = DownloadErrors()
 		for track in tracks {
-			let r = download(track: track, parentFolder: parentFolder)
-			if !r {
-				errors.affectedTracks.insert(track)
+			group.enter()
+			dispatchQueue.async { [unowned self] in
+				let r = self.download(track: track, parentFolder: parentFolder)
+				if !r {
+					semaphore.wait()
+					errors.affectedTracks.insert(track)
+					semaphore.signal()
+				}
+				group.leave()
 			}
 		}
-		downloadStatus.downloadingTasksSet -= 1
+		group.wait()
+		print("Track Download Done!")
+		downloadStatus.finishTask()
 		return errors
 	}
 	
@@ -132,19 +137,20 @@ public class Helpers {
 	}
 	
 	public func download(album: Album, parentFolder: String = "") -> DownloadErrors {
-		downloadStatus.downloadingTasksSet += 1
+		downloadStatus.startTask()
 		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
-			downloadStatus.downloadingTasksSet -= 1
+			downloadStatus.finishTask()
 			return DownloadErrors(affectedAlbums: [album])
 		}
-		downloadStatus.downloadingTasksSet -= 1
-		return download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title)")
+		let r = download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title)")
+		downloadStatus.finishTask()
+		return r
 	}
 	
 	public func downloadAllAlbums(from artist: Artist, parentFolder: String = "") -> DownloadErrors {
-		downloadStatus.downloadingTasksSet += 1
+		downloadStatus.startTask()
 		guard let albums = session.getArtistAlbums(artistId: artist.id) else {
-			downloadStatus.downloadingTasksSet -= 1
+			downloadStatus.finishTask()
 			return DownloadErrors(affectedArtists: [artist])
 		}
 		var error = DownloadErrors()
@@ -153,17 +159,17 @@ public class Helpers {
 			error.affectedAlbums.formUnion(r.affectedAlbums)
 			error.affectedTracks.formUnion(r.affectedTracks)
 		}
-		downloadStatus.downloadingTasksSet -= 1
+		downloadStatus.finishTask()
 		return error
 	}
 	
 	public func download(playlist: Playlist, parentFolder: String = "") -> DownloadErrors {
-		downloadStatus.downloadingTasksSet += 1
+		downloadStatus.startTask()
 		guard let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) else {
 			return DownloadErrors(affectedPlaylists: [playlist])
 		}
 		let errors = download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
-		downloadStatus.downloadingTasksSet -= 1
+		downloadStatus.finishTask()
 		return errors
 	}
 }

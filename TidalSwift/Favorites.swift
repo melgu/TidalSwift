@@ -25,7 +25,7 @@ struct FavoritePlaylists: View {
 			}
 			.padding(.horizontal)
 			
-			if viewState.stack.last!.playlists != nil {
+			if viewState.stack.last?.playlists != nil {
 				PlaylistGrid(playlists: viewState.stack.last!.playlists!, session: session, player: player)
 			}
 			Spacer(minLength: 0)
@@ -94,7 +94,9 @@ struct FavoriteTracks: View {
 						.onTapGesture {
 							print("Remove from Offline")
 							self.session.helpers.offline.saveFavoritesOffline = false
-							self.session.helpers.offline.syncFavoriteTracks()
+							DispatchQueue.global().sync {
+								self.session.helpers.offline.syncFavoriteTracks()
+							}
 							self.viewState.refreshCurrentView()
 					}
 				} else {

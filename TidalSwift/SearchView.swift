@@ -33,7 +33,7 @@ struct SearchView: View {
 				}
 				.padding([.horizontal, .bottom])
 				
-				if viewState.stack.last!.searchResponse != nil {
+				if viewState.stack.last?.searchResponse != nil {
 					if !viewState.stack.last!.searchResponse!.artists.isEmpty {
 						SearchViewArtists(artists: viewState.stack.last!.searchResponse!.artists, session: session, player: player)
 						Divider()

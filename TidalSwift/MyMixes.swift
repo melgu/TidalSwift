@@ -27,7 +27,7 @@ struct MyMixes: View {
 			}
 			.padding(.horizontal)
 			
-			if viewState.stack.last!.mixes != nil {
+			if viewState.stack.last?.mixes != nil {
 				MixGrid(mixes: viewState.stack.last!.mixes!, session: session, player: player)
 			}
 			Spacer(minLength: 0)

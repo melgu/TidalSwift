@@ -168,14 +168,18 @@ class Network {
 			guard let dataUrl = dataUrlOrNil,
 				let response = responseOrNil as? HTTPURLResponse,
 				error == nil else { // check for fundamental networking error
-					//				print("error", error ?? "Unknown error")
+//					print("error", error ?? "Unknown error")
+					displayError(title: "Download Error",
+								 content: "Error: \(error!). URL: \(url)")
 					semaphore.signal()
 					return
 			}
 			
 			guard (200..<299) ~= response.statusCode else {	// check for http errors
-				//			print("statusCode should be 2xx, but is \(response.statusCode)")
-				//			print("response = \(response)")
+//				print("statusCode should be 2xx, but is \(response.statusCode)")
+//				print("response = \(response)")
+				displayError(title: "Download Error",
+							 content: "statusCode should be 2xx, but is \(response.statusCode).")
 				networkResponse.statusCode = response.statusCode
 				semaphore.signal()
 				return
