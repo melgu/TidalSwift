@@ -12,7 +12,7 @@ import XCTest
 class HelpersTests: XCTestCase {
 	
 	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
-	var helpers: Helpers?
+	var helpers: Helpers { session.helpers }
 	
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -21,7 +21,6 @@ class HelpersTests: XCTestCase {
 		if !session.checkLogin() {
 			_ = session.login()
 		}
-		helpers = Helpers(session: session)
     }
 
     override func tearDown() {
@@ -34,7 +33,7 @@ class HelpersTests: XCTestCase {
 
     func testNewReleasesFromFavoriteArtists() {
 		// Warning: Can also fail if you don't have favorite artists with a total of at least 30 albums
-		let optionalAlbums = helpers?.newReleasesFromFavoriteArtists(number: 30)
+		let optionalAlbums = helpers.newReleasesFromFavoriteArtists(number: 30)
 		XCTAssertNotNil(optionalAlbums)
 		guard let albums = optionalAlbums else {
 			return

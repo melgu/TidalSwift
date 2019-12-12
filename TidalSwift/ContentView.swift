@@ -21,7 +21,7 @@ struct ContentView: View {
 		MasterDetailView(session: sc.session, player: sc.player)
 			.environmentObject(sc.player.playbackInfo)
 			.environmentObject(sc.player.queueInfo)
-			.environmentObject(sc.session.helpers!.downloadStatus)
+			.environmentObject(sc.session.helpers.downloadStatus)
 			.background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
 				LoginView().environmentObject(self.loginInfo)
 			})

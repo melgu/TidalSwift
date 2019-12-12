@@ -140,7 +140,7 @@ extension ViewState {
 	
 	var newReleasesWI: DispatchWorkItem {
 		return DispatchWorkItem {
-			let t = self.session.helpers?.newReleasesFromFavoriteArtists(number: 40)
+			let t = self.session.helpers.newReleasesFromFavoriteArtists(number: 40)
 			
 			var view = TidalSwiftView(viewType: .newReleases)
 			if t != nil {
@@ -372,7 +372,7 @@ extension ViewState {
 			view.loadingState = .successful
 			self.cache.favoriteTracks = t
 			
-			self.session.helpers?.offline.syncFavoriteTracks()
+			self.session.helpers.offline.syncFavoriteTracks()
 			
 			self.replaceCurrentView(with: view)
 		}
@@ -565,7 +565,7 @@ extension ViewState {
 			if view.tracks != nil {
 				view.loadingState = .successful
 				self.cache.playlistTracks[playlist.id] = view.tracks
-				self.session.helpers?.offline.syncPlaylist(playlist)
+				self.session.helpers.offline.syncPlaylist(playlist)
 			} else {
 				view.loadingState = .error
 			}

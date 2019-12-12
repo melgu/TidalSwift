@@ -165,7 +165,7 @@ class Player {
 		pause()
 		
 		let url: URL
-		if let offlineUrl = session.helpers?.offline.url(for: track) {
+		if let offlineUrl = session.helpers.offline.url(for: track) {
 			url = offlineUrl
 		} else {
 			guard let onlineUrl = track.getAudioUrl(session: session) else {

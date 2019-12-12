@@ -14,8 +14,15 @@ public final class DownloadStatus: ObservableObject {
 	@Published public var downloadingTasks: Int = 0
 	var downloadingTasksSet: Int {
 		set {
+			// WARNING: Never call from main queue or this will crash
 			DispatchQueue.main.sync {
-				self.downloadingTasks = newValue
+				if newValue >= 0 {
+					self.downloadingTasks = newValue
+				} else {
+					// Don't go below 0
+					// Could happen when RemoveAll() is called during active download
+					self.downloadingTasks = 0
+				}
 				print("Downloading Tasks: \(newValue)")
 			}
 		}
@@ -517,6 +524,7 @@ public class Offline {
 		
 		saveFavoritesOffline = false
 		db.clear()
+		downloadStatus.downloadingTasks = 0
 	}
 	
 	// MARK: - Favorite Tracks

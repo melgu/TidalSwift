@@ -139,10 +139,12 @@ struct ArtistContextMenu: View {
 					Text("Offline")
 				}
 				Button(action: {
-					print("Download")
-					_ = self.session.helpers?.downloadAllAlbums(from: self.artist)
+					print("Download all Albums of \(self.artist.name)")
+					DispatchQueue.global(qos: .background).async {
+						_ = self.session.helpers.downloadAllAlbums(from: self.artist)
+					}
 				}) {
-					Text("Download")
+					Text("Download all Albums")
 				}
 //			}
 			Divider()
