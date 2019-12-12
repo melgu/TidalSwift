@@ -31,6 +31,7 @@
 		B01B09CF234B1C7B007A4E15 /* LyricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CE234B1C7B007A4E15 /* LyricsView.swift */; };
 		B02382472348543E00BC2B0C /* NewReleases.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02382462348543E00BC2B0C /* NewReleases.swift */; };
 		B039D69F2317480C00E6784F /* CoverWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B039D69E2317480C00E6784F /* CoverWindowController.swift */; };
+		B03B9ADE23A1FC2E00679A1A /* Offline.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03B9ADD23A1FC2E00679A1A /* Offline.swift */; };
 		B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F420A230DF66200587A4A /* PlaybackInfo.swift */; };
 		B0443FF42305F7250019D0D8 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
 		B0443FFB2305F7250019D0D8 /* TidalSwiftLibTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0443FFA2305F7250019D0D8 /* TidalSwiftLibTests.swift */; };
@@ -147,6 +148,7 @@
 		B01B09CE234B1C7B007A4E15 /* LyricsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsView.swift; sourceTree = "<group>"; };
 		B02382462348543E00BC2B0C /* NewReleases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReleases.swift; sourceTree = "<group>"; };
 		B039D69E2317480C00E6784F /* CoverWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverWindowController.swift; sourceTree = "<group>"; };
+		B03B9ADD23A1FC2E00679A1A /* Offline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Offline.swift; sourceTree = "<group>"; };
 		B03F420A230DF66200587A4A /* PlaybackInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackInfo.swift; sourceTree = "<group>"; };
 		B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TidalSwiftLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TidalSwiftLib.h; sourceTree = "<group>"; };
@@ -264,6 +266,7 @@
 				B0E582E52238C84F00ADAE6C /* Logic.swift */,
 				B0E582E92240C00100ADAE6C /* Codables.swift */,
 				B0DAFDD92296417500BA669F /* Helpers.swift */,
+				B03B9ADD23A1FC2E00679A1A /* Offline.swift */,
 				B07C5EF522C8797A00710752 /* Metadata.swift */,
 				B0B2A3F522E9AF1F0005E411 /* SDAVAssetExportSession */,
 			);
@@ -622,6 +625,7 @@
 				B04440102305F7820019D0D8 /* SDAVAssetExportSession.m in Sources */,
 				B0D7DDA22305FB2E004391AD /* Metadata.swift in Sources */,
 				B0D7DD9F2305FB2E004391AD /* Helpers.swift in Sources */,
+				B03B9ADE23A1FC2E00679A1A /* Offline.swift in Sources */,
 				B0D7DDA32305FB2E004391AD /* Codables.swift in Sources */,
 				B0D7DDA02305FB2E004391AD /* Network.swift in Sources */,
 			);
