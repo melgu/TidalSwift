@@ -29,8 +29,12 @@ class Metadata {
 		
 		var metadata = [(String, NSCopying & NSObjectProtocol, MP42MetadataItemDataType)]()
 		
+		var title = track.title
+		if let version = track.version {
+			title += " (\(version))"
+		}
 		metadata.append((MP42MetadataKeyName,
-						 track.title as NSCopying & NSObjectProtocol,
+						 title as NSCopying & NSObjectProtocol,
 						 .string))
 		
 		if !track.artists.isEmpty {

@@ -297,7 +297,7 @@ public class Session {
 		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
-			displayError(title: "Couldn't get Audio URL (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			displayError(title: "Couldn't get Audio URL (HTTP Error)", content: "Track ID: \(trackId). Status Code: \(response.statusCode ?? -1)")
 			return nil
 		}
 		
@@ -322,7 +322,7 @@ public class Session {
 		let response = Network.get(url: url, parameters: sessionParameters)
 		
 		guard let content = response.content else {
-			displayError(title: "Couldn't get Video URL (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			displayError(title: "Couldn't get Video URL (HTTP Error)", content: "Video ID: \(videoId). Status Code: \(response.statusCode ?? -1)")
 			return nil
 		}
 		
