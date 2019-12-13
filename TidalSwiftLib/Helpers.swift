@@ -68,10 +68,14 @@ public class Helpers {
 	
 	// MARK: - Downloading
 	
-	private var dispatchQueue = DispatchQueue(label: "melgu.TidalSwift.download", qos: .background, attributes: .concurrent)
+	private var dispatchQueue = DispatchQueue(label: "melgu.TidalSwift.download", qos: .background)
 	
 	func formFileName(_ track: Track) -> String {
-		return "\(track.trackNumber) \(track.title) - \(track.artists.formArtistString()).m4a"
+		var title = track.title
+		if let version = track.version {
+			title += " (\(version))"
+		}
+		return "\(track.trackNumber) \(title) - \(track.artists.formArtistString()).m4a"
 	}
 	
 	func formFileName(_ video: Video) -> String {
@@ -84,18 +88,24 @@ public class Helpers {
 			downloadStatus.finishTask()
 			return false
 		}
-		print("Downloading: \(track.title)")
-		let fileName = formFileName(track)
-		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: fileName)
+		let filename = formFileName(track)
+		print("Downloading: \(filename)")
+		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename)
 		guard let path = optionalPath else {
 			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
 			downloadStatus.finishTask()
 			return false
 		}
-		let response = Network.download(url, path: path, overwrite: true)
+		
+		var response: Response!
+		repeat {
+			
+			response = Network.download(url, path: path, overwrite: true)
+		} while response.statusCode == 1001
+		
 		convertToALAC(path: path)
 		metadata.setMetadata(for: track, at: path)
-		print("Downloading Finished: \(track.title)")
+		print("Download Finished: \(filename)")
 		downloadStatus.finishTask()
 		return response.ok
 	}
@@ -142,7 +152,7 @@ public class Helpers {
 			downloadStatus.finishTask()
 			return DownloadErrors(affectedAlbums: [album])
 		}
-		let r = download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title)")
+		let r = download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title.replacingOccurrences(of: "/", with: ":"))")
 		downloadStatus.finishTask()
 		return r
 	}
