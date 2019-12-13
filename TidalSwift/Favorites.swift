@@ -116,7 +116,7 @@ struct FavoriteTracks: View {
 			}
 			.padding(.horizontal)
 			
-			if viewState.stack.last!.tracks != nil {
+			if viewState.stack.last?.tracks != nil {
 				ScrollView {
 					TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrap(), showCover: true, showAlbumTrackNumber: false,
 							  showArtist: true, showAlbum: true, playlist: nil,
