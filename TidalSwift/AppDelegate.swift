@@ -150,7 +150,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		closeAllSecondaryWindows()
 		sc.player.clearQueue()
 		sc.session.deletePersistentInformation()
-		viewState.clearQueue()
+		viewState.clearStack()
 		loginInfo.showModal = true
 	}
 	
@@ -594,7 +594,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBAction func removeAllOfflineContent(_ sender: Any) {
 		sc.session.helpers.offline.removeAll()
-		viewState.clearQueue()
+		viewState.clearStack()
 		viewState.clearHistory() // Also clears Cache
 	}
 	
