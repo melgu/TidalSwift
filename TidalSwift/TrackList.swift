@@ -94,7 +94,8 @@ struct TrackRow: View {
 					HStack {
 						if !self.queueInfo.queue.isEmpty &&
 							self.queueInfo.queue[self.queueInfo.currentIndex].track == self.track {
-							Text("􀊄")
+							Image("play.fill")
+								.secondaryIconColor()
 						}
 						if self.showCover {
 							if self.coverUrl != nil {
@@ -122,9 +123,8 @@ struct TrackRow: View {
 								.foregroundColor(.secondary)
 								.padding(.leading, -5)
 						}
-						Text(self.track.attributeString)
+						self.track.attributeHStack
 							.padding(.leading, -5)
-							.foregroundColor(.secondary)
 							.layoutPriority(1)
 						Spacer(minLength: 5)
 					}
@@ -148,10 +148,11 @@ struct TrackRow: View {
 					Text(secondsToHoursMinutesSecondsString(seconds: self.track.duration))
 					Spacer()
 					if self.track.isOffline(session: self.session) ?? false {
-						Text("􀇃")
-							.foregroundColor(.secondary)
+						Image("cloud.fill")
+							.secondaryIconColor()
 					}
-					Text("􀅴")
+					Image("info.circle")
+						.primaryIconColor()
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:
 								CreditsView(session: self.session, track: self.track)
@@ -162,7 +163,8 @@ struct TrackRow: View {
 					}
 					if self.t || !self.t {
 						if self.track.isInFavorites(session: self.session) ?? false {
-							Text("􀊵")
+							Image("heart.fill")
+								.primaryIconColor()
 								.onTapGesture {
 									print("Remove from Favorites")
 									DispatchQueue.global(qos: .background).async {
@@ -175,7 +177,8 @@ struct TrackRow: View {
 									}
 							}
 						} else {
-							Text("􀊴")
+							Image("heart")
+								.primaryIconColor()
 								.onTapGesture {
 									print("Add to Favorites")
 									DispatchQueue.global(qos: .background).async {

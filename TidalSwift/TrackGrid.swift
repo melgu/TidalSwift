@@ -45,9 +45,8 @@ struct TrackGridItem: View {
 						.foregroundColor(.secondary)
 						.padding(.leading, -5)
 				}
-				Text(track.attributeString)
+				track.attributeHStack
 					.padding(.leading, -5)
-					.foregroundColor(.secondary)
 					.layoutPriority(1)
 			}
 			.lineLimit(1)
@@ -245,16 +244,17 @@ struct TrackContextMenu: View {
 }
 
 extension Track {
-	var attributeString: String {
-		var s = ""
-		if self.explicit {
-			s += "􀂝"
+	var attributeHStack: some View {
+		HStack {
+			if self.explicit {
+				Image("e.square")
+			}
+			if self.audioQuality == .master {
+				Image("m.square.fill")
+			} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
+				Image("headphones")
+			}
 		}
-		if self.audioQuality == .master {
-			s += "􀂭"
-		} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
-			s += "􀑈"
-		}
-		return s
+		.secondaryIconColor()
 	}
 }

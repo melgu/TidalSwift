@@ -53,18 +53,17 @@ struct LoadingSpinner: View {
 	var body: some View {
 		Group {
 			if loadingState == .loading {
-				Text("􀊯")
-					.font(.title)
+				Image("arrow.2.circlepath-big")
 					.rotationEffect(animate ? .degrees(360) : .degrees(0))
 					.animation(Animation.linear(duration: 1).repeatForever(autoreverses: false))
 					.onAppear {
 						self.animate.toggle()
 				}
 			} else if loadingState == .error {
-				Text("􀙥")
-					.font(.title)
+				Image("wifi.exclamationmark-big")
 			}
 		}
+		.primaryIconColor()
 	}
 }
 

@@ -64,9 +64,8 @@ struct PlaylistGridItem: View {
 					}
 				}
 				if playlist.isOffline(session: session) ?? false {
-					Text("􀇃")
-						.font(.title)
-						.foregroundColor(.white)
+					Image("cloud.fill-big")
+						.colorInvert()
 						.shadow(radius: SHADOWRADIUS)
 						.padding(5)
 				}

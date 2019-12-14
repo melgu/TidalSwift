@@ -51,12 +51,11 @@ struct AlbumView: View {
 										Text(viewState.stack.last!.album!.title)
 											.font(.title)
 											.lineLimit(2)
-										Text(viewState.stack.last!.album!.attributeString)
+										viewState.stack.last!.album!.attributeHStack
 											.padding(.leading, -5)
-											.foregroundColor(.secondary)
 											.layoutPriority(1)
-										Text("􀅴")
-											.foregroundColor(.secondary)
+										Image("info.circle")
+											.secondaryIconColor()
 											.onTapGesture {
 												let controller = ResizableWindowController(rootView:
 													CreditsView(session: self.session, album: self.viewState.stack.last!.album!)
@@ -67,16 +66,16 @@ struct AlbumView: View {
 										}
 										if t || !t {
 											if viewState.stack.last!.album!.isInFavorites(session: session)! {
-												Text("􀊵")
-													.foregroundColor(.secondary)
+												Image("heart.fill")
+													.secondaryIconColor()
 													.onTapGesture {
 														print("Remove from Favorites")
 														self.session.favorites!.removeAlbum(albumId: self.viewState.stack.last!.album!.id)
 														self.t.toggle()
 												}
 											} else {
-												Text("􀊴")
-													.foregroundColor(.secondary)
+												Image("heart")
+													.secondaryIconColor()
 													.onTapGesture {
 														print("Add to Favorites")
 														self.session.favorites!.addAlbum(albumId: self.viewState.stack.last!.album!.id)
@@ -85,8 +84,8 @@ struct AlbumView: View {
 											}
 										}
 										if viewState.stack.last!.album!.url != nil {
-											Text("􀈂")
-												.foregroundColor(.secondary)
+											Image("square.and.arrow.up")
+												.secondaryIconColor()
 												.onTapGesture {
 													Pasteboard.copy(string: self.viewState.stack.last!.album!.url!.absoluteString)
 											}
@@ -113,8 +112,8 @@ struct AlbumView: View {
 							Group {
 								if t || !t {
 									if viewState.stack.last!.album!.isOffline(session: session) ?? false {
-										Text("􀇃")
-											.font(.title)
+										Image("cloud.fill-big")
+											.primaryIconColor()
 											.onTapGesture {
 												print("Remove from Offline")
 												self.cloudPressed = false
@@ -124,12 +123,11 @@ struct AlbumView: View {
 										}
 									} else {
 										if cloudPressed {
-											Text("􀇃")
-												.font(.title)
-												.foregroundColor(.secondary)
+											Image("cloud.fill-big")
+												.secondaryIconColor()
 										} else {
-											Text("􀇂")
-												.font(.title)
+											Image("cloud-big")
+												.primaryIconColor()
 												.onTapGesture {
 													print("Add to Offline")
 													self.cloudPressed = true

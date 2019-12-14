@@ -84,36 +84,49 @@ struct PlayerInfoView: View {
 					VStack {
 						HStack {
 							Spacer()
-							Text("􀊝")
+							Image("shuffle")
+								.primaryIconColor()
 								.onTapGesture {
 									self.playbackInfo.shuffle.toggle()
 							}
 							.foregroundColor(self.playbackInfo.shuffle ? .accentColor : .primary)
-							Text("􀊊")
+							Image("backward.fill")
+								.primaryIconColor()
 								.onTapGesture {
 									self.player.previous()
 							}
 							if self.playbackInfo.playing {
-								Text("􀊆")
+								Image("pause.fill")
+									.primaryIconColor()
 									.onTapGesture {
 										self.player.pause()
 								}
 							} else {
-								Text("􀊄")
+								Image("play.fill")
+									.primaryIconColor()
 									.onTapGesture {
 										self.player.play()
 								}
 							}
-							Text("􀊌")
+							Image("forward.fill")
+								.primaryIconColor()
 								.onTapGesture {
 									self.player.next()
 							}
-							Text(self.playbackInfo.repeatState == .single ? "􀊟" : "􀊞")
-								.onTapGesture {
-									print("Repeat")
-									self.player.playbackInfo.repeatState = self.player.playbackInfo.repeatState.next()
+							Group {
+								if self.playbackInfo.repeatState == .single {
+									Image(nsImage: NSImage(named: "repeat1")!.tint(color: .controlAccentColor))
+								} else if self.playbackInfo.repeatState == .all {
+									Image(nsImage: NSImage(named: "repeat")!.tint(color: .controlAccentColor))
+								} else {
+									Image("repeat")
+									.primaryIconColor()
+								}
 							}
-							.foregroundColor(self.playbackInfo.repeatState == .off ? .primary : .accentColor)
+							.onTapGesture {
+								self.player.playbackInfo.repeatState = self.player.playbackInfo.repeatState.next()
+								print("Repeat: \(self.player.playbackInfo.repeatState)")
+							}
 							Spacer()
 						}
 						ProgressBar(player: self.player)
@@ -121,7 +134,7 @@ struct PlayerInfoView: View {
 					.frame(width: 200)
 					Spacer()
 					HStack {
-						Text(self.speakerSymbol())
+						self.speakerSymbol()
 							.frame(width: 20, alignment: .leading)
 							.onTapGesture {
 								self.player.toggleMute()
@@ -149,12 +162,14 @@ struct PlayerInfoView: View {
 					}
 					Spacer()
 					DownloadIndicator()
-					Text("􀌮")
+					Image("quote.bubble")
+						.primaryIconColor()
 						.onTapGesture {
 							unowned let appDelegate = NSApp.delegate as? AppDelegate
 							appDelegate?.lyrics(self)
 					}
-					Text("􀋱")
+					Image("list.dash")
+						.primaryIconColor()
 						.onTapGesture {
 							unowned let appDelegate = NSApp.delegate as? AppDelegate
 							appDelegate?.queue(self)
@@ -167,15 +182,20 @@ struct PlayerInfoView: View {
 		}
 	}
 	
-	func speakerSymbol() -> String {
-		if playbackInfo.volume > 0.66 {
-			return "􀊩"
-		} else if playbackInfo.volume > 0.33 {
-			return "􀊧"
-		} else if playbackInfo.volume > 0 {
-			return "􀊥"
-		} else {
-			return "􀊡" // or 􀊣
+	func speakerSymbol() -> some View {
+		Group {
+			Group { () -> Image in
+				if playbackInfo.volume > 0.66 {
+					return Image("speaker.3.fill")
+				} else if playbackInfo.volume > 0.33 {
+					return Image("speaker.2.fill")
+				} else if playbackInfo.volume > 0 {
+					return Image("speaker.1.fill")
+				} else {
+					return Image("speaker.fill") // or 􀊣
+				}
+			}
+			.primaryIconColor()
 		}
 	}
 }
