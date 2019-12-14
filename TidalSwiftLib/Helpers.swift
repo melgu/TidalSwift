@@ -103,7 +103,7 @@ public class Helpers {
 			response = Network.download(url, path: path, overwrite: true)
 		} while response.statusCode == 1001
 		
-		convertToALAC(path: path)
+//		convertToALAC(path: path)
 		metadata.setMetadata(for: track, at: path)
 		print("Download Finished: \(filename)")
 		downloadStatus.finishTask()
