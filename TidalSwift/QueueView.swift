@@ -34,7 +34,7 @@ struct QueueView: View {
 					Spacer(minLength: 5)
 					VStack {
 						Button(action: {
-							self.sc.player.clearQueue()
+							self.sc.player.clearQueueForward()
 						}) {
 							Text("Clear")
 						}
