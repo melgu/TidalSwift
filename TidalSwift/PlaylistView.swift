@@ -59,16 +59,16 @@ struct PlaylistView: View {
 											.lineLimit(2)
 										if t || !t {
 											if viewState.stack.last!.playlist!.isInFavorites(session: session)! {
-												Text("􀊵")
-													.foregroundColor(.secondary)
+												Image("heart.fill")
+													.secondaryIconColor()
 													.onTapGesture {
 														print("Remove from Favorites")
 														self.session.favorites!.removePlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
 														self.t.toggle()
 												}
 											} else {
-												Text("􀊴")
-													.foregroundColor(.secondary)
+												Image("heart")
+													.secondaryIconColor()
 													.onTapGesture {
 														print("Add to Favorites")
 														self.session.favorites!.addPlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
@@ -76,8 +76,8 @@ struct PlaylistView: View {
 												}
 											}
 										}
-										Text("􀈂")
-											.foregroundColor(.secondary)
+										Image("square.and.arrow.up")
+											.secondaryIconColor()
 											.onTapGesture {
 												Pasteboard.copy(string: self.viewState.stack.last!.playlist!.url.absoluteString)
 										}
@@ -101,8 +101,8 @@ struct PlaylistView: View {
 							}
 							if t || !t {
 								if viewState.stack.last!.playlist!.isOffline(session: session) ?? false {
-									Text("􀇃")
-										.font(.title)
+									Image("cloud.fill-big")
+										.primaryIconColor()
 										.onTapGesture {
 											print("Remove from Offline")
 											self.viewState.stack.last!.playlist!.removeOffline(session: self.session)
@@ -110,8 +110,8 @@ struct PlaylistView: View {
 											self.t.toggle()
 									}
 								} else {
-									Text("􀇂")
-										.font(.title)
+									Image("cloud-big")
+										.primaryIconColor()
 										.onTapGesture {
 											print("Add to Offline")
 											self.t.toggle()

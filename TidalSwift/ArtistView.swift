@@ -57,8 +57,8 @@ struct ArtistView: View {
 								Text(viewState.stack.last!.artist!.name)
 									.font(.title)
 									.lineLimit(2)
-								Text("􀅴")
-									.foregroundColor(.secondary)
+								Image("info.circle")
+									.secondaryIconColor()
 									.onTapGesture {
 										let controller = ResizableWindowController(rootView:
 											ArtistBioView(session: self.session, artist: self.viewState.stack.last!.artist!)
@@ -69,16 +69,16 @@ struct ArtistView: View {
 								}
 								if t || !t {
 									if viewState.stack.last!.artist!.isInFavorites(session: session)! {
-										Text("􀊵")
-											.foregroundColor(.secondary)
+										Image("heart.fill")
+											.secondaryIconColor()
 											.onTapGesture {
 												print("Remove from Favorites")
 												self.session.favorites!.removeArtist(artistId: self.viewState.stack.last!.artist!.id)
 												self.t.toggle()
 										}
 									} else {
-										Text("􀊴")
-											.foregroundColor(.secondary)
+										Image("heart")
+											.secondaryIconColor()
 											.onTapGesture {
 												print("Add to Favorites")
 												self.session.favorites!.addArtist(artistId: self.viewState.stack.last!.artist!.id)
@@ -87,8 +87,8 @@ struct ArtistView: View {
 									}
 								}
 								if viewState.stack.last!.artist!.url != nil {
-									Text("􀈂")
-										.foregroundColor(.secondary)
+									Image("square.and.arrow.up")
+										.secondaryIconColor()
 										.onTapGesture {
 											Pasteboard.copy(string: self.viewState.stack.last!.artist!.url!.absoluteString)
 									}

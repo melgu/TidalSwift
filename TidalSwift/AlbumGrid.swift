@@ -90,9 +90,8 @@ struct AlbumGridItem: View {
 					}
 				}
 				if album.isOffline(session: sc.session) ?? false {
-					Text("􀇃")
-						.font(.title)
-						.foregroundColor(.white)
+					Image("cloud.fill-big")
+						.colorInvert()
 						.shadow(radius: SHADOWRADIUS)
 						.padding(5)
 				}
@@ -100,9 +99,8 @@ struct AlbumGridItem: View {
 			HStack {
 				Text(album.title)
 					.lineLimit(1)
-				Text(album.attributeString)
+				album.attributeHStack
 					.padding(.leading, -5)
-					.foregroundColor(.secondary)
 					.layoutPriority(1)
 			}
 			.frame(width: 160)
@@ -312,16 +310,17 @@ struct AlbumContextMenu: View {
 }
 
 extension Album {
-	var attributeString: String {
-		var s = ""
-		if self.explicit ?? false {
-			s += "􀂝"
+	var attributeHStack: some View {
+		HStack {
+			if self.explicit ?? false {
+				Image("e.square")
+			}
+			if self.audioQuality == .master {
+				Image("m.square.fill")
+			} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
+				Image("headphones")
+			}
 		}
-		if self.audioQuality == .master {
-			s += "􀂭"
-		} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
-			s += "􀑈"
-		}
-		return s
+		.secondaryIconColor()
 	}
 }

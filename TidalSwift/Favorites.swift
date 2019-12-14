@@ -89,8 +89,8 @@ struct FavoriteTracks: View {
 				Spacer()
 				LoadingSpinner()
 				if session.helpers.offline.saveFavoritesOffline {
-					Text("􀇃")
-						.font(.title)
+					Image("cloud.fill-big")
+						.primaryIconColor()
 						.onTapGesture {
 							print("Remove from Offline")
 							self.session.helpers.offline.saveFavoritesOffline = false
@@ -100,8 +100,8 @@ struct FavoriteTracks: View {
 							self.viewState.refreshCurrentView()
 					}
 				} else {
-					Text("􀇂")
-						.font(.title)
+					Image("cloud-big")
+						.primaryIconColor()
 						.onTapGesture {
 							print("Add to Offline")
 							self.session.helpers.offline.saveFavoritesOffline = true
