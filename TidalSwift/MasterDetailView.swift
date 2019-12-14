@@ -29,7 +29,7 @@ struct MasterDetailView: View {
 			get: { self.viewState.stack.last?.viewType },
 			set: {
 //				print("Selection View: \($0?.rawValue ?? "nil")")
-				self.viewState.clearQueue()
+				self.viewState.clearStack()
 				if $0 != nil {
 					self.viewState.push(view: TidalSwiftView(viewType: $0!))
 				}

@@ -117,7 +117,8 @@ final class ViewState: ObservableObject {
 		stack.removeLast()
 	}
 	
-	func clearQueue() {
+	func clearStack() {
+		searchTerm = ""
 		stack.removeAll()
 	}
 	
