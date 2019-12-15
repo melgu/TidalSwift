@@ -130,6 +130,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let credentials = LoginCredentials(username: username, password: password)
 		let config = Config(quality: quality, loginCredentials: credentials)
 		sc.session = Session(config: config)
+		sc.session.helpers.offline.uiRefreshFunc = { [unowned self] in self.viewState.refreshCurrentView() }
 		
 		let loginSuccessful = sc.session.login()
 		if loginSuccessful {
@@ -156,6 +157,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
+		
+		sc.session.helpers.offline.uiRefreshFunc = { [unowned self] in self.viewState.refreshCurrentView() }
 		
 		let loggedIn = sc.session.loadSession()
 //		let loggedIn = sc.session.checkLogin()

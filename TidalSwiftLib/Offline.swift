@@ -111,6 +111,7 @@ public class Offline {
 	private unowned let session: Session
 	private let downloadStatus: DownloadStatus
 	private let mainPath = "TidalSwift Offline Library"
+	public var uiRefreshFunc: () -> Void = {}
 	
 	private let db = OfflineDB()
 	public var saveFavoritesOffline: Bool = false {
@@ -275,24 +276,27 @@ public class Offline {
 		db.semaphore.signal()
 		
 		// Do
-		for trackId in toRemove {
-			print("Offline: Removing \(trackId)")
-			do {
-				guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(trackId).m4a") else {
-					displayError(title: "Offline: Error during Offline Sync", content: "Error while building path to: \(mainPath)/\(trackId).m4a")
-					return
+		if !toRemove.isEmpty {
+			for trackId in toRemove {
+				print("Offline: Removing \(trackId)")
+				do {
+					guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(trackId).m4a") else {
+						displayError(title: "Offline: Error during Offline Sync", content: "Error while building path to: \(mainPath)/\(trackId).m4a")
+						return
+					}
+					if FileManager.default.fileExists(atPath: path.relativePath) {
+						try FileManager.default.removeItem(at: path)
+						print("Offline: Removed \(trackId)")
+					} else {
+						displayError(title: "Offline: Error while removing offline track", content: "File to remove doesn't exist: \(path)")
+					}
+				} catch {
+					displayError(title: "Offline: Error while removing offline track", content: "Error: \(error)")
 				}
-				if FileManager.default.fileExists(atPath: path.relativePath) {
-					try FileManager.default.removeItem(at: path)
-					print("Offline: Removed \(trackId)")
-				} else {
-					displayError(title: "Offline: Error while removing offline track", content: "File to remove doesn't exist: \(path)")
-				}
-			} catch {
-				displayError(title: "Offline: Error while removing offline track", content: "Error: \(error)")
 			}
+			invalidateOfflineTrackIdsCache()
+			uiRefreshFunc()
 		}
-		invalidateOfflineTrackIdsCache()
 		
 		for track in toAdd {
 			print("Offline: Downloading \(track.title)")
@@ -315,6 +319,9 @@ public class Offline {
 				print("Offline: Finished Download of \(track.title)")
 			}
 			invalidateOfflineTrackIdsCache()
+			DispatchQueue.main.async { [unowned self] in
+				self.uiRefreshFunc()
+			}
 		}
 		
 		// Outro
