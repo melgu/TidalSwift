@@ -94,9 +94,7 @@ struct FavoriteTracks: View {
 						.onTapGesture {
 							print("Remove from Offline")
 							self.session.helpers.offline.saveFavoritesOffline = false
-							DispatchQueue.global().sync {
-								self.session.helpers.offline.syncFavoriteTracks()
-							}
+							self.session.helpers.offline.asyncSyncFavoriteTracks()
 							self.viewState.refreshCurrentView()
 					}
 				} else {
@@ -105,12 +103,8 @@ struct FavoriteTracks: View {
 						.onTapGesture {
 							print("Add to Offline")
 							self.session.helpers.offline.saveFavoritesOffline = true
-							DispatchQueue.global(qos: .background).async {
-								self.session.helpers.offline.syncFavoriteTracks()
-								DispatchQueue.main.async {
-									self.viewState.refreshCurrentView()
-								}
-							}
+							self.session.helpers.offline.asyncSyncFavoriteTracks()
+							self.viewState.refreshCurrentView()
 					}
 				}
 			}

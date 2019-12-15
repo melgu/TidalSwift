@@ -200,8 +200,8 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 		return session.helpers.offline.isAlbumOffline(album: self)
 	}
 	
-	public func addOffline(session: Session) -> Bool {
-		return session.helpers.offline.add(album: self)
+	public func addOffline(session: Session) {
+		session.helpers.offline.add(album: self)
 	}
 	
 	public func removeOffline(session: Session) {

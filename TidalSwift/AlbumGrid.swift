@@ -244,14 +244,7 @@ struct AlbumContextMenu: View {
 							} else {
 								Button(action: {
 									print("Add to Offline")
-									DispatchQueue.global(qos: .background).async {
-										let success = self.album.addOffline(session: self.session)
-										DispatchQueue.main.async {
-											print("Add to Offline: \(success ? "successful" : "unsuccessful")")
-											self.viewState.refreshCurrentView()
-											self.t.toggle()
-										}
-									}
+									self.album.addOffline(session: self.session)
 								}) {
 									Text("Add to Offline")
 								}
