@@ -372,10 +372,8 @@ extension ViewState {
 			view.loadingState = .successful
 			self.cache.favoriteTracks = t
 			
-			DispatchQueue.global().async {
-				self.session.helpers.offline.syncFavoriteTracks()
-				self.replaceCurrentView(with: view)
-			}
+			self.session.helpers.offline.asyncSyncFavoriteTracks()
+			self.replaceCurrentView(with: view)
 		}
 	}
 }

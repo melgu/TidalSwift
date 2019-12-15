@@ -131,14 +131,9 @@ struct AlbumView: View {
 												.onTapGesture {
 													print("Add to Offline")
 													self.cloudPressed = true
-													DispatchQueue.global(qos: .background).async {
-														let success = self.viewState.stack.last!.album!.addOffline(session: self.session)
-														DispatchQueue.main.async {
-															print("Add to Offline: \(success ? "successful" : "unsuccessful")")
-															self.viewState.refreshCurrentView()
-															self.t.toggle()
-														}
-													}
+													self.viewState.stack.last!.album!.addOffline(session: self.session)
+													self.viewState.refreshCurrentView()
+													self.t.toggle()
 											}
 										}
 									}

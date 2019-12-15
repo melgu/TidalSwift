@@ -189,7 +189,7 @@ public enum DownloadLocation {
 	case music
 }
 
-func buildPath(baseLocation: DownloadLocation, parentFolder: String, name: String) -> URL? {
+func buildPath(baseLocation: DownloadLocation, parentFolder: String?, name: String) -> URL? {
 	
 //	if !parentFolder.isEmpty {
 //		if URL(string: parentFolder) == nil {
@@ -217,7 +217,9 @@ func buildPath(baseLocation: DownloadLocation, parentFolder: String, name: Strin
 											   appropriateFor: nil,
 											   create: false)
 		}
-		path.appendPathComponent(parentFolder)
+		if let parentFolder = parentFolder {
+			path.appendPathComponent(parentFolder)
+		}
 		path.appendPathComponent(name.replacingOccurrences(of: "/", with: ":"))
 	} catch {
 		displayError(title: "Path Building Error", content: "File Error: \(error)")
