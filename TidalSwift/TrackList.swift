@@ -147,7 +147,7 @@ struct TrackRow: View {
 				Group {
 					Text(secondsToHoursMinutesSecondsString(seconds: self.track.duration))
 					Spacer()
-					if self.track.isOffline(session: self.session) ?? false {
+					if self.track.isOffline(session: self.session) {
 						Image("cloud.fill")
 							.secondaryIconColor()
 					}
@@ -167,24 +167,20 @@ struct TrackRow: View {
 								.primaryIconColor()
 								.onTapGesture {
 									print("Remove from Favorites")
-									DispatchQueue.global(qos: .background).async {
-										self.session.favorites!.removeTrack(trackId: self.track.id)
-										self.session.helpers.offline.asyncSyncFavoriteTracks()
-//										self.viewState.refreshCurrentView()
-										self.t.toggle()
-									}
+									self.session.favorites!.removeTrack(trackId: self.track.id)
+									self.session.helpers.offline.asyncSyncFavoriteTracks()
+//									self.viewState.refreshCurrentView()
+									self.t.toggle()
 							}
 						} else {
 							Image("heart")
 								.primaryIconColor()
 								.onTapGesture {
 									print("Add to Favorites")
-									DispatchQueue.global(qos: .background).async {
-										self.session.favorites!.addTrack(trackId: self.track.id)
-										self.session.helpers.offline.asyncSyncFavoriteTracks()
-//										self.viewState.refreshCurrentView()
-										self.t.toggle()
-									}
+									self.session.favorites!.addTrack(trackId: self.track.id)
+									self.session.helpers.offline.asyncSyncFavoriteTracks()
+//									self.viewState.refreshCurrentView()
+									self.t.toggle()
 							}
 						}
 					}

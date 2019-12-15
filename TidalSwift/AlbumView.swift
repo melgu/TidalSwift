@@ -111,7 +111,7 @@ struct AlbumView: View {
 							}
 							Group {
 								if t || !t {
-									if viewState.stack.last!.album!.isOffline(session: session) ?? false {
+									if viewState.stack.last!.album!.isOffline(session: session) {
 										Image("cloud.fill-big")
 											.primaryIconColor()
 											.onTapGesture {

@@ -100,7 +100,7 @@ struct PlaylistView: View {
 								}
 							}
 							if t || !t {
-								if viewState.stack.last!.playlist!.isOffline(session: session) ?? false {
+								if viewState.stack.last!.playlist!.isOffline(session: session) {
 									Image("cloud.fill-big")
 										.primaryIconColor()
 										.onTapGesture {

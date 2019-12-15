@@ -89,7 +89,7 @@ struct AlbumGridItem: View {
 						}
 					}
 				}
-				if album.isOffline(session: sc.session) ?? false {
+				if album.isOffline(session: sc.session) {
 					Image("cloud.fill-big")
 						.colorInvert()
 						.shadow(radius: SHADOWRADIUS)
@@ -232,7 +232,7 @@ struct AlbumContextMenu: View {
 					Divider()
 					Group {
 						if t || !t {
-							if self.album.isOffline(session: session) ?? false {
+							if self.album.isOffline(session: session) {
 								Button(action: {
 									print("Remove from Offline")
 									self.album.removeOffline(session: self.session)

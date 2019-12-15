@@ -196,7 +196,7 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 		return session.getImage(imageId: cover, resolution: resolution)
 	}
 	
-	public func isOffline(session: Session) -> Bool? {
+	public func isOffline(session: Session) -> Bool {
 		return session.helpers.offline.isAlbumOffline(album: self)
 	}
 	
@@ -287,7 +287,7 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 		}
 	}
 	
-	public func isOffline(session: Session) -> Bool? {
+	public func isOffline(session: Session) -> Bool {
 		return session.helpers.offline.isPlaylistOffline(playlist: self)
 	}
 	
@@ -375,7 +375,7 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		return session.getAudioUrl(trackId: id)
 	}
 	
-	public func isOffline(session: Session) -> Bool? {
+	public func isOffline(session: Session) -> Bool {
 		return session.helpers.offline.isTrackOffline(track: self)
 	}
 	
