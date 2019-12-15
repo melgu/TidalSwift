@@ -103,7 +103,7 @@ public class Helpers {
 			response = Network.download(url, path: path, overwrite: true)
 		} while response.statusCode == 1001
 		
-//		convertToALAC(path: path)
+		convertToALAC(path: path) // Has to be done, as Tidal sometimes serves the files in a strange QuickTime container (qt), which doesn't support metadata tags
 		metadata.setMetadata(for: track, at: path)
 		print("Download Finished: \(filename)")
 		downloadStatus.finishTask()
