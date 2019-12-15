@@ -63,7 +63,7 @@ struct PlaylistGridItem: View {
 							.frame(width: 160)
 					}
 				}
-				if playlist.isOffline(session: session) ?? false {
+				if playlist.isOffline(session: session) {
 					Image("cloud.fill-big")
 						.colorInvert()
 						.shadow(radius: SHADOWRADIUS)
@@ -169,7 +169,7 @@ struct PlaylistContextMenu: View {
 			Divider()
 			Group {
 				if t || !t {
-					if self.playlist.isOffline(session: session) ?? false {
+					if self.playlist.isOffline(session: session) {
 						Button(action: {
 							print("Remove from Offline")
 							self.playlist.removeOffline(session: self.session)

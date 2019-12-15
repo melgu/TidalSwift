@@ -148,12 +148,10 @@ struct TrackContextMenu: View {
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							DispatchQueue.global(qos: .background).async {
-								self.session.favorites!.addTrack(trackId: self.track.id)
-								self.session.helpers.offline.asyncSyncFavoriteTracks()
-								self.viewState.refreshCurrentView()
-								self.t.toggle()
-							}
+							self.session.favorites!.addTrack(trackId: self.track.id)
+							self.session.helpers.offline.asyncSyncFavoriteTracks()
+							self.viewState.refreshCurrentView()
+							self.t.toggle()
 						}) {
 							Text("Add to Favorites")
 						}
