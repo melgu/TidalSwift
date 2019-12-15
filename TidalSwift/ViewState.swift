@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 import TidalSwiftLib
 
 enum ViewType: String, Codable {
@@ -76,11 +77,13 @@ final class ViewState: ObservableObject {
 	var workItem: DispatchWorkItem? = nil
 	var lastSearchTerm: String = ""
 	
+	var searchTermCancellable: AnyCancellable?
+	
 	init(session: Session, cache: ViewCache) {
 		self.session = session
 		self.cache = cache
 		
-		_ = $searchTerm.receive(on: DispatchQueue.main).sink(receiveValue: doSearch(term:))
+		searchTermCancellable = $searchTerm.receive(on: DispatchQueue.main).sink(receiveValue: doSearch(term:))
 	}
 	
 	func push(view: TidalSwiftView) {
