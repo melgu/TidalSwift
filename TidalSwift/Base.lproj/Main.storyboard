@@ -373,16 +373,16 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="ziq-vb-GMY"/>
-                                        <menuItem title="View History" id="1LM-69-iXw">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="viewHistory:" target="Voe-Tx-rLC" id="Vhn-01-eup"/>
-                                            </connections>
-                                        </menuItem>
                                         <menuItem title="Playback History" id="9mF-f1-st8">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="playbackHistory:" target="Voe-Tx-rLC" id="Y65-hL-cXG"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="View History" id="1LM-69-iXw">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="viewHistory:" target="Voe-Tx-rLC" id="Vhn-01-eup"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="UfW-ZF-RDK"/>

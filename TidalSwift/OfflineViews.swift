@@ -55,8 +55,6 @@ extension ViewState {
 	func replaceCurrentView(with view: TidalSwiftView) {
 		DispatchQueue.main.async {
 			print("replaceCurrentView(): \(self.stack.last?.viewType.rawValue ?? "nil")")
-			var tempView = view
-			tempView.searchTerm = self.searchTerm
 			if self.stack.isEmpty {
 				print("replaceCurrentView(): ERROR! Stack is empty, but shouldn't at this point. Aborting.")
 				return
@@ -65,10 +63,10 @@ extension ViewState {
 				print("replaceCurrentView(): Fetched View \(view.viewType.rawValue) is exactly the same, so it's not replaced")
 				return
 			}
-			if self.stack.last!.id == tempView.id {
-				self.stack[self.stack.count-1] = tempView
+			if self.stack.last!.id == view.id {
+				self.stack[self.stack.count-1] = view
 				if !self.history.isEmpty {
-					self.history[self.history.count-1] = tempView
+					self.history[self.history.count-1] = view
 				}
 			} else {
 				print("replaceCurrentView(): Fetched View \(view.viewType.rawValue) is completely different View, so it's not replaced")
@@ -92,7 +90,7 @@ extension ViewState {
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
-		workItem = searchWI
+		workItem = searchWI(searchTerm: searchTerm)
 	}
 	
 	func doSearch(term: String) {
@@ -106,20 +104,20 @@ extension ViewState {
 		workItem?.cancel()
 		
 		search()
-		DispatchQueue.global(qos: .userInitiated).async(execute: searchWI)
+		DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
 	}
 	
-	var searchWI: DispatchWorkItem {
+	func searchWI(searchTerm: String) -> DispatchWorkItem {
 		return DispatchWorkItem {
-			let t = self.session.search(for: self.searchTerm)
+			let t = self.session.search(for: searchTerm)
 			
 			var view = TidalSwiftView(viewType: .search)
 			if t != nil {
 				view.searchResponse = t
 				view.loadingState = .successful
-				self.cache.searchResponses[self.searchTerm] = t
+				self.cache.searchResponses[searchTerm] = t
 			} else {
-				view.searchResponse = self.cache.searchResponses[self.searchTerm]
+				view.searchResponse = self.cache.searchResponses[searchTerm]
 				view.loadingState = .error
 			}
 			

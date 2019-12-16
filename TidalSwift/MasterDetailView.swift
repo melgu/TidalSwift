@@ -21,10 +21,6 @@ struct MasterDetailView: View {
 	}
 	
 	var body: some View {
-		let searchTerm = Binding<String>(
-			get: { self.viewState.searchTerm },
-			set: { self.viewState.searchTerm = $0 }
-		)
 		let selectionBinding = Binding<ViewType?>(
 			get: { self.viewState.stack.last?.viewType },
 			set: {
@@ -35,7 +31,7 @@ struct MasterDetailView: View {
 				}
 		})
 		return NavigationView {
-			MasterView(selection: selectionBinding, searchTerm: searchTerm, session: session)
+			MasterView(selection: selectionBinding, session: session)
 			DetailView(session: session, player: player)
 				.frame(minWidth: 620)
 		}
@@ -45,7 +41,7 @@ struct MasterDetailView: View {
 
 struct MasterView: View {
 	@Binding var selection: ViewType?
-	@Binding var searchTerm: String
+//	@Binding var searchTerm: String
 	
 	let session: Session
 	
@@ -53,7 +49,7 @@ struct MasterView: View {
 	
 	var body: some View {
 		VStack {
-			SearchField(searchTerm: $searchTerm, selection: $selection)
+			SearchField(selection: $selection, searchTerm: viewState.searchTerm)
 				.padding(.top, 10)
 				.padding([.leading, .trailing], 5)
 			List(selection: $selection) {
@@ -74,12 +70,16 @@ struct MasterView: View {
 }
 
 struct SearchField: View {
-	@Binding var searchTerm: String
 	@Binding var selection: ViewType?
 	
+	@EnvironmentObject var viewState: ViewState
+	
+	@State var searchTerm: String
+	
 	var body: some View {
-		TextField("Search", text: $searchTerm, onEditingChanged: { _ in
-			print("Search Change: \(self.searchTerm)")
+		TextField("Search", text: $searchTerm, onCommit: {
+			print("Search Commit: \(self.searchTerm)")
+			self.viewState.searchTerm = self.searchTerm
 			self.selection = .search
 //			unowned let window = (NSApp.delegate as? AppDelegate)?.window
 //			window?.makeFirstResponder(window?.initialFirstResponder)

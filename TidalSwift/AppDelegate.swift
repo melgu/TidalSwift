@@ -151,7 +151,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		closeAllSecondaryWindows()
 		sc.player.clearQueue()
 		sc.session.deletePersistentInformation()
-		viewState.clearStack()
+		viewState.clearEverything()
 		loginInfo.showModal = true
 	}
 	
@@ -193,9 +193,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			if let data = UserDefaults.standard.data(forKey: "ViewStateStack") {
 				if let tempStack = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
 					viewState.stack = tempStack
-					if viewState.stack.count > 0 {
-						viewState.searchTerm = tempStack.last!.searchTerm
-					}
 				}
 			}
 			viewState.searchTerm = UserDefaults.standard.string(forKey: "SearchTerm") ?? ""
@@ -597,8 +594,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBAction func removeAllOfflineContent(_ sender: Any) {
 		sc.session.helpers.offline.removeAll()
-		viewState.clearStack()
-		viewState.clearHistory() // Also clears Cache
+		viewState.clearEverything() // Also clears Cache
 	}
 	
 	// MARK: - Window
@@ -610,12 +606,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		queueViewController.showWindow(nil)
 	}
 	
-	@IBAction func viewHistory(_ sender: Any) {
-		viewHistoryViewController.showWindow(nil)
-	}
-	
 	@IBAction func playbackHistory(_ sender: Any) {
 		playbackHistoryViewController.showWindow(nil)
+	}
+	
+	@IBAction func viewHistory(_ sender: Any) {
+		viewHistoryViewController.showWindow(nil)
 	}
 }
 
