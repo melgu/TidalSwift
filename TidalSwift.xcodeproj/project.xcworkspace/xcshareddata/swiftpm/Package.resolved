@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "Grid",
-        "repositoryURL": "git@github.com:SwiftUIExtensions/Grid.git",
-        "state": {
-          "branch": null,
-          "revision": "89ff8bf765bfbaa42c6e77d6bc051e58f37a7c3f",
-          "version": "0.6.4"
-        }
-      },
-      {
         "package": "ImageIOSwift",
         "repositoryURL": "git@github.com:davbeck/ImageIOSwift.git",
         "state": {
@@ -20,12 +11,12 @@
         }
       },
       {
-        "package": "Sliders",
-        "repositoryURL": "git@github.com:SwiftUIExtensions/Sliders.git",
+        "package": "SwiftUIExtensions",
+        "repositoryURL": "git@github.com:SwiftExtensions/SwiftUIExtensions.git",
         "state": {
           "branch": null,
-          "revision": "9e1efd9bb8c961df8c462b0215bf360433e612d0",
-          "version": "1.0.0"
+          "revision": "04f0bce3e4ff5efb1dbac84d8b9ac74a5e0e2d08",
+          "version": "0.8.0"
         }
       }
     ]

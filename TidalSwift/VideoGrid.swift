@@ -9,7 +9,7 @@
 import SwiftUI
 import TidalSwiftLib
 import ImageIOSwiftUI
-import Grid
+import SwiftUIExtensions
 
 struct VideoGrid: View {
 	let videos: [Video]
@@ -22,9 +22,8 @@ struct VideoGrid: View {
 			VideoGridItem(video: video, showArtist: self.showArtists, session: self.session, player: self.player)
 		}
 		.gridStyle(
-			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 210, hSpacing: 5, vSpacing: 5)
+			ModularGridStyle(columns: .min(165), rows: .fixed(210), spacing: 5, padding: .init(top: 0, leading: 5, bottom: 5, trailing: 5))
 		)
-		.padding()
 	}
 }
 

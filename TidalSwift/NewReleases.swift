@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import Grid
 
 struct NewReleases: View {
 	let session: Session
