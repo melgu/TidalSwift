@@ -9,7 +9,7 @@
 import SwiftUI
 import TidalSwiftLib
 import ImageIOSwiftUI
-import Grid
+import SwiftUIExtensions
 
 struct PlaylistGrid: View {
 	let playlists: [Playlist]
@@ -21,9 +21,8 @@ struct PlaylistGrid: View {
 			PlaylistGridItem(playlist: playlist, session: self.session, player: self.player)
 		}
 		.gridStyle(
-			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: 200, hSpacing: 5, vSpacing: 5)
+			ModularGridStyle(columns: .min(165), rows: .fixed(200), spacing: 5, padding: .init(top: 0, leading: 5, bottom: 5, trailing: 5))
 		)
-		.padding()
 	}
 }
 

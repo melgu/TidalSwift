@@ -57,6 +57,7 @@ struct TrackGridItem: View {
 					.foregroundColor(Color.secondary)
 					.lineLimit(1)
 					.frame(width: 160)
+					.padding(.top, track.hasAttributes ? -6.5 : 0)
 			}
 		}
 		.padding(5)
@@ -248,5 +249,9 @@ extension Track {
 			}
 		}
 		.secondaryIconColor()
+	}
+	
+	var hasAttributes: Bool {
+		return self.explicit || self.audioQuality == .master || self.audioModes?.contains(.sony360RealityAudio) ?? false
 	}
 }

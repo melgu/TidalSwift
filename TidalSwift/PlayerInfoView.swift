@@ -9,7 +9,7 @@
 import SwiftUI
 import TidalSwiftLib
 import ImageIOSwiftUI
-import Sliders
+import SwiftUIExtensions
 
 struct PlayerInfoView: View {
 	let session: Session

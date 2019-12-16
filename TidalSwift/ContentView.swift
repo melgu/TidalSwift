@@ -8,8 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
-import Grid
 
 struct ContentView: View {
 	@EnvironmentObject var sc: SessionContainer

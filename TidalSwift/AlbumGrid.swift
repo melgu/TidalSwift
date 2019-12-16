@@ -9,7 +9,7 @@
 import SwiftUI
 import TidalSwiftLib
 import ImageIOSwiftUI
-import Grid
+import SwiftUIExtensions
 
 struct AlbumGrid: View {
 	let albums: [Album]
@@ -31,9 +31,8 @@ struct AlbumGrid: View {
 			AlbumGridItem(album: album, showArtists: self.showArtists, showReleaseDate: self.showReleaseDate, session: self.session, player: self.player)
 		}
 		.gridStyle(
-			AutoColumnsGridStyle(minItemWidth: 165, itemHeight: showReleaseDate ? 230 : 210, hSpacing: 5, vSpacing: 5)
+			ModularGridStyle(columns: .min(165), rows: .fixed(showReleaseDate ? 230 : 210), spacing: 5, padding: .init(top: 0, leading: 5, bottom: 5, trailing: 5))
 		)
-		.padding()
 	}
 }
 
@@ -111,6 +110,7 @@ struct AlbumGridItem: View {
 						.foregroundColor(Color.secondary)
 						.lineLimit(1)
 						.frame(width: 160)
+						.padding(.top, album.hasAttributes ? -6.5 : 0)
 				} else if album.artist != nil {
 					Text(album.artist!.name)
 						.fontWeight(.light)
@@ -315,5 +315,9 @@ extension Album {
 			}
 		}
 		.secondaryIconColor()
+	}
+	
+	var hasAttributes: Bool {
+		return self.explicit ?? false || self.audioQuality == .master || self.audioModes?.contains(.sony360RealityAudio) ?? false
 	}
 }
