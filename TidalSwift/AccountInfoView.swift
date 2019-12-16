@@ -26,6 +26,7 @@ struct AccountInfoView: View {
 						VStack {
 							Text("User")
 								.font(.title)
+							if self.user!.getPictureUrl(session: self.session, resolution: 210) != nil {
 							URLImageSourceView(
 								self.user!.getPictureUrl(session: self.session, resolution: 210)!,
 								isAnimationEnabled: true,
@@ -34,6 +35,7 @@ struct AccountInfoView: View {
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+							}
 							UserInfoView(user: self.user!, session: self.session)
 							Spacer(minLength: 0)
 						}
