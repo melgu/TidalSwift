@@ -255,7 +255,7 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 	public let type: PlaylistType
 	public let publicPlaylist: Bool
 	public let url: URL
-	public let image: String
+	public let image: String?
 	public let popularity: Int
 	public let squareImage: String?
 	
@@ -264,26 +264,34 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public func getImageUrl(session: Session, resolution: Int, resolutionY: Int? = nil) -> URL? {
+		if squareImage == nil && image == nil {
+			return nil
+		}
+		
 		if let resolutionY = resolutionY {
-			return session.getImageUrl(imageId: squareImage ?? image, resolution: resolution, resolutionY: resolutionY)
+			return session.getImageUrl(imageId: squareImage ?? image!, resolution: resolution, resolutionY: resolutionY)
 		}
 		
 		if let squareImage = squareImage {
 			return session.getImageUrl(imageId: squareImage, resolution: resolution)
 		} else {
-			return session.getImageUrl(imageId: image, resolution: 480, resolutionY: 320)
+			return session.getImageUrl(imageId: image!, resolution: 480, resolutionY: 320)
 		}
 	}
 	
 	public func getImage(session: Session, resolution: Int, resolutionY: Int? = nil) -> NSImage? {
+		if squareImage == nil && image == nil {
+			return nil
+		}
+		
 		if let resolutionY = resolutionY {
-			return session.getImage(imageId: squareImage ?? image, resolution: resolution, resolutionY: resolutionY)
+			return session.getImage(imageId: squareImage ?? image!, resolution: resolution, resolutionY: resolutionY)
 		}
 		
 		if let squareImage = squareImage {
 			return session.getImage(imageId: squareImage, resolution: resolution)
 		} else {
-			return session.getImage(imageId: image, resolution: 480, resolutionY: 320)
+			return session.getImage(imageId: image!, resolution: 480, resolutionY: 320)
 		}
 	}
 	
@@ -403,7 +411,7 @@ public struct Video: Codable, Equatable, Identifiable, Hashable {
 	public let duration: Int
 	public let quality: String // Careful as video quality is different to audio quality
 	public let streamReady: Bool
-	public let streamStartDate: Date
+	public let streamStartDate: Date?
 	public let allowStreaming: Bool
 	public let explicit: Bool
 	public let popularity: Int
