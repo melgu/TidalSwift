@@ -96,7 +96,7 @@ struct AlbumView: View {
 										Text(DateFormatter.dateOnly.string(from: viewState.stack.last!.album!.releaseDate!))
 									}
 								}
-								Spacer(minLength: 0)
+								Spacer(minLength: 5)
 								VStack(alignment: .leading) {
 									if viewState.stack.last!.album!.numberOfTracks != nil {
 										Text("\(viewState.stack.last!.album!.numberOfTracks!) Tracks")
