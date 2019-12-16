@@ -64,12 +64,13 @@ struct QueueView: View {
 								TrackContextMenu(track: item.track, session: self.session, player: self.player)
 							}
 							Spacer(minLength: 5)
-							Text("􀀳")
-								.foregroundColor(.secondary)
+							Image("x.circle.fill")
+								.secondaryIconColor()
 								.onTapGesture {
 									self.player.removeTrack(atIndex: item.id)
 							}
 						}
+						.padding(.top, -12)
 					}
 				}
 				Spacer(minLength: 0)
