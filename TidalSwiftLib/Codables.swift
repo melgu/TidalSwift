@@ -150,6 +150,7 @@ public enum AudioMode: String, Codable {
 	case stereo = "STEREO"
 	case mono = "MONO"
 	case sony360RealityAudio = "SONY_360RA"
+	case dolbyAtmos = "DOLBY_ATMOS"
 }
 
 public struct Album: Codable, Equatable, Identifiable, Hashable {

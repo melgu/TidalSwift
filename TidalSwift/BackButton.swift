@@ -18,7 +18,8 @@ struct BackButton: View {
 					print("Back")
 					self.viewState.pop()
 				}) {
-					Text("􀆉")
+					Image("chevron.left")
+						.primaryIconColor()
 				}
 				.padding(.leading, 10)
 				Spacer(minLength: 0)
