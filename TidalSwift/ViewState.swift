@@ -37,7 +37,6 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 	}
 	
 	var viewType: ViewType
-	var searchTerm: String = ""
 	var artist: Artist? = nil
 	var album: Album? = nil
 	var playlist: Playlist? = nil
@@ -63,13 +62,19 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 			&& lhs.playlists == rhs.playlists && lhs.tracks == rhs.tracks
 			&& lhs.videos == rhs.videos
 	}
+	
+	static func equateBase(_ lhs: TidalSwiftView, _ rhs: TidalSwiftView) -> Bool {
+		return lhs.viewType == rhs.viewType && lhs.artist == rhs.artist
+			&& lhs.album == rhs.album && lhs.playlist == rhs.playlist
+			&& lhs.mix == rhs.mix
+	}
 }
 
 final class ViewState: ObservableObject {
 	let session: Session
 	var cache: ViewCache
 	
-	@Published var searchTerm: String = ""
+	var searchTerm: String = ""
 	@Published var stack: [TidalSwiftView] = []
 	@Published var history: [TidalSwiftView] = []
 	var maxHistoryItems: Int = 100
@@ -77,23 +82,18 @@ final class ViewState: ObservableObject {
 	var workItem: DispatchWorkItem? = nil
 	var lastSearchTerm: String = ""
 	
-	var searchTermCancellable: AnyCancellable?
-	
 	init(session: Session, cache: ViewCache) {
 		self.session = session
 		self.cache = cache
-		
-		searchTermCancellable = $searchTerm.receive(on: DispatchQueue.main).sink(receiveValue: doSearch(term:))
 	}
 	
 	func push(view: TidalSwiftView) {
 		workItem?.cancel() // Cancel background operation, so no newer View is replaced, if switching views faster than background operation finishes.
-		var tempView = view
-		tempView.searchTerm = searchTerm
-		stack.append(tempView)
-		addToHistory(view)
+		stack.append(view)
+		if view.viewType != .search {
+			addToHistory(view)
+		}
 		refreshCurrentView()
-//		print("View Push: Search: \(searchTerm)")
 	}
 	
 	func push(artist: Artist) {
@@ -121,13 +121,12 @@ final class ViewState: ObservableObject {
 	}
 	
 	func clearStack() {
-		searchTerm = ""
 		stack.removeAll()
 	}
 	
 	func addToHistory(_ view: TidalSwiftView) {
 		// Ensure View only exists once in History
-		history.removeAll(where: { $0 == view })
+		history.removeAll(where: { TidalSwiftView.equateBase($0, view) })
 		
 		history.append(view)
 		
@@ -135,12 +134,18 @@ final class ViewState: ObservableObject {
 		if history.count > maxHistoryItems {
 			history.removeFirst(history.count - maxHistoryItems)
 		}
-		print("History count: \(history.count). Max items: \(maxHistoryItems)")
+//		print("History count: \(history.count). Max items: \(maxHistoryItems)")
 	}
 	
 	func clearHistory() {
 		print("Clear History")
 		history.removeAll()
 		cache = ViewCache()
+	}
+	
+	func clearEverything() {
+		searchTerm = ""
+		clearStack()
+		clearHistory()
 	}
 }
