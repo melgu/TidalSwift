@@ -11,7 +11,8 @@ import XCTest
 
 class LogicTests: XCTestCase {
 	
-	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
+//	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
+	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: "")))
 	
 	var tempConfig: Config?
 	var tempSession: Session?
@@ -72,13 +73,13 @@ class LogicTests: XCTestCase {
 	}
 	
 	// Login Testing commented out to prevent potential ban from the server if done too often
-	func testLogin() {
-		let loginInfo = readDemoLoginCredentials()
-		let config = Config(quality: .hifi, loginCredentials: loginInfo)
-		session = Session(config: config)
-		let result = session.login()
-		XCTAssert(result)
-	}
+//	func testLogin() {
+//		let loginInfo = readDemoLoginCredentials()
+//		let config = Config(quality: .hifi, loginCredentials: loginInfo)
+//		session = Session(config: config)
+//		let result = session.login()
+//		XCTAssert(result)
+//	}
 
 	// Login Testing commented out to prevent potential ban from the server if done too often
 	func testWrongLogin() {
@@ -961,10 +962,10 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(artistTopTracks[0].album.title, "In diesem Moment")
 		
 		// More Tracks
-		XCTAssertEqual(artistTopTracks[1].id, 17690644)
-		XCTAssertEqual(artistTopTracks[1].title, "Wir sind da (Giraffenaffensong)")
-		XCTAssertEqual(artistTopTracks[2].id, 17690654)
-		XCTAssertEqual(artistTopTracks[2].title, "Die Affen rasen durch den Wald")
+		XCTAssertEqual(artistTopTracks[1].id, 54054690)
+		XCTAssertEqual(artistTopTracks[1].title, "Come Fly with Me (Live in Hamburg)")
+		XCTAssertEqual(artistTopTracks[2].id, 27228983)
+		XCTAssertEqual(artistTopTracks[2].title, #"Wenn es morgen schon zu Ende wär' (aus "Sing meinen Song")"#)
 	}
 
 	func testGetArtistBio() {
@@ -1117,15 +1118,15 @@ class LogicTests: XCTestCase {
 		
 		// Hard to test as different for every user
 		// Needs to be changed by tester
-		XCTAssertEqual(playlists[18].uuid, "825a0e70-c918-40b8-89c6-247dfbac04b4")
+		XCTAssertEqual(playlists[19].uuid, "825a0e70-c918-40b8-89c6-247dfbac04b4")
 		// Testing the handling of "" in Strings & JSON
-		XCTAssertEqual(playlists[18].title, #"Schlechte "Musik""#)
-		XCTAssertEqual(playlists[18].type, .user)
-		XCTAssertEqual(playlists[18].creator.id, userId)
-		XCTAssertNil(playlists[18].creator.name)
-		XCTAssertNil(playlists[18].creator.url)
-		XCTAssertNil(playlists[18].creator.picture)
-		XCTAssertNil(playlists[18].creator.popularity)
+		XCTAssertEqual(playlists[19].title, #"Schlechte "Musik""#)
+		XCTAssertEqual(playlists[19].type, .user)
+		XCTAssertEqual(playlists[19].creator.id, userId)
+		XCTAssertNil(playlists[19].creator.name)
+		XCTAssertNil(playlists[19].creator.url)
+		XCTAssertNil(playlists[19].creator.picture)
+		XCTAssertNil(playlists[19].creator.popularity)
 	}
 	
 	func testGetMixes() {
@@ -1222,8 +1223,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(genres[1].hasVideos, true)
 		XCTAssertEqual(genres[1].image, "0239132d-99be-41f4-929d-e27280f7bff1")
 		
-		XCTAssertEqual(genres[5].name, "R&B / Soul")
-		XCTAssertEqual(genres[5].path, "Funk")
+		XCTAssertEqual(genres[5].name, "Metal")
+		XCTAssertEqual(genres[5].path, "Metal")
 	}
 	
 	func testGetGenreTracks() {

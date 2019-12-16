@@ -23,7 +23,6 @@
 /* Begin PBXBuildFile section */
 		B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B010113F23063BC200DE13C8 /* Demo Login Information.txt in Resources */ = {isa = PBXBuildFile; fileRef = B010113E23063BC200DE13C8 /* Demo Login Information.txt */; };
 		B014CA53236742E600282931 /* SessionContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B014CA52236742E600282931 /* SessionContainer.swift */; };
 		B016FAF423575CB200ECE565 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B016FAF323575CB200ECE565 /* LoginView.swift */; };
 		B01B09CB234ADADB007A4E15 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CA234ADADB007A4E15 /* CreditsView.swift */; };
@@ -579,7 +578,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B010113F23063BC200DE13C8 /* Demo Login Information.txt in Resources */,
 				B0E80796230615AE00E43B5D /* Main.storyboard in Resources */,
 				B0E80793230615AE00E43B5D /* Preview Assets.xcassets in Resources */,
 				B03B9AFA23A48AE200679A1A /* SF Symbols.xcassets in Resources */,

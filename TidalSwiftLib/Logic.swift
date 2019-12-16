@@ -1535,28 +1535,28 @@ func displayError(title: String, content: String) {
 	print("\(title). \(content)")
 }
 
-public func readDemoLoginCredentials() -> LoginCredentials {
-	let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
-	var content = ""
-	do {
-		content = try String(contentsOfFile: fileLocation)
-	} catch {
-		displayError(title: "Couldn't read Demo Login", content: "\(error)")
-	}
-	
-	let lines: [String] = content.components(separatedBy: "\n")
-	return LoginCredentials(username: lines[0], password: lines[1])
-}
+//public func readDemoLoginCredentials() -> LoginCredentials {
+//	let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
+//	var content = ""
+//	do {
+//		content = try String(contentsOfFile: fileLocation)
+//	} catch {
+//		displayError(title: "Couldn't read Demo Login", content: "\(error)")
+//	}
+//
+//	let lines: [String] = content.components(separatedBy: "\n")
+//	return LoginCredentials(username: lines[0], password: lines[1])
+//}
 
-public func readDemoToken() -> String {
-	let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
-	var content = ""
-	do {
-		content = try String(contentsOfFile: fileLocation)
-	} catch {
-		displayError(title: "Couldn't read Demo Token", content: "\(error)")
-	}
-	
-	let lines: [String] = content.components(separatedBy: "\n")
-	return lines[2]
-}
+//public func readDemoToken() -> String {
+//	let fileLocation = Bundle.main.path(forResource: "Demo Login Information", ofType: "txt")!
+//	var content = ""
+//	do {
+//		content = try String(contentsOfFile: fileLocation)
+//	} catch {
+//		displayError(title: "Couldn't read Demo Token", content: "\(error)")
+//	}
+//	
+//	let lines: [String] = content.components(separatedBy: "\n")
+//	return lines[2]
+//}
