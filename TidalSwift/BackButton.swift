@@ -21,10 +21,10 @@ struct BackButton: View {
 					Image("chevron.left")
 						.primaryIconColor()
 				}
-				.padding(.leading, 10)
 				Spacer(minLength: 0)
 				LoadingSpinner()
 			}
+			.padding(.horizontal)
 			.frame(height: 40)
 			Spacer(minLength: 0)
 		}
