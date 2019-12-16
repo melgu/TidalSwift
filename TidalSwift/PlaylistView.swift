@@ -89,7 +89,7 @@ struct PlaylistView: View {
 									Text("Last updated: \(DateFormatter.dateOnly.string(from: viewState.stack.last!.playlist!.lastUpdated))")
 										.foregroundColor(.secondary)
 								}
-								Spacer()
+								Spacer(minLength: 5)
 									.layoutPriority(-1)
 								VStack(alignment: .leading) {
 									Text("\(viewState.stack.last!.playlist!.numberOfTracks) Tracks")
