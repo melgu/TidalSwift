@@ -11,7 +11,8 @@ import XCTest
 
 class MetadataTests: XCTestCase {
 	
-	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
+//	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
+	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: "")))
 	var metadata: Metadata?
 	
 	let demoFolderName = "TidalSwift_Test_Metadata"

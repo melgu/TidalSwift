@@ -11,7 +11,8 @@ import XCTest
 
 class HelpersTests: XCTestCase {
 	
-	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
+//	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
+	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: "")))
 	var helpers: Helpers { session.helpers }
 	
     override func setUp() {

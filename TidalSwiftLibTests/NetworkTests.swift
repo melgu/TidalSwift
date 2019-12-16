@@ -11,7 +11,8 @@ import XCTest
 
 class NetworkTests: XCTestCase {
 	
-	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
+//	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
+	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: "")))
 	let demoFolderName = "TidalSwift_Test_Network"
 	let demoName = "Test_Captive.html"
 	let demoUrl = URL(string: "https://captive.apple.com")!
