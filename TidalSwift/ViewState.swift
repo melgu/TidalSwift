@@ -118,6 +118,7 @@ final class ViewState: ObservableObject {
 	
 	func pop() {
 		stack.removeLast()
+		refreshCurrentView()
 	}
 	
 	func clearStack() {
