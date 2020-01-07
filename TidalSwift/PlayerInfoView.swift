@@ -35,14 +35,16 @@ struct PlayerInfoView: View {
 										.cornerRadius(CORNERRADIUS)
 										.onTapGesture {
 											print("Big Cover")
+											let trackTitle = self.queueInfo.queue[self.queueInfo.currentIndex].track.title
+											let albumTitle = self.queueInfo.queue[self.queueInfo.currentIndex].track.album.title
 											let controller = CoverWindowController(rootView:
 												URLImageSourceView(
 													self.queueInfo.queue[self.queueInfo.currentIndex].track.getCoverUrl(session: self.session, resolution: 1280)!,
 													isAnimationEnabled: true,
-													label: Text(self.queueInfo.queue[self.queueInfo.currentIndex].track.album.title)
+													label: Text("\(trackTitle) – \(albumTitle)")
 												)
 											)
-											controller.window?.title = self.queueInfo.queue[self.queueInfo.currentIndex].track.album.title
+											controller.window?.title = "\(trackTitle) – \(albumTitle)"
 											controller.showWindow(nil)
 									}
 								} else {

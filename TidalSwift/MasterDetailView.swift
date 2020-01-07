@@ -64,6 +64,12 @@ struct MasterView: View {
 					Text("Videos").tag(ViewType.favoriteVideos)
 					Text("Artists").tag(ViewType.favoriteArtists)
 				}
+				Section(header: Text("Offline")) {
+					Text("Playlists").tag(ViewType.offlinePlaylists)
+					Text("Albums").tag(ViewType.offlineAlbums)
+					Text("Tracks").tag(ViewType.offlineTracks)
+//					Text("Videos").tag(ViewType.favoriteVideos) // Add when Video downloading works
+				}
 			}.listStyle(SidebarListStyle())
 		}
 	}
@@ -100,6 +106,15 @@ struct DetailView: View {
 		print("init DetailView")
 	}
 	
+	var placeHolderView: some View {
+		HStack {
+			VStack {
+				Spacer(minLength: 0)
+			}
+			Spacer(minLength: 0)
+		}
+	}
+	
 	var body: some View {
 		VStack {
 			PlayerInfoView(session: session, player: player)
@@ -119,7 +134,7 @@ struct DetailView: View {
 						MyMixes(session: session, player: player)
 					}
 						
-					// Favorites
+						// Favorites
 					else if viewState.stack.last!.viewType == .favoritePlaylists {
 						FavoritePlaylists(session: session, player: player)
 					} else if viewState.stack.last!.viewType == .favoriteAlbums {
@@ -130,9 +145,19 @@ struct DetailView: View {
 						FavoriteVideos(session: session, player: player)
 					} else if viewState.stack.last!.viewType == .favoriteArtists {
 						FavoriteArtists(session: session, player: player)
+					}
+					
+					else if viewState.stack.last!.viewType == .offlinePlaylists {
+						placeHolderView
+					} else if viewState.stack.last!.viewType == .offlineAlbums {
+						placeHolderView
+					} else if viewState.stack.last!.viewType == .offlineTracks {
+						placeHolderView
+					}
+						
 						
 					// Single Things
-					}  else if viewState.stack.last!.viewType == .artist {
+					else if viewState.stack.last!.viewType == .artist {
 						ArtistView(session: session, player: player)
 					} else if viewState.stack.last!.viewType == .album {
 						AlbumView(session: session, player: player)
