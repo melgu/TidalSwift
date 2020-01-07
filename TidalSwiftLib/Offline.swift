@@ -160,21 +160,21 @@ public class Offline {
 	public func numberOfOfflineTracks() -> Int {
 		return db.tracks.count
 	}
-	public func allOfflineTracks() -> [Track]? {
+	public func allOfflineTracks() -> [Track] {
 		return db.tracks.map { (track, _) in track }
 	}
 	
 	public func numberOfOfflineAlbums() -> Int {
 		return db.albums.count
 	}
-	public func allOfflineAlbums() -> [Album]? {
+	public func allOfflineAlbums() -> [Album] {
 		return db.albums
 	}
 	
 	public func numberOfOfflinePlaylists() -> Int {
 		return db.playlists.count
 	}
-	public func allOfflinePlaylists() -> [Playlist]? {
+	public func allOfflinePlaylists() -> [Playlist] {
 		return db.playlists
 	}
 	

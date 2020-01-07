@@ -1,5 +1,5 @@
 //
-//  OfflineViews.swift
+//  ViewRefreshing.swift
 //  TidalSwift
 //
 //  Created by Melvin Gundlach on 26.11.19.

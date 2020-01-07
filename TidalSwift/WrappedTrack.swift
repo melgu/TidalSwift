@@ -19,7 +19,7 @@ struct WrappedTrack: Codable, Identifiable, Equatable {
 }
 
 extension Array where Element == Track {
-	func wrap() -> [WrappedTrack] {
+	func wrapped() -> [WrappedTrack] {
 		var r: [WrappedTrack] = []
 		for i in 0..<self.count {
 			r.append(WrappedTrack(id: i, track: self[i]))

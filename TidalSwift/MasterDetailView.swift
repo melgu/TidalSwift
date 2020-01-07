@@ -148,11 +148,11 @@ struct DetailView: View {
 					}
 					
 					else if viewState.stack.last!.viewType == .offlinePlaylists {
-						placeHolderView
+						OfflinePlaylistsView(session: session, player: player)
 					} else if viewState.stack.last!.viewType == .offlineAlbums {
-						placeHolderView
+						OfflineAlbumsView(session: session, player: player)
 					} else if viewState.stack.last!.viewType == .offlineTracks {
-						placeHolderView
+						OfflineTracksView(session: session, player: player)
 					}
 						
 						
