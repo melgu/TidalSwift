@@ -22,6 +22,11 @@ enum ViewType: String, Codable {
 	case favoriteTracks = "Favorite Tracks"
 	case favoriteVideos = "Favorite Videos"
 	
+	case offlineAlbums = "Offline Albums"
+	case offlinePlaylists = "Offline Playlists"
+	case offlineTracks = "Offline Tracks"
+//	case offlineVideos = "Favorite Videos" // Add when Video downloading works
+	
 	case artist = "Artist"
 	case album = "Album"
 	case playlist = "Playlist"

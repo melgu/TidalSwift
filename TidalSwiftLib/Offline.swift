@@ -135,15 +135,15 @@ public class Offline {
 												   create: false)
 			path.appendPathComponent(mainPath)
 			if !FileManager.default.fileExists(atPath: path.relativePath) {
-				print("Offline: Library Folder doesn't exist. Creating. Also resetting DB.")
+				print("Offline: Library Folder doesn't exist. Redownloading all Songs.")
 				try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
-				db.clear()
 			}
 		} catch {
 			displayError(title: "Offline: Error while creating Offline management class", content: "Error: \(error)")
 		}
 		
 		saveFavoritesOffline = UserDefaults.standard.bool(forKey: "SaveFavoritesOffline")
+		asyncSync()
 	}
 	
 	public func url(for track: Track) -> URL? {

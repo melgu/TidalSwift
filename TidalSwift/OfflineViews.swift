@@ -31,6 +31,13 @@ extension ViewState {
 			favoriteTracks()
 		case .favoriteVideos:
 			favoriteVideos()
+		
+		case .offlineAlbums:
+			doNothing()
+		case .offlinePlaylists:
+			doNothing()
+		case .offlineTracks:
+			doNothing()
 
 		case .artist:
 			artist()
