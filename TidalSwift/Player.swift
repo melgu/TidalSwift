@@ -257,7 +257,7 @@ class Player {
 //		pause()
 		clearQueue()
 		if playbackInfo.shuffle {
-			queueInfo.nonShuffledQueue = tracks.wrap()
+			queueInfo.nonShuffledQueue = tracks.wrapped()
 			addLast(tracks: Array(tracks[0...index]))
 			if index+1 < tracks.count {
 				addLast(tracks: tracks[index+1..<tracks.count].shuffled())
@@ -274,8 +274,8 @@ class Player {
 		if tracks.isEmpty {
 			return
 		}
-		queueInfo.nonShuffledQueue.insert(contentsOf: tracks.wrap(), at: queueInfo.currentIndex)
-		let newQueueItems = tracks.wrap()
+		queueInfo.nonShuffledQueue.insert(contentsOf: tracks.wrapped(), at: queueInfo.currentIndex)
+		let newQueueItems = tracks.wrapped()
 		if queueInfo.queue.isEmpty {
 			queueInfo.queue.insert(contentsOf: newQueueItems, at: queueInfo.currentIndex)
 			avSetItem(from: queueInfo.queue[0].track)
@@ -294,10 +294,10 @@ class Player {
 		let wasEmtpy = queueInfo.queue.isEmpty
 		
 		if !playbackInfo.shuffle {
-			queueInfo.nonShuffledQueue.append(contentsOf: tracks.wrap())
+			queueInfo.nonShuffledQueue.append(contentsOf: tracks.wrapped())
 		}
 		
-		let newQueueItems = tracks.wrap()
+		let newQueueItems = tracks.wrapped()
 		queueInfo.queue.append(contentsOf: newQueueItems)
 		queueInfo.assignQueueIndices()
 		if wasEmtpy {

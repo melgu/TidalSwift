@@ -102,7 +102,7 @@ struct ArtistView: View {
 					.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
 					
 					ScrollView {
-						TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrap(), showCover: true, showAlbumTrackNumber: false,
+						TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrapped(), showCover: true, showAlbumTrackNumber: false,
 								  showArtist: true, showAlbum: true, playlist: nil,
 								  session: session, player: player)
 					}
