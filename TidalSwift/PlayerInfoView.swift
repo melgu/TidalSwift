@@ -84,12 +84,20 @@ struct PlayerInfoView: View {
 					VStack {
 						HStack {
 							Spacer()
-							Image("shuffle")
-								.primaryIconColor()
-								.onTapGesture {
-									self.playbackInfo.shuffle.toggle()
+							Group {
+								if self.playbackInfo.shuffle {
+									Image(nsImage: NSImage(named: "shuffle")!.tint(color: .controlAccentColor))
+								} else {
+									Image("shuffle")
+										.primaryIconColor()
+										.onTapGesture {
+											self.playbackInfo.shuffle.toggle()
+									}
+								}
 							}
-							.foregroundColor(self.playbackInfo.shuffle ? .accentColor : .primary)
+							.onTapGesture {
+								self.playbackInfo.shuffle.toggle()
+							}
 							Image("backward.fill")
 								.primaryIconColor()
 								.onTapGesture {
