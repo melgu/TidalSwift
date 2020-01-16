@@ -21,6 +21,9 @@ struct OfflinePlaylistsView: View {
 				Text("Offline Playlists")
 					.font(.largeTitle)
 				Spacer()
+				if viewState.stack.last?.playlists != nil {
+					Text("\(viewState.stack.last!.playlists!.count) \(viewState.stack.last!.playlists!.count == 1 ? "Playlist" : "Playlists")")
+				}
 			}
 			.padding([.horizontal, .bottom])
 			
@@ -50,6 +53,9 @@ struct OfflineAlbumsView: View {
 				Text("Offline Albums")
 					.font(.largeTitle)
 				Spacer()
+				if viewState.stack.last?.albums != nil {
+					Text("\(viewState.stack.last!.albums!.count) \(viewState.stack.last!.albums!.count == 1 ? "Album" : "Albums")")
+				}
 			}
 			.padding([.horizontal, .bottom])
 			
@@ -79,6 +85,9 @@ struct OfflineTracksView: View {
 				Text("Offline Tracks")
 					.font(.largeTitle)
 				Spacer()
+				if viewState.stack.last?.tracks != nil {
+					Text("\(viewState.stack.last!.tracks!.count) \(viewState.stack.last!.tracks!.count == 1 ? "Track" : "Tracks")")
+				}
 			}
 			.padding([.horizontal, .bottom])
 			
