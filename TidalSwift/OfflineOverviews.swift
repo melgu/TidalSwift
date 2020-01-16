@@ -22,10 +22,16 @@ struct OfflinePlaylistsView: View {
 					.font(.largeTitle)
 				Spacer()
 			}
-			.padding(.horizontal)
+			.padding([.horizontal, .bottom])
 			
 			if viewState.stack.last?.playlists != nil {
-				PlaylistGrid(playlists: viewState.stack.last!.playlists!, session: session, player: player)
+				if viewState.stack.last!.playlists!.isEmpty {
+					Text("None")
+						.font(.callout)
+						.padding(.horizontal)
+				} else {
+					PlaylistGrid(playlists: viewState.stack.last!.playlists!, session: session, player: player)
+				}
 			}
 			Spacer(minLength: 0)
 		}
@@ -45,10 +51,16 @@ struct OfflineAlbumsView: View {
 					.font(.largeTitle)
 				Spacer()
 			}
-			.padding(.horizontal)
+			.padding([.horizontal, .bottom])
 			
 			if viewState.stack.last?.albums != nil {
-				AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, session: session, player: player)
+				if viewState.stack.last!.albums!.isEmpty {
+					Text("None")
+						.font(.callout)
+						.padding(.horizontal)
+				} else {
+					AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, session: session, player: player)
+				}
 			}
 			Spacer(minLength: 0)
 		}
@@ -68,11 +80,17 @@ struct OfflineTracksView: View {
 					.font(.largeTitle)
 				Spacer()
 			}
-			.padding(.horizontal)
+			.padding([.horizontal, .bottom])
 			
 			if viewState.stack.last?.tracks != nil {
-				ScrollView {
-					TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrapped(), showCover: true, showAlbumTrackNumber: false, showArtist: true, showAlbum: true, playlist: nil, session: session, player: player)
+				if viewState.stack.last!.tracks!.isEmpty {
+					Text("None")
+						.font(.callout)
+						.padding(.horizontal)
+				} else {
+					ScrollView {
+						TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrapped(), showCover: true, showAlbumTrackNumber: false, showArtist: true, showAlbum: true, playlist: nil, session: session, player: player)
+					}
 				}
 			}
 			Spacer(minLength: 0)
