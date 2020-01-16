@@ -60,6 +60,7 @@ struct SearchView: View {
 						&& viewState.stack.last!.searchResponse!.videos.isEmpty {
 						Text("No Results")
 							.font(.callout)
+							.padding(.horizontal)
 					}
 				}
 				Spacer(minLength: 0)
