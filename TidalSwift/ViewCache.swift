@@ -29,6 +29,8 @@ struct ViewCache: Codable {
 	var mixTracks: [String: [Track]] = [:]
 	var artistTopTracks: [Int: [Track]] = [:]
 	var artistAlbums: [Int: [Album]] = [:]
+	var artistAlbumsEpsAndSingles: [Int: [Album]] = [:]
+	var artistAlbumsAppearances: [Int: [Album]] = [:]
 	var artistVideos: [Int: [Video]] = [:]
 	var albumTracks: [Int: [Track]] = [:]
 	var playlistTracks: [String: [Track]] = [:]
