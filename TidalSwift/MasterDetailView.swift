@@ -158,7 +158,7 @@ struct DetailView: View {
 						
 					// Single Things
 					else if viewState.stack.last!.viewType == .artist {
-						ArtistView(session: session, player: player)
+						ArtistView(session: session, player: player, viewState: viewState)
 					} else if viewState.stack.last!.viewType == .album {
 						AlbumView(session: session, player: player)
 					} else if viewState.stack.last!.viewType == .playlist {

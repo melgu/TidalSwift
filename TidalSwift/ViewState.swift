@@ -49,11 +49,12 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 	
 	var loadingState: LoadingState = .loading
 	
-	// Offline
 	var searchResponse: SearchResponse? = nil
 	var mixes: [MixesItem]? = nil
 	var artists: [Artist]? = nil
 	var albums: [Album]? = nil
+	var albumsEpsAndSingles: [Album]? = nil	// Artist EPS & Singles
+	var albumsAppearances: [Album]? = nil	// Artist Appearances
 	var playlists: [Playlist]? = nil
 	var tracks: [Track]? = nil
 	var videos: [Video]? = nil

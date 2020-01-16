@@ -433,6 +433,8 @@ extension ViewState {
 		
 		view.tracks = cache.artistTopTracks[artist.id]
 		view.albums = cache.artistAlbums[artist.id]
+		view.albumsEpsAndSingles = cache.artistAlbumsEpsAndSingles[artist.id]
+		view.albumsAppearances = cache.artistAlbumsAppearances[artist.id]
 		view.videos = cache.artistVideos[artist.id]
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
@@ -465,6 +467,8 @@ extension ViewState {
 			
 			view.tracks = self.session.getArtistTopTracks(artistId: artist.id, limit: 30, offset: 0)
 			view.albums = self.session.getArtistAlbums(artistId: artist.id)
+			view.albumsEpsAndSingles = self.session.getArtistAlbums(artistId: artist.id, filter: .epsAndSingles)
+			view.albumsAppearances = self.session.getArtistAlbums(artistId: artist.id, filter: .appearances)
 			view.videos = self.session.getArtistVideos(artistId: artist.id)
 			
 			if view.tracks != nil && view.albums != nil && view.videos != nil {
