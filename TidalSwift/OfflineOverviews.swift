@@ -13,6 +13,8 @@ struct OfflinePlaylistsView: View {
 	let session: Session
 	let player: Player
 	
+	@EnvironmentObject var viewState: ViewState
+	
 	var body: some View {
 		VStack(alignment: .leading) {
 			HStack {
@@ -22,7 +24,9 @@ struct OfflinePlaylistsView: View {
 			}
 			.padding(.horizontal)
 			
-			PlaylistGrid(playlists: session.helpers.offline.allOfflinePlaylists(), session: session, player: player)
+			if viewState.stack.last?.playlists != nil {
+				PlaylistGrid(playlists: viewState.stack.last!.playlists!, session: session, player: player)
+			}
 			Spacer(minLength: 0)
 		}
 	}
@@ -31,6 +35,8 @@ struct OfflinePlaylistsView: View {
 struct OfflineAlbumsView: View {
 	let session: Session
 	let player: Player
+	
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -41,7 +47,9 @@ struct OfflineAlbumsView: View {
 			}
 			.padding(.horizontal)
 			
-			AlbumGrid(albums: session.helpers.offline.allOfflineAlbums(), showArtists: true, session: session, player: player)
+			if viewState.stack.last?.albums != nil {
+				AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, session: session, player: player)
+			}
 			Spacer(minLength: 0)
 		}
 	}
@@ -50,6 +58,8 @@ struct OfflineAlbumsView: View {
 struct OfflineTracksView: View {
 	let session: Session
 	let player: Player
+	
+	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -60,8 +70,10 @@ struct OfflineTracksView: View {
 			}
 			.padding(.horizontal)
 			
-			ScrollView {
-				TrackList(wrappedTracks: session.helpers.offline.allOfflineTracks().wrapped(), showCover: true, showAlbumTrackNumber: false, showArtist: true, showAlbum: true, playlist: nil, session: session, player: player)
+			if viewState.stack.last?.tracks != nil {
+				ScrollView {
+					TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrapped(), showCover: true, showAlbumTrackNumber: false, showArtist: true, showAlbum: true, playlist: nil, session: session, player: player)
+				}
 			}
 			Spacer(minLength: 0)
 		}

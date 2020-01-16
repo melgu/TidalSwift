@@ -33,11 +33,11 @@ extension ViewState {
 			favoriteVideos()
 		
 		case .offlineAlbums:
-			doNothing()
+			offlineAlbums()
 		case .offlinePlaylists:
-			doNothing()
+			offlinePlaylists()
 		case .offlineTracks:
-			doNothing()
+			offlineTracks()
 
 		case .artist:
 			artist()
@@ -576,5 +576,37 @@ extension ViewState {
 			
 			self.replaceCurrentView(with: view)
 		}
+	}
+}
+
+extension ViewState {
+	func offlinePlaylists() {
+		guard var view = self.stack.last else {
+			return
+		}
+		
+		view.playlists = session.helpers.offline.allOfflinePlaylists()
+		view.loadingState = .successful
+		self.replaceCurrentView(with: view)
+	}
+	
+	func offlineAlbums() {
+		guard var view = self.stack.last else {
+			return
+		}
+		
+		view.albums = session.helpers.offline.allOfflineAlbums()
+		view.loadingState = .successful
+		self.replaceCurrentView(with: view)
+	}
+	
+	func offlineTracks() {
+		guard var view = self.stack.last else {
+			return
+		}
+		
+		view.tracks = session.helpers.offline.allOfflineTracks()
+		view.loadingState = .successful
+		self.replaceCurrentView(with: view)
 	}
 }
