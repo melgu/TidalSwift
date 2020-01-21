@@ -65,7 +65,7 @@ struct AlbumView: View {
 												controller.showWindow(nil)
 										}
 										if t || !t {
-											if viewState.stack.last!.album!.isInFavorites(session: session)! {
+											if viewState.stack.last!.album!.isInFavorites(session: session) ?? true {
 												Image("heart.fill")
 													.secondaryIconColor()
 													.onTapGesture {
@@ -146,6 +146,12 @@ struct AlbumView: View {
 						TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrapped(), showCover: false, showAlbumTrackNumber: true,
 								  showArtist: true, showAlbum: false, playlist: nil,
 								  session: session, player: player)
+					} else {
+						HStack {
+							Text("Couldn't load Album \(viewState.stack.last?.album?.title ?? "").")
+							Spacer()
+						}
+						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 					}
 					Spacer(minLength: 0)
 				}

@@ -281,6 +281,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		)
 		
 		window.makeKeyAndOrderFront(nil)
+		
+		sc.session.helpers.offline.syncAllOfflinePlaylists()
+		
+		// Shouldn't interfere with View State as the view doesn't replace the existing one if it's not New Releases
+		DispatchQueue.global(qos: .background).async(execute: viewState.newReleasesWI)
 	}
 	
 	func applicationWillTerminate(_ aNotification: Notification) {
@@ -621,7 +626,13 @@ func secondsToHoursMinutesSecondsString(seconds: Int) -> String {
 	let formatter = DateComponentsFormatter()
 	formatter.allowedUnits = [.hour, .minute, .second]
 	formatter.unitsStyle = .positional
-
-	return formatter.string(from: TimeInterval(seconds))!
+	
+	var s = formatter.string(from: TimeInterval(seconds))!
+	if s.count == 1 {
+		s = "0:0\(s)"
+	} else if s.count == 2 {
+		s = "0:\(s)"
+	}
+	return s
 }
 

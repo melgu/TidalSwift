@@ -11,6 +11,7 @@ import TidalSwiftLib
 
 final class PlaybackInfo: ObservableObject {
 	@Published var fraction: CGFloat = 0.0
+	@Published var playbackTimeInfo: String = "0:00 / 0:00"
 	@Published var playing: Bool = false
 	@Published var volume: Float = 1.0
 	@Published var shuffle: Bool = false

@@ -32,8 +32,11 @@ class Player {
 		self.session = session
 		self.autoplayAfterAddNow = autoplayAfterAddNow
 		
-		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: nil) { [weak self] time in
-			self?.playbackInfo.fraction = CGFloat(self!.fraction())
+		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: nil) { [weak self] _ in
+			if let s = self {
+				s.playbackInfo.fraction = CGFloat(s.fraction())
+				s.playbackInfo.playbackTimeInfo = s.playbackTimeInfo()
+			}
 		}
 		
 		volumeCancellable = playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: setVolume(to:))
@@ -205,7 +208,7 @@ class Player {
 	}
 	
 	func add(playlist: Playlist, _ when: When) {
-		if let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) {
+		if let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) ?? session.helpers.offline.getTracks(for: playlist) {
 			add(tracks: tracks, when)
 		}
 	}
@@ -217,7 +220,7 @@ class Player {
 	}
 	
 	func add(album: Album, _ when: When) {
-		if let tracks = session.getAlbumTracks(albumId: album.id) {
+		if let tracks = session.getAlbumTracks(albumId: album.id) ?? session.helpers.offline.getTracks(for: album) {
 			add(tracks: tracks, when)
 		}
 	}
@@ -361,6 +364,19 @@ class Player {
 //		print("fraction(): r: \(r), currentTime: \(avPlayer.currentTime().seconds), totalTime: \(totalTime)")
 		
 		return r
+	}
+	
+	func playbackTimeInfo() -> String {
+		guard let totalTime = avPlayer.currentItem?.duration.seconds else {
+			return ""
+		}
+		guard !totalTime.isNaN else {
+			return ""
+		}
+		
+		let currentTimeString = secondsToHoursMinutesSecondsString(seconds: Int(avPlayer.currentTime().seconds))
+		let totalTimeString = secondsToHoursMinutesSecondsString(seconds: Int(totalTime))
+		return "\(currentTimeString) / \(totalTimeString)"
 	}
 	
 	func setVolume(to volume: Float) {

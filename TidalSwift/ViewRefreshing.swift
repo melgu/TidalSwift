@@ -425,7 +425,7 @@ extension ViewState {
 		guard var view = stack.last else {
 			return
 		}
-		guard let artist = self.stack.last!.artist else {
+		guard let artist = self.stack.last?.artist else {
 			view.loadingState = .error
 			self.replaceCurrentView(with: view)
 			return
@@ -448,7 +448,7 @@ extension ViewState {
 				return
 			}
 			
-			guard let artist = self.stack.last!.artist else {
+			guard let artist = self.stack.last?.artist else {
 				view.loadingState = .error
 				self.replaceCurrentView(with: view)
 				return
@@ -489,13 +489,13 @@ extension ViewState {
 		guard var view = stack.last else {
 			return
 		}
-		guard let album = self.stack.last!.album else {
+		guard let album = self.stack.last?.album else {
 			view.loadingState = .error
 			self.replaceCurrentView(with: view)
 			return
 		}
 		
-		view.tracks = cache.albumTracks[album.id]
+		view.tracks = cache.albumTracks[album.id] ?? session.helpers.offline.getTracks(for: album)
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
@@ -508,7 +508,7 @@ extension ViewState {
 				return
 			}
 			
-			guard let album = self.stack.last!.album else {
+			guard let album = self.stack.last?.album else {
 				view.loadingState = .error
 				self.replaceCurrentView(with: view)
 				return
@@ -532,6 +532,7 @@ extension ViewState {
 				self.cache.albumTracks[album.id] = view.tracks
 			} else {
 				view.loadingState = .error
+				view.tracks = self.session.helpers.offline.getTracks(for: album)
 			}
 			self.replaceCurrentView(with: view)
 		}
@@ -543,13 +544,13 @@ extension ViewState {
 		guard var view = stack.last else {
 			return
 		}
-		guard let playlist = self.stack.last!.playlist else {
+		guard let playlist = self.stack.last?.playlist else {
 			view.loadingState = .error
 			self.replaceCurrentView(with: view)
 			return
 		}
 		
-		view.tracks = cache.playlistTracks[playlist.id]
+		view.tracks = cache.playlistTracks[playlist.id] ?? session.helpers.offline.getTracks(for: playlist)
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
@@ -576,6 +577,7 @@ extension ViewState {
 				self.session.helpers.offline.syncPlaylist(playlist)
 			} else {
 				view.loadingState = .error
+				view.tracks = self.session.helpers.offline.getTracks(for: playlist)
 			}
 			
 			self.replaceCurrentView(with: view)

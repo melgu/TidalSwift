@@ -104,7 +104,7 @@ struct ArtistView: View {
 									controller.showWindow(nil)
 							}
 							if t || !t {
-								if artist!.isInFavorites(session: session)! {
+								if artist!.isInFavorites(session: session) ?? true {
 									Image("heart.fill")
 										.secondaryIconColor()
 										.onTapGesture {

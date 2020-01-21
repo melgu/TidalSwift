@@ -61,6 +61,10 @@ struct LoadingSpinner: View {
 				}
 			} else if loadingState == .error {
 				Image("wifi.exclamationmark-big")
+				.toolTip("Your connection appears to be offline")
+					.onTapGesture {
+						self.viewState.refreshCurrentView()
+				}
 			}
 		}
 		.primaryIconColor()

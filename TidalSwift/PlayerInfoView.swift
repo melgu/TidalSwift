@@ -97,6 +97,7 @@ struct PlayerInfoView: View {
 									}
 								}
 							}
+							.toolTip("Shuffle")
 							.onTapGesture {
 								self.playbackInfo.shuffle.toggle()
 							}
@@ -130,9 +131,10 @@ struct PlayerInfoView: View {
 									Image(nsImage: NSImage(named: "repeat")!.tint(color: .controlAccentColor))
 								} else {
 									Image("repeat")
-									.primaryIconColor()
+										.primaryIconColor()
 								}
 							}
+							.toolTip("Repeat")
 							.onTapGesture {
 								self.player.playbackInfo.repeatState = self.player.playbackInfo.repeatState.next()
 								print("Repeat: \(self.player.playbackInfo.repeatState)")
@@ -174,12 +176,14 @@ struct PlayerInfoView: View {
 					DownloadIndicator()
 					Image("quote.bubble")
 						.primaryIconColor()
+						.toolTip("Lyrics")
 						.onTapGesture {
 							unowned let appDelegate = NSApp.delegate as? AppDelegate
 							appDelegate?.lyrics(self)
 					}
 					Image("list.dash")
 						.primaryIconColor()
+						.toolTip("Queue")
 						.onTapGesture {
 							unowned let appDelegate = NSApp.delegate as? AppDelegate
 							appDelegate?.queue(self)
@@ -228,7 +232,8 @@ struct ProgressBar : View {
 			)
 				.background(Color.playbackProgressBarBackground(for: colorScheme))
 				.frame(height: 5)
-				.cornerRadius(3),
+				.cornerRadius(3)
+				.toolTip(self.playbackInfo.playbackTimeInfo),
 				thumb: EmptyView(),
 				configuration: .init(
 					options: .interactiveTrack,

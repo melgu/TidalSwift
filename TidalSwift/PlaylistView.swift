@@ -58,7 +58,7 @@ struct PlaylistView: View {
 											.font(.title)
 											.lineLimit(2)
 										if t || !t {
-											if viewState.stack.last!.playlist!.isInFavorites(session: session)! {
+											if viewState.stack.last!.playlist!.isInFavorites(session: session) ?? true {
 												Image("heart.fill")
 													.secondaryIconColor()
 													.onTapGesture {
@@ -132,6 +132,12 @@ struct PlaylistView: View {
 						TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrapped(), showCover: true, showAlbumTrackNumber: false,
 								  showArtist: true, showAlbum: true, playlist: isUserPlaylist ? viewState.stack.last!.playlist : nil,
 								  session: session, player: player)
+					} else {
+						HStack {
+							Text("Couldn't load Playlist \(viewState.stack.last?.playlist?.title ?? "").")
+							Spacer()
+						}
+						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 					}
 					
 					Spacer(minLength: 0)
