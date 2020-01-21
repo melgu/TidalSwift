@@ -997,7 +997,7 @@ public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
 	func etag(for playlistId: String) -> Int {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
 		let response = Network.get(url: url, parameters: sessionParameters)
-		return response.etag!
+		return response.etag ?? -1
 	}
 	
 	public func addTracks(_ trackIds: [Int], to playlistId: String, duplicate: Bool) -> Bool {

@@ -29,6 +29,11 @@ public class OfflineDB {
 			save()
 		}
 	}
+	var albumTracks: [Album: [Track]] = [:] {
+		didSet {
+			save()
+		}
+	}
 	var playlists: [Playlist] = [] {
 		didSet {
 			save()
@@ -62,6 +67,13 @@ public class OfflineDB {
 				self.albums = []
 			}
 		}
+		if let data = UserDefaults.standard.data(forKey: "OfflineDB:AlbumTracks") {
+			if let temp = try? JSONDecoder().decode([Album: [Track]].self, from: data) {
+				self.albumTracks = temp
+			} else {
+				self.albumTracks = [:]
+			}
+		}
 		if let data = UserDefaults.standard.data(forKey: "OfflineDB:Playlists") {
 			if let temp = try? JSONDecoder().decode([Playlist].self, from: data) {
 				self.playlists = temp
@@ -89,18 +101,22 @@ public class OfflineDB {
 	private func save() {
 		let tracksData = try? JSONEncoder().encode(tracks)
 		UserDefaults.standard.set(tracksData, forKey: "OfflineDB:Tracks")
-		UserDefaults.standard.synchronize()
+		
 		let favoriteTracksData = try? JSONEncoder().encode(favoriteTracks)
 		UserDefaults.standard.set(favoriteTracksData, forKey: "OfflineDB:FavoriteTracks")
-		UserDefaults.standard.synchronize()
+		
 		let albumsData = try? JSONEncoder().encode(albums)
 		UserDefaults.standard.set(albumsData, forKey: "OfflineDB:Albums")
-		UserDefaults.standard.synchronize()
+		
+		let albumTracksData = try? JSONEncoder().encode(albumTracks)
+		UserDefaults.standard.set(albumTracksData, forKey: "OfflineDB:AlbumTracks")
+		
 		let playlistsData = try? JSONEncoder().encode(playlists)
 		UserDefaults.standard.set(playlistsData, forKey: "OfflineDB:Playlists")
-		UserDefaults.standard.synchronize()
+		
 		let playlistTracksData = try? JSONEncoder().encode(playlistTracks)
 		UserDefaults.standard.set(playlistTracksData, forKey: "OfflineDB:PlaylistTracks")
+		
 		UserDefaults.standard.synchronize()
 	}
 }
@@ -488,6 +504,10 @@ public class Offline {
 		return db.albums.contains(album)
 	}
 	
+	public func getTracks(for album: Album) -> [Track]? {
+		return db.albumTracks[album]
+	}
+	
 	// Probably no need to do async, as it's only a single quick call to the Tidal API
 	public func add(album: Album) {
 		if db.albums.contains(album) {
@@ -499,6 +519,7 @@ public class Offline {
 		}
 		db.semaphore.wait()
 		db.albums.append(album)
+		db.albumTracks[album] = tracks
 		db.semaphore.signal()
 		add(tracks: tracks)
 		asyncSync()
@@ -511,6 +532,7 @@ public class Offline {
 		remove(tracks: tracks)
 		db.semaphore.wait()
 		db.albums.removeAll(where: { $0 == album })
+		db.albumTracks[album] = nil
 		db.semaphore.signal()
 		asyncSync()
 	}
@@ -523,6 +545,10 @@ public class Offline {
 	
 	public func isPlaylistOffline(playlist: Playlist) -> Bool {
 		db.playlists.contains(playlist)
+	}
+	
+	public func getTracks(for playlist: Playlist) -> [Track]? {
+		return db.playlistTracks[playlist]
 	}
 	
 	private func syncPlaylists() {
@@ -554,6 +580,7 @@ public class Offline {
 				tracks = playlistTracks
 			} else {
 				displayError(title: "Offline: Error while synchronizing Playlist Tracks", content: "Couldn't load playlist tracks from Tidal API.")
+				db.semaphore.signal() // --- DB Semaphore signal
 				return
 			}
 		} else {
@@ -613,6 +640,7 @@ public class Offline {
 		}
 		if !playlistSyncRunning {
 			syncPlaylistsWI = syncPlaylistsWIBuilder()
+			playlistSyncRunning = true
 			playlistSemaphore.signal()
 			dispatchQueue.async(execute: syncPlaylistsWI!)
 		} else {
@@ -630,7 +658,15 @@ public class Offline {
 	public func remove(playlist: Playlist) {
 		db.semaphore.wait()
 		db.playlists.removeAll(where: { $0 == playlist })
+		db.playlistTracks[playlist] = nil
 		db.semaphore.signal()
 		syncPlaylist(playlist)
+	}
+	
+	// Useful at startup to check for changes in all Offline Playlists
+	public func syncAllOfflinePlaylists() {
+		for playlist in db.playlists {
+			syncPlaylist(playlist)
+		}
 	}
 }

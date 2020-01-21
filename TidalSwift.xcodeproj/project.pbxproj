@@ -39,6 +39,7 @@
 		B04440082305F7390019D0D8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B04440102305F7820019D0D8 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */; };
 		B04F72C823A6CFA200F5897F /* SwiftUIExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = B04F72C723A6CFA200F5897F /* SwiftUIExtensions */; };
+		B0536C5D23D0D3350078EC4A /* Tooltips.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0536C5C23D0D3350078EC4A /* Tooltips.swift */; };
 		B05E18CB23570DF600F96030 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05E18CA23570DF600F96030 /* ViewState.swift */; };
 		B0617B3523C436C600CD59A3 /* OfflineOverviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0617B3423C436C600CD59A3 /* OfflineOverviews.swift */; };
 		B0755F802305F86900CD2387 /* SDAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */; };
@@ -158,6 +159,7 @@
 		B0443FFA2305F7250019D0D8 /* TidalSwiftLibTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TidalSwiftLibTests.swift; sourceTree = "<group>"; };
 		B0443FFC2305F7250019D0D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B04440122305F7C40019D0D8 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		B0536C5C23D0D3350078EC4A /* Tooltips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tooltips.swift; sourceTree = "<group>"; };
 		B05E18CA23570DF600F96030 /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		B0617B3423C436C600CD59A3 /* OfflineOverviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineOverviews.swift; sourceTree = "<group>"; };
 		B073660222E9C5C000758E5E /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitattributes; path = "../../../../../System/Volumes/Data/Users/melvin/Documents/Xcode Projects/TidalSwift/.gitattributes"; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 				B0A85FFC230DE2E3000C4C4E /* VideoPlayerController.swift */,
 				B0A1E2782349EDE900BBC4F0 /* Colors.swift */,
 				B0C3E6A523061FDA006CABED /* LoadingSpinner.swift */,
+				B0536C5C23D0D3350078EC4A /* Tooltips.swift */,
 				B0A67AAC2395DB6700BD3921 /* Pasteboard.swift */,
 				B0E8078F230615AE00E43B5D /* Assets.xcassets */,
 				B03B9AF923A48AE200679A1A /* SF Symbols.xcassets */,
@@ -651,6 +654,7 @@
 				B0C3E6AD23061FDB006CABED /* TrackList.swift in Sources */,
 				B016FAF423575CB200ECE565 /* LoginView.swift in Sources */,
 				B0B6578B23706A7A00729358 /* AccountInfoView.swift in Sources */,
+				B0536C5D23D0D3350078EC4A /* Tooltips.swift in Sources */,
 				B0A1E2792349EDE900BBC4F0 /* Colors.swift in Sources */,
 				B08AB537230ACACA004CBBE8 /* AlbumGrid.swift in Sources */,
 				B0C3E6AE23061FDB006CABED /* PlaylistView.swift in Sources */,
@@ -994,7 +998,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1024,7 +1028,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;

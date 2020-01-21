@@ -110,7 +110,7 @@ struct ArtistContextMenu: View {
 			Divider()
 			Group {
 				if t || !t {
-					if artist.isInFavorites(session: session)! {
+					if artist.isInFavorites(session: session) ?? true {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeArtist(artistId: self.artist.id)

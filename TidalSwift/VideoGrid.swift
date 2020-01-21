@@ -141,7 +141,7 @@ struct VideoContextMenu: View {
 			}
 			Group {
 				if t || !t {
-					if video.isInFavorites(session: session)! {
+					if video.isInFavorites(session: session) ?? true {
 						Button(action: {
 							print("Remove from Favorites")
 							self.session.favorites!.removeVideo(videoId: self.video.id)
