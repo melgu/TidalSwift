@@ -282,7 +282,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		window.makeKeyAndOrderFront(nil)
 		
-		sc.session.helpers.offline.syncAllOfflinePlaylists()
+		sc.session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
 		
 		// Shouldn't interfere with View State as the view doesn't replace the existing one if it's not New Releases
 		DispatchQueue.global(qos: .background).async(execute: viewState.newReleasesWI)

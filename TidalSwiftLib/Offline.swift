@@ -664,9 +664,10 @@ public class Offline {
 	}
 	
 	// Useful at startup to check for changes in all Offline Playlists
-	public func syncAllOfflinePlaylists() {
+	public func syncAllOfflinePlaylistsAndFavoriteTracks() {
 		for playlist in db.playlists {
 			syncPlaylist(playlist)
 		}
+		asyncSyncFavoriteTracks()
 	}
 }
