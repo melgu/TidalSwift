@@ -152,7 +152,8 @@ public class Helpers {
 			downloadStatus.finishTask()
 			return DownloadErrors(affectedAlbums: [album])
 		}
-		let r = download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(album.title.replacingOccurrences(of: "/", with: ":"))")
+		let artistString = album.artists != nil ? "\(album.artists!.formArtistString()) - " : ""
+		let r = download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artistString)\(album.title.replacingOccurrences(of: "/", with: ":"))")
 		downloadStatus.finishTask()
 		return r
 	}
