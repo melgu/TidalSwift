@@ -9,7 +9,7 @@
 import SwiftUI
 import TidalSwiftLib
 import ImageIOSwiftUI
-import SwiftUIExtensions
+import Grid
 
 struct MyMixes: View {
 	let session: Session
