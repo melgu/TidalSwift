@@ -658,7 +658,6 @@ public class Offline {
 	public func remove(playlist: Playlist) {
 		db.semaphore.wait()
 		db.playlists.removeAll(where: { $0 == playlist })
-		db.playlistTracks[playlist] = nil
 		db.semaphore.signal()
 		syncPlaylist(playlist)
 	}
