@@ -11,12 +11,21 @@
         }
       },
       {
-        "package": "SwiftUIExtensions",
-        "repositoryURL": "git@github.com:SwiftExtensions/SwiftUIExtensions.git",
+        "package": "Grid",
+        "repositoryURL": "git@github.com:spacenation/swiftui-grid.git",
         "state": {
           "branch": null,
-          "revision": "04f0bce3e4ff5efb1dbac84d8b9ac74a5e0e2d08",
-          "version": "0.8.0"
+          "revision": "6548e522d0f0bff124c2e2b17720faccf9f35c58",
+          "version": "0.9.5"
+        }
+      },
+      {
+        "package": "Sliders",
+        "repositoryURL": "git@github.com:spacenation/swiftui-sliders.git",
+        "state": {
+          "branch": null,
+          "revision": "c603297cc00da1b2cc797d3af47a3676d8b05ab4",
+          "version": "0.1.0"
         }
       }
     ]

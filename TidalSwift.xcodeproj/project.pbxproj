@@ -38,7 +38,6 @@
 		B0443FFD2305F7250019D0D8 /* TidalSwiftLib.h in Headers */ = {isa = PBXBuildFile; fileRef = B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B04440082305F7390019D0D8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B04440102305F7820019D0D8 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */; };
-		B04F72C823A6CFA200F5897F /* SwiftUIExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = B04F72C723A6CFA200F5897F /* SwiftUIExtensions */; };
 		B0536C5D23D0D3350078EC4A /* Tooltips.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0536C5C23D0D3350078EC4A /* Tooltips.swift */; };
 		B05E18CB23570DF600F96030 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05E18CA23570DF600F96030 /* ViewState.swift */; };
 		B0617B3523C436C600CD59A3 /* OfflineOverviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0617B3423C436C600CD59A3 /* OfflineOverviews.swift */; };
@@ -92,6 +91,8 @@
 		B0E80793230615AE00E43B5D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0E80792230615AE00E43B5D /* Preview Assets.xcassets */; };
 		B0E80796230615AE00E43B5D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E80794230615AE00E43B5D /* Main.storyboard */; };
 		B0E807A2230615AF00E43B5D /* TidalSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E807A1230615AF00E43B5D /* TidalSwiftTests.swift */; };
+		B0F6B242240D86FD00F35C8A /* Grid in Frameworks */ = {isa = PBXBuildFile; productRef = B0F6B241240D86FD00F35C8A /* Grid */; };
+		B0F6B245240D875D00F35C8A /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = B0F6B244240D875D00F35C8A /* Sliders */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -243,9 +244,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B04F72C823A6CFA200F5897F /* SwiftUIExtensions in Frameworks */,
+				B0F6B245240D875D00F35C8A /* Sliders in Frameworks */,
 				B08B819B235F85C3001C35C9 /* TidalSwiftLib.framework in Frameworks */,
 				B09CB16A23751D0700677763 /* ImageIOSwiftUI in Frameworks */,
+				B0F6B242240D86FD00F35C8A /* Grid in Frameworks */,
 				B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -486,7 +488,8 @@
 			name = TidalSwift;
 			packageProductDependencies = (
 				B09CB16923751D0700677763 /* ImageIOSwiftUI */,
-				B04F72C723A6CFA200F5897F /* SwiftUIExtensions */,
+				B0F6B241240D86FD00F35C8A /* Grid */,
+				B0F6B244240D875D00F35C8A /* Sliders */,
 			);
 			productName = TidalSwift;
 			productReference = B0E80789230615AD00E43B5D /* TidalSwift.app */;
@@ -550,7 +553,8 @@
 			mainGroup = B0E582C5223764A400ADAE6C;
 			packageReferences = (
 				B09CB16823751D0700677763 /* XCRemoteSwiftPackageReference "ImageIOSwift" */,
-				B04F72C623A6CFA200F5897F /* XCRemoteSwiftPackageReference "SwiftUIExtensions" */,
+				B0F6B240240D86FD00F35C8A /* XCRemoteSwiftPackageReference "swiftui-grid" */,
+				B0F6B243240D875D00F35C8A /* XCRemoteSwiftPackageReference "swiftui-sliders" */,
 			);
 			productRefGroup = B0E582CF223764A500ADAE6C /* Products */;
 			projectDirPath = "";
@@ -1156,14 +1160,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B04F72C623A6CFA200F5897F /* XCRemoteSwiftPackageReference "SwiftUIExtensions" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:SwiftExtensions/SwiftUIExtensions.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.8.0;
-			};
-		};
 		B09CB16823751D0700677763 /* XCRemoteSwiftPackageReference "ImageIOSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:davbeck/ImageIOSwift.git";
@@ -1172,18 +1168,39 @@
 				minimumVersion = 1.0.2;
 			};
 		};
+		B0F6B240240D86FD00F35C8A /* XCRemoteSwiftPackageReference "swiftui-grid" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:spacenation/swiftui-grid.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.5;
+			};
+		};
+		B0F6B243240D875D00F35C8A /* XCRemoteSwiftPackageReference "swiftui-sliders" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:spacenation/swiftui-sliders.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B04F72C723A6CFA200F5897F /* SwiftUIExtensions */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B04F72C623A6CFA200F5897F /* XCRemoteSwiftPackageReference "SwiftUIExtensions" */;
-			productName = SwiftUIExtensions;
-		};
 		B09CB16923751D0700677763 /* ImageIOSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B09CB16823751D0700677763 /* XCRemoteSwiftPackageReference "ImageIOSwift" */;
 			productName = ImageIOSwiftUI;
+		};
+		B0F6B241240D86FD00F35C8A /* Grid */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0F6B240240D86FD00F35C8A /* XCRemoteSwiftPackageReference "swiftui-grid" */;
+			productName = Grid;
+		};
+		B0F6B244240D875D00F35C8A /* Sliders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0F6B243240D875D00F35C8A /* XCRemoteSwiftPackageReference "swiftui-sliders" */;
+			productName = Sliders;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
