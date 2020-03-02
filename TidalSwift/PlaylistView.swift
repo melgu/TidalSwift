@@ -134,10 +134,8 @@ struct PlaylistView: View {
 								  session: session, player: player)
 					} else {
 						HStack {
-							Text("Couldn't load Playlist \(viewState.stack.last?.playlist?.title ?? "").")
 							Spacer()
 						}
-						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 					}
 					
 					Spacer(minLength: 0)
