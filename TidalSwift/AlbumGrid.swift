@@ -134,7 +134,7 @@ struct AlbumGridItem: View {
 			}
 		}
 		.padding(5)
-		.toolTip("\(album.title)\(album.artists != nil ? " - \(album.artists!.formArtistString())" : "")")
+		.toolTip("\(album.title)\(album.artists != nil ? " – \(album.artists!.formArtistString())" : "")")
 		.onTapGesture(count: 2) {
 			print("Second Click. \(self.album.title)")
 			self.player.add(album: self.album, .now)

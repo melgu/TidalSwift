@@ -33,6 +33,7 @@ struct PlayerInfoView: View {
 									)
 										.frame(width: 30, height: 30)
 										.cornerRadius(CORNERRADIUS)
+										.toolTip("Show cover in new window")
 										.onTapGesture {
 											print("Big Cover")
 											let trackTitle = self.queueInfo.queue[self.queueInfo.currentIndex].track.title
@@ -56,18 +57,24 @@ struct PlayerInfoView: View {
 								
 								VStack(alignment: .leading) {
 									HStack {
-										Text(self.queueInfo.queue[self.queueInfo.currentIndex].track.title)
+										Text("\(self.queueInfo.queue[self.queueInfo.currentIndex].track.title)")
+										if self.queueInfo.queue[self.queueInfo.currentIndex].track.version != nil {
+											Text("(\(self.queueInfo.queue[self.queueInfo.currentIndex].track.version!))")
+												.foregroundColor(.secondary)
+												.padding(.leading, -5)
+												.layoutPriority(-1)
+										}
 										Text(self.player.currentQualityString())
 											.fontWeight(.light)
 											.foregroundColor(.orange)
 										Text(self.player.maxQualityString())
 											.fontWeight(.light)
 											.foregroundColor(.secondary)
-										
-										
 									}
+									.toolTip("\(self.queueInfo.queue[self.queueInfo.currentIndex].track.title)\(self.queueInfo.queue[self.queueInfo.currentIndex].track.version != nil ? " (\(self.queueInfo.queue[self.queueInfo.currentIndex].track.version!))" : "")")
 									Text("\(self.queueInfo.queue[self.queueInfo.currentIndex].track.artists.formArtistString()) – \(self.queueInfo.queue[self.queueInfo.currentIndex].track.album.title)")
 										.foregroundColor(.secondary)
+									.toolTip("\(self.queueInfo.queue[self.queueInfo.currentIndex].track.artists.formArtistString()) – \(self.queueInfo.queue[self.queueInfo.currentIndex].track.album.title)")
 								}
 								Spacer()
 									.layoutPriority(-1)
