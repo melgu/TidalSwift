@@ -75,6 +75,7 @@ struct ArtistView: View {
 							.frame(width: 100, height: 100)
 							.cornerRadius(CORNERRADIUS)
 							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+							.toolTip("Show image in new window")
 							.onTapGesture {
 								let controller = CoverWindowController(rootView:
 									URLImageSourceView(
@@ -94,7 +95,8 @@ struct ArtistView: View {
 								.font(.title)
 								.lineLimit(2)
 							Image("info.circle")
-								.secondaryIconColor()
+								.primaryIconColor()
+								.toolTip("Artist Bio")
 								.onTapGesture {
 									let controller = ResizableWindowController(rootView:
 										ArtistBioView(session: self.session, artist: self.artist!)
@@ -106,7 +108,7 @@ struct ArtistView: View {
 							if t || !t {
 								if artist!.isInFavorites(session: session) ?? true {
 									Image("heart.fill")
-										.secondaryIconColor()
+										.primaryIconColor()
 										.onTapGesture {
 											print("Remove from Favorites")
 											self.session.favorites!.removeArtist(artistId: self.artist!.id)
@@ -114,7 +116,7 @@ struct ArtistView: View {
 									}
 								} else {
 									Image("heart")
-										.secondaryIconColor()
+										.primaryIconColor()
 										.onTapGesture {
 											print("Add to Favorites")
 											self.session.favorites!.addArtist(artistId: self.artist!.id)
@@ -124,7 +126,8 @@ struct ArtistView: View {
 							}
 							if artist!.url != nil {
 								Image("square.and.arrow.up")
-									.secondaryIconColor()
+									.primaryIconColor()
+									.toolTip("Copy URL")
 									.onTapGesture {
 										Pasteboard.copy(string: self.artist!.url!.absoluteString)
 								}

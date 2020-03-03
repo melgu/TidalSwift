@@ -155,7 +155,7 @@ struct TrackRow: View {
 						Image("cloud.fill")
 							.secondaryIconColor()
 					}
-					Image("info.circle")
+					Image("c.circle")
 						.primaryIconColor()
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:

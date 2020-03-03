@@ -163,7 +163,6 @@ struct PlayerInfoView: View {
 							HTrack(
 								value: self.playbackInfo.volume,
 								view: Rectangle()
-									.foregroundColor(.black)
 									.foregroundColor(.secondary)
 									.frame(height: 4)
 							)

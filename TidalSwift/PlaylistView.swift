@@ -40,6 +40,7 @@ struct PlaylistView: View {
 									.clipped()
 									.cornerRadius(CORNERRADIUS)
 									.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+									.toolTip("Show image in new window")
 									.onTapGesture {
 										let controller = CoverWindowController(rootView:
 											URLImageSourceView(
@@ -60,7 +61,7 @@ struct PlaylistView: View {
 										if t || !t {
 											if viewState.stack.last!.playlist!.isInFavorites(session: session) ?? true {
 												Image("heart.fill")
-													.secondaryIconColor()
+													.primaryIconColor()
 													.onTapGesture {
 														print("Remove from Favorites")
 														self.session.favorites!.removePlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
@@ -68,7 +69,7 @@ struct PlaylistView: View {
 												}
 											} else {
 												Image("heart")
-													.secondaryIconColor()
+													.primaryIconColor()
 													.onTapGesture {
 														print("Add to Favorites")
 														self.session.favorites!.addPlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
@@ -77,7 +78,7 @@ struct PlaylistView: View {
 											}
 										}
 										Image("square.and.arrow.up")
-											.secondaryIconColor()
+											.primaryIconColor()
 											.onTapGesture {
 												Pasteboard.copy(string: self.viewState.stack.last!.playlist!.url.absoluteString)
 										}

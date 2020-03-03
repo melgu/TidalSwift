@@ -225,7 +225,7 @@ struct PlaylistContextMenu: View {
 					print("Share Playlist")
 					Pasteboard.copy(string: self.playlist.url.absoluteString)
 				}) {
-					Text("Share")
+					Text("Copy URL")
 				}
 			}
 		}

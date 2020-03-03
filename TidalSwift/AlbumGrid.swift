@@ -294,7 +294,7 @@ struct AlbumContextMenu: View {
 							print("Share")
 							Pasteboard.copy(string: self.album.url!.absoluteString)
 						}) {
-							Text("Share")
+							Text("Copy URL")
 						}
 					}
 				}
