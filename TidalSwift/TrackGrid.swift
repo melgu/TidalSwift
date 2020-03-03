@@ -229,7 +229,7 @@ struct TrackContextMenu: View {
 						print("Share Track")
 						Pasteboard.copy(string: self.track.url.absoluteString)
 					}) {
-						Text("Share")
+						Text("Copy URL")
 					}
 				}
 			}

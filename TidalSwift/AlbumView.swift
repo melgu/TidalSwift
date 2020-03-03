@@ -34,6 +34,7 @@ struct AlbumView: View {
 									.frame(width: 100, height: 100)
 									.cornerRadius(CORNERRADIUS)
 									.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+									.toolTip("Show cover in new window")
 									.onTapGesture {
 										let controller = CoverWindowController(rootView:
 											URLImageSourceView(
@@ -50,12 +51,15 @@ struct AlbumView: View {
 									HStack {
 										Text(viewState.stack.last!.album!.title)
 											.font(.title)
-											.lineLimit(2)
-										viewState.stack.last!.album!.attributeHStack
-											.padding(.leading, -5)
-											.layoutPriority(1)
-										Image("info.circle")
-											.secondaryIconColor()
+											.lineLimit(1)
+											.toolTip(viewState.stack.last!.album!.title)
+										if viewState.stack.last!.album!.hasAttributes {
+											viewState.stack.last!.album!.attributeHStack
+												.padding(.leading, -5)
+										}
+										Image("c.circle")
+											.primaryIconColor()
+											.toolTip("Credits")
 											.onTapGesture {
 												let controller = ResizableWindowController(rootView:
 													CreditsView(session: self.session, album: self.viewState.stack.last!.album!)
@@ -67,7 +71,7 @@ struct AlbumView: View {
 										if t || !t {
 											if viewState.stack.last!.album!.isInFavorites(session: session) ?? true {
 												Image("heart.fill")
-													.secondaryIconColor()
+													.primaryIconColor()
 													.onTapGesture {
 														print("Remove from Favorites")
 														self.session.favorites!.removeAlbum(albumId: self.viewState.stack.last!.album!.id)
@@ -75,7 +79,7 @@ struct AlbumView: View {
 												}
 											} else {
 												Image("heart")
-													.secondaryIconColor()
+													.primaryIconColor()
 													.onTapGesture {
 														print("Add to Favorites")
 														self.session.favorites!.addAlbum(albumId: self.viewState.stack.last!.album!.id)
@@ -85,7 +89,8 @@ struct AlbumView: View {
 										}
 										if viewState.stack.last!.album!.url != nil {
 											Image("square.and.arrow.up")
-												.secondaryIconColor()
+												.primaryIconColor()
+												.toolTip("Copy URL")
 												.onTapGesture {
 													Pasteboard.copy(string: self.viewState.stack.last!.album!.url!.absoluteString)
 											}

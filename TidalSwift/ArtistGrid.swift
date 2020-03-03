@@ -189,7 +189,7 @@ struct ArtistContextMenu: View {
 						print("Share Artist")
 						Pasteboard.copy(string: self.artist.url!.absoluteString)
 					}) {
-						Text("Share")
+						Text("Copy URL")
 					}
 				}
 			}
