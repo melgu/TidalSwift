@@ -64,6 +64,7 @@ struct ArtistGridItem: View {
 				.frame(width: 160)
 		}
 		.padding(5)
+		.toolTip(artist.name)
 		.onTapGesture(count: 2) {
 			print("\(self.artist.name)")
 			self.player.add(artist: self.artist, .now)
