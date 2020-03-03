@@ -129,12 +129,14 @@ struct TrackRow: View {
 						Spacer(minLength: 5)
 					}
 					.frame(width: metrics.size.width * self.widthFactorTrack)
+					.toolTip(self.track.title)
 					if self.showArtist {
 						HStack {
 							Text(self.track.artists.formArtistString())
 							Spacer(minLength: 5)
 						}
 						.frame(width: metrics.size.width * self.widthFactorArtist)
+						.toolTip(self.track.artists.formArtistString())
 					}
 					if self.showAlbum {
 						HStack {
@@ -142,6 +144,7 @@ struct TrackRow: View {
 							Spacer(minLength: 5)
 						}
 						.frame(width: metrics.size.width * self.widthFactorAlbum)
+						.toolTip(self.track.album.title)
 					}
 				}
 				Group {
