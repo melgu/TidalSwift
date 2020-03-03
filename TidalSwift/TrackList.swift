@@ -122,6 +122,7 @@ struct TrackRow: View {
 							Text("(\(self.track.version!))")
 								.foregroundColor(.secondary)
 								.padding(.leading, -5)
+								.layoutPriority(-1)
 						}
 						self.track.attributeHStack
 							.padding(.leading, -5)
@@ -129,7 +130,7 @@ struct TrackRow: View {
 						Spacer(minLength: 5)
 					}
 					.frame(width: metrics.size.width * self.widthFactorTrack)
-					.toolTip(self.track.title)
+					.toolTip("\(self.track.title)\(self.track.version != nil ? " (\(self.track.version!))" : "")")
 					if self.showArtist {
 						HStack {
 							Text(self.track.artists.formArtistString())

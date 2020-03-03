@@ -61,7 +61,7 @@ struct TrackGridItem: View {
 			}
 		}
 		.padding(5)
-		.toolTip("\(track.title) - \(track.artists.formArtistString())")
+		.toolTip("\(track.title)\(track.version != nil ? " (\(track.version!))" : "") – \(track.artists.formArtistString())")
 		.onTapGesture(count: 2) {
 			print("\(self.track.title)")
 			self.player.add(track: self.track, .now)

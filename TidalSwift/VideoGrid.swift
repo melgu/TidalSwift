@@ -80,7 +80,7 @@ struct VideoGridItem: View {
 			}
 		}
 		.padding(5)
-		.toolTip("\(video.title) - \(video.artists.formArtistString())")
+		.toolTip("\(video.title) – \(video.artists.formArtistString())")
 		.onTapGesture(count: 2) {
 			print("Play Video: \(self.video.title)")
 			guard let url = self.video.getVideoUrl(session: self.session) else {
