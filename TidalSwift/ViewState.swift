@@ -74,6 +74,14 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 			&& lhs.album == rhs.album && lhs.playlist == rhs.playlist
 			&& lhs.mix == rhs.mix
 	}
+	
+	func isBase() -> Bool {
+		return viewType == .newReleases || viewType == .myMixes
+			|| viewType == .favoriteArtists || viewType == .favoriteAlbums
+			|| viewType == .favoritePlaylists || viewType == .favoriteTracks
+			|| viewType == .favoriteVideos || viewType == .offlineAlbums
+			|| viewType == .offlinePlaylists || viewType == .offlineTracks
+	}
 }
 
 final class ViewState: ObservableObject {
@@ -94,7 +102,7 @@ final class ViewState: ObservableObject {
 	}
 	
 	func push(view: TidalSwiftView) {
-		workItem?.cancel() // Cancel background operation, so no newer View is replaced, if switching views faster than background operation finishes.
+		workItem?.cancel() // Cancel background operation, so no newer View is replaced, if switching views before background operation finishes.
 		stack.append(view)
 		if view.viewType != .search {
 			addToHistory(view)
