@@ -68,6 +68,9 @@ struct ViewHistoryViewRow: View {
 	var body: some View {
 		Text(text)
 			.onTapGesture(count: 2) {
+				if self.view.isBase() {
+					self.viewState.clearStack()
+				}
 				self.viewState.push(view: self.view)
 		}
 	}

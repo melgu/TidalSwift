@@ -73,7 +73,11 @@ extension ViewState {
 			if self.stack.last!.id == view.id {
 				self.stack[self.stack.count-1] = view
 				if !self.history.isEmpty {
-					self.history[self.history.count-1] = view
+					if self.history.last!.id == view.id {
+						self.history[self.history.count-1] = view
+					} else {
+						self.addToHistory(view)
+					}
 				}
 			} else {
 				print("replaceCurrentView(): Fetched View \(view.viewType.rawValue) is completely different View, so it's not replaced")
