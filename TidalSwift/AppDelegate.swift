@@ -579,7 +579,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	@IBAction func clearQueue(_ sender: Any) {
-		sc.player.clearQueueForward()
+		sc.player.clearQueue(leavingCurrent: true)
 	}
 	
 	// MARK: - Account

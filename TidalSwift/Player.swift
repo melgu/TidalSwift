@@ -332,20 +332,21 @@ class Player {
 		}
 	}
 	
-	func clearQueue() {
-		avPlayer.pause()
-		queueInfo.currentIndex = 0
-		avPlayer.replaceCurrentItem(with: nil)
-		queueInfo.queue.removeAll()
-		queueInfo.nonShuffledQueue.removeAll()
-		
-		playbackInfo.playing = false
-	}
-	
-	// Clear only items following the current one
-	func clearQueueForward() {
-		queueInfo.queue.removeLast(queueCount() - queueInfo.currentIndex - 1)
-		queueInfo.nonShuffledQueue = queueInfo.queue
+	func clearQueue(leavingCurrent: Bool = false) {
+		if leavingCurrent {
+			queueInfo.queue.removeFirst(queueInfo.currentIndex)
+			queueInfo.queue.removeLast(queueCount() - 1)
+			queueInfo.currentIndex = 0
+			queueInfo.nonShuffledQueue = queueInfo.queue
+			queueInfo.assignQueueIndices()
+		} else {
+			avPlayer.pause()
+			playbackInfo.playing = false
+			queueInfo.currentIndex = 0
+			avPlayer.replaceCurrentItem(with: nil)
+			queueInfo.queue.removeAll()
+			queueInfo.nonShuffledQueue.removeAll()
+		}
 	}
 	
 	func queueCount() -> Int {
