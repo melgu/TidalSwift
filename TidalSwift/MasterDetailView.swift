@@ -86,9 +86,9 @@ struct SearchField: View {
 		TextField("Search", text: $searchTerm, onCommit: {
 			print("Search Commit: \(self.searchTerm)")
 			self.viewState.searchTerm = self.searchTerm
-			self.selection = .search
-//			unowned let window = (NSApp.delegate as? AppDelegate)?.window
-//			window?.makeFirstResponder(window?.initialFirstResponder)
+			if !self.searchTerm.isEmpty {
+				self.selection = .search
+			}
 		})
 			.textFieldStyle(RoundedBorderTextFieldStyle())
 	}
