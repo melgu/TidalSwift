@@ -20,7 +20,7 @@ extension Array {
 
 // MARK: - Artist
 
-public enum ArtistSorting {
+public enum ArtistSorting: Int, Codable {
 	case dateAdded // to Favorites
 	case name
 	case popularity
@@ -44,7 +44,7 @@ extension Array where Element == Artist {
 
 // MARK: - Album
 
-public enum AlbumSorting {
+public enum AlbumSorting: Int, Codable {
 	case dateAdded // to Favorites
 	case title
 	case artists // Optional
@@ -86,7 +86,7 @@ extension Array where Element == Album {
 
 // MARK: - Playlist
 
-public enum PlaylistSorting {
+public enum PlaylistSorting: Int, Codable {
 	case dateAdded // to Favorites
 	case title
 	case lastUpdated
@@ -146,7 +146,7 @@ extension Array where Element == Playlist {
 
 // MARK: - Track
 
-public enum TrackSorting {
+public enum TrackSorting: Int, Codable {
 	case dateAdded // to Favorites
 	case title
 	case artists
@@ -194,7 +194,7 @@ extension Array where Element == Track {
 
 // MARK: - Video
 
-public enum VideoSorting {
+public enum VideoSorting: Int, Codable {
 	case dateAdded // to Favorites
 	case title
 	case artists
