@@ -264,7 +264,7 @@ extension ViewState {
 				return
 			}
 			
-			let t = favoriteArtists2Artists(favA)
+			let t = favA.unwrapped()
 			
 			view.artists = t
 			view.loadingState = .successful
@@ -301,7 +301,7 @@ extension ViewState {
 				return
 			}
 			
-			let t = favoriteAlbums2Albums(favA)
+			let t = favA.unwrapped()
 			
 			view.albums = t
 			view.loadingState = .successful
@@ -338,7 +338,7 @@ extension ViewState {
 				return
 			}
 			
-			let t = favoritePlaylists2Playlists(favP)
+			let t = favP.unwrapped()
 			
 			view.playlists = t
 			view.loadingState = .successful
@@ -375,7 +375,7 @@ extension ViewState {
 				return
 			}
 			
-			let t = favoriteTracks2Tracks(favT)
+			let t = favT.unwrapped()
 			
 			view.tracks = t
 			view.loadingState = .successful
@@ -413,7 +413,7 @@ extension ViewState {
 				return
 			}
 			
-			let t = favoriteVideos2Videos(favV)
+			let t = favV.unwrapped()
 			
 			view.videos = t
 			view.loadingState = .successful
