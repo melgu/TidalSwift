@@ -18,6 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	var sc: SessionContainer
 	var viewState: ViewState
+	var favoritesSortingState: FavoritesSortingState
 	var playlistEditingValues = PlaylistEditingValues()
 	
 	// Login
@@ -54,6 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 		
 		viewState = ViewState(session: session, cache: cache)
+		favoritesSortingState = FavoritesSortingState()
 		
 		// Init Secondary Windows (cannot use method func because self is not initialized yet
 		lyricsViewController = ResizableWindowController(rootView:
@@ -169,23 +171,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		if loggedIn {
 			// Retrieve Playback State
 			if let data = UserDefaults.standard.data(forKey: "PlaybackInfo") {
-				if let tempPI = try? JSONDecoder().decode(CodablePlaybackInfo.self, from: data) {
+				if let codablePI = try? JSONDecoder().decode(CodablePlaybackInfo.self, from: data) {
 					// PlaybackInfo
-					sc.player.playbackInfo.volume = tempPI.volume
-					sc.player.playbackInfo.shuffle = tempPI.shuffle
-					sc.player.playbackInfo.repeatState = tempPI.repeatState
+					sc.player.playbackInfo.volume = codablePI.volume
+					sc.player.playbackInfo.shuffle = codablePI.shuffle
+					sc.player.playbackInfo.repeatState = codablePI.repeatState
 					
 					// QueueInfo
-					sc.player.queueInfo.nonShuffledQueue = tempPI.nonShuffledQueue
-					sc.player.queueInfo.queue = tempPI.queue
-					sc.player.queueInfo.history = tempPI.history
-					sc.player.queueInfo.maxHistoryItems = tempPI.maxHistoryItems
+					sc.player.queueInfo.nonShuffledQueue = codablePI.nonShuffledQueue
+					sc.player.queueInfo.queue = codablePI.queue
+					sc.player.queueInfo.history = codablePI.history
+					sc.player.queueInfo.maxHistoryItems = codablePI.maxHistoryItems
 					
-					sc.player.play(atIndex: tempPI.currentIndex)
+					sc.player.play(atIndex: codablePI.currentIndex)
 					sc.player.pause()
 					// TODO: Seeking at this point doesn't work. Why?
-//					player.seek(to: Double(tempPI.fraction))
-//					print("Wanted: \(Double(tempPI.fraction)), Actual: \(player.playbackInfo.fraction)")
+//					player.seek(to: Double(codablePI.fraction))
+//					print("Wanted: \(Double(codablePI.fraction)), Actual: \(player.playbackInfo.fraction)")
+				}
+			}
+			if let data = UserDefaults.standard.data(forKey: "FavoritesSortingState") {
+				if let codableFSS = try? JSONDecoder().decode(CodableFavoritesSortingState.self, from: data) {
+					favoritesSortingState.playlistSorting = codableFSS.playlistSorting
+					favoritesSortingState.playlistReversed = codableFSS.playlistReversed
+					favoritesSortingState.albumSorting = codableFSS.albumSorting
+					favoritesSortingState.albumReversed = codableFSS.albumReversed
+					favoritesSortingState.trackSorting = codableFSS.trackSorting
+					favoritesSortingState.trackReversed = codableFSS.trackReversed
+					favoritesSortingState.videoSorting = codableFSS.videoSorting
+					favoritesSortingState.videoReversed = codableFSS.videoReversed
+					favoritesSortingState.artistSorting = codableFSS.artistSorting
+					favoritesSortingState.artistReversed = codableFSS.artistReversed
 				}
 			}
 			
@@ -219,7 +235,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //			return event
 //		}
 		
-		// Combine Stuff
+		// MARK: Combine Stuff
+		
 		playingCancellable = sc.player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
 		shuffleCancellable = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
 			self.shuffleState(enabled: $0)
@@ -238,9 +255,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		})
 		
 		viewStackCancellable = viewState.$stack.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			print("Save: ViewState")
+//			print("Save: ViewState")
 			self.saveViewStateOnNextTick = true
 		})
+		
+		// TODO: receiveValue also for changes in favoritesSortingState
 		
 		// State Persisting
 		timerCancellable = Timer.publish(every: 10, on: .main, in: .default)
@@ -248,14 +267,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			.sink { [unowned self] _ in
 				if self.savePlaybackInfoOnNextTick {
 					self.savePlaybackInfoOnNextTick = false
-					print("savePlaybackState()")
+//					print("savePlaybackState()")
 					DispatchQueue.global(qos: .background).async {
 						self.savePlaybackState()
 					}
 				}
 				if self.saveViewStateOnNextTick {
 					self.saveViewStateOnNextTick = false
-					print("saveViewStateSync()")
+//					print("saveViewStateSync()")
 					DispatchQueue.global(qos: .background).async {
 						self.saveViewState()
 					}
@@ -276,6 +295,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			ContentView()
 				.environmentObject(sc)
 				.environmentObject(viewState)
+				.environmentObject(favoritesSortingState)
 				.environmentObject(loginInfo)
 				.environmentObject(playlistEditingValues)
 		)
@@ -323,6 +343,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		UserDefaults.standard.synchronize()
 	}
 	
+	func saveFavoritesSortingState() {
+		let codableFSS = CodableFavoritesSortingState(playlistSorting: favoritesSortingState.playlistSorting,
+													  playlistReversed: favoritesSortingState.playlistReversed,
+													  albumSorting: favoritesSortingState.albumSorting,
+													  albumReversed: favoritesSortingState.albumReversed,
+													  trackSorting: favoritesSortingState.trackSorting,
+													  trackReversed: favoritesSortingState.trackReversed,
+													  videoSorting: favoritesSortingState.videoSorting,
+													  videoReversed: favoritesSortingState.videoReversed,
+													  artistSorting: favoritesSortingState.artistSorting,
+													  artistReversed: favoritesSortingState.artistReversed)
+		let codableFSSData = try? JSONEncoder().encode(codableFSS)
+		UserDefaults.standard.set(codableFSSData, forKey: "FavoritesSortingState")
+		
+		UserDefaults.standard.synchronize()
+	}
+	
 	func saveViewCache() {
 		// View Cache
 		let viewCacheData = try? JSONEncoder().encode(viewState.cache)
@@ -335,6 +372,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		savePlaybackState()
 		saveViewState()
 		saveViewCache()
+		saveFavoritesSortingState()
 	}
 	
 	func closeModals() {
