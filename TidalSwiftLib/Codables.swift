@@ -85,6 +85,8 @@ struct Videos: Decodable {
 	let items: [Video]
 }
 
+// MARK: Artist
+
 public enum ArtistType: String, Codable {
 	case artist = "ARTIST"
 	case contributor = "CONTRIBUTOR"
@@ -145,6 +147,8 @@ public struct ArtistBio: Decodable {
 		return DateFormatter.dateOnly.string(from: lastUpdated)
 	}
 }
+
+// MARK: Album
 
 public enum AudioMode: String, Codable {
 	case stereo = "STEREO"
@@ -232,6 +236,8 @@ public struct Contributor: Decodable {
 	public let id: Int?
 	public let name: String
 }
+
+// MARK: Playlist
 
 public enum PlaylistType: String, Codable {
 	case user = "USER"
@@ -339,6 +345,8 @@ public struct PlaylistCreator: Codable {
 	}
 }
 
+// MARK: Track
+
 public struct Track: Codable, Equatable, Identifiable, Hashable {
 	public let id: Int
 	public let title: String
@@ -400,6 +408,8 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		hasher.combine(id)
 	}
 }
+
+// MARK: Video
 
 public struct Video: Codable, Equatable, Identifiable, Hashable {
 	public let id: Int

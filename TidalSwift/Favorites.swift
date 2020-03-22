@@ -9,11 +9,34 @@
 import SwiftUI
 import TidalSwiftLib
 
+let PICKERWIDTH: CGFloat = 450
+
+struct ReverseButton: View {
+	@Binding var reversed: Bool
+	
+	var body: some View {
+		Button(action: {
+			self.reversed.toggle()
+		}) {
+			if reversed {
+//				Text("∧")
+				Image("arrow.down")
+			} else {
+//				Text("∨")
+				Image("arrow.up")
+			}
+		}
+	}
+}
+
 struct FavoritePlaylists: View {
 	let session: Session
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	
+	@State var sorting: PlaylistSorting = .title
+	@State var reversed: Bool = false
 	
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -22,29 +45,28 @@ struct FavoritePlaylists: View {
 					.font(.largeTitle)
 				Spacer()
 				LoadingSpinner()
+				Picker(selection: $sorting, label: Spacer(minLength: 0)) {
+					Text("Added").tag(PlaylistSorting.dateAdded)
+					Text("Title").tag(PlaylistSorting.title)
+					Text("Last Updated").tag(PlaylistSorting.lastUpdated)
+					Text("Created").tag(PlaylistSorting.created)
+//					Text("Track Number").tag(PlaylistSorting.numberOfTracks)
+//					Text("Duration").tag(PlaylistSorting.duration)
+					Text("Type").tag(PlaylistSorting.type)
+//					Text("Creator").tag(PlaylistSorting.creator)
+				}
+				.pickerStyle(SegmentedPickerStyle())
+				.frame(width: PICKERWIDTH)
+				ReverseButton(reversed: $reversed)
 			}
 			.padding(.horizontal)
 			
 			if viewState.stack.last?.playlists != nil {
-				PlaylistGrid(playlists: viewState.stack.last!.playlists!, session: session, player: player)
+				PlaylistGrid(playlists: viewState.stack.last!.playlists!.sortedPlaylists(by: sorting).reversed(reversed), session: session, player: player)
 			}
 			Spacer(minLength: 0)
 		}
 	}
-}
-
-func favoritePlaylists2Playlists(_ favoritePlaylists: [FavoritePlaylist]) -> [Playlist] {
-	let tempPlaylists = favoritePlaylists.map { $0.playlist }
-	
-	// Playlists can appear as userCreated and userFavorited
-	// Only keep one
-	var resultArray: [Playlist] = []
-	for playlist in tempPlaylists {
-		if !resultArray.contains(playlist) {
-			resultArray.append(playlist)
-		}
-	}
-	return resultArray
 }
 
 struct FavoriteAlbums: View {
@@ -53,6 +75,9 @@ struct FavoriteAlbums: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	
+	@State var sorting: AlbumSorting = .title
+	@State var reversed: Bool = false
+	
 	var body: some View {
 		VStack(alignment: .leading) {
 			HStack {
@@ -60,19 +85,26 @@ struct FavoriteAlbums: View {
 					.font(.largeTitle)
 				Spacer()
 				LoadingSpinner()
+				Picker(selection: $sorting, label: Spacer(minLength: 0)) {
+					Text("Added").tag(AlbumSorting.dateAdded)
+					Text("Title").tag(AlbumSorting.title)
+					Text("Artists").tag(AlbumSorting.artists)
+					Text("Release Date").tag(AlbumSorting.releaseDate)
+					Text("Duration").tag(AlbumSorting.duration)
+					Text("Popularity").tag(AlbumSorting.popularity)
+				}
+				.pickerStyle(SegmentedPickerStyle())
+				.frame(width: PICKERWIDTH)
+				ReverseButton(reversed: $reversed)
 			}
 			.padding(.horizontal)
 			
 			if viewState.stack.last!.albums != nil {
-				AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, session: session, player: player)
+				AlbumGrid(albums: viewState.stack.last!.albums!.sortedAlbums(by: sorting).reversed(reversed), showArtists: true, session: session, player: player)
 			}
 			Spacer(minLength: 0)
 		}
 	}
-}
-
-func favoriteAlbums2Albums(_ favoriteAlbums: [FavoriteAlbum]) -> [Album] {
-	favoriteAlbums.map { $0.item }
 }
 
 struct FavoriteTracks: View {
@@ -80,6 +112,9 @@ struct FavoriteTracks: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	
+	@State var sorting: TrackSorting = .title
+	@State var reversed: Bool = false
 	
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -107,12 +142,25 @@ struct FavoriteTracks: View {
 							self.viewState.refreshCurrentView()
 					}
 				}
+				Picker(selection: $sorting, label: Spacer(minLength: 0)) {
+					Text("Added").tag(TrackSorting.dateAdded)
+					Text("Title").tag(TrackSorting.title)
+					Text("Artists").tag(TrackSorting.artists)
+					Text("Album").tag(TrackSorting.album)
+					Text("Release Date").tag(TrackSorting.albumReleaseDate)
+//					Text("Duration").tag(TrackSorting.duration)
+					Text("Popularity").tag(TrackSorting.popularity)
+				}
+				.pickerStyle(SegmentedPickerStyle())
+				.frame(width: PICKERWIDTH)
+				ReverseButton(reversed: $reversed)
 			}
 			.padding(.horizontal)
 			
 			if viewState.stack.last?.tracks != nil {
 				ScrollView {
-					TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrapped(), showCover: true, showAlbumTrackNumber: false,
+					TrackList(wrappedTracks: viewState.stack.last!.tracks!.sortedTracks(by: sorting).reversed(reversed).wrapped(),
+							  showCover: true, showAlbumTrackNumber: false,
 							  showArtist: true, showAlbum: true, playlist: nil,
 							  session: session, player: player)
 				}
@@ -122,15 +170,14 @@ struct FavoriteTracks: View {
 	}
 }
 
-func favoriteTracks2Tracks(_ favoriteTracks: [FavoriteTrack]) -> [Track] {
-	favoriteTracks.map { $0.item }
-}
-
 struct FavoriteVideos: View {
 	let session: Session
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	
+	@State var sorting: VideoSorting = .title
+	@State var reversed: Bool = false
 	
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -139,6 +186,17 @@ struct FavoriteVideos: View {
 					.font(.largeTitle)
 				Spacer()
 				LoadingSpinner()
+				Picker(selection: $sorting, label: Spacer(minLength: 0)) {
+					Text("Added").tag(VideoSorting.dateAdded)
+					Text("Title").tag(VideoSorting.title)
+					Text("Artists").tag(VideoSorting.artists)
+					Text("Release Date").tag(VideoSorting.releaseDate)
+					Text("Duration").tag(VideoSorting.duration)
+					Text("Popularity").tag(VideoSorting.popularity)
+				}
+				.pickerStyle(SegmentedPickerStyle())
+				.frame(width: PICKERWIDTH)
+				ReverseButton(reversed: $reversed)
 			}
 			.padding(.horizontal)
 			
@@ -151,15 +209,14 @@ struct FavoriteVideos: View {
 	}
 }
 
-func favoriteVideos2Videos(_ favoriteVideos: [FavoriteVideo]) -> [Video] {
-	favoriteVideos.map { $0.item }
-}
-
 struct FavoriteArtists: View {
 	let session: Session
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	
+	@State var sorting: ArtistSorting = .name
+	@State var reversed: Bool = false
 	
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -168,6 +225,14 @@ struct FavoriteArtists: View {
 					.font(.largeTitle)
 				Spacer()
 				LoadingSpinner()
+				Picker(selection: $sorting, label: Spacer(minLength: 0)) {
+					Text("Added").tag(ArtistSorting.dateAdded)
+					Text("Name").tag(ArtistSorting.name)
+					Text("Popularity").tag(ArtistSorting.popularity)
+				}
+				.pickerStyle(SegmentedPickerStyle())
+				.frame(width: PICKERWIDTH)
+				ReverseButton(reversed: $reversed)
 			}
 			.padding(.horizontal)
 			
@@ -177,8 +242,4 @@ struct FavoriteArtists: View {
 			Spacer(minLength: 0)
 		}
 	}
-}
-
-func favoriteArtists2Artists(_ favoriteArtists: [FavoriteArtist]) -> [Artist] {
-	favoriteArtists.map { $0.item }
 }
