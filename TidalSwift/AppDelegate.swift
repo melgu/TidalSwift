@@ -30,9 +30,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var viewHistoryViewController: NSWindowController
 	var playbackHistoryViewController: NSWindowController
 	
+	// MARK: Cancellables
 	var timerCancellable: AnyCancellable?
 	var savePlaybackInfoOnNextTick = false
 	var saveViewStateOnNextTick = false
+	var saveFavoritesSortingStateOnNextTick = false
 	
 	var playingCancellable: AnyCancellable?
 	var shuffleCancellable: AnyCancellable?
@@ -41,6 +43,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var currentIndexCancellable: AnyCancellable?
 	var volumeCancellable: AnyCancellable?
 	var viewStackCancellable: AnyCancellable?
+	
+	// FavoritesSortingState
+	var playlistSortingCancellable: AnyCancellable?
+	var playlistReversedCancellable: AnyCancellable?
+	var albumSortingCancellable: AnyCancellable?
+	var albumReversedCancellable: AnyCancellable?
+	var trackSortingCancellable: AnyCancellable?
+	var trackReversedCancellable: AnyCancellable?
+	var videoSortingCancellable: AnyCancellable?
+	var videoReversedCancellable: AnyCancellable?
+	var artistSortingCancellable: AnyCancellable?
+	var artistReversedCancellable: AnyCancellable?
+	
 	
 	override init() {
 		let session = Session(config: nil)
@@ -237,49 +252,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		// MARK: Combine Stuff
 		
-		playingCancellable = sc.player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
-		shuffleCancellable = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
-			self.shuffleState(enabled: $0)
-			self.savePlaybackInfoOnNextTick = true
-		})
-		repeatCancellable = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self ] in
-			self.repeatLabel(repeatState: $0)
-			self.savePlaybackInfoOnNextTick = true
-		})
-		volumeCancellable = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
-		
-		queueCancellable = sc.player.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in self.savePlaybackInfoOnNextTick = true })
-		currentIndexCancellable = sc.player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
-			self.favoriteLabel(currentIndex: $0)
-			self.savePlaybackInfoOnNextTick = true
-		})
-		
-		viewStackCancellable = viewState.$stack.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-//			print("Save: ViewState")
-			self.saveViewStateOnNextTick = true
-		})
-		
-		// TODO: receiveValue also for changes in favoritesSortingState
-		
-		// State Persisting
-		timerCancellable = Timer.publish(every: 10, on: .main, in: .default)
-			.autoconnect()
-			.sink { [unowned self] _ in
-				if self.savePlaybackInfoOnNextTick {
-					self.savePlaybackInfoOnNextTick = false
-//					print("savePlaybackState()")
-					DispatchQueue.global(qos: .background).async {
-						self.savePlaybackState()
-					}
-				}
-				if self.saveViewStateOnNextTick {
-					self.saveViewStateOnNextTick = false
-//					print("saveViewStateSync()")
-					DispatchQueue.global(qos: .background).async {
-						self.saveViewState()
-					}
-				}
-		}
+		initCancellables()
 		
 		viewState.refreshCurrentView()
 		
@@ -383,6 +356,89 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playlistEditingValues.showEditModal = false
 	}
 	
+	func initCancellables() {
+		playingCancellable = sc.player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
+		shuffleCancellable = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
+			self.shuffleState(enabled: $0)
+			self.savePlaybackInfoOnNextTick = true
+		})
+		repeatCancellable = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self ] in
+			self.repeatLabel(repeatState: $0)
+			self.savePlaybackInfoOnNextTick = true
+		})
+		volumeCancellable = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
+		
+		queueCancellable = sc.player.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in self.savePlaybackInfoOnNextTick = true })
+		currentIndexCancellable = sc.player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
+			self.favoriteLabel(currentIndex: $0)
+			self.savePlaybackInfoOnNextTick = true
+		})
+		
+		viewStackCancellable = viewState.$stack.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+//			print("Save: ViewState")
+			self.saveViewStateOnNextTick = true
+		})
+		
+		// FavoritesSortingState
+		playlistSortingCancellable = favoritesSortingState.$playlistSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		playlistReversedCancellable = favoritesSortingState.$playlistReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		albumSortingCancellable = favoritesSortingState.$albumSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		albumReversedCancellable = favoritesSortingState.$albumReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		trackSortingCancellable = favoritesSortingState.$trackSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		trackReversedCancellable = favoritesSortingState.$albumReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		videoSortingCancellable = favoritesSortingState.$videoSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		videoReversedCancellable = favoritesSortingState.$videoSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		artistSortingCancellable = favoritesSortingState.$artistSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		artistReversedCancellable = favoritesSortingState.$artistReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveFavoritesSortingStateOnNextTick = true
+		})
+		
+		// State Persisting
+		timerCancellable = Timer.publish(every: 10, on: .main, in: .default)
+			.autoconnect()
+			.sink { [unowned self] _ in
+				if self.savePlaybackInfoOnNextTick {
+					self.savePlaybackInfoOnNextTick = false
+//					print("savePlaybackState()")
+					DispatchQueue.global(qos: .background).async {
+						self.savePlaybackState()
+					}
+				}
+				if self.saveViewStateOnNextTick {
+					self.saveViewStateOnNextTick = false
+//					print("saveViewState()")
+					DispatchQueue.global(qos: .background).async {
+						self.saveViewState()
+					}
+				}
+				if self.saveFavoritesSortingStateOnNextTick {
+					self.saveFavoritesSortingStateOnNextTick = false
+//					print("saveFavoritesSortingState()")
+					DispatchQueue.global(qos: .background).async {
+						self.saveFavoritesSortingState()
+					}
+				}
+		}
+	}
+	
 	func cancelCancellables() {
 		timerCancellable?.cancel()
 		
@@ -395,6 +451,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		volumeCancellable?.cancel()
 		
 		viewStackCancellable?.cancel()
+		
+		// FavoritesSortingState
+		playlistSortingCancellable?.cancel()
+		playlistReversedCancellable?.cancel()
+		albumSortingCancellable?.cancel()
+		albumReversedCancellable?.cancel()
+		trackSortingCancellable?.cancel()
+		trackReversedCancellable?.cancel()
+		videoSortingCancellable?.cancel()
+		videoReversedCancellable?.cancel()
+		artistSortingCancellable?.cancel()
+		artistReversedCancellable?.cancel()
 	}
 	
 	// MARK: - Menu Bar
