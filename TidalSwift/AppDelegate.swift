@@ -18,7 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	var sc: SessionContainer
 	var viewState: ViewState
-	var favoritesSortingState: FavoritesSortingState
+	var sortingState: SortingState
 	var playlistEditingValues = PlaylistEditingValues()
 	
 	// Login
@@ -34,7 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var timerCancellable: AnyCancellable?
 	var savePlaybackInfoOnNextTick = false
 	var saveViewStateOnNextTick = false
-	var saveFavoritesSortingStateOnNextTick = false
+	var saveSortingStateOnNextTick = false
 	
 	var playingCancellable: AnyCancellable?
 	var shuffleCancellable: AnyCancellable?
@@ -44,17 +44,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var volumeCancellable: AnyCancellable?
 	var viewStackCancellable: AnyCancellable?
 	
-	// FavoritesSortingState
-	var playlistSortingCancellable: AnyCancellable?
-	var playlistReversedCancellable: AnyCancellable?
-	var albumSortingCancellable: AnyCancellable?
-	var albumReversedCancellable: AnyCancellable?
-	var trackSortingCancellable: AnyCancellable?
-	var trackReversedCancellable: AnyCancellable?
-	var videoSortingCancellable: AnyCancellable?
-	var videoReversedCancellable: AnyCancellable?
-	var artistSortingCancellable: AnyCancellable?
-	var artistReversedCancellable: AnyCancellable?
+	// SortingState
+	var favoritePlaylistSortingCancellable: AnyCancellable?
+	var favoritePlaylistReversedCancellable: AnyCancellable?
+	var favoriteAlbumSortingCancellable: AnyCancellable?
+	var favoriteAlbumReversedCancellable: AnyCancellable?
+	var favoriteTrackSortingCancellable: AnyCancellable?
+	var favoriteTrackReversedCancellable: AnyCancellable?
+	var favoriteVideoSortingCancellable: AnyCancellable?
+	var favoriteVideoReversedCancellable: AnyCancellable?
+	var favoriteArtistSortingCancellable: AnyCancellable?
+	var favoriteArtistReversedCancellable: AnyCancellable?
+	
+	var offlinePlaylistSortingCancellable: AnyCancellable?
+	var offlinePlaylistReversedCancellable: AnyCancellable?
+	var offlineAlbumSortingCancellable: AnyCancellable?
+	var offlineAlbumReversedCancellable: AnyCancellable?
+	var offlineTrackSortingCancellable: AnyCancellable?
+	var offlineTrackReversedCancellable: AnyCancellable?
 	
 	
 	override init() {
@@ -70,7 +77,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 		
 		viewState = ViewState(session: session, cache: cache)
-		favoritesSortingState = FavoritesSortingState()
+		sortingState = SortingState()
 		
 		// Init Secondary Windows (cannot use method func because self is not initialized yet
 		lyricsViewController = ResizableWindowController(rootView:
@@ -205,18 +212,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //					print("Wanted: \(Double(codablePI.fraction)), Actual: \(player.playbackInfo.fraction)")
 				}
 			}
-			if let data = UserDefaults.standard.data(forKey: "FavoritesSortingState") {
-				if let codableFSS = try? JSONDecoder().decode(CodableFavoritesSortingState.self, from: data) {
-					favoritesSortingState.playlistSorting = codableFSS.playlistSorting
-					favoritesSortingState.playlistReversed = codableFSS.playlistReversed
-					favoritesSortingState.albumSorting = codableFSS.albumSorting
-					favoritesSortingState.albumReversed = codableFSS.albumReversed
-					favoritesSortingState.trackSorting = codableFSS.trackSorting
-					favoritesSortingState.trackReversed = codableFSS.trackReversed
-					favoritesSortingState.videoSorting = codableFSS.videoSorting
-					favoritesSortingState.videoReversed = codableFSS.videoReversed
-					favoritesSortingState.artistSorting = codableFSS.artistSorting
-					favoritesSortingState.artistReversed = codableFSS.artistReversed
+			if let data = UserDefaults.standard.data(forKey: "SortingState") {
+				if let codableFSS = try? JSONDecoder().decode(CodableSortingState.self, from: data) {
+					sortingState.favoritePlaylistSorting = codableFSS.favoritePlaylistSorting
+					sortingState.favoritePlaylistReversed = codableFSS.favoritePlaylistReversed
+					sortingState.favoriteAlbumSorting = codableFSS.favoriteAlbumSorting
+					sortingState.favoriteAlbumReversed = codableFSS.favoriteAlbumReversed
+					sortingState.favoriteTrackSorting = codableFSS.favoriteTrackSorting
+					sortingState.favoriteTrackReversed = codableFSS.favoriteTrackReversed
+					sortingState.favoriteVideoSorting = codableFSS.favoriteVideoSorting
+					sortingState.favoriteVideoReversed = codableFSS.favoriteVideoReversed
+					sortingState.favoriteArtistSorting = codableFSS.favoriteArtistSorting
+					sortingState.favoriteArtistReversed = codableFSS.favoriteArtistReversed
+					sortingState.offlinePlaylistSorting = codableFSS.offlinePlaylistSorting
+					sortingState.offlinePlaylistReversed = codableFSS.offlinePlaylistReversed
+					sortingState.offlineAlbumSorting = codableFSS.offlineAlbumSorting
+					sortingState.offlineAlbumReversed = codableFSS.offlineAlbumReversed
+					sortingState.offlineTrackSorting = codableFSS.offlineTrackSorting
+					sortingState.offlineTrackReversed = codableFSS.offlineTrackReversed
 				}
 			}
 			
@@ -268,7 +281,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			ContentView()
 				.environmentObject(sc)
 				.environmentObject(viewState)
-				.environmentObject(favoritesSortingState)
+				.environmentObject(sortingState)
 				.environmentObject(loginInfo)
 				.environmentObject(playlistEditingValues)
 		)
@@ -317,18 +330,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func saveFavoritesSortingState() {
-		let codableFSS = CodableFavoritesSortingState(playlistSorting: favoritesSortingState.playlistSorting,
-													  playlistReversed: favoritesSortingState.playlistReversed,
-													  albumSorting: favoritesSortingState.albumSorting,
-													  albumReversed: favoritesSortingState.albumReversed,
-													  trackSorting: favoritesSortingState.trackSorting,
-													  trackReversed: favoritesSortingState.trackReversed,
-													  videoSorting: favoritesSortingState.videoSorting,
-													  videoReversed: favoritesSortingState.videoReversed,
-													  artistSorting: favoritesSortingState.artistSorting,
-													  artistReversed: favoritesSortingState.artistReversed)
+		let codableFSS = CodableSortingState(favoritePlaylistSorting: sortingState.favoritePlaylistSorting,
+													  favoritePlaylistReversed: sortingState.favoritePlaylistReversed,
+													  favoriteAlbumSorting: sortingState.favoriteAlbumSorting,
+													  favoriteAlbumReversed: sortingState.favoriteAlbumReversed,
+													  favoriteTrackSorting: sortingState.favoriteTrackSorting,
+													  favoriteTrackReversed: sortingState.favoriteTrackReversed,
+													  favoriteVideoSorting: sortingState.favoriteVideoSorting,
+													  favoriteVideoReversed: sortingState.favoriteVideoReversed,
+													  favoriteArtistSorting: sortingState.favoriteArtistSorting,
+													  favoriteArtistReversed: sortingState.favoriteArtistReversed,
+													  offlinePlaylistSorting: sortingState.offlinePlaylistSorting,
+													  offlinePlaylistReversed: sortingState.offlinePlaylistReversed,
+													  offlineAlbumSorting: sortingState.offlineAlbumSorting,
+													  offlineAlbumReversed: sortingState.offlinePlaylistReversed,
+													  offlineTrackSorting: sortingState.offlineTrackSorting,
+													  offlineTrackReversed: sortingState.offlineTrackReversed)
 		let codableFSSData = try? JSONEncoder().encode(codableFSS)
-		UserDefaults.standard.set(codableFSSData, forKey: "FavoritesSortingState")
+		UserDefaults.standard.set(codableFSSData, forKey: "SortingState")
 		
 		UserDefaults.standard.synchronize()
 	}
@@ -379,36 +398,55 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			self.saveViewStateOnNextTick = true
 		})
 		
-		// FavoritesSortingState
-		playlistSortingCancellable = favoritesSortingState.$playlistSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		// SortingState
+		favoritePlaylistSortingCancellable = sortingState.$favoritePlaylistSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
-		playlistReversedCancellable = favoritesSortingState.$playlistReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		favoritePlaylistReversedCancellable = sortingState.$favoritePlaylistReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
-		albumSortingCancellable = favoritesSortingState.$albumSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		favoriteAlbumSortingCancellable = sortingState.$favoriteAlbumSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
-		albumReversedCancellable = favoritesSortingState.$albumReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		favoriteAlbumReversedCancellable = sortingState.$favoriteAlbumReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
-		trackSortingCancellable = favoritesSortingState.$trackSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		favoriteTrackSortingCancellable = sortingState.$favoriteTrackSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
-		trackReversedCancellable = favoritesSortingState.$albumReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		favoriteTrackReversedCancellable = sortingState.$favoriteTrackReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
-		videoSortingCancellable = favoritesSortingState.$videoSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		favoriteVideoSortingCancellable = sortingState.$favoriteVideoSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
-		videoReversedCancellable = favoritesSortingState.$videoSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		favoriteVideoReversedCancellable = sortingState.$favoriteVideoReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
-		artistSortingCancellable = favoritesSortingState.$artistSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		favoriteArtistSortingCancellable = sortingState.$favoriteArtistSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
-		artistReversedCancellable = favoritesSortingState.$artistReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
-			self.saveFavoritesSortingStateOnNextTick = true
+		favoriteArtistReversedCancellable = sortingState.$favoriteArtistReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
+		})
+		
+		offlinePlaylistSortingCancellable = sortingState.$offlinePlaylistSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
+		})
+		offlinePlaylistReversedCancellable = sortingState.$offlinePlaylistReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
+		})
+		offlineAlbumSortingCancellable = sortingState.$offlineAlbumSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
+		})
+		offlineAlbumReversedCancellable = sortingState.$offlineAlbumReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
+		})
+		offlineTrackSortingCancellable = sortingState.$offlineTrackSorting.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
+		})
+		offlineTrackReversedCancellable = sortingState.$offlineTrackReversed.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in
+			self.saveSortingStateOnNextTick = true
 		})
 		
 		// State Persisting
@@ -429,8 +467,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 						self.saveViewState()
 					}
 				}
-				if self.saveFavoritesSortingStateOnNextTick {
-					self.saveFavoritesSortingStateOnNextTick = false
+				if self.saveSortingStateOnNextTick {
+					self.saveSortingStateOnNextTick = false
 //					print("saveFavoritesSortingState()")
 					DispatchQueue.global(qos: .background).async {
 						self.saveFavoritesSortingState()
@@ -452,17 +490,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		viewStackCancellable?.cancel()
 		
-		// FavoritesSortingState
-		playlistSortingCancellable?.cancel()
-		playlistReversedCancellable?.cancel()
-		albumSortingCancellable?.cancel()
-		albumReversedCancellable?.cancel()
-		trackSortingCancellable?.cancel()
-		trackReversedCancellable?.cancel()
-		videoSortingCancellable?.cancel()
-		videoReversedCancellable?.cancel()
-		artistSortingCancellable?.cancel()
-		artistReversedCancellable?.cancel()
+		// SortingState
+		favoritePlaylistSortingCancellable?.cancel()
+		favoritePlaylistReversedCancellable?.cancel()
+		favoriteAlbumSortingCancellable?.cancel()
+		favoriteAlbumReversedCancellable?.cancel()
+		favoriteTrackSortingCancellable?.cancel()
+		favoriteTrackReversedCancellable?.cancel()
+		favoriteVideoSortingCancellable?.cancel()
+		favoriteVideoReversedCancellable?.cancel()
+		favoriteArtistSortingCancellable?.cancel()
+		favoriteArtistReversedCancellable?.cancel()
 	}
 	
 	// MARK: - Menu Bar
