@@ -147,26 +147,32 @@ struct ArtistView: View {
 				}
 				.frame(height: 155)
 				
-				HStack {
-					Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {
-						Text("Albums (\(albums.count))").tag(BottomSectionType.albums)
-						Text("EPs & Singles (\(epsAndSingles.count))").tag(BottomSectionType.epsAndSingles)
-						Text("Appearances (\(appearances.count))").tag(BottomSectionType.appearances)
-						Text("Videos (\(videos.count))").tag(BottomSectionType.videos)
+				Divider()
+				
+				VStack {
+					HStack {
+						Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {
+							Text("Albums (\(albums.count))").tag(BottomSectionType.albums)
+							Text("EPs & Singles (\(epsAndSingles.count))").tag(BottomSectionType.epsAndSingles)
+							Text("Appearances (\(appearances.count))").tag(BottomSectionType.appearances)
+							Text("Videos (\(videos.count))").tag(BottomSectionType.videos)
+						}
+						.pickerStyle(SegmentedPickerStyle())
 					}
-					.pickerStyle(SegmentedPickerStyle())
-					.padding(.horizontal)
+					ScrollView {
+						if bottomSectionType == .albums {
+							AlbumGrid(albums: albums, showArtists: false, showReleaseDate: true, session: session, player: player)
+						} else if bottomSectionType == .epsAndSingles {
+							AlbumGrid(albums: epsAndSingles, showArtists: false, showReleaseDate: true, session: session, player: player)
+						} else if bottomSectionType == .appearances {
+							AlbumGrid(albums: appearances, showArtists: false, showReleaseDate: true, session: session, player: player)
+						} else if bottomSectionType == .videos {
+							VideoGrid(videos: videos, showArtists: false, session: session, player: player)
+						}
+					}
+					Spacer(minLength: 0)
 				}
-				if bottomSectionType == .albums {
-					AlbumGrid(albums: albums, showArtists: false, showReleaseDate: true, session: session, player: player)
-				} else if bottomSectionType == .epsAndSingles {
-					AlbumGrid(albums: epsAndSingles, showArtists: false, showReleaseDate: true, session: session, player: player)
-				} else if bottomSectionType == .appearances {
-					AlbumGrid(albums: appearances, showArtists: false, showReleaseDate: true, session: session, player: player)
-				} else if bottomSectionType == .videos {
-					VideoGrid(videos: videos, showArtists: false, session: session, player: player)
-				}
-				Spacer(minLength: 0)
+				.padding(.horizontal)
 			}
 				.padding(.top, 50) // Has to be 50 instead of 40 like the others to look the same
 			//			}

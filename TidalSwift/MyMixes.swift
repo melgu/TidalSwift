@@ -18,19 +18,21 @@ struct MyMixes: View {
 	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
-		VStack(alignment: .leading) {
-			HStack {
-				Text("My Mixes")
-					.font(.largeTitle)
-				Spacer()
-				LoadingSpinner()
+		ScrollView {
+			VStack(alignment: .leading) {
+				HStack {
+					Text("My Mixes")
+						.font(.largeTitle)
+					Spacer()
+					LoadingSpinner()
+				}
+				
+				if viewState.stack.last?.mixes != nil {
+					MixGrid(mixes: viewState.stack.last!.mixes!, session: session, player: player)
+				}
+				Spacer(minLength: 0)
 			}
 			.padding(.horizontal)
-			
-			if viewState.stack.last?.mixes != nil {
-				MixGrid(mixes: viewState.stack.last!.mixes!, session: session, player: player)
-			}
-			Spacer(minLength: 0)
 		}
 	}
 }
@@ -45,7 +47,7 @@ struct MixGrid: View {
 			MixGridItem(mix: mix, session: self.session, player: self.player)
 		}
 		.gridStyle(
-			ModularGridStyle(columns: .min(165), rows: .fixed(210), spacing: 5, padding: .init(top: 0, leading: 5, bottom: 5, trailing: 5))
+			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(210), spacing: 10)
 		)
 	}
 }

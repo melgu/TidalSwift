@@ -17,8 +17,8 @@ struct OfflinePlaylistsView: View {
 	@EnvironmentObject var sortingState: SortingState
 	
 	var body: some View {
-		VStack(alignment: .leading) {
-			VStack {
+		ScrollView {
+			VStack(alignment: .leading) {
 				HStack {
 					Text("Offline Playlists")
 						.font(.largeTitle)
@@ -43,14 +43,14 @@ struct OfflinePlaylistsView: View {
 						Spacer()
 					}
 				}
+				
+				
+				if viewState.stack.last?.playlists != nil {
+					PlaylistGrid(playlists: viewState.stack.last!.playlists!.sortedPlaylists(by: sortingState.offlinePlaylistSorting).reversed(sortingState.offlinePlaylistReversed), session: session, player: player)
+				}
+				Spacer(minLength: 0)
 			}
 			.padding(.horizontal)
-			
-			
-			if viewState.stack.last?.playlists != nil {
-				PlaylistGrid(playlists: viewState.stack.last!.playlists!.sortedPlaylists(by: sortingState.offlinePlaylistSorting).reversed(sortingState.offlinePlaylistReversed), session: session, player: player)
-			}
-			Spacer(minLength: 0)
 		}
 	}
 }
@@ -63,8 +63,8 @@ struct OfflineAlbumsView: View {
 	@EnvironmentObject var sortingState: SortingState
 	
 	var body: some View {
-		VStack(alignment: .leading) {
-			VStack {
+		ScrollView {
+			VStack(alignment: .leading) {
 				HStack {
 					Text("Offline Albums")
 						.font(.largeTitle)
@@ -87,13 +87,13 @@ struct OfflineAlbumsView: View {
 						Spacer()
 					}
 				}
+				
+				if viewState.stack.last?.albums != nil {
+					AlbumGrid(albums: viewState.stack.last!.albums!.sortedAlbums(by: sortingState.offlineAlbumSorting).reversed(sortingState.offlineAlbumReversed), showArtists: true, session: session, player: player)
+				}
+				Spacer(minLength: 0)
 			}
 			.padding(.horizontal)
-			
-			if viewState.stack.last?.albums != nil {
-				AlbumGrid(albums: viewState.stack.last!.albums!.sortedAlbums(by: sortingState.offlineAlbumSorting).reversed(sortingState.offlineAlbumReversed), showArtists: true, session: session, player: player)
-			}
-			Spacer(minLength: 0)
 		}
 	}
 }
@@ -106,40 +106,40 @@ struct OfflineTracksView: View {
 	@EnvironmentObject var sortingState: SortingState
 	
 	var body: some View {
-		VStack(alignment: .leading) {
-			VStack {
-				HStack {
-					Text("Offline Tracks")
-						.font(.largeTitle)
-					Spacer()
-					Picker(selection: $sortingState.offlineTrackSorting, label: Spacer(minLength: 0)) {
-//						Text("Added").tag(TrackSorting.dateAdded)
-						Text("Title").tag(TrackSorting.title)
-						Text("Artists").tag(TrackSorting.artists)
-						Text("Album").tag(TrackSorting.album)
-						Text("Release Date").tag(TrackSorting.albumReleaseDate)
-//						Text("Duration").tag(TrackSorting.duration)
-						Text("Popularity").tag(TrackSorting.popularity)
-					}
-					.pickerStyle(SegmentedPickerStyle())
-					.frame(width: PICKERWIDTH)
-					ReverseButton(reversed: $sortingState.offlineTrackReversed)
-				}
-				if viewState.stack.last?.tracks != nil {
+		ScrollView {
+			VStack(alignment: .leading) {
+				VStack {
 					HStack {
-						Text("\(viewState.stack.last!.tracks!.count) \(viewState.stack.last!.tracks!.count == 1 ? "Track" : "Tracks")")
+						Text("Offline Tracks")
+							.font(.largeTitle)
 						Spacer()
+						Picker(selection: $sortingState.offlineTrackSorting, label: Spacer(minLength: 0)) {
+//							Text("Added").tag(TrackSorting.dateAdded)
+							Text("Title").tag(TrackSorting.title)
+							Text("Artists").tag(TrackSorting.artists)
+							Text("Album").tag(TrackSorting.album)
+							Text("Release Date").tag(TrackSorting.albumReleaseDate)
+//							Text("Duration").tag(TrackSorting.duration)
+							Text("Popularity").tag(TrackSorting.popularity)
+						}
+						.pickerStyle(SegmentedPickerStyle())
+						.frame(width: PICKERWIDTH)
+						ReverseButton(reversed: $sortingState.offlineTrackReversed)
+					}
+					if viewState.stack.last?.tracks != nil {
+						HStack {
+							Text("\(viewState.stack.last!.tracks!.count) \(viewState.stack.last!.tracks!.count == 1 ? "Track" : "Tracks")")
+							Spacer()
+						}
 					}
 				}
-			}
-			.padding([.horizontal, .bottom])
-			
-			if viewState.stack.last?.tracks != nil {
-				ScrollView {
+				.padding(.horizontal)
+				
+				if viewState.stack.last?.tracks != nil {
 					TrackList(wrappedTracks: viewState.stack.last!.tracks!.sortedTracks(by: sortingState.offlineTrackSorting).reversed(sortingState.offlineTrackReversed).wrapped(), showCover: true, showAlbumTrackNumber: false, showArtist: true, showAlbum: true, playlist: nil, session: session, player: player)
 				}
+				Spacer(minLength: 0)
 			}
-			Spacer(minLength: 0)
 		}
 	}
 }

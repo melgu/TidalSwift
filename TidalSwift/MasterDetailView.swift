@@ -51,7 +51,7 @@ struct MasterView: View {
 		VStack {
 			SearchField(selection: $selection, searchTerm: viewState.searchTerm)
 				.padding(.top, 10)
-				.padding([.leading, .trailing], 5)
+				.padding(.horizontal, 5)
 			List(selection: $selection) {
 				Section(header: Text("News")) {
 					Text("New Releases").tag(ViewType.newReleases)

@@ -33,8 +33,8 @@ struct TrackList: View {
 				TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: self.playlist != nil ? wrappedTrack.id : nil, playlist: self.playlist, session: self.session, player: self.player)
 			}
 			Divider()
-				.padding(.horizontal)
 		}
+		.padding(.horizontal)
 	}
 }
 
@@ -193,6 +193,5 @@ struct TrackRow: View {
 		}
 		.lineLimit(1)
 		.frame(height: showCover ? 30 : 16) // Values tested "by hand"
-		.padding(.horizontal)
 	}
 }

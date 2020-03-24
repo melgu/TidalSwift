@@ -79,6 +79,7 @@ struct SearchViewArtists: View {
 			Text("Artists")
 				.font(.title)
 				.padding(.horizontal)
+			
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
 					ForEach(artists) { artist in

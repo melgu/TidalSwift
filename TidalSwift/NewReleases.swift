@@ -16,19 +16,21 @@ struct NewReleases: View {
 	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
-		VStack(alignment: .leading) {
-			HStack {
-				Text("New Releases")
-					.font(.largeTitle)
-				Spacer()
-				LoadingSpinner()
+		ScrollView {
+			VStack(alignment: .leading) {
+				HStack {
+					Text("New Releases")
+						.font(.largeTitle)
+					Spacer()
+					LoadingSpinner()
+				}
+				
+				if viewState.stack.last?.albums != nil {
+					AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, showReleaseDate: true, session: session, player: player)
+				}
+				Spacer(minLength: 0)
 			}
 			.padding(.horizontal)
-			
-			if viewState.stack.last?.albums != nil {
-				AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, showReleaseDate: true, session: session, player: player)
-			}
-			Spacer(minLength: 0)
 		}
 	}
 }
