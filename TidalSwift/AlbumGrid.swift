@@ -18,10 +18,20 @@ struct AlbumGrid: View {
 	let session: Session
 	let player: Player
 	
+	var rowHeight: CGFloat = 190
+	
 	init(albums: [Album], showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
 		self.albums = albums
 		self.showArtists = showArtists
 		self.showReleaseDate = showReleaseDate
+		
+		if showArtists {
+			rowHeight += 18
+		}
+		if showReleaseDate {
+			rowHeight += 18
+		}
+		
 		self.session = session
 		self.player = player
 	}
@@ -31,7 +41,7 @@ struct AlbumGrid: View {
 			AlbumGridItem(album: album, showArtists: self.showArtists, showReleaseDate: self.showReleaseDate, session: self.session, player: self.player)
 		}
 		.gridStyle(
-			ModularGridStyle(columns: .min(165), rows: .fixed(showReleaseDate ? 230 : 210), spacing: 5, padding: .init(top: 0, leading: 5, bottom: 5, trailing: 5))
+			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(rowHeight), spacing: 10)
 		)
 	}
 }
@@ -313,6 +323,8 @@ extension Album {
 				Image("m.square.fill")
 			} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
 				Image("headphones")
+			} else {
+				Text("")
 			}
 		}
 		.secondaryIconColor()

@@ -22,7 +22,7 @@ struct VideoGrid: View {
 			VideoGridItem(video: video, showArtist: self.showArtists, session: self.session, player: self.player)
 		}
 		.gridStyle(
-			ModularGridStyle(columns: .min(165), rows: .fixed(210), spacing: 5, padding: .init(top: 0, leading: 5, bottom: 5, trailing: 5))
+			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(210), spacing: 10)
 		)
 	}
 }

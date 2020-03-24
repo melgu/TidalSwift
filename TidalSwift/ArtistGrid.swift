@@ -21,7 +21,7 @@ struct ArtistGrid: View {
 			ArtistGridItem(artist: artist, session: self.session, player: self.player)
 		}
 		.gridStyle(
-			ModularGridStyle(columns: .min(165), rows: .fixed(200), spacing: 5, padding: .init(top: 0, leading: 5, bottom: 5, trailing: 5))
+			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(200), spacing: 10)
 		)
 	}
 }
