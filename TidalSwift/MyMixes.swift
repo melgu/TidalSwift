@@ -349,14 +349,14 @@ struct MixContextMenu: View {
 					self.player.add(tracks: tracks, .next)
 				}
 			}) {
-				Text("Play Next")
+				Text("Add Next")
 			}
 			Button(action: {
 				if let tracks = self.session.getMixPlaylistTracks(mixId: self.mix.id) {
 					self.player.add(tracks: tracks, .last)
 				}
 			}) {
-				Text("Play Last")
+				Text("Add Last")
 			}
 			Divider()
 			Button(action: {

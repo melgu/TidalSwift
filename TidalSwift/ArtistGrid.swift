@@ -100,12 +100,12 @@ struct ArtistContextMenu: View {
 				Button(action: {
 					self.player.add(artist: self.artist, .next)
 				}) {
-					Text("Play Next")
+					Text("Add Next")
 				}
 				Button(action: {
 					self.player.add(artist: self.artist, .last)
 				}) {
-					Text("Play Last")
+					Text("Add Last")
 				}
 //			}
 			Divider()
