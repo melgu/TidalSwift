@@ -257,7 +257,8 @@ class Player {
 		if tracks.isEmpty {
 			return
 		}
-//		pause()
+		
+		let wasPlaying = playbackInfo.playing
 		clearQueue()
 		if playbackInfo.shuffle {
 			queueInfo.nonShuffledQueue = tracks.wrapped()
@@ -268,7 +269,9 @@ class Player {
 		} else {
 			addLast(tracks: tracks)
 		}
-//		play()
+		if wasPlaying {
+			play()
+		}
 //		print("addNow() finished. Items in Queue: \(playbackInfo.queue.count)")
 	}
 	

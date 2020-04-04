@@ -110,12 +110,12 @@ struct PlaylistContextMenu: View {
 				Button(action: {
 					self.player.add(playlist: self.playlist, .next)
 				}) {
-					Text("Play Next")
+					Text("Add Next")
 				}
 				Button(action: {
 					self.player.add(playlist: self.playlist, .last)
 				}) {
-					Text("Play Last")
+					Text("Add Last")
 				}
 //			}
 			Divider()

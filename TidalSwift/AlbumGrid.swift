@@ -184,12 +184,12 @@ struct AlbumContextMenu: View {
 					Button(action: {
 						self.player.add(album: self.album, .next)
 					}) {
-						Text("Play Next")
+						Text("Add Next")
 					}
 					Button(action: {
 						self.player.add(album: self.album, .last)
 					}) {
-						Text("Play Last")
+						Text("Add Last")
 					}
 				} else {
 					Text("Album not available")
