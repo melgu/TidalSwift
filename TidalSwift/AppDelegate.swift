@@ -92,6 +92,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				.environmentObject(viewState)
 				.environmentObject(sc)
 				.environmentObject(sc.player.queueInfo)
+				.environmentObject(playlistEditingValues)
 		)
 		queueViewController.window?.title = "Queue"
 		
