@@ -222,6 +222,8 @@ class Player {
 	func add(album: Album, _ when: When) {
 		if let tracks = session.getAlbumTracks(albumId: album.id) ?? session.helpers.offline.getTracks(for: album) {
 			add(tracks: tracks, when)
+		} else if when == .now {
+			clearQueue()
 		}
 	}
 	
