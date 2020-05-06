@@ -38,6 +38,7 @@
 		B0443FFD2305F7250019D0D8 /* TidalSwiftLib.h in Headers */ = {isa = PBXBuildFile; fileRef = B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B04440082305F7390019D0D8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B04440102305F7820019D0D8 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */; };
+		B045A66E24626F7F001C8E3F /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B045A66D24626F7F001C8E3F /* Credits.rtf */; };
 		B0536C5D23D0D3350078EC4A /* Tooltips.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0536C5C23D0D3350078EC4A /* Tooltips.swift */; };
 		B05E18CB23570DF600F96030 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05E18CA23570DF600F96030 /* ViewState.swift */; };
 		B0617B3523C436C600CD59A3 /* OfflineOverviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0617B3423C436C600CD59A3 /* OfflineOverviews.swift */; };
@@ -163,6 +164,7 @@
 		B0443FFA2305F7250019D0D8 /* TidalSwiftLibTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TidalSwiftLibTests.swift; sourceTree = "<group>"; };
 		B0443FFC2305F7250019D0D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B04440122305F7C40019D0D8 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		B045A66D24626F7F001C8E3F /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		B0536C5C23D0D3350078EC4A /* Tooltips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tooltips.swift; sourceTree = "<group>"; };
 		B05E18CA23570DF600F96030 /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		B0617B3423C436C600CD59A3 /* OfflineOverviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineOverviews.swift; sourceTree = "<group>"; };
@@ -404,6 +406,7 @@
 				B03B9AF923A48AE200679A1A /* SF Symbols.xcassets */,
 				B0E80794230615AE00E43B5D /* Main.storyboard */,
 				B0E80797230615AE00E43B5D /* Info.plist */,
+				B045A66D24626F7F001C8E3F /* Credits.rtf */,
 				B0E80798230615AE00E43B5D /* TidalSwift.entitlements */,
 				B010113E23063BC200DE13C8 /* Demo Login Information.txt */,
 				B0E80791230615AE00E43B5D /* Preview Content */,
@@ -597,6 +600,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B045A66E24626F7F001C8E3F /* Credits.rtf in Resources */,
 				B0E80796230615AE00E43B5D /* Main.storyboard in Resources */,
 				B0E80793230615AE00E43B5D /* Preview Assets.xcassets in Resources */,
 				B03B9AFA23A48AE200679A1A /* SF Symbols.xcassets in Resources */,
@@ -1014,7 +1018,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1044,7 +1048,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;
