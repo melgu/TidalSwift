@@ -4,3 +4,8 @@ framework module MP42Foundation {
   export *
   module * { export * }
 }
+
+module MP42Foundation.Swift {
+    header "MP42Foundation-Swift.h"
+    requires objc
+}

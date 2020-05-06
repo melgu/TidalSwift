@@ -28,6 +28,7 @@ extern NSString * const MP4264BitTime;
 extern NSString * const MP42GenerateChaptersPreviewTrack;
 extern NSString * const MP42ChaptersPreviewPosition;
 extern NSString * const MP42CustomChaptersPreviewTrack;
+extern NSString * const MP42ForceHvc1;
 
 typedef void (^MP42FileProgressHandler)(double progress);
 

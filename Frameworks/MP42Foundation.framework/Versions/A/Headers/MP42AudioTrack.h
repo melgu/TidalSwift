@@ -22,7 +22,7 @@
 @property(nonatomic, readonly) MP42TrackId fallbackTrackId;
 @property(nonatomic, readonly) MP42TrackId followsTrackId;
 
-@property(nonatomic, readwrite, assign) MP42Track *fallbackTrack;
-@property(nonatomic, readwrite, assign) MP42Track *followsTrack;
+@property(nonatomic, readwrite, weak, nullable) MP42Track *fallbackTrack;
+@property(nonatomic, readwrite, weak, nullable) MP42Track *followsTrack;
 
 @end

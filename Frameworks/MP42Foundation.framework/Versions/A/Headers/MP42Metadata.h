@@ -64,8 +64,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSArray<MP42MetadataItem *> *)metadataItemsFilteredByDataType:(MP42MetadataItemDataType)dataType;
 
-@property (nonatomic, readonly) NSString *presetName;// __attribute__((deprecated));
-
 /**
  Merges the tags of the passed MP42Metadata instance
 
