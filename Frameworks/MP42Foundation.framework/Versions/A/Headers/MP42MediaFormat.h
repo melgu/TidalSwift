@@ -212,7 +212,7 @@ enum : MP42MetadataFormatType
 };
 
 // Audio downmixes
-typedef SInt64 MP42AudioMixdown;
+typedef UInt32 MP42AudioMixdown;
 enum : MP42AudioMixdown
 {
     kMP42AudioMixdown_None       = 5,
