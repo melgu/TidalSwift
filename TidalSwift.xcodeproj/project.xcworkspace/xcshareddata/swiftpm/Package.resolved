@@ -6,8 +6,8 @@
         "repositoryURL": "git@github.com:davbeck/ImageIOSwift.git",
         "state": {
           "branch": null,
-          "revision": "ed2a801c9bfb11a6771f59408c3b59fcba0e064f",
-          "version": "1.0.2"
+          "revision": "87f5d032f77c13f0b43a8c719b628ea537a7ac8e",
+          "version": "1.1.1"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "git@github.com:spacenation/swiftui-grid.git",
         "state": {
           "branch": null,
-          "revision": "978cc2eae7ced4a4d3cf9b6728503edc62a2969f",
-          "version": "1.0.0"
+          "revision": "a3441f80bd01029507bc19e463e7c7208ffcf3f9",
+          "version": "1.0.4"
         }
       },
       {
@@ -24,8 +24,17 @@
         "repositoryURL": "git@github.com:spacenation/swiftui-sliders.git",
         "state": {
           "branch": null,
-          "revision": "c603297cc00da1b2cc797d3af47a3676d8b05ab4",
-          "version": "0.1.0"
+          "revision": "b243f93e9ec0d65167de25af0a286865e4b52193",
+          "version": "0.2.2"
+        }
+      },
+      {
+        "package": "UpdateNotification",
+        "repositoryURL": "git@bitbucket.org:MikelG/updatenotification.git",
+        "state": {
+          "branch": null,
+          "revision": "10d8b46a06b1d77871a87608aeb5303e2e25752d",
+          "version": "1.0.0"
         }
       }
     ]
