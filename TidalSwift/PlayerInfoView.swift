@@ -158,22 +158,17 @@ struct PlayerInfoView: View {
 							.onTapGesture {
 								self.player.toggleMute()
 						}
-						HSlider(value: self.$playbackInfo.volume, in: 0.0...1.0,
-								track:
-							HTrack(
-								value: self.playbackInfo.volume,
-								view: Rectangle()
-									.foregroundColor(.secondary)
+						ValueSlider(value: self.$playbackInfo.volume, in: 0.0...1.0)
+							.valueSliderStyle(
+								HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
+									Rectangle()
+										.foregroundColor(.secondary)
+										.frame(height: 4))
+									.background(Color.secondary)
 									.frame(height: 4)
-							)
-								.background(Color.secondary)
-								.frame(height: 4)
-								.cornerRadius(3),
-								configuration: .init(
-									options: .interactiveTrack,
-									thumbSize: CGSize(width: 15, height: 15)
-							)
-							
+									.cornerRadius(3),
+														   thumbSize: CGSize(width: 15, height: 15),
+														   options: .interactiveTrack)
 						)
 							.frame(width: 80)
 							.layoutPriority(1)
@@ -227,29 +222,25 @@ struct ProgressBar : View {
 	@Environment(\.colorScheme) var colorScheme: ColorScheme
 	
 	var body: some View {
-		HSlider(value: $playbackInfo.fraction,
-				track:
-			HTrack(
-				value: playbackInfo.fraction,
-				view: Rectangle()
+		ValueSlider(value: $playbackInfo.fraction) { ended in
+			if ended {
+				self.player.seek(to: Double(self.playbackInfo.fraction))
+			}
+		}
+		.valueSliderStyle(
+			HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
+				Rectangle()
 					.foregroundColor(.playbackProgressBarForeground(for: colorScheme))
 					.frame(height: 5),
-				mask: Rectangle()
+																   mask: Rectangle()
 			)
 				.background(Color.playbackProgressBarBackground(for: colorScheme))
 				.frame(height: 5)
 				.cornerRadius(3)
-				.toolTip(self.playbackInfo.playbackTimeInfo),
-				thumb: EmptyView(),
-				configuration: .init(
-					options: .interactiveTrack,
-					thumbSize: .zero
-			),
-				onEditingChanged: { ended  in
-					if ended {
-						self.player.seek(to: Double(self.playbackInfo.fraction))
-					}
-		}
+				.toolTip((self.playbackInfo.playbackTimeInfo)),
+									   thumb: EmptyView(),
+									   thumbSize: .zero,
+									   options: .interactiveTrack)
 		)
 			.frame(height: 5)
 	}

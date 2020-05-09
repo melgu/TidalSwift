@@ -10,11 +10,13 @@ import Cocoa
 import SwiftUI
 import Combine
 import TidalSwiftLib
+import UpdateNotification
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	var window: NSWindow!
+	let updateNotification = UpdateNotification(feedUrl: URL(string: "http://www.melvin-gundlach.de/apps/app-feeds/TidalSwift.json")!)
 	
 	var sc: SessionContainer
 	var viewState: ViewState
@@ -252,6 +254,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				viewState.maxHistoryItems = tempMaxHistoryItems
 			} else {
 				viewState.maxHistoryItems = 100
+			}
+			
+			if updateNotification.checkForUpdates() {
+				updateNotification.showNewVersionView()
 			}
 		}
 		
@@ -505,9 +511,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	// MARK: - Menu Bar
-	// MARK: - Quit
+	// MARK: - TidalSwift
 	
-	@IBAction func Quit(_ sender: Any) {
+	@IBAction func checkForUpdates(_ sender: Any) {
+		if updateNotification.checkForUpdates() {
+			updateNotification.showNewVersionView()
+		} else {
+			let alert = NSAlert()
+			alert.messageText = "No updates available"
+			alert.informativeText = "You are already on the latest version"
+			alert.alertStyle = .informational
+			alert.addButton(withTitle: "OK")
+			alert.runModal()
+		}
+	}
+	
+	@IBAction func changelog(_ sender: Any) {
+		updateNotification.showChangelogWindow()
+	}
+	
+	@IBAction func quit(_ sender: Any) {
 		print("Exiting...")
 		cancelCancellables()
 		closeModals()

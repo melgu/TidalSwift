@@ -53,6 +53,7 @@
 		B08B819C235F85C3001C35C9 /* TidalSwiftLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B08B81A0235F88B2001C35C9 /* ArtistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08B819F235F88B2001C35C9 /* ArtistView.swift */; };
 		B09CB16A23751D0700677763 /* ImageIOSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B09CB16923751D0700677763 /* ImageIOSwiftUI */; };
+		B09D71C32466428C004E171C /* UpdateNotification in Frameworks */ = {isa = PBXBuildFile; productRef = B09D71C22466428C004E171C /* UpdateNotification */; };
 		B0A1E2752349C65900BBC4F0 /* ArtistBio.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2742349C65900BBC4F0 /* ArtistBio.swift */; };
 		B0A1E2772349DB0100BBC4F0 /* ResizableWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2762349DB0100BBC4F0 /* ResizableWindowController.swift */; };
 		B0A1E2792349EDE900BBC4F0 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1E2782349EDE900BBC4F0 /* Colors.swift */; };
@@ -252,6 +253,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B09D71C32466428C004E171C /* UpdateNotification in Frameworks */,
 				B0F6B245240D875D00F35C8A /* Sliders in Frameworks */,
 				B08B819B235F85C3001C35C9 /* TidalSwiftLib.framework in Frameworks */,
 				B09CB16A23751D0700677763 /* ImageIOSwiftUI in Frameworks */,
@@ -502,6 +504,7 @@
 				B09CB16923751D0700677763 /* ImageIOSwiftUI */,
 				B0F6B241240D86FD00F35C8A /* Grid */,
 				B0F6B244240D875D00F35C8A /* Sliders */,
+				B09D71C22466428C004E171C /* UpdateNotification */,
 			);
 			productName = TidalSwift;
 			productReference = B0E80789230615AD00E43B5D /* TidalSwift.app */;
@@ -567,6 +570,7 @@
 				B09CB16823751D0700677763 /* XCRemoteSwiftPackageReference "ImageIOSwift" */,
 				B0F6B240240D86FD00F35C8A /* XCRemoteSwiftPackageReference "swiftui-grid" */,
 				B0F6B243240D875D00F35C8A /* XCRemoteSwiftPackageReference "swiftui-sliders" */,
+				B09D71C12466428C004E171C /* XCRemoteSwiftPackageReference "updatenotification" */,
 			);
 			productRefGroup = B0E582CF223764A500ADAE6C /* Products */;
 			projectDirPath = "";
@@ -1018,7 +1022,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1048,7 +1052,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1184,6 +1188,14 @@
 				minimumVersion = 1.0.2;
 			};
 		};
+		B09D71C12466428C004E171C /* XCRemoteSwiftPackageReference "updatenotification" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@bitbucket.org:MikelG/updatenotification.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		B0F6B240240D86FD00F35C8A /* XCRemoteSwiftPackageReference "swiftui-grid" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:spacenation/swiftui-grid.git";
@@ -1197,7 +1209,7 @@
 			repositoryURL = "git@github.com:spacenation/swiftui-sliders.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.0;
+				minimumVersion = 0.2.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1207,6 +1219,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B09CB16823751D0700677763 /* XCRemoteSwiftPackageReference "ImageIOSwift" */;
 			productName = ImageIOSwiftUI;
+		};
+		B09D71C22466428C004E171C /* UpdateNotification */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B09D71C12466428C004E171C /* XCRemoteSwiftPackageReference "updatenotification" */;
+			productName = UpdateNotification;
 		};
 		B0F6B241240D86FD00F35C8A /* Grid */ = {
 			isa = XCSwiftPackageProductDependency;
