@@ -63,6 +63,11 @@ struct PersistentInformation {
 	var userId: Int
 }
 
+public enum AudioUrlType: String {
+	case streaming = "streamUrl"
+	case offline = "offlineUrl"
+}
+
 public class Config {
 	public var quality: AudioQuality
 	var apiLocation: String
@@ -70,20 +75,23 @@ public class Config {
 	var imageLocation: String
 	var imageSize: Int
 	var loginCredentials: LoginCredentials
+	public var urlType: AudioUrlType
 	
 	public init(quality: AudioQuality = .hifi,
 		 loginCredentials: LoginCredentials,
+		 urlType: AudioUrlType = .streaming,
 		 apiToken: String? = nil,
 		 apiLocation: String = "https://api.tidal.com/v1/",
 		 imageLocation: String = "https://resources.tidal.com/images/",
 		 imageSize: Int = 1280) {
 		self.quality = quality
 		self.loginCredentials = loginCredentials
+		self.urlType = urlType
 		
-		if apiToken == nil {
-			self.apiToken = "_DSTon1kC8pABnTw" // Direct ALAC, 1080p Videos
+		if let token = apiToken {
+			self.apiToken = token
 		} else {
-			self.apiToken = apiToken!
+			self.apiToken = "_DSTon1kC8pABnTw" // Direct ALAC, 1080p Videos
 		}
 		
 		self.apiLocation = apiLocation.replacingOccurrences(of: " ", with: "")
@@ -293,7 +301,7 @@ public class Session {
 	func getAudioUrl(trackId: Int) -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(config.quality.rawValue)"
-		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/offlineUrl")!
+		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/\(config.urlType.rawValue)")!
 		let response = Network.get(url: url, parameters: parameters)
 		
 		guard let content = response.content else {
@@ -826,7 +834,11 @@ public class Session {
 			displayError(title: "Mixes Overview failed (JSON Parse Error)", content: "\(error)")
 		}
 		
-		return mixesResponse?.rows[0].modules[0].pagedList.items
+		// Filter out Video Mixes for now
+		// TODO: Add support for Video Mixes
+		let audioOnlyMixes = mixesResponse?.rows[0].modules[0].pagedList.items.filter { $0.mixType == .audio }
+		
+		return audioOnlyMixes
 	}
 	
 	public func getMixPlaylistTracks(mixId: String) -> [Track]? {
