@@ -155,7 +155,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	func login(username: String, password: String, quality: AudioQuality) {
 		let credentials = LoginCredentials(username: username, password: password)
-		let config = Config(quality: quality, loginCredentials: credentials)
+		let config = Config(quality: quality, loginCredentials: credentials, urlType: .streaming)
 		sc.session = Session(config: config)
 		sc.session.helpers.offline.uiRefreshFunc = { [unowned self] in self.viewState.refreshCurrentView() }
 		

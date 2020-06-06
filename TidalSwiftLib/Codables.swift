@@ -554,11 +554,18 @@ struct MixesPagedList: Decodable {
 	let dataApiPath: String
 }
 
+public enum MixType: String, Codable {
+	case header = "MIX_HEADER" // Because  of how Tidal structures its data
+	case audio = "DAILY_MIX"
+	case video = "VIDEO_DAILY_MIX"
+}
+
 public struct MixesItem: Codable, Equatable, Identifiable {
 	public let id: String
 	public let title: String
 	public let subTitle: String
 	public let graphic: MixesGraphic
+	public let mixType: MixType
 	
 	public static func == (lhs: MixesItem, rhs: MixesItem) -> Bool {
 		lhs.id == rhs.id
@@ -567,6 +574,7 @@ public struct MixesItem: Codable, Equatable, Identifiable {
 
 public enum MixesGraphicType: String, Codable {
 	case squaresGrid = "SQUARES_GRID"
+	case rectanglesGrid = "RECTANGLES_GRID"
 }
 
 public struct MixesGraphic: Codable {
@@ -606,10 +614,16 @@ struct MixModules: Decodable {
 	let modules: [MixModule]
 }
 
+enum MixPlaylistType: String, Decodable {
+	case header = "MIX_HEADER" // Because  of how Tidal structures its data
+	case audio = "TRACK_LIST"
+	case video = "VIDEO_LIST"
+}
+
 struct MixModule: Decodable {
 	let id: String
-	let width: Int
 	let title: String
+	let type: MixPlaylistType
 	let pagedList: Tracks?
 }
 

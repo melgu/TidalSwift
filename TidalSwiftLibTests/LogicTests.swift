@@ -599,12 +599,12 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlist?.title, "Barack Obama Speeches")
 		XCTAssertEqual(playlist?.numberOfTracks, 20)
 		XCTAssertEqual(playlist?.numberOfVideos, 0)
-		let description = "Grab inspiration from this collection of No. 44's notable speeches. "
+		let description = "Grab inspiration from this collection of No. 44's notable speeches."
 		XCTAssertEqual(playlist?.description, description)
 		XCTAssertEqual(playlist?.duration, 34170)
 		XCTAssertEqual(playlist?.lastUpdated,
 					   DateFormatter.iso8601OptionalTime.date(from:
-						"2019-02-28T21:14:54.402GMT"))
+						"2020-03-25T08:51:51.549+0000"))
 		XCTAssertEqual(playlist?.created,
 					   DateFormatter.iso8601OptionalTime.date(from:
 						"2018-01-19T17:56:03.125GMT"))
@@ -613,9 +613,9 @@ class LogicTests: XCTestCase {
 		// Here it's true, but in the Search test it's false. No idea, why.
 		XCTAssertEqual(playlist?.url, URL(string:
 			"http://www.tidal.com/playlist/96696a2c-b284-4dd3-8e51-5e0dae44ace0"))
-		XCTAssertEqual(playlist?.image, "43f8e4db-769c-40f6-b561-99609aef0c13")
+		XCTAssertEqual(playlist?.image, "ce98ed35-2655-43b6-aa55-861985abe21e")
 //		print(searchResult?.playlists[0].popularity)
-		XCTAssertEqual(playlist?.squareImage, "50fbe933-0049-4e0e-be82-2de70b19168e")
+		XCTAssertEqual(playlist?.squareImage, "870e1d0a-b4fb-426f-a3e4-a95129260bbb")
 		
 		// Playlist Creator (TIDAL Editorial)
 		XCTAssertEqual(playlist?.creator.id, 0)
@@ -831,8 +831,8 @@ class LogicTests: XCTestCase {
 		}
 		// Djesse (Vol. 1) exists in two versions, Master and Hifi..
 		// It's the second album released and therefore the second and third to last
-		let album1 = artistAlbums[artistAlbums.count - 3] // Hifi
-		let album2 = artistAlbums[artistAlbums.count - 2] // Master
+		let album1 = artistAlbums[artistAlbums.count - 2] // Hifi
+		let album2 = artistAlbums[artistAlbums.count - 3] // Master
 		
 		XCTAssertEqual(album1.id, 100006868)
 		XCTAssertEqual(album1.title, "Djesse Vol. 1")
@@ -927,25 +927,24 @@ class LogicTests: XCTestCase {
 			return
 		}
 		
-		XCTAssertEqual(artistTopTracks.count, 156)
+		XCTAssertEqual(artistTopTracks.count, 155)
 		
-		XCTAssertEqual(artistTopTracks[0].id, 8414613)
-		XCTAssertEqual(artistTopTracks[0].title, "In diesem Moment")
-		XCTAssertEqual(artistTopTracks[0].duration, 226)
-		XCTAssertEqual(artistTopTracks[0].replayGain, -9.8)
-		XCTAssertEqual(artistTopTracks[0].peak, 0.980865)
+		XCTAssertEqual(artistTopTracks[0].id, 70974090)
+		XCTAssertEqual(artistTopTracks[0].title, "Zieh die Schuh aus")
+		XCTAssertEqual(artistTopTracks[0].duration, 196)
+		XCTAssertEqual(artistTopTracks[0].replayGain, -11.04)
+		XCTAssertEqual(artistTopTracks[0].peak, 0.978058)
 		XCTAssertEqual(artistTopTracks[0].allowStreaming, true)
 		XCTAssertEqual(artistTopTracks[0].streamReady, true)
 		XCTAssertEqual(artistTopTracks[0].streamStartDate,
-					   DateFormatter.iso8601OptionalTime.date(from: "2019-10-30")) // Can change. Was 2019-10-30 before.
+					   DateFormatter.iso8601OptionalTime.date(from: "2017-03-17"))
 		XCTAssertEqual(artistTopTracks[0].trackNumber, 4)
 		XCTAssertEqual(artistTopTracks[0].volumeNumber, 1)
 		//		print(artistTopTracks[0].popularity)
-		XCTAssertEqual(artistTopTracks[0].copyright,
-					   "2011 Starwatch Music Under Exclusive License To Warner Music Group Germany Holding GmbH / A Warner Music Group Company")
+		XCTAssertEqual(artistTopTracks[0].copyright, "(P) 2006 CICEU/HDW/RAMOND/HASS")
 		XCTAssertEqual(artistTopTracks[0].url,
-					   URL(string: "http://www.tidal.com/track/8414613"))
-		XCTAssertEqual(artistTopTracks[0].isrc, "DEA621100465")
+					   URL(string: "http://www.tidal.com/track/70974090"))
+		XCTAssertEqual(artistTopTracks[0].isrc, "DEA620600136")
 		XCTAssertEqual(artistTopTracks[0].editable, false)
 		XCTAssertEqual(artistTopTracks[0].explicit, false)
 		XCTAssertEqual(artistTopTracks[0].audioQuality, .hifi)
@@ -958,14 +957,14 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(artistTopTracks[0].artists[0].type, "MAIN")
 		
 		// Album
-		XCTAssertEqual(artistTopTracks[0].album.id, 8414609)
-		XCTAssertEqual(artistTopTracks[0].album.title, "In diesem Moment")
+		XCTAssertEqual(artistTopTracks[0].album.id, 70974086)
+		XCTAssertEqual(artistTopTracks[0].album.title, "Glück ist leicht - Das Beste von 2006 - 2016")
 		
 		// More Tracks
-		XCTAssertEqual(artistTopTracks[1].id, 54054690)
-		XCTAssertEqual(artistTopTracks[1].title, "Come Fly with Me (Live in Hamburg)")
-		XCTAssertEqual(artistTopTracks[2].id, 27228983)
-		XCTAssertEqual(artistTopTracks[2].title, #"Wenn es morgen schon zu Ende wär' (aus "Sing meinen Song")"#)
+		XCTAssertEqual(artistTopTracks[1].id, 27228983)
+		XCTAssertEqual(artistTopTracks[1].title, #"Wenn es morgen schon zu Ende wär' (Aus "Sing meinen Song")"#)
+		XCTAssertEqual(artistTopTracks[2].id, 27228982)
+		XCTAssertEqual(artistTopTracks[2].title, "Glück ist leicht")
 	}
 
 	func testGetArtistBio() {
@@ -1006,7 +1005,7 @@ class LogicTests: XCTestCase {
 			"http://www.tidal.com/artist/10249"))
 		// Interestingly the resulting URL is HTTP instead of HTTPS
 		XCTAssertEqual(similarArtists[0].picture,
-					   "70d5fe37-2326-4208-961b-7984e6605483")
+					   "317cbed7-e20e-4342-8dc9-1ed1702060f3")
 		XCTAssertNotNil(similarArtists[0].popularity)
 		XCTAssertNil(similarArtists[0].type)
 		XCTAssertNil(similarArtists[0].banner)
@@ -1194,15 +1193,15 @@ class LogicTests: XCTestCase {
 //		XCTAssertEqual(playlists[0].numberOfTracks, 64)
 		XCTAssertEqual(playlists[0].numberOfVideos, 0)
 		XCTAssertEqual(playlists[0].description,
-					   "Step onto your mat and into your zen with these meditative tracks. (Photo: Unsplash)")
+					   "Step onto your mat and into your zen with these meditative ambient tracks. (Photo: Unsplash)")
 //		XCTAssertEqual(playlists[0].duration, 18592)
 		XCTAssertEqual(playlists[0].created,
 					   DateFormatter.iso8601OptionalTime.date(from: "2018-02-05T21:44:05.249GMT"))
 		XCTAssertEqual(playlists[0].publicPlaylist, true)
 		XCTAssertEqual(playlists[0].url, URL(string:
 			"http://www.tidal.com/playlist/98676f10-0aa1-4c8c-ba84-4f84e370f3d2"))
-		XCTAssertEqual(playlists[0].image, "51179e26-5245-42d9-a689-7eac460dfba1")
-		XCTAssertEqual(playlists[0].squareImage, "12133a11-be8b-4c27-83bd-d756e4072ac4")
+		XCTAssertEqual(playlists[0].image, "9a365961-8836-42ea-b1a2-1584cb08dae1")
+		XCTAssertEqual(playlists[0].squareImage, "523c695e-ed93-4dcc-8c25-dbe42e806a94")
 		XCTAssertEqual(playlists[0].type, .editorial)
 		XCTAssertEqual(playlists[0].creator.id, 0)
 	}
@@ -1348,7 +1347,7 @@ class LogicTests: XCTestCase {
 		for item in releaseDesc ?? [FavoriteAlbum]() {
 			releaseDescDates.append(item.item.releaseDate ?? nilDate)
 		}
-		XCTAssertEqual(releaseAscDates.reversed(), releaseDescDates)
+		XCTAssertEqual(releaseAscDates.reversed(), releaseDescDates) // TODO: Why does this fail?
 	}
 	
 	func testTracks() {
