@@ -152,7 +152,7 @@ public class Session {
 				let imageSizeString = persistentInformation["imageSize"],
 				let imageSize = Int(imageSizeString)
 			else {
-				displayError(title: "Couldn't load Config", content: "Missing part of Persistent Config")
+				displayError(title: "Couldn't load Config", content: "Missing part of Persistent Config.")
 				return nil
 			}
 			

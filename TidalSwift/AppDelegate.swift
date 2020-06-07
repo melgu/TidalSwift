@@ -65,6 +65,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var offlineTrackSortingCancellable: AnyCancellable?
 	var offlineTrackReversedCancellable: AnyCancellable?
 	
+	// MARK: - Functions
 	
 	override init() {
 		let session = Session(config: nil)
@@ -368,6 +369,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func saveState() {
+		sc.session.saveConfig()
+		sc.session.saveSession()
 		savePlaybackState()
 		saveViewState()
 		saveViewCache()
@@ -538,7 +541,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		NSApp.terminate(nil)
 	}
 	
-	// MARK: File
+	// MARK: - File
 	
 	@IBAction func downloadTrack(_ sender: Any) {
 		print("Menu: downloadTrack")
