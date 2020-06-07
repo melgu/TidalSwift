@@ -79,7 +79,7 @@ public class Config {
 	
 	public init(quality: AudioQuality = .hifi,
 		 loginCredentials: LoginCredentials,
-		 urlType: AudioUrlType = .streaming,
+		 urlType: AudioUrlType,
 		 apiToken: String? = nil,
 		 apiLocation: String = "https://api.tidal.com/v1/",
 		 imageLocation: String = "https://resources.tidal.com/images/",
@@ -144,6 +144,8 @@ public class Session {
 				let quality = AudioQuality(rawValue: qualityString),
 				let username = persistentInformation["username"],
 				let password = persistentInformation["password"],
+				let urlTypeString = persistentInformation["urlType"],
+				let urlType = AudioUrlType(rawValue: urlTypeString),
 				let apiToken = persistentInformation["apiToken"],
 				let apiLocation = persistentInformation["apiLocation"],
 				let imageLocation = persistentInformation["imageLocation"],
@@ -157,6 +159,7 @@ public class Session {
 			return Config(quality: quality,
 						  loginCredentials: LoginCredentials(username: username,
 															 password: password),
+						  urlType: urlType,
 						  apiToken: apiToken,
 						  apiLocation: apiLocation,
 						  imageLocation: imageLocation,
@@ -169,7 +172,7 @@ public class Session {
 			if let config = loadConfig() {
 				self.config = config
 			} else {
-				self.config = Config(loginCredentials: LoginCredentials(username: "", password: ""))
+				self.config = Config(loginCredentials: LoginCredentials(username: "", password: ""), urlType: .offline)
 			}
 		}
 		helpers = Helpers(session: self)
@@ -211,6 +214,7 @@ public class Session {
 		let persistentInformation: [String: String] = ["quality": config.quality.rawValue,
 													   "username": config.loginCredentials.username,
 													   "password": config.loginCredentials.password,
+													   "urlType": config.urlType.rawValue,
 													   "apiToken": config.apiToken,
 													   "apiLocation": config.apiLocation,
 													   "imageLocation": config.imageLocation,
