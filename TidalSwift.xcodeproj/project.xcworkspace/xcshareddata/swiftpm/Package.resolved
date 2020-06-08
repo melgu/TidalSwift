@@ -32,9 +32,9 @@
         "package": "UpdateNotification",
         "repositoryURL": "git@bitbucket.org:MikelG/updatenotification.git",
         "state": {
-          "branch": null,
-          "revision": "a198a04c3fb74743c90655e00349d412faf566c7",
-          "version": "1.0.1"
+          "branch": "master",
+          "revision": "9dd07d9d919215d048be377145c6055832fecd05",
+          "version": null
         }
       }
     ]
