@@ -256,10 +256,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			} else {
 				viewState.maxHistoryItems = 100
 			}
-			
-			if updateNotification.checkForUpdates() {
-				updateNotification.showNewVersionView()
-			}
 		}
 		
 		// Space for Play/Pause
@@ -295,6 +291,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		)
 		
 		window.makeKeyAndOrderFront(nil)
+		
+		if updateNotification.checkForUpdates() {
+			updateNotification.showNewVersionView()
+		}
 		
 		sc.session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
 		
