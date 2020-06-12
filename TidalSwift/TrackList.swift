@@ -190,6 +190,7 @@ struct TrackRow: View {
 					}
 				}
 			}
+			.foregroundColor(self.track.isUnavailable ? .secondary : .primary)
 		}
 		.lineLimit(1)
 		.frame(height: showCover ? 30 : 16) // Values tested "by hand"

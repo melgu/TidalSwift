@@ -323,6 +323,8 @@ extension Album {
 				Image("m.square.fill")
 			} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
 				Image("headphones")
+			} else if self.audioModes?.contains(.dolbyAtmos) ?? false {
+				Image("hifispeaker.fill")
 			} else {
 				Text("")
 			}
@@ -331,6 +333,9 @@ extension Album {
 	}
 	
 	var hasAttributes: Bool {
-		return self.explicit ?? false || self.audioQuality == .master || self.audioModes?.contains(.sony360RealityAudio) ?? false
+		return self.explicit ?? false
+			|| self.audioQuality == .master
+			|| self.audioModes?.contains(.sony360RealityAudio) ?? false
+			|| self.audioModes?.contains(.dolbyAtmos) ?? false
 	}
 }
