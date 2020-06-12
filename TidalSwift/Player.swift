@@ -418,7 +418,7 @@ class Player {
 		guard !queueInfo.queue.isEmpty else {
 			return ""
 		}
-		guard let quality = queueInfo.queue[0].track.audioQuality else {
+		guard let quality = queueInfo.queue[queueInfo.currentIndex].track.audioQuality else {
 			return ""
 		}
 		
@@ -442,7 +442,7 @@ class Player {
 		guard !queueInfo.queue.isEmpty else {
 			return ""
 		}
-		guard let quality = queueInfo.queue[0].track.audioQuality else {
+		guard let quality = queueInfo.queue[queueInfo.currentIndex].track.audioQuality else {
 			return ""
 		}
 		

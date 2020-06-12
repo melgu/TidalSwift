@@ -12,7 +12,7 @@ import XCTest
 class LogicTests: XCTestCase {
 	
 //	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
-	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: "")))
+	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: ""), urlType: .offline))
 	
 	var tempConfig: Config?
 	var tempSession: Session?
@@ -85,14 +85,14 @@ class LogicTests: XCTestCase {
 	func testWrongLogin() {
 		// Wrong Login Info
 		let loginInfo1 = LoginCredentials(username: "ABC", password: "ABC")
-		let config1 = Config(quality: .hifi, loginCredentials: loginInfo1)
+		let config1 = Config(quality: .hifi, loginCredentials: loginInfo1, urlType: .offline)
 		session = Session(config: config1)
 		let result1 = session.login()
 		XCTAssertFalse(result1)
 
 		// Empty Login Info
 		let loginInfo2 = LoginCredentials(username: "", password: "")
-		let config2 = Config(quality: .hifi, loginCredentials: loginInfo2)
+		let config2 = Config(quality: .hifi, loginCredentials: loginInfo2, urlType: .offline)
 		session = Session(config: config2)
 		let result2 = session.login()
 		XCTAssertFalse(result2)
@@ -102,7 +102,7 @@ class LogicTests: XCTestCase {
 		XCTAssert(session.checkLogin())
 		
 		let loginCredentials = LoginCredentials(username: "", password: "")
-		let config = Config(quality: .hifi, loginCredentials: loginCredentials)
+		let config = Config(quality: .hifi, loginCredentials: loginCredentials, urlType: .offline)
 		session = Session(config: config)
 		
 		XCTAssertFalse(session.checkLogin())

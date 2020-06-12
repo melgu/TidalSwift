@@ -247,12 +247,22 @@ extension Track {
 				Image("m.square.fill")
 			} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
 				Image("headphones")
+			} else if self.audioModes?.contains(.dolbyAtmos) ?? false {
+				Image("hifispeaker.fill")
 			}
 		}
 		.secondaryIconColor()
 	}
 	
 	var hasAttributes: Bool {
-		return self.explicit || self.audioQuality == .master || self.audioModes?.contains(.sony360RealityAudio) ?? false
+		return self.explicit
+			|| self.audioQuality == .master
+			|| self.audioModes?.contains(.sony360RealityAudio) ?? false
+			|| self.audioModes?.contains(.dolbyAtmos) ?? false
+	}
+	
+	var isUnavailable: Bool {
+		return self.audioModes?.contains(.sony360RealityAudio) ?? false
+			|| self.audioModes?.contains(.dolbyAtmos) ?? false
 	}
 }
