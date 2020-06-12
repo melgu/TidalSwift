@@ -167,20 +167,30 @@ class Player {
 		let wasPlaying = playbackInfo.playing
 		pause()
 		
+		func skip() {
+			failedItems += 1
+			if failedItems == queueInfo.queue.count {
+				clearQueue()
+			} else {
+				next()
+			}
+		}
+		
+		if track.isUnavailable {
+			skip()
+			return
+		}
+		
 		let url: URL
 		if let offlineUrl = session.helpers.offline.url(for: track) {
 			url = offlineUrl
 		} else {
-			guard let onlineUrl = track.getAudioUrl(session: session) else {
-				failedItems += 1
-				if failedItems == queueInfo.queue.count {
-					clearQueue()
-				} else {
-					next()
-				}
+			if let onlineUrl = track.getAudioUrl(session: session) {
+				url = onlineUrl
+			} else {
+				skip()
 				return
 			}
-			url = onlineUrl
 		}
 		failedItems = 0
 		
