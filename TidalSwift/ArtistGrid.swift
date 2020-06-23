@@ -18,7 +18,7 @@ struct ArtistGrid: View {
 	
 	var body: some View {
 		Grid(artists) { artist in
-			ArtistGridItem(artist: artist, session: self.session, player: self.player)
+			ArtistGridItem(artist: artist, session: session, player: player)
 		}
 		.gridStyle(
 			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(200), spacing: 10)
@@ -35,9 +35,9 @@ struct ArtistGridItem: View {
 	
 	var body: some View {
 		VStack {
-			if artist.getPictureUrl(session: session, resolution: 320) != nil {
+			if let pictureUrl = artist.getPictureUrl(session: session, resolution: 320) {
 				URLImageSourceView(
-					artist.getPictureUrl(session: session, resolution: 320)!,
+					pictureUrl,
 					isAnimationEnabled: true,
 					label: Text(artist.name)
 				)
@@ -66,16 +66,16 @@ struct ArtistGridItem: View {
 		.padding(5)
 		.toolTip(artist.name)
 		.onTapGesture(count: 2) {
-			print("\(self.artist.name)")
-			self.player.add(artist: self.artist, .now)
-			self.player.play()
+			print("\(artist.name)")
+			player.add(artist: artist, .now)
+			player.play()
 		}
 		.onTapGesture(count: 1) {
-			print("First Click. \(self.artist.name)")
-			self.viewState.push(artist: self.artist)
+			print("First Click. \(artist.name)")
+			viewState.push(artist: artist)
 		}
 		.contextMenu {
-			ArtistContextMenu(artist: self.artist, session: self.session, player: self.player)
+			ArtistContextMenu(artist: artist, session: session, player: player)
 		}
 	}
 }
@@ -92,17 +92,17 @@ struct ArtistContextMenu: View {
 	var body: some View {
 		Group {
 			Button(action: {
-				self.player.add(artist: self.artist, .now)
+				player.add(artist: artist, .now)
 			}) {
 				Text("Play Now")
 			}
 			Button(action: {
-				self.player.add(artist: self.artist, .next)
+				player.add(artist: artist, .next)
 			}) {
 				Text("Add Next")
 			}
 			Button(action: {
-				self.player.add(artist: self.artist, .last)
+				player.add(artist: artist, .last)
 			}) {
 				Text("Add Last")
 			}
@@ -112,17 +112,17 @@ struct ArtistContextMenu: View {
 					if artist.isInFavorites(session: session) ?? true {
 						Button(action: {
 							print("Remove from Favorites")
-							self.session.favorites!.removeArtist(artistId: self.artist.id)
-							self.viewState.refreshCurrentView()
-							self.t.toggle()
+							session.favorites!.removeArtist(artistId: artist.id)
+							viewState.refreshCurrentView()
+							t.toggle()
 						}) {
 							Text("Remove from Favorites")
 						}
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							self.session.favorites!.addArtist(artistId: self.artist.id)
-							self.t.toggle()
+							session.favorites!.addArtist(artistId: artist.id)
+							t.toggle()
 						}) {
 							Text("Add to Favorites")
 						}
@@ -136,9 +136,9 @@ struct ArtistContextMenu: View {
 				Text("Offline")
 			}
 			Button(action: {
-				print("Download all Albums of \(self.artist.name)")
+				print("Download all Albums of \(artist.name)")
 				DispatchQueue.global(qos: .background).async {
-					_ = self.session.helpers.downloadAllAlbums(from: self.artist)
+					_ = session.helpers.downloadAllAlbums(from: artist)
 				}
 			}) {
 				Text("Download all Albums")
@@ -147,23 +147,23 @@ struct ArtistContextMenu: View {
 			Group {
 				Button(action: {
 					print("Radio")
-					if let radioTracks = self.artist.radio(session: self.session) {
-						self.player.add(tracks: radioTracks, .now)
+					if let radioTracks = artist.radio(session: session) {
+						player.add(tracks: radioTracks, .now)
 					}
 				}) {
 					Text("Radio")
 				}
-				if artist.getPictureUrl(session: self.session, resolution: 750) != nil {
+				if let pictureUrl = artist.getPictureUrl(session: session, resolution: 750) {
 					Button(action: {
 						print("Picture")
 						let controller = CoverWindowController(rootView:
 							URLImageSourceView(
-								self.artist.getPictureUrl(session: self.session, resolution: 750)!,
+								pictureUrl,
 								isAnimationEnabled: true,
-								label: Text(self.artist.name)
+								label: Text(artist.name)
 							)
 						)
-						controller.window?.title = self.artist.name
+						controller.window?.title = artist.name
 						controller.showWindow(nil)
 					}) {
 						Text("Picture")
@@ -172,18 +172,18 @@ struct ArtistContextMenu: View {
 				Button(action: {
 					print("Bio")
 					let controller = ResizableWindowController(rootView:
-						ArtistBioView(session: self.session, artist: self.artist)
-							.environmentObject(self.viewState)
+						ArtistBioView(session: session, artist: artist)
+							.environmentObject(viewState)
 					)
-					controller.window?.title = "Bio – \(self.artist.name)"
+					controller.window?.title = "Bio – \(artist.name)"
 					controller.showWindow(nil)
 				}) {
 					Text("Bio")
 				}
-				if artist.url != nil {
+				if let url = artist.url {
 					Button(action: {
 						print("Share Artist")
-						Pasteboard.copy(string: self.artist.url!.absoluteString)
+						Pasteboard.copy(string: url.absoluteString)
 					}) {
 						Text("Copy URL")
 					}

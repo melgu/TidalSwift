@@ -18,7 +18,7 @@ struct PlaylistGrid: View {
 	
 	var body: some View {
 		Grid(playlists) { playlist in
-			PlaylistGridItem(playlist: playlist, session: self.session, player: self.player)
+			PlaylistGridItem(playlist: playlist, session: session, player: player)
 		}
 		.gridStyle(
 			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(200), spacing: 10)
@@ -36,9 +36,9 @@ struct PlaylistGridItem: View {
 	var body: some View {
 		VStack {
 			ZStack(alignment: .bottomTrailing) {
-				if playlist.getImageUrl(session: session, resolution: 320) != nil {
+				if let imageUrl = playlist.getImageUrl(session: session, resolution: 320) {
 					URLImageSourceView(
-						playlist.getImageUrl(session: session, resolution: 320)!,
+						imageUrl,
 						isAnimationEnabled: true,
 						label: Text(playlist.title)
 					)
@@ -75,16 +75,16 @@ struct PlaylistGridItem: View {
 		.padding(5)
 		.toolTip(playlist.title)
 		.onTapGesture(count: 2) {
-			print("Second Click. \(self.playlist.title)")
-			self.player.add(playlist: self.playlist, .now)
-			self.player.play()
+			print("Second Click. \(playlist.title)")
+			player.add(playlist: playlist, .now)
+			player.play()
 		}
 		.onTapGesture(count: 1) {
-			print("First Click. \(self.playlist.title)")
-			self.viewState.push(playlist: self.playlist)
+			print("First Click. \(playlist.title)")
+			viewState.push(playlist: playlist)
 		}
 		.contextMenu {
-			PlaylistContextMenu(playlist: self.playlist, session: session, player: player)
+			PlaylistContextMenu(playlist: playlist, session: session, player: player)
 		}
 	}
 }
@@ -103,17 +103,17 @@ struct PlaylistContextMenu: View {
 		Group {
 //			Group{
 				Button(action: {
-					self.player.add(playlist: self.playlist, .now)
+					player.add(playlist: playlist, .now)
 				}) {
 					Text("Play Now")
 				}
 				Button(action: {
-					self.player.add(playlist: self.playlist, .next)
+					player.add(playlist: playlist, .next)
 				}) {
 					Text("Add Next")
 				}
 				Button(action: {
-					self.player.add(playlist: self.playlist, .last)
+					player.add(playlist: playlist, .last)
 				}) {
 					Text("Add Last")
 				}
@@ -123,15 +123,15 @@ struct PlaylistContextMenu: View {
 				if playlist.creator.id == session.userId { // My playlist
 					Button(action: {
 						print("Edit Playlist")
-						self.playlistEditingValues.playlist = self.playlist
-						self.playlistEditingValues.showEditModal = true
+						playlistEditingValues.playlist = playlist
+						playlistEditingValues.showEditModal = true
 					}) {
 						Text("Edit Playlist …")
 					}
 					Button(action: {
 						print("Delete Playlist")
-						self.playlistEditingValues.playlist = self.playlist
-						self.playlistEditingValues.showDeleteModal = true
+						playlistEditingValues.playlist = playlist
+						playlistEditingValues.showDeleteModal = true
 					}) {
 						Text("Delete Playlist …")
 					}
@@ -140,16 +140,16 @@ struct PlaylistContextMenu: View {
 						if playlist.isInFavorites(session: session) ?? false {
 							Button(action: {
 								print("Remove from Favorites")
-								self.session.favorites!.removePlaylist(playlistId: self.playlist.uuid)
-								self.t.toggle()
+								session.favorites!.removePlaylist(playlistId: playlist.uuid)
+								t.toggle()
 							}) {
 								Text("Remove from Favorites")
 							}
 						} else {
 							Button(action: {
 								print("Add to Favorites")
-								self.session.favorites!.addPlaylist(playlistId: self.playlist.uuid)
-								self.t.toggle()
+								session.favorites!.addPlaylist(playlistId: playlist.uuid)
+								t.toggle()
 							}) {
 								Text("Add to Favorites")
 							}
@@ -157,10 +157,10 @@ struct PlaylistContextMenu: View {
 					}
 				}
 				Button(action: {
-					print("Add \(self.playlist.title) to Playlist")
-					if let tracks = self.session.getPlaylistTracks(playlistId: self.playlist.uuid) {
-						self.playlistEditingValues.tracks = tracks
-						self.playlistEditingValues.showAddTracksModal = true
+					print("Add \(playlist.title) to Playlist")
+					if let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) {
+						playlistEditingValues.tracks = tracks
+						playlistEditingValues.showAddTracksModal = true
 					}
 				}) {
 					Text("Add to Playlist …")
@@ -169,12 +169,12 @@ struct PlaylistContextMenu: View {
 			Divider()
 			Group {
 				if t || !t {
-					if self.playlist.isOffline(session: session) {
+					if playlist.isOffline(session: session) {
 						Button(action: {
 							print("Remove from Offline")
-							self.playlist.removeOffline(session: self.session)
-							self.viewState.refreshCurrentView()
-							self.t.toggle()
+							playlist.removeOffline(session: session)
+							viewState.refreshCurrentView()
+							t.toggle()
 						}) {
 							Text("Remove from Offline")
 						}
@@ -182,10 +182,10 @@ struct PlaylistContextMenu: View {
 						Button(action: {
 							print("Add to Offline")
 							DispatchQueue.global(qos: .background).async {
-								self.playlist.addOffline(session: self.session)
+								playlist.addOffline(session: session)
 								DispatchQueue.main.async {
-									self.viewState.refreshCurrentView()
-									self.t.toggle()
+									viewState.refreshCurrentView()
+									t.toggle()
 								}
 							}
 						}) {
@@ -197,7 +197,7 @@ struct PlaylistContextMenu: View {
 				Button(action: {
 					print("Download")
 					DispatchQueue.global(qos: .background).async {
-						_ = self.session.helpers.download(playlist: self.playlist)
+						_ = session.helpers.download(playlist: playlist)
 					}
 				}) {
 					Text("Download")
@@ -205,17 +205,17 @@ struct PlaylistContextMenu: View {
 			}
 			Divider()
 			Group {
-				if playlist.getImageUrl(session: self.session, resolution: 750) != nil {
+				if let imageUrl = playlist.getImageUrl(session: session, resolution: 750) {
 					Button(action: {
 						print("Image")
 						let controller = CoverWindowController(rootView:
 							URLImageSourceView(
-								self.playlist.getImageUrl(session: self.session, resolution: 750)!,
+								imageUrl,
 								isAnimationEnabled: true,
-								label: Text(self.playlist.title)
+								label: Text(playlist.title)
 							)
 						)
-						controller.window?.title = self.playlist.title
+						controller.window?.title = playlist.title
 						controller.showWindow(nil)
 					}) {
 						Text("Image")
@@ -223,7 +223,7 @@ struct PlaylistContextMenu: View {
 				}
 				Button(action: {
 					print("Share Playlist")
-					Pasteboard.copy(string: self.playlist.url.absoluteString)
+					Pasteboard.copy(string: playlist.url.absoluteString)
 				}) {
 					Text("Copy URL")
 				}

@@ -21,22 +21,22 @@ struct AccountInfoView: View {
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
-				if loadingState == .successful {
+				if loadingState == .successful, let user = user, let subscription = subscription {
 					HStack {
 						VStack {
 							Text("User")
 								.font(.title)
-							if self.user!.getPictureUrl(session: self.session, resolution: 210) != nil {
-							URLImageSourceView(
-								self.user!.getPictureUrl(session: self.session, resolution: 210)!,
-								isAnimationEnabled: true,
-								label: Text(self.user!.username)
-							)
+							if let pictureUrl = user.getPictureUrl(session: session, resolution: 210) {
+								URLImageSourceView(
+									pictureUrl,
+									isAnimationEnabled: true,
+									label: Text(user.username)
+								)
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 							}
-							UserInfoView(user: self.user!, session: self.session)
+							UserInfoView(user: user, session: session)
 							Spacer(minLength: 0)
 						}
 						.padding()
@@ -44,7 +44,7 @@ struct AccountInfoView: View {
 						VStack {
 							Text("Subscription")
 								.font(.title)
-							SubscriptionInfoView(subscription: self.subscription!)
+							SubscriptionInfoView(subscription: subscription)
 							Spacer(minLength: 0)
 						}
 						.padding()
@@ -60,11 +60,11 @@ struct AccountInfoView: View {
 			}
 		}
 		.onAppear {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+			workItem = createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
 		}
 		.onDisappear {
-			self.workItem?.cancel()
+			workItem?.cancel()
 		}
 	}
 	
@@ -73,20 +73,20 @@ struct AccountInfoView: View {
 			var tUser: User?
 			var tSubscription: Subscription?
 			
-			if let userId = self.session.userId {
-				tUser = self.session.getUser(userId: userId)
+			if let userId = session.userId {
+				tUser = session.getUser(userId: userId)
 			}
-			tSubscription = self.session.getSubscriptionInfo()
+			tSubscription = session.getSubscriptionInfo()
 			
 			if tUser != nil && tSubscription != nil {
 				DispatchQueue.main.async {
-					self.user = tUser
-					self.subscription = tSubscription
-					self.loadingState = .successful
+					user = tUser
+					subscription = tSubscription
+					loadingState = .successful
 				}
 			} else {
 				DispatchQueue.main.async {
-					self.loadingState = .error
+					loadingState = .error
 				}
 			}
 		}

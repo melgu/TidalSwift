@@ -644,16 +644,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			albumRemoveFavorites.isHidden = true
 			albumAddFavorites.isEnabled = false
 			return
-		} else {
-			goToAlbum.isEnabled = true
-			goToArtist.isEnabled = true
-			addToFavorites.isEnabled = true
-			addToPlaylist.isEnabled = true
-			albumAddFavorites.isEnabled = true
 		}
 		
+		goToAlbum.isEnabled = true
+		goToArtist.isEnabled = true
+		addToFavorites.isEnabled = true
+		addToPlaylist.isEnabled = true
+		albumAddFavorites.isEnabled = true
+		
 		let trackIsInFavorites = sc.player.queueInfo.queue[currentIndex].track.isInFavorites(session: sc.session)
-		if trackIsInFavorites != nil && trackIsInFavorites! {
+		if trackIsInFavorites ?? false {
 			addToFavorites.isHidden = true
 			removeFromFavorites.isHidden = false
 		} else {
@@ -662,7 +662,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 		
 		let albumIsInFavorites = sc.player.queueInfo.queue[currentIndex].track.album.isInFavorites(session: sc.session)
-		if albumIsInFavorites != nil && albumIsInFavorites! {
+		if albumIsInFavorites ?? false {
 			albumAddFavorites.isHidden = true
 			albumRemoveFavorites.isHidden = false
 		} else {

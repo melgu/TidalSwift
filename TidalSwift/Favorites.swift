@@ -16,7 +16,7 @@ struct ReverseButton: View {
 	
 	var body: some View {
 		Button(action: {
-			self.reversed.toggle()
+			reversed.toggle()
 		}) {
 			if reversed {
 				Text("∨")
@@ -58,15 +58,12 @@ struct FavoritePlaylists: View {
 					.frame(width: PICKERWIDTH)
 					ReverseButton(reversed: $sortingState.favoritePlaylistReversed)
 				}
-				if viewState.stack.last?.playlists != nil {
+				if let playlists = viewState.stack.last?.playlists {
 					HStack {
-						Text("\(viewState.stack.last!.playlists!.count) \(viewState.stack.last!.playlists!.count == 1 ? "Playlist" : "Playlists")")
+						Text("\(playlists.count) \(viewState.stack.last!.playlists!.count == 1 ? "Playlist" : "Playlists")")
 						Spacer()
 					}
-				}
-				
-				if viewState.stack.last?.playlists != nil {
-					PlaylistGrid(playlists: viewState.stack.last!.playlists!.sortedPlaylists(by: sortingState.favoritePlaylistSorting).reversed(sortingState.favoritePlaylistReversed), session: session, player: player)
+					PlaylistGrid(playlists: playlists.sortedPlaylists(by: sortingState.favoritePlaylistSorting).reversed(sortingState.favoritePlaylistReversed), session: session, player: player)
 				}
 				Spacer(minLength: 0)
 			}
@@ -102,15 +99,12 @@ struct FavoriteAlbums: View {
 					.frame(width: PICKERWIDTH)
 					ReverseButton(reversed: $sortingState.favoriteAlbumReversed)
 				}
-				if viewState.stack.last?.albums != nil {
+				if let albums = viewState.stack.last?.albums {
 					HStack {
-						Text("\(viewState.stack.last!.albums!.count) \(viewState.stack.last!.albums!.count == 1 ? "Album" : "Albums")")
+						Text("\(albums.count) \(albums.count == 1 ? "Album" : "Albums")")
 						Spacer()
 					}
-				}
-				
-				if viewState.stack.last!.albums != nil {
-					AlbumGrid(albums: viewState.stack.last!.albums!.sortedAlbums(by: sortingState.favoriteAlbumSorting).reversed(sortingState.favoriteAlbumReversed), showArtists: true, session: session, player: player)
+					AlbumGrid(albums: albums.sortedAlbums(by: sortingState.favoriteAlbumSorting).reversed(sortingState.favoriteAlbumReversed), showArtists: true, session: session, player: player)
 				}
 				Spacer(minLength: 0)
 			}
@@ -140,18 +134,18 @@ struct FavoriteTracks: View {
 								.primaryIconColor()
 								.onTapGesture {
 									print("Remove from Offline")
-									self.session.helpers.offline.saveFavoritesOffline = false
-									self.session.helpers.offline.asyncSyncFavoriteTracks()
-									self.viewState.refreshCurrentView()
+									session.helpers.offline.saveFavoritesOffline = false
+									session.helpers.offline.asyncSyncFavoriteTracks()
+									viewState.refreshCurrentView()
 								}
 						} else {
 							Image("cloud-big")
 								.primaryIconColor()
 								.onTapGesture {
 									print("Add to Offline")
-									self.session.helpers.offline.saveFavoritesOffline = true
-									self.session.helpers.offline.asyncSyncFavoriteTracks()
-									self.viewState.refreshCurrentView()
+									session.helpers.offline.saveFavoritesOffline = true
+									session.helpers.offline.asyncSyncFavoriteTracks()
+									viewState.refreshCurrentView()
 								}
 						}
 						Picker(selection: $sortingState.favoriteTrackSorting, label: Spacer(minLength: 0)) {
@@ -167,17 +161,17 @@ struct FavoriteTracks: View {
 						.frame(width: PICKERWIDTH)
 						ReverseButton(reversed: $sortingState.favoriteTrackReversed)
 					}
-					if viewState.stack.last?.tracks != nil {
+					if let tracks = viewState.stack.last?.tracks {
 						HStack {
-							Text("\(viewState.stack.last!.tracks!.count) \(viewState.stack.last!.tracks!.count == 1 ? "Track" : "Tracks")")
+							Text("\(tracks.count) \(tracks.count == 1 ? "Track" : "Tracks")")
 							Spacer()
 						}
 					}
 				}
 				.padding(.horizontal)
 				
-				if viewState.stack.last?.tracks != nil {
-					TrackList(wrappedTracks: viewState.stack.last!.tracks!.sortedTracks(by: sortingState.favoriteTrackSorting).reversed(sortingState.favoriteTrackReversed).wrapped(),
+				if let tracks = viewState.stack.last?.tracks {
+					TrackList(wrappedTracks: tracks.sortedTracks(by: sortingState.favoriteTrackSorting).reversed(sortingState.favoriteTrackReversed).wrapped(),
 							  showCover: true, showAlbumTrackNumber: false,
 							  showArtist: true, showAlbum: true, playlist: nil,
 							  session: session, player: player)
@@ -215,15 +209,12 @@ struct FavoriteVideos: View {
 					.frame(width: PICKERWIDTH)
 					ReverseButton(reversed: $sortingState.favoriteVideoReversed)
 				}
-				if viewState.stack.last?.videos != nil {
+				if let videos = viewState.stack.last?.videos {
 					HStack {
-						Text("\(viewState.stack.last!.videos!.count) \(viewState.stack.last!.videos!.count == 1 ? "Video" : "Videos")")
+						Text("\(videos.count) \(videos.count == 1 ? "Video" : "Videos")")
 						Spacer()
 					}
-				}
-				
-				if viewState.stack.last!.videos != nil {
-					VideoGrid(videos: viewState.stack.last!.videos!.sortedVideos(by: sortingState.favoriteVideoSorting).reversed(sortingState.favoriteVideoReversed),
+					VideoGrid(videos: videos.sortedVideos(by: sortingState.favoriteVideoSorting).reversed(sortingState.favoriteVideoReversed),
 							  showArtists: true, session: session, player: player)
 				}
 				Spacer(minLength: 0)
@@ -258,16 +249,13 @@ struct FavoriteArtists: View {
 						.frame(width: PICKERWIDTH)
 						ReverseButton(reversed: $sortingState.favoriteArtistReversed)
 					}
-					if viewState.stack.last?.artists != nil {
+					if let artists = viewState.stack.last?.artists {
 						HStack {
-							Text("\(viewState.stack.last!.artists!.count) \(viewState.stack.last!.artists!.count == 1 ? "Artist" : "Artists")")
+							Text("\(artists.count) \(artists.count == 1 ? "Artist" : "Artists")")
 							Spacer()
 						}
+						ArtistGrid(artists: artists.sortedArtists(by: sortingState.favoriteArtistSorting).reversed(sortingState.favoriteArtistReversed), session: session, player: player)
 					}
-				}
-				
-				if viewState.stack.last!.artists != nil {
-					ArtistGrid(artists: viewState.stack.last!.artists!.sortedArtists(by: sortingState.favoriteArtistSorting).reversed(sortingState.favoriteArtistReversed), session: session, player: player)
 				}
 				Spacer(minLength: 0)
 			}

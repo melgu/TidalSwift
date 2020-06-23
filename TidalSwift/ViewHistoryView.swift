@@ -22,7 +22,7 @@ struct ViewHistoryView: View {
 					Spacer(minLength: 5)
 					VStack {
 						Button(action: {
-							self.viewState.clearHistory()
+							viewState.clearHistory()
 						}) {
 							Text("Clear")
 						}
@@ -68,10 +68,10 @@ struct ViewHistoryViewRow: View {
 	var body: some View {
 		Text(text)
 			.onTapGesture(count: 2) {
-				if self.view.isBase() {
-					self.viewState.clearStack()
+				if view.isBase() {
+					viewState.clearStack()
 				}
-				self.viewState.push(view: self.view)
+				viewState.push(view: view)
 			}
 	}
 }

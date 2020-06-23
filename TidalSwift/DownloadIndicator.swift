@@ -21,15 +21,15 @@ struct DownloadIndicator: View {
 			if downloadStatus.downloadingTasks > 0 {
 				Text(animationState ? "􀈉" : "􀈈")
 					.onAppear {
-						self.timerCancellable = Timer.publish(every: 1, on: .main, in: .default)
+						timerCancellable = Timer.publish(every: 1, on: .main, in: .default)
 							.autoconnect()
 							.sink { _ in
-								self.animationState.toggle()
+								animationState.toggle()
 							}
 					}
 					.toolTip("Downloads currently running")
 					.onDisappear {
-						self.timerCancellable?.cancel()
+						timerCancellable?.cancel()
 					}
 			}
 		}

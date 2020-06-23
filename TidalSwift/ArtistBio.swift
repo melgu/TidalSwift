@@ -26,22 +26,20 @@ struct ArtistBioView: View {
 						.padding(.bottom)
 					Spacer(minLength: 0)
 				}
-				if bio != nil {
+				if let bio = bio {
 					Group {
-						Text(bio!.text)
+						Text(bio.text)
 						Text("")
-						Text("\(bio!.source) – Last Updated: \(bio!.lastUpdatedString)")
+						Text("\(bio.source) – Last Updated: \(bio.lastUpdatedString)")
 							.foregroundColor(.secondary)
 							.multilineTextAlignment(.center)
 					}
 					.contextMenu {
-						if bio != nil {
-							Button(action: {
-								print("Copy Artist Bio")
-								Pasteboard.copy(string: self.bio!.text)
-							}) {
-								Text("Copy")
-							}
+						Button(action: {
+							print("Copy Artist Bio")
+							Pasteboard.copy(string: bio.text)
+						}) {
+							Text("Copy")
 						}
 					}
 				} else if loadingState == .loading {
@@ -56,26 +54,26 @@ struct ArtistBioView: View {
 			.padding()
 		}
 		.onAppear {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+			workItem = createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
 		}
 		.onDisappear {
-			self.workItem?.cancel()
+			workItem?.cancel()
 		}
 	}
 	
 	func createWorkItem() -> DispatchWorkItem {
 		DispatchWorkItem {
-			let t = self.artist.bio(session: self.session)
+			let t = artist.bio(session: session)
 			
 			if t != nil {
 				DispatchQueue.main.async {
-					self.bio = t
-					self.loadingState = .successful
+					bio = t
+					loadingState = .successful
 				}
 			} else {
 				DispatchQueue.main.async {
-					self.loadingState = .error
+					loadingState = .error
 				}
 			}
 		}

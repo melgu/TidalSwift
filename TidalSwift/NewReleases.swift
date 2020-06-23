@@ -25,8 +25,8 @@ struct NewReleases: View {
 					LoadingSpinner()
 				}
 				
-				if viewState.stack.last?.albums != nil {
-					AlbumGrid(albums: viewState.stack.last!.albums!, showArtists: true, showReleaseDate: true, session: session, player: player)
+				if let albums = viewState.stack.last?.albums {
+					AlbumGrid(albums: albums, showArtists: true, showReleaseDate: true, session: session, player: player)
 				}
 				Spacer(minLength: 0)
 			}

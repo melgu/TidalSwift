@@ -58,8 +58,8 @@ class Network {
 		//	print("=== Network Request ===")
 		//	print("\(request.httpMethod!) Request with URL: \(request.url!.absoluteString)")
 		//	print("Headers: \(request.allHTTPHeaderFields!)")
-		//	if request.httpBody != nil {
-		//		print("Body: \(String(data: request.httpBody!, encoding: String.Encoding.utf8)!)")
+		//	if let httpBody = request.httpBody {
+		//		print("Body: \(String(data: httpBody, encoding: String.Encoding.utf8)!)")
 		//	}
 		//	print("=======================")
 		

@@ -19,7 +19,7 @@ struct VideoGrid: View {
 	
 	var body: some View {
 		Grid(videos) { video in
-			VideoGridItem(video: video, showArtist: self.showArtists, session: self.session, player: self.player)
+			VideoGridItem(video: video, showArtist: showArtists, session: session, player: player)
 		}
 		.gridStyle(
 			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(210), spacing: 10)
@@ -37,9 +37,9 @@ struct VideoGridItem: View {
 	
 	var body: some View {
 		VStack {
-			if video.getImageUrl(session: session, resolution: 320) != nil {
+			if let imageUrl = video.getImageUrl(session: session, resolution: 320) {
 				URLImageSourceView(
-					video.getImageUrl(session: session, resolution: 320)!,
+					imageUrl,
 					isAnimationEnabled: true,
 					label: Text(video.title)
 				)
@@ -82,18 +82,18 @@ struct VideoGridItem: View {
 		.padding(5)
 		.toolTip("\(video.title) – \(video.artists.formArtistString())")
 		.onTapGesture(count: 2) {
-			print("Play Video: \(self.video.title)")
-			guard let url = self.video.getVideoUrl(session: self.session) else {
+			print("Play Video: \(video.title)")
+			guard let url = video.getVideoUrl(session: session) else {
 				return
 			}
 			print(url)
-			self.player.pause()
-			let controller = VideoPlayerController(videoUrl: url, volume: self.playbackInfo.volume)
-			controller.window?.title = "\(self.video.title) - \(self.video.artists.formArtistString())"
+			player.pause()
+			let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
+			controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
 			controller.showWindow(nil)
 		}
 		.contextMenu {
-			VideoContextMenu(video: self.video, session: self.session, player: self.player)
+			VideoContextMenu(video: video, session: session, player: player)
 		}
 	}
 }
@@ -111,14 +111,14 @@ struct VideoContextMenu: View {
 		Group {
 			if video.streamReady {
 				Button(action: {
-					print("Play Video: \(self.video.title)")
-					guard let url = self.video.getVideoUrl(session: self.session) else {
+					print("Play Video: \(video.title)")
+					guard let url = video.getVideoUrl(session: session) else {
 						return
 					}
 					print(url)
-					self.player.pause()
-					let controller = VideoPlayerController(videoUrl: url, volume: self.playbackInfo.volume)
-					controller.window?.title = "\(self.video.title) - \(self.video.artists.formArtistString())"
+					player.pause()
+					let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
+					controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
 					controller.showWindow(nil)
 				}) {
 					Text("Play")
@@ -130,9 +130,9 @@ struct VideoContextMenu: View {
 			Divider()
 			if video.artists[0].name != "Various Artists" {
 				Group {
-					ForEach(self.video.artists) { artist in
+					ForEach(video.artists) { artist in
 						Button(action: {
-							self.viewState.push(artist: artist)
+							viewState.push(artist: artist)
 						}) {
 							Text("Go to \(artist.name)")
 						}
@@ -145,17 +145,17 @@ struct VideoContextMenu: View {
 					if video.isInFavorites(session: session) ?? true {
 						Button(action: {
 							print("Remove from Favorites")
-							self.session.favorites!.removeVideo(videoId: self.video.id)
-							self.viewState.refreshCurrentView()
-							self.t.toggle()
+							session.favorites!.removeVideo(videoId: video.id)
+							viewState.refreshCurrentView()
+							t.toggle()
 						}) {
 							Text("Remove from Favorites")
 						}
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							self.session.favorites!.addVideo(videoId: self.video.id)
-							self.t.toggle()
+							session.favorites!.addVideo(videoId: video.id)
+							t.toggle()
 						}) {
 							Text("Add to Favorites")
 						}
@@ -163,24 +163,24 @@ struct VideoContextMenu: View {
 				}
 				if video.streamReady {
 					Button(action: {
-						print("Add \(self.video.title) to Playlist")
+						print("Add \(video.title) to Playlist")
 					}) {
 						Text("Add to Playlist …")
 					}
 				}
 				if video.streamReady {
 					Divider()
-					if video.getImageUrl(session: self.session, resolution: 1280) != nil {
+					if let imagegUrl = video.getImageUrl(session: session, resolution: 1280) {
 						Button(action: {
 							print("Preview Image")
 							let controller = CoverWindowController(rootView:
 								URLImageSourceView(
-									self.video.getImageUrl(session: self.session, resolution: 1280)!,
+									imagegUrl,
 									isAnimationEnabled: true,
-									label: Text(self.video.title)
+									label: Text(video.title)
 								)
 							)
-							controller.window?.title = self.video.title
+							controller.window?.title = video.title
 							controller.showWindow(nil)
 						}) {
 							Text("Preview Image")

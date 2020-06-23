@@ -34,7 +34,7 @@ struct QueueView: View {
 					Spacer(minLength: 5)
 					VStack {
 						Button(action: {
-							self.sc.player.clearQueue(leavingCurrent: true)
+							sc.player.clearQueue(leavingCurrent: true)
 						}) {
 							Text("Clear")
 						}
@@ -55,19 +55,19 @@ struct QueueView: View {
 					ForEach(queueInfo.queue) { item in
 						HStack {
 							Text("\(item.track.title) - \(item.track.artists.formArtistString())")
-								.fontWeight(item.id == self.queueInfo.currentIndex ? .bold : .regular)
+								.fontWeight(item.id == queueInfo.currentIndex ? .bold : .regular)
 								.lineLimit(1)
 								.onTapGesture(count: 2) {
-									self.player.play(atIndex: item.id)
+									player.play(atIndex: item.id)
 								}
 								.contextMenu {
-									TrackContextMenu(track: item.track, session: self.session, player: self.player)
+									TrackContextMenu(track: item.track, session: session, player: player)
 								}
 							Spacer(minLength: 5)
 							Image("x.circle.fill")
 								.secondaryIconColor()
 								.onTapGesture {
-									self.player.removeTrack(atIndex: item.id)
+									player.removeTrack(atIndex: item.id)
 								}
 						}
 						.padding(.top, -12)
