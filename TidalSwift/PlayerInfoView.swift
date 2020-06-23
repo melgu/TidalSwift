@@ -47,7 +47,7 @@ struct PlayerInfoView: View {
 											)
 											controller.window?.title = "\(trackTitle) – \(albumTitle)"
 											controller.showWindow(nil)
-									}
+										}
 								} else {
 									Rectangle()
 										.foregroundColor(.black)
@@ -101,7 +101,7 @@ struct PlayerInfoView: View {
 										.primaryIconColor()
 										.onTapGesture {
 											self.playbackInfo.shuffle.toggle()
-									}
+										}
 								}
 							}
 							.toolTip("Shuffle")
@@ -112,25 +112,25 @@ struct PlayerInfoView: View {
 								.primaryIconColor()
 								.onTapGesture {
 									self.player.previous()
-							}
+								}
 							if self.playbackInfo.playing {
 								Image("pause.fill")
 									.primaryIconColor()
 									.onTapGesture {
 										self.player.pause()
-								}
+									}
 							} else {
 								Image("play.fill")
 									.primaryIconColor()
 									.onTapGesture {
 										self.player.play()
-								}
+									}
 							}
 							Image("forward.fill")
 								.primaryIconColor()
 								.onTapGesture {
 									self.player.next()
-							}
+								}
 							Group {
 								if self.playbackInfo.repeatState == .single {
 									Image(nsImage: NSImage(named: "repeat1")!.tint(color: .controlAccentColor))
@@ -157,7 +157,7 @@ struct PlayerInfoView: View {
 							.frame(width: 20, alignment: .leading)
 							.onTapGesture {
 								self.player.toggleMute()
-						}
+							}
 						ValueSlider(value: self.$playbackInfo.volume, in: 0.0...1.0)
 							.valueSliderStyle(
 								HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
@@ -181,14 +181,14 @@ struct PlayerInfoView: View {
 						.onTapGesture {
 							unowned let appDelegate = NSApp.delegate as? AppDelegate
 							appDelegate?.lyrics(self)
-					}
+						}
 					Image("list.dash")
 						.primaryIconColor()
 						.toolTip("Queue")
 						.onTapGesture {
 							unowned let appDelegate = NSApp.delegate as? AppDelegate
 							appDelegate?.queue(self)
-					}
+						}
 				}
 			}
 			.frame(height: 30)
@@ -215,7 +215,7 @@ struct PlayerInfoView: View {
 	}
 }
 
-struct ProgressBar : View {
+struct ProgressBar: View {
 	let player: Player
 	
 	@EnvironmentObject var playbackInfo: PlaybackInfo

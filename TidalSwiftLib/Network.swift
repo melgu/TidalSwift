@@ -102,15 +102,15 @@ class Network {
 	}
 	
 	class func get(url: URL, parameters: [String: String]) -> Response {
-		return request(method: .get, url: url, parameters: parameters)
+		request(method: .get, url: url, parameters: parameters)
 	}
 	
 	class func post(url: URL, parameters: [String: String], etag: Int? = nil) -> Response {
-		return request(method: .post, url: url, parameters: parameters, etag: etag)
+		request(method: .post, url: url, parameters: parameters, etag: etag)
 	}
 	
 	class func delete(url: URL, parameters: [String: String], etag: Int? = nil) -> Response {
-		return request(method: .delete, url: url, parameters: parameters, etag: etag)
+		request(method: .delete, url: url, parameters: parameters, etag: etag)
 	}
 	
 	class func asyncGet(url: URL, parameters: [String: String],

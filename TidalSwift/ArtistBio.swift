@@ -55,17 +55,17 @@ struct ArtistBioView: View {
 			}
 			.padding()
 		}
-		.onAppear() {
+		.onAppear {
 			self.workItem = self.createWorkItem()
 			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
 		}
-		.onDisappear() {
+		.onDisappear {
 			self.workItem?.cancel()
 		}
 	}
 	
 	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			let t = self.artist.bio(session: self.session)
 			
 			if t != nil {

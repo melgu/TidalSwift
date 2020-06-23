@@ -53,7 +53,7 @@ class Player {
 	}
 	
 	func play() {
-		if (!queueInfo.queue.isEmpty) {
+		if !queueInfo.queue.isEmpty {
 //			print("Play: \(playbackInfo.queue[playbackInfo.currentIndex].track.title)")
 			avPlayer.play()
 			playbackInfo.playing = true
@@ -144,7 +144,7 @@ class Player {
 		if enabled {
 			queueInfo.nonShuffledQueue = queueInfo.queue
 			queueInfo.queue = queueInfo.queue[0...queueInfo.currentIndex] +
-				queueInfo.queue[queueInfo.currentIndex+1..<queueInfo.queue.count].shuffled()
+				queueInfo.queue[queueInfo.currentIndex + 1..<queueInfo.queue.count].shuffled()
 			queueInfo.assignQueueIndices()
 		} else {
 			let i = queueInfo.nonShuffledQueue.firstIndex(where: { $0 == queueInfo.queue[queueInfo.currentIndex] })!
@@ -275,8 +275,8 @@ class Player {
 		if playbackInfo.shuffle {
 			queueInfo.nonShuffledQueue = tracks.wrapped()
 			addLast(tracks: Array(tracks[0...index]))
-			if index+1 < tracks.count {
-				addLast(tracks: tracks[index+1..<tracks.count].shuffled())
+			if index + 1 < tracks.count {
+				addLast(tracks: tracks[index + 1..<tracks.count].shuffled())
 			}
 		} else {
 			addLast(tracks: tracks)
@@ -335,7 +335,7 @@ class Player {
 		queueInfo.assignQueueIndices()
 		
 		if atIndex == queueInfo.currentIndex {
-			if queueInfo.queue.count > 0 {
+			if !queueInfo.queue.isEmpty {
 				avSetItem(from: queueInfo.queue[queueInfo.currentIndex].track)
 			} else {
 				avPlayer.replaceCurrentItem(with: nil)
@@ -365,7 +365,7 @@ class Player {
 	}
 	
 	func queueCount() -> Int {
-		return queueInfo.queue.count
+		queueInfo.queue.count
 	}
 	
 	func fraction() -> Double {

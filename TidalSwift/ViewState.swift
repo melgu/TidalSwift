@@ -42,45 +42,45 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 	}
 	
 	var viewType: ViewType
-	var artist: Artist? = nil
-	var album: Album? = nil
-	var playlist: Playlist? = nil
-	var mix: MixesItem? = nil
+	var artist: Artist?
+	var album: Album?
+	var playlist: Playlist?
+	var mix: MixesItem?
 	
 	var loadingState: LoadingState = .loading
 	
-	var searchResponse: SearchResponse? = nil
-	var mixes: [MixesItem]? = nil
-	var artists: [Artist]? = nil
-	var albums: [Album]? = nil
-	var albumsEpsAndSingles: [Album]? = nil	// Artist EPS & Singles
-	var albumsAppearances: [Album]? = nil	// Artist Appearances
-	var playlists: [Playlist]? = nil
-	var tracks: [Track]? = nil
-	var videos: [Video]? = nil
+	var searchResponse: SearchResponse?
+	var mixes: [MixesItem]?
+	var artists: [Artist]?
+	var albums: [Album]?
+	var albumsEpsAndSingles: [Album]?	// Artist EPS & Singles
+	var albumsAppearances: [Album]?		// Artist Appearances
+	var playlists: [Playlist]?
+	var tracks: [Track]?
+	var videos: [Video]?
 	
 	static func == (lhs: TidalSwiftView, rhs: TidalSwiftView) -> Bool {
-		return lhs.viewType == rhs.viewType && lhs.artist == rhs.artist
-			&& lhs.album == rhs.album && lhs.playlist == rhs.playlist
-			&& lhs.mix == rhs.mix && lhs.loadingState == rhs.loadingState
-			&& lhs.searchResponse == rhs.searchResponse && lhs.mixes == rhs.mixes
-			&& lhs.artists == rhs.artists && lhs.albums == rhs.albums
-			&& lhs.playlists == rhs.playlists && lhs.tracks == rhs.tracks
-			&& lhs.videos == rhs.videos
+		lhs.viewType == rhs.viewType && lhs.artist == rhs.artist &&
+			lhs.album == rhs.album && lhs.playlist == rhs.playlist &&
+			lhs.mix == rhs.mix && lhs.loadingState == rhs.loadingState &&
+			lhs.searchResponse == rhs.searchResponse && lhs.mixes == rhs.mixes &&
+			lhs.artists == rhs.artists && lhs.albums == rhs.albums &&
+			lhs.playlists == rhs.playlists && lhs.tracks == rhs.tracks &&
+			lhs.videos == rhs.videos
 	}
 	
 	static func equateBase(_ lhs: TidalSwiftView, _ rhs: TidalSwiftView) -> Bool {
-		return lhs.viewType == rhs.viewType && lhs.artist == rhs.artist
-			&& lhs.album == rhs.album && lhs.playlist == rhs.playlist
-			&& lhs.mix == rhs.mix
+		lhs.viewType == rhs.viewType && lhs.artist == rhs.artist &&
+			lhs.album == rhs.album && lhs.playlist == rhs.playlist &&
+			lhs.mix == rhs.mix
 	}
 	
 	func isBase() -> Bool {
-		return viewType == .newReleases || viewType == .myMixes
-			|| viewType == .favoriteArtists || viewType == .favoriteAlbums
-			|| viewType == .favoritePlaylists || viewType == .favoriteTracks
-			|| viewType == .favoriteVideos || viewType == .offlineAlbums
-			|| viewType == .offlinePlaylists || viewType == .offlineTracks
+		viewType == .newReleases || viewType == .myMixes ||
+			viewType == .favoriteArtists || viewType == .favoriteAlbums ||
+			viewType == .favoritePlaylists || viewType == .favoriteTracks ||
+			viewType == .favoriteVideos || viewType == .offlineAlbums ||
+			viewType == .offlinePlaylists || viewType == .offlineTracks
 	}
 }
 
@@ -93,7 +93,7 @@ final class ViewState: ObservableObject {
 	@Published var history: [TidalSwiftView] = []
 	var maxHistoryItems: Int = 100
 	
-	var workItem: DispatchWorkItem? = nil
+	var workItem: DispatchWorkItem?
 	var lastSearchTerm: String = ""
 	
 	init(session: Session, cache: ViewCache) {

@@ -79,7 +79,7 @@ public class Helpers {
 	}
 	
 	func formFileName(_ video: Video) -> String {
-		return "\(video.trackNumber) \(video.title) - \(video.artists.formArtistString()).mp4"
+		"\(video.trackNumber) \(video.title) - \(video.artists.formArtistString()).mp4"
 	}
 	
 	public func download(track: Track, parentFolder: String = "") -> Bool {

@@ -34,23 +34,23 @@ struct PlaylistView: View {
 									isAnimationEnabled: true,
 									label: Text(viewState.stack.last!.playlist!.title)
 								)
-									.aspectRatio(contentMode: .fill)
-									.frame(width: 100, height: 100)
-									.contentShape(Rectangle())
-									.clipped()
-									.cornerRadius(CORNERRADIUS)
-									.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-									.toolTip("Show image in new window")
-									.onTapGesture {
-										let controller = CoverWindowController(rootView:
-											URLImageSourceView(
-												self.viewState.stack.last!.playlist!.getImageUrl(session: self.session, resolution: 750)!,
-												isAnimationEnabled: true,
-												label: Text(self.viewState.stack.last!.playlist!.title)
-											)
-										)
-										controller.window?.title = self.viewState.stack.last!.playlist!.title
-										controller.showWindow(nil)
+								.aspectRatio(contentMode: .fill)
+								.frame(width: 100, height: 100)
+								.contentShape(Rectangle())
+								.clipped()
+								.cornerRadius(CORNERRADIUS)
+								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+								.toolTip("Show image in new window")
+								.onTapGesture {
+									let controller = CoverWindowController(rootView:
+																			URLImageSourceView(
+																				self.viewState.stack.last!.playlist!.getImageUrl(session: self.session, resolution: 750)!,
+																				isAnimationEnabled: true,
+																				label: Text(self.viewState.stack.last!.playlist!.title)
+																			)
+									)
+									controller.window?.title = self.viewState.stack.last!.playlist!.title
+									controller.showWindow(nil)
 								}
 								
 								VStack(alignment: .leading) {
@@ -66,7 +66,7 @@ struct PlaylistView: View {
 														print("Remove from Favorites")
 														self.session.favorites!.removePlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
 														self.t.toggle()
-												}
+													}
 											} else {
 												Image("heart")
 													.primaryIconColor()
@@ -74,14 +74,14 @@ struct PlaylistView: View {
 														print("Add to Favorites")
 														self.session.favorites!.addPlaylist(playlistId: self.viewState.stack.last!.playlist!.uuid)
 														self.t.toggle()
-												}
+													}
 											}
 										}
 										Image("square.and.arrow.up")
 											.primaryIconColor()
 											.onTapGesture {
 												Pasteboard.copy(string: self.viewState.stack.last!.playlist!.url.absoluteString)
-										}
+											}
 									}
 									Text(viewState.stack.last!.playlist!.description ?? "")
 									Text(viewState.stack.last!.playlist!.creator.name ?? "")
@@ -109,7 +109,7 @@ struct PlaylistView: View {
 											self.viewState.stack.last!.playlist!.removeOffline(session: self.session)
 											self.viewState.refreshCurrentView()
 											self.t.toggle()
-									}
+										}
 								} else {
 									Image("cloud-big")
 										.primaryIconColor()
@@ -123,7 +123,7 @@ struct PlaylistView: View {
 													self.t.toggle()
 												}
 											}
-									}
+										}
 								}
 							}
 						}

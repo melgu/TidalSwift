@@ -118,7 +118,7 @@ struct MixPlaylistView: View {
 									)
 									controller.window?.title = self.viewState.stack.last!.mix!.title
 									controller.showWindow(nil)
-							}
+								}
 							
 							VStack(alignment: .leading) {
 								Text(viewState.stack.last!.mix!.title)

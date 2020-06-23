@@ -14,7 +14,7 @@ final class PlaylistEditingValues: ObservableObject {
 	@Published var tracks: [Track] = []
 	
 	@Published var showRemoveTracksModal: Bool = false
-	@Published var indexToRemove: Int? = nil
+	@Published var indexToRemove: Int?
 	
 	@Published var showDeleteModal: Bool = false
 	@Published var showEditModal: Bool = false
@@ -197,11 +197,11 @@ struct EditPlaylist: View {
 			TextField("New Playlist", text: $playlistName)
 				.onAppear {
 					self.playlistName = self.playlistEditingValues.playlist!.title
-			}
+				}
 			TextField("Optional Playlist Description", text: $playlistDescription)
 				.onAppear {
 					self.playlistDescription = self.playlistEditingValues.playlist!.description ?? ""
-			}
+				}
 			if playlistEditingValues.playlist!.isOffline(session: session) {
 				Text("This playlist is saved offline, but won't anymore if renamed. You have to to add it to Offline items again manually, if you so desire.")
 					.foregroundColor(.secondary)

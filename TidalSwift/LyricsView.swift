@@ -53,7 +53,7 @@ struct LyricsView: View {
 								}) {
 									Text("Copy")
 								}
-						}
+							}
 					} else if loadingState == .loading {
 						FullscreenLoadingSpinner(.loading)
 					} else {
@@ -72,12 +72,12 @@ struct LyricsView: View {
 			}
 			.padding()
 		}
-		.onAppear() {
+		.onAppear {
 			self.currentIndexCancellable = self.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
 			self.queueCancellable = self.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
 			self.fetchLyrics()
 		}
-		.onDisappear() {
+		.onDisappear {
 			self.workItem?.cancel()
 			self.currentIndexCancellable?.cancel()
 			self.queueCancellable?.cancel()
@@ -101,7 +101,7 @@ struct LyricsView: View {
 	}
 	
 	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			guard let track = self.track else {
 				DispatchQueue.main.async {
 					self.loadingState = .error

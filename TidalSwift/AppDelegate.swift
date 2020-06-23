@@ -307,7 +307,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-		return true
+		true
 	}
 	
 	func savePlaybackState() {
@@ -484,7 +484,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 						self.saveFavoritesSortingState()
 					}
 				}
-		}
+			}
 	}
 	
 	func cancelCancellables() {
@@ -806,4 +806,3 @@ func secondsToHoursMinutesSecondsString(seconds: Int) -> String {
 	}
 	return s
 }
-

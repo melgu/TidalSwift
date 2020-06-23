@@ -255,14 +255,14 @@ extension Track {
 	}
 	
 	var hasAttributes: Bool {
-		return self.explicit
-			|| self.audioQuality == .master
-			|| self.audioModes?.contains(.sony360RealityAudio) ?? false
-			|| self.audioModes?.contains(.dolbyAtmos) ?? false
+		self.explicit ||
+			self.audioQuality == .master ||
+			self.audioModes?.contains(.sony360RealityAudio) ?? false ||
+			self.audioModes?.contains(.dolbyAtmos) ?? false
 	}
 	
 	var isUnavailable: Bool {
-		return self.audioModes?.contains(.sony360RealityAudio) ?? false
-			|| self.audioModes?.contains(.dolbyAtmos) ?? false
+		self.audioModes?.contains(.sony360RealityAudio) ?? false ||
+			self.audioModes?.contains(.dolbyAtmos) ?? false
 	}
 }

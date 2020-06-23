@@ -28,10 +28,10 @@ struct TrackList: View {
 					print("\(wrappedTrack.track.title)")
 					self.player.add(tracks: self.wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
 					self.player.play(atIndex: wrappedTrack.id)
-			}
-			.contextMenu {
-				TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: self.playlist != nil ? wrappedTrack.id : nil, playlist: self.playlist, session: self.session, player: self.player)
-			}
+				}
+				.contextMenu {
+					TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: self.playlist != nil ? wrappedTrack.id : nil, playlist: self.playlist, session: self.session, player: self.player)
+				}
 			Divider()
 		}
 		.padding(.horizontal)
@@ -46,7 +46,7 @@ struct TrackRow: View {
 	let trackNumber: Int?
 	let session: Session
 	
-	var coverUrl: URL? = nil
+	var coverUrl: URL?
 	var widthFactorTrack: CGFloat
 	var widthFactorArtist: CGFloat
 	var widthFactorAlbum: CGFloat
@@ -164,7 +164,7 @@ struct TrackRow: View {
 							)
 							controller.window?.title = "Credits – \(self.track.title)"
 							controller.showWindow(nil)
-					}
+						}
 					if self.t || !self.t {
 						if self.track.isInFavorites(session: self.session) ?? false {
 							Image("heart.fill")
@@ -173,9 +173,9 @@ struct TrackRow: View {
 									print("Remove from Favorites")
 									self.session.favorites!.removeTrack(trackId: self.track.id)
 									self.session.helpers.offline.asyncSyncFavoriteTracks()
-//									self.viewState.refreshCurrentView()
+									//									self.viewState.refreshCurrentView()
 									self.t.toggle()
-							}
+								}
 						} else {
 							Image("heart")
 								.primaryIconColor()
@@ -183,9 +183,9 @@ struct TrackRow: View {
 									print("Add to Favorites")
 									self.session.favorites!.addTrack(trackId: self.track.id)
 									self.session.helpers.offline.asyncSyncFavoriteTracks()
-//									self.viewState.refreshCurrentView()
+									//									self.viewState.refreshCurrentView()
 									self.t.toggle()
-							}
+								}
 						}
 					}
 				}

@@ -72,6 +72,6 @@ struct ViewHistoryViewRow: View {
 					self.viewState.clearStack()
 				}
 				self.viewState.push(view: self.view)
-		}
+			}
 	}
 }

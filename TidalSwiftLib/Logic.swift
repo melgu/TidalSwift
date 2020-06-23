@@ -110,7 +110,7 @@ public class Config {
 
 public class Session {
 	var config: Config
-	public var sessionConfig: Config { get { return config }}
+	public var sessionConfig: Config { config }
 	
 	var sessionId: String?
 	var countryCode: String?
@@ -1031,7 +1031,7 @@ public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
 	}
 	
 	public func addTrack(_ trackId: Int, to playlistId: String, duplicate: Bool) -> Bool {
-		return addTracks([trackId], to: playlistId, duplicate: duplicate)
+		addTracks([trackId], to: playlistId, duplicate: duplicate)
 	}
 	
 	public func removeTrack(index: Int, from playlistId: String) -> Bool {
@@ -1381,10 +1381,8 @@ public class Favorites {
 		guard let artists = cache.artists else {
 			return nil
 		}
-		for artist in artists {
-			if artist.item.id == artistId {
-				return true
-			}
+		for artist in artists where artist.item.id == artistId {
+			return true
 		}
 		return false
 	}
@@ -1393,10 +1391,8 @@ public class Favorites {
 		guard let albums = cache.albums else {
 			return nil
 		}
-		for album in albums {
-			if album.item.id == albumId {
-				return true
-			}
+		for album in albums where album.item.id == albumId {
+			return true
 		}
 		return false
 	}
@@ -1405,10 +1401,8 @@ public class Favorites {
 		guard let tracks = cache.tracks else {
 			return nil
 		}
-		for track in tracks {
-			if track.item.id == trackId {
-				return true
-			}
+		for track in tracks where track.item.id == trackId {
+			return true
 		}
 		return false
 	}
@@ -1417,10 +1411,8 @@ public class Favorites {
 		guard let videos = cache.videos else {
 			return nil
 		}
-		for video in videos {
-			if video.item.id == videoId {
-				return true
-			}
+		for video in videos where video.item.id == videoId {
+			return true
 		}
 		return false
 	}
@@ -1429,10 +1421,8 @@ public class Favorites {
 		guard let playlists = cache.playlists else {
 			return nil
 		}
-		for playlist in playlists {
-			if playlist.playlist.id == playlistId {
-				return true
-			}
+		for playlist in playlists where playlist.playlist.id == playlistId {
+			return true
 		}
 		return false
 	}

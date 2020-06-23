@@ -39,24 +39,24 @@ struct FavoritePlaylists: View {
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
-					HStack {
-						Text("Favorite Playlists")
-							.font(.largeTitle)
-						Spacer()
-						LoadingSpinner()
-						Picker(selection: $sortingState.favoritePlaylistSorting, label: Spacer(minLength: 0)) {
-							Text("Added").tag(PlaylistSorting.dateAdded)
-							Text("Title").tag(PlaylistSorting.title)
-							Text("Last Updated").tag(PlaylistSorting.lastUpdated)
-							Text("Created").tag(PlaylistSorting.created)
-//							Text("Track Number").tag(PlaylistSorting.numberOfTracks)
-//							Text("Duration").tag(PlaylistSorting.duration)
-							Text("Type").tag(PlaylistSorting.type)
-//							Text("Creator").tag(PlaylistSorting.creator)
-						}
-						.pickerStyle(SegmentedPickerStyle())
-						.frame(width: PICKERWIDTH)
-						ReverseButton(reversed: $sortingState.favoritePlaylistReversed)
+				HStack {
+					Text("Favorite Playlists")
+						.font(.largeTitle)
+					Spacer()
+					LoadingSpinner()
+					Picker(selection: $sortingState.favoritePlaylistSorting, label: Spacer(minLength: 0)) {
+						Text("Added").tag(PlaylistSorting.dateAdded)
+						Text("Title").tag(PlaylistSorting.title)
+						Text("Last Updated").tag(PlaylistSorting.lastUpdated)
+						Text("Created").tag(PlaylistSorting.created)
+//						Text("Track Number").tag(PlaylistSorting.numberOfTracks)
+//						Text("Duration").tag(PlaylistSorting.duration)
+						Text("Type").tag(PlaylistSorting.type)
+//						Text("Creator").tag(PlaylistSorting.creator)
+					}
+					.pickerStyle(SegmentedPickerStyle())
+					.frame(width: PICKERWIDTH)
+					ReverseButton(reversed: $sortingState.favoritePlaylistReversed)
 				}
 				if viewState.stack.last?.playlists != nil {
 					HStack {
@@ -143,7 +143,7 @@ struct FavoriteTracks: View {
 									self.session.helpers.offline.saveFavoritesOffline = false
 									self.session.helpers.offline.asyncSyncFavoriteTracks()
 									self.viewState.refreshCurrentView()
-							}
+								}
 						} else {
 							Image("cloud-big")
 								.primaryIconColor()
@@ -152,7 +152,7 @@ struct FavoriteTracks: View {
 									self.session.helpers.offline.saveFavoritesOffline = true
 									self.session.helpers.offline.asyncSyncFavoriteTracks()
 									self.viewState.refreshCurrentView()
-							}
+								}
 						}
 						Picker(selection: $sortingState.favoriteTrackSorting, label: Spacer(minLength: 0)) {
 							Text("Added").tag(TrackSorting.dateAdded)

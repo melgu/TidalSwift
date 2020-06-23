@@ -15,7 +15,7 @@ struct ArtistView: View {
 	let player: Player
 	let viewState: ViewState
 	
-	var artist: Artist? = nil
+	var artist: Artist?
 	var topTracks: [WrappedTrack] = []
 	var albums: [Album] = []
 	var epsAndSingles: [Album] = []
@@ -86,7 +86,7 @@ struct ArtistView: View {
 								)
 								controller.window?.title = self.artist!.name
 								controller.showWindow(nil)
-						}
+							}
 					}
 					
 					VStack(alignment: .leading) {
@@ -99,12 +99,12 @@ struct ArtistView: View {
 								.toolTip("Artist Bio")
 								.onTapGesture {
 									let controller = ResizableWindowController(rootView:
-										ArtistBioView(session: self.session, artist: self.artist!)
-											.environmentObject(self.viewState)
+																				ArtistBioView(session: self.session, artist: self.artist!)
+																				.environmentObject(self.viewState)
 									)
 									controller.window?.title = "Bio – \(self.artist!.name)"
 									controller.showWindow(nil)
-							}
+								}
 							if t || !t {
 								if artist!.isInFavorites(session: session) ?? true {
 									Image("heart.fill")
@@ -113,7 +113,7 @@ struct ArtistView: View {
 											print("Remove from Favorites")
 											self.session.favorites!.removeArtist(artistId: self.artist!.id)
 											self.t.toggle()
-									}
+										}
 								} else {
 									Image("heart")
 										.primaryIconColor()
@@ -121,7 +121,7 @@ struct ArtistView: View {
 											print("Add to Favorites")
 											self.session.favorites!.addArtist(artistId: self.artist!.id)
 											self.t.toggle()
-									}
+										}
 								}
 							}
 							if artist!.url != nil {
@@ -130,7 +130,7 @@ struct ArtistView: View {
 									.toolTip("Copy URL")
 									.onTapGesture {
 										Pasteboard.copy(string: self.artist!.url!.absoluteString)
-								}
+									}
 							}
 						}
 					}
