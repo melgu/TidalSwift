@@ -18,9 +18,9 @@ struct TrackGridItem: View {
 	
 	var body: some View {
 		VStack {
-			if track.album.getCoverUrl(session: session, resolution: 320) != nil {
+			if let coverUrl = track.album.getCoverUrl(session: session, resolution: 320) {
 				URLImageSourceView(
-					track.album.getCoverUrl(session: session, resolution: 320)!,
+					coverUrl,
 					isAnimationEnabled: true,
 					label: Text(track.title)
 				)
@@ -40,8 +40,8 @@ struct TrackGridItem: View {
 			}
 			HStack {
 				Text(track.title)
-				if self.track.version != nil {
-					Text("(\(track.version!))")
+				if let version = track.version {
+					Text(version)
 						.foregroundColor(.secondary)
 						.padding(.leading, -5)
 				}
@@ -63,12 +63,12 @@ struct TrackGridItem: View {
 		.padding(5)
 		.toolTip("\(track.title)\(track.version != nil ? " (\(track.version!))" : "") – \(track.artists.formArtistString())")
 		.onTapGesture(count: 2) {
-			print("\(self.track.title)")
-			self.player.add(track: self.track, .now)
-			self.player.play()
+			print("\(track.title)")
+			player.add(track: track, .now)
+			player.play()
 		}
 		.contextMenu {
-			TrackContextMenu(track: self.track, session: self.session, player: self.player)
+			TrackContextMenu(track: track, session: session, player: player)
 		}
 	}
 }
@@ -97,17 +97,17 @@ struct TrackContextMenu: View {
 			Group {
 				if track.streamReady {
 					Button(action: {
-						self.player.add(track: self.track, .now)
+						player.add(track: track, .now)
 					}) {
 						Text("Play Now")
 					}
 					Button(action: {
-						self.player.add(track: self.track, .next)
+						player.add(track: track, .next)
 					}) {
 						Text("Add Next")
 					}
 					Button(action: {
-						self.player.add(track: self.track, .last)
+						player.add(track: track, .last)
 					}) {
 						Text("Add Last")
 					}
@@ -119,9 +119,9 @@ struct TrackContextMenu: View {
 			Divider()
 			Group {
 				if track.artists[0].name != "Various Artists" {
-					ForEach(self.track.artists) { artist in
+					ForEach(track.artists) { artist in
 						Button(action: {
-							self.viewState.push(artist: artist)
+							viewState.push(artist: artist)
 						}) {
 							Text("Go to \(artist.name)")
 						}
@@ -129,7 +129,7 @@ struct TrackContextMenu: View {
 					Divider()
 				}
 				Button(action: {
-					self.viewState.push(album: self.track.album)
+					viewState.push(album: track.album)
 				}) {
 					Text("Go to Album")
 				}
@@ -140,20 +140,20 @@ struct TrackContextMenu: View {
 					if track.isInFavorites(session: session) ?? false {
 						Button(action: {
 							print("Remove from Favorites")
-							self.session.favorites!.removeTrack(trackId: self.track.id)
-							self.session.helpers.offline.asyncSyncFavoriteTracks()
-							self.viewState.refreshCurrentView()
-							self.t.toggle()
+							session.favorites!.removeTrack(trackId: track.id)
+							session.helpers.offline.asyncSyncFavoriteTracks()
+							viewState.refreshCurrentView()
+							t.toggle()
 						}) {
 							Text("Remove from Favorites")
 						}
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							self.session.favorites!.addTrack(trackId: self.track.id)
-							self.session.helpers.offline.asyncSyncFavoriteTracks()
-							self.viewState.refreshCurrentView()
-							self.t.toggle()
+							session.favorites!.addTrack(trackId: track.id)
+							session.helpers.offline.asyncSyncFavoriteTracks()
+							viewState.refreshCurrentView()
+							t.toggle()
 						}) {
 							Text("Add to Favorites")
 						}
@@ -161,20 +161,20 @@ struct TrackContextMenu: View {
 				}
 				if track.streamReady {
 					Button(action: {
-						print("Add \(self.track.title) to Playlist")
-						self.playlistEditingValues.tracks = [self.track]
-						self.playlistEditingValues.showAddTracksModal = true
+						print("Add \(track.title) to Playlist")
+						playlistEditingValues.tracks = [track]
+						playlistEditingValues.showAddTracksModal = true
 					}) {
 						Text("Add to Playlist …")
 					}
 				}
 				if indexInPlaylist != nil {
 					Button(action: {
-						print("Remove \(self.track.title) from Playlist")
-						self.playlistEditingValues.tracks = [self.track]
-						self.playlistEditingValues.indexToRemove = self.indexInPlaylist
-						self.playlistEditingValues.playlist = self.playlist
-						self.playlistEditingValues.showRemoveTracksModal = true
+						print("Remove \(track.title) from Playlist")
+						playlistEditingValues.tracks = [track]
+						playlistEditingValues.indexToRemove = indexInPlaylist
+						playlistEditingValues.playlist = playlist
+						playlistEditingValues.showRemoveTracksModal = true
 					}) {
 						Text("Remove from Playlist …")
 					}
@@ -184,7 +184,7 @@ struct TrackContextMenu: View {
 					Button(action: {
 						print("Download")
 						DispatchQueue.global(qos: .background).async {
-							_ = self.session.helpers.download(track: self.track)
+							_ = session.helpers.download(track: track)
 						}
 					}) {
 						Text("Download")
@@ -192,23 +192,23 @@ struct TrackContextMenu: View {
 					Divider()
 					Button(action: {
 						print("Radio")
-						if let radioTracks = self.track.radio(session: self.session) {
-							self.player.add(tracks: radioTracks, .now)
+						if let radioTracks = track.radio(session: session) {
+							player.add(tracks: radioTracks, .now)
 						}
 					}) {
 						Text("Radio")
 					}
-					if track.album.getCoverUrl(session: session, resolution: 1280) != nil {
+					if let coverUrl = track.album.getCoverUrl(session: session, resolution: 1280) {
 						Button(action: {
 							print("Cover")
 							let controller = CoverWindowController(rootView:
 								URLImageSourceView(
-									self.track.album.getCoverUrl(session: self.session, resolution: 1280)!,
+									coverUrl,
 									isAnimationEnabled: true,
-									label: Text("\(self.track.title) – \(self.track.album.title)")
+									label: Text("\(track.title) – \(track.album.title)")
 								)
 							)
-							controller.window?.title = "\(self.track.title) – \(self.track.album.title)"
+							controller.window?.title = "\(track.title) – \(track.album.title)"
 							controller.showWindow(nil)
 						}) {
 							Text("Cover")
@@ -217,17 +217,17 @@ struct TrackContextMenu: View {
 					Button(action: {
 						print("Credits")
 						let controller = ResizableWindowController(rootView:
-							CreditsView(session: self.session, track: self.track)
-								.environmentObject(self.viewState)
+							CreditsView(session: session, track: track)
+								.environmentObject(viewState)
 						)
-						controller.window?.title = "Credits – \(self.track.title)"
+						controller.window?.title = "Credits – \(track.title)"
 						controller.showWindow(nil)
 					}) {
 						Text("Credits")
 					}
 					Button(action: {
 						print("Share Track")
-						Pasteboard.copy(string: self.track.url.absoluteString)
+						Pasteboard.copy(string: track.url.absoluteString)
 					}) {
 						Text("Copy URL")
 					}
@@ -240,14 +240,14 @@ struct TrackContextMenu: View {
 extension Track {
 	var attributeHStack: some View {
 		HStack {
-			if self.explicit {
+			if explicit {
 				Image("e.square")
 			}
-			if self.audioQuality == .master {
+			if audioQuality == .master {
 				Image("m.square.fill")
-			} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
+			} else if audioModes?.contains(.sony360RealityAudio) ?? false {
 				Image("headphones")
-			} else if self.audioModes?.contains(.dolbyAtmos) ?? false {
+			} else if audioModes?.contains(.dolbyAtmos) ?? false {
 				Image("hifispeaker.fill")
 			}
 		}
@@ -255,14 +255,14 @@ extension Track {
 	}
 	
 	var hasAttributes: Bool {
-		self.explicit ||
-			self.audioQuality == .master ||
-			self.audioModes?.contains(.sony360RealityAudio) ?? false ||
-			self.audioModes?.contains(.dolbyAtmos) ?? false
+		explicit ||
+			audioQuality == .master ||
+			audioModes?.contains(.sony360RealityAudio) ?? false ||
+			audioModes?.contains(.dolbyAtmos) ?? false
 	}
 	
 	var isUnavailable: Bool {
-		self.audioModes?.contains(.sony360RealityAudio) ?? false ||
-			self.audioModes?.contains(.dolbyAtmos) ?? false
+		audioModes?.contains(.sony360RealityAudio) ?? false ||
+			audioModes?.contains(.dolbyAtmos) ?? false
 	}
 }

@@ -37,16 +37,12 @@ struct OfflinePlaylistsView: View {
 					.frame(width: PICKERWIDTH)
 					ReverseButton(reversed: $sortingState.offlinePlaylistReversed)
 				}
-				if viewState.stack.last?.playlists != nil {
+				if let playlists = viewState.stack.last?.playlists {
 					HStack {
-						Text("\(viewState.stack.last!.playlists!.count) \(viewState.stack.last!.playlists!.count == 1 ? "Playlist" : "Playlists")")
+						Text("\(playlists.count) \(playlists.count == 1 ? "Playlist" : "Playlists")")
 						Spacer()
 					}
-				}
-				
-				
-				if viewState.stack.last?.playlists != nil {
-					PlaylistGrid(playlists: viewState.stack.last!.playlists!.sortedPlaylists(by: sortingState.offlinePlaylistSorting).reversed(sortingState.offlinePlaylistReversed), session: session, player: player)
+					PlaylistGrid(playlists: playlists.sortedPlaylists(by: sortingState.offlinePlaylistSorting).reversed(sortingState.offlinePlaylistReversed), session: session, player: player)
 				}
 				Spacer(minLength: 0)
 			}
@@ -81,15 +77,13 @@ struct OfflineAlbumsView: View {
 					.frame(width: PICKERWIDTH)
 					ReverseButton(reversed: $sortingState.offlineAlbumReversed)
 				}
-				if viewState.stack.last?.albums != nil {
+				if let albums = viewState.stack.last?.albums {
 					HStack {
-						Text("\(viewState.stack.last!.albums!.count) \(viewState.stack.last!.albums!.count == 1 ? "Album" : "Albums")")
+						Text("\(albums.count) \(albums.count == 1 ? "Album" : "Albums")")
 						Spacer()
 					}
-				}
-				
-				if viewState.stack.last?.albums != nil {
-					AlbumGrid(albums: viewState.stack.last!.albums!.sortedAlbums(by: sortingState.offlineAlbumSorting).reversed(sortingState.offlineAlbumReversed), showArtists: true, session: session, player: player)
+					
+					AlbumGrid(albums: albums.sortedAlbums(by: sortingState.offlineAlbumSorting).reversed(sortingState.offlineAlbumReversed), showArtists: true, session: session, player: player)
 				}
 				Spacer(minLength: 0)
 			}
@@ -126,17 +120,17 @@ struct OfflineTracksView: View {
 						.frame(width: PICKERWIDTH)
 						ReverseButton(reversed: $sortingState.offlineTrackReversed)
 					}
-					if viewState.stack.last?.tracks != nil {
+					if let tracks = viewState.stack.last?.tracks {
 						HStack {
-							Text("\(viewState.stack.last!.tracks!.count) \(viewState.stack.last!.tracks!.count == 1 ? "Track" : "Tracks")")
+							Text("\(tracks.count) \(tracks.count == 1 ? "Track" : "Tracks")")
 							Spacer()
 						}
 					}
 				}
 				.padding(.horizontal)
 				
-				if viewState.stack.last?.tracks != nil {
-					TrackList(wrappedTracks: viewState.stack.last!.tracks!.sortedTracks(by: sortingState.offlineTrackSorting).reversed(sortingState.offlineTrackReversed).wrapped(), showCover: true, showAlbumTrackNumber: false, showArtist: true, showAlbum: true, playlist: nil, session: session, player: player)
+				if let tracks = viewState.stack.last?.tracks {
+					TrackList(wrappedTracks: tracks.sortedTracks(by: sortingState.offlineTrackSorting).reversed(sortingState.offlineTrackReversed).wrapped(), showCover: true, showAlbumTrackNumber: false, showArtist: true, showAlbum: true, playlist: nil, session: session, player: player)
 				}
 				Spacer(minLength: 0)
 			}

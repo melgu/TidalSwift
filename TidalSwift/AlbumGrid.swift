@@ -38,7 +38,7 @@ struct AlbumGrid: View {
 	
 	var body: some View {
 		Grid(albums) { album in
-			AlbumGridItem(album: album, showArtists: self.showArtists, showReleaseDate: self.showReleaseDate, session: self.session, player: self.player)
+			AlbumGridItem(album: album, showArtists: showArtists, showReleaseDate: showReleaseDate, session: session, player: player)
 		}
 		.gridStyle(
 			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(rowHeight), spacing: 10)
@@ -67,9 +67,9 @@ struct AlbumGridItem: View {
 	var body: some View {
 		VStack {
 			ZStack(alignment: .bottomTrailing) {
-				if album.getCoverUrl(session: session, resolution: 320) != nil {
+				if let albumUrl = album.getCoverUrl(session: session, resolution: 320) {
 					URLImageSourceView(
-						album.getCoverUrl(session: session, resolution: 320)!,
+						albumUrl,
 						isAnimationEnabled: true,
 						label: Text(album.title)
 					)
@@ -84,7 +84,7 @@ struct AlbumGridItem: View {
 							.frame(width: 160, height: 160)
 							.cornerRadius(CORNERRADIUS)
 							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-						if album.streamReady != nil && album.streamReady! {
+						if album.streamReady ?? false {
 							Text(album.title)
 								.foregroundColor(.white)
 								.multilineTextAlignment(.center)
@@ -114,15 +114,15 @@ struct AlbumGridItem: View {
 			}
 			.frame(width: 160)
 			if showArtists {
-				if album.artists != nil {
-					Text(album.artists!.formArtistString())
+				if let artists = album.artists { // Multiple Artists
+					Text(artists.formArtistString())
 						.fontWeight(.light)
 						.foregroundColor(Color.secondary)
 						.lineLimit(1)
 						.frame(width: 160)
 						.padding(.top, album.hasAttributes ? -6.5 : 0)
-				} else if album.artist != nil {
-					Text(album.artist!.name)
+				} else if let artist = album.artist { // Single Artist
+					Text(artist.name)
 						.fontWeight(.light)
 						.foregroundColor(Color.secondary)
 						.lineLimit(1)
@@ -135,8 +135,8 @@ struct AlbumGridItem: View {
 						.frame(width: 160)
 				}
 			}
-			if showReleaseDate && album.releaseDate != nil {
-				Text(DateFormatter.dateOnly.string(from: album.releaseDate!))
+			if showReleaseDate, let releaseDate = album.releaseDate {
+				Text(DateFormatter.dateOnly.string(from: releaseDate))
 					.fontWeight(.light)
 					.foregroundColor(Color.secondary)
 					.lineLimit(1)
@@ -146,18 +146,18 @@ struct AlbumGridItem: View {
 		.padding(5)
 		.toolTip("\(album.title)\(album.artists != nil ? " – \(album.artists!.formArtistString())" : "")")
 		.onTapGesture(count: 2) {
-			print("Second Click. \(self.album.title)")
-			self.player.add(album: self.album, .now)
-			self.player.play()
+			print("Second Click. \(album.title)")
+			player.add(album: album, .now)
+			player.play()
 		}
 		.onTapGesture(count: 1) {
-			print("First Click. \(self.album.title)")
-			if self.album.streamReady != nil && self.album.streamReady! {
-				self.viewState.push(album: self.album)
+			print("First Click. \(album.title)")
+			if album.streamReady ?? false {
+				viewState.push(album: album)
 			}
 		}
 		.contextMenu {
-			AlbumContextMenu(album: self.album, session: session, player: player)
+			AlbumContextMenu(album: album, session: session, player: player)
 		}
 	}
 }
@@ -175,19 +175,19 @@ struct AlbumContextMenu: View {
 	var body: some View {
 		Group {
 			Group {
-				if album.streamReady != nil && album.streamReady! {
+				if album.streamReady ?? false {
 					Button(action: {
-						self.player.add(album: self.album, .now)
+						player.add(album: album, .now)
 					}) {
 						Text("Play Now")
 					}
 					Button(action: {
-						self.player.add(album: self.album, .next)
+						player.add(album: album, .next)
 					}) {
 						Text("Add Next")
 					}
 					Button(action: {
-						self.player.add(album: self.album, .last)
+						player.add(album: album, .last)
 					}) {
 						Text("Add Last")
 					}
@@ -197,11 +197,11 @@ struct AlbumContextMenu: View {
 				}
 			}
 			Divider()
-			if album.artists != nil && album.artists![0].name != "Various Artists" {
+			if let artists = album.artists, artists[0].name != "Various Artists" {
 				Group {
-					ForEach(self.album.artists!) { artist in
+					ForEach(album.artists!) { artist in
 						Button(action: {
-							self.viewState.push(artist: artist)
+							viewState.push(artist: artist)
 						}) {
 							Text("Go to \(artist.name)")
 						}
@@ -214,28 +214,28 @@ struct AlbumContextMenu: View {
 					if album.isInFavorites(session: session) ?? false {
 						Button(action: {
 							print("Remove from Favorites")
-							self.session.favorites!.removeAlbum(albumId: self.album.id)
-							self.viewState.refreshCurrentView()
-							self.t.toggle()
+							session.favorites!.removeAlbum(albumId: album.id)
+							viewState.refreshCurrentView()
+							t.toggle()
 						}) {
 							Text("Remove from Favorites")
 						}
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							self.session.favorites!.addAlbum(albumId: self.album.id)
-							self.t.toggle()
+							session.favorites!.addAlbum(albumId: album.id)
+							t.toggle()
 						}) {
 							Text("Add to Favorites")
 						}
 					}
 				}
-				if album.streamReady != nil && album.streamReady! {
+				if album.streamReady ?? false {
 					Button(action: {
-						print("Add \(self.album.title) to Playlist")
-						if let tracks = self.session.getAlbumTracks(albumId: self.album.id) {
-							self.playlistEditingValues.tracks = tracks
-							self.playlistEditingValues.showAddTracksModal = true
+						print("Add \(album.title) to Playlist")
+						if let tracks = session.getAlbumTracks(albumId: album.id) {
+							playlistEditingValues.tracks = tracks
+							playlistEditingValues.showAddTracksModal = true
 						}
 					}) {
 						Text("Add to Playlist …")
@@ -243,19 +243,19 @@ struct AlbumContextMenu: View {
 					Divider()
 					Group {
 						if t || !t {
-							if self.album.isOffline(session: session) {
+							if album.isOffline(session: session) {
 								Button(action: {
 									print("Remove from Offline")
-									self.album.removeOffline(session: self.session)
-									self.viewState.refreshCurrentView()
-									self.t.toggle()
+									album.removeOffline(session: session)
+									viewState.refreshCurrentView()
+									t.toggle()
 								}) {
 									Text("Remove from Offline")
 								}
 							} else {
 								Button(action: {
 									print("Add to Offline")
-									self.album.addOffline(session: self.session)
+									album.addOffline(session: session)
 								}) {
 									Text("Add to Offline")
 								}
@@ -265,24 +265,24 @@ struct AlbumContextMenu: View {
 						Button(action: {
 							print("Download")
 							DispatchQueue.global(qos: .background).async {
-								_ = self.session.helpers.download(album: self.album)
+								_ = session.helpers.download(album: album)
 							}
 						}) {
 							Text("Download")
 						}
 					}
 					Divider()
-					if album.getCoverUrl(session: self.session, resolution: 1280) != nil {
+					if let coverUrl = album.getCoverUrl(session: session, resolution: 1280) {
 						Button(action: {
 							print("Cover")
 							let controller = CoverWindowController(rootView:
 								URLImageSourceView(
-									self.album.getCoverUrl(session: self.session, resolution: 1280)!,
+									coverUrl,
 									isAnimationEnabled: true,
-									label: Text(self.album.title)
+									label: Text(album.title)
 								)
 							)
-							controller.window?.title = self.album.title
+							controller.window?.title = album.title
 							controller.showWindow(nil)
 						}) {
 							Text("Cover")
@@ -291,18 +291,18 @@ struct AlbumContextMenu: View {
 					Button(action: {
 						print("Credits")
 						let controller = ResizableWindowController(rootView:
-							CreditsView(session: self.session, album: self.album)
-								.environmentObject(self.viewState)
+							CreditsView(session: session, album: album)
+								.environmentObject(viewState)
 						)
-						controller.window?.title = "Credits – \(self.album.title)"
+						controller.window?.title = "Credits – \(album.title)"
 						controller.showWindow(nil)
 					}) {
 						Text("Credits")
 					}
-					if album.url != nil {
+					if let url = album.url {
 						Button(action: {
 							print("Share")
-							Pasteboard.copy(string: self.album.url!.absoluteString)
+							Pasteboard.copy(string: url.absoluteString)
 						}) {
 							Text("Copy URL")
 						}
@@ -316,14 +316,14 @@ struct AlbumContextMenu: View {
 extension Album {
 	var attributeHStack: some View {
 		HStack {
-			if self.explicit ?? false {
+			if explicit ?? false {
 				Image("e.square")
 			}
-			if self.audioQuality == .master {
+			if audioQuality == .master {
 				Image("m.square.fill")
-			} else if self.audioModes?.contains(.sony360RealityAudio) ?? false {
+			} else if audioModes?.contains(.sony360RealityAudio) ?? false {
 				Image("headphones")
-			} else if self.audioModes?.contains(.dolbyAtmos) ?? false {
+			} else if audioModes?.contains(.dolbyAtmos) ?? false {
 				Image("hifispeaker.fill")
 			} else {
 				Text("")
@@ -333,9 +333,9 @@ extension Album {
 	}
 	
 	var hasAttributes: Bool {
-		self.explicit ?? false ||
-			self.audioQuality == .master ||
-			self.audioModes?.contains(.sony360RealityAudio) ?? false ||
-			self.audioModes?.contains(.dolbyAtmos) ?? false
+		explicit ?? false ||
+			audioQuality == .master ||
+			audioModes?.contains(.sony360RealityAudio) ?? false ||
+			audioModes?.contains(.dolbyAtmos) ?? false
 	}
 }

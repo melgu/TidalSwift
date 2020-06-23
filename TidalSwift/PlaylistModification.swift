@@ -41,15 +41,15 @@ struct AddToPlaylistView: View {
 	var body: some View {
 		ScrollView {
 			VStack {
-				if playlists != nil {
+				if let playlists = playlists {
 					Text("\(playlistEditingValues.tracks.count) \(playlistEditingValues.tracks.count > 1 ? "tracks" : "track")")
 					Picker(selection: $selectedPlaylist, label: Spacer(minLength: 0)) {
-						ForEach(playlists!) { playlist in
+						ForEach(playlists) { playlist in
 							Text(playlist.title).tag(playlist.uuid)
 						}
 						VStack {
 							TextField("New Playlist", text: $newPlaylistName, onEditingChanged: { _ in
-								self.selectedPlaylist = "_newPlaylist"
+								selectedPlaylist = "_newPlaylist"
 							})
 							if !newPlaylistName.isEmpty {
 								TextField("Optional Playlist Description", text: $newPlaylistDescription)
@@ -68,36 +68,36 @@ struct AddToPlaylistView: View {
 				HStack {
 					Button(action: {
 						print("Cancel")
-						self.playlistEditingValues.showAddTracksModal = false
+						playlistEditingValues.showAddTracksModal = false
 					}) {
 						Text("Cancel")
 					}
 					Button(action: {
-						print("Add to \(self.selectedPlaylist)")
-						guard !self.playlistEditingValues.tracks.isEmpty else {
+						print("Add to \(selectedPlaylist)")
+						guard !playlistEditingValues.tracks.isEmpty else {
 							print("Tried to add zero tracks to a playlist")
 							return
 						}
-						if self.selectedPlaylist == "_newPlaylist" {
-							guard !self.newPlaylistName.isEmpty else {
+						if selectedPlaylist == "_newPlaylist" {
+							guard !newPlaylistName.isEmpty else {
 								print("Playlist name can't be empty")
-								self.showEmptyNameWarning = true
+								showEmptyNameWarning = true
 								return
 							}
-							guard let playlist = self.session.createPlaylist(title: self.newPlaylistName, description: self.newPlaylistDescription) else {
+							guard let playlist = session.createPlaylist(title: newPlaylistName, description: newPlaylistDescription) else {
 								print("Error creating Playlist")
 								return
 							}
-							self.selectedPlaylist = playlist.uuid
+							selectedPlaylist = playlist.uuid
 						}
-						let ids = self.playlistEditingValues.tracks.map { $0.id }
-						let success = self.session.addTracks(ids, to: self.selectedPlaylist, duplicate: false)
+						let ids = playlistEditingValues.tracks.map { $0.id }
+						let success = session.addTracks(ids, to: selectedPlaylist, duplicate: false)
 						if success {
-							if let playlist = self.session.getPlaylist(playlistId: self.selectedPlaylist) {
-								self.session.helpers.offline.syncPlaylist(playlist)
-								self.viewState.refreshCurrentView()
+							if let playlist = session.getPlaylist(playlistId: selectedPlaylist) {
+								session.helpers.offline.syncPlaylist(playlist)
+								viewState.refreshCurrentView()
 							}
-							self.playlistEditingValues.showAddTracksModal = false
+							playlistEditingValues.showAddTracksModal = false
 						}
 					}) {
 						Text("Add")
@@ -118,24 +118,24 @@ struct RemoveFromPlaylistView: View {
 	
 	var body: some View {
 		VStack {
-			Text("Delete \(self.playlistEditingValues.tracks[0].title) from \(playlistEditingValues.playlist!.title)?")
+			Text("Delete \(playlistEditingValues.tracks[0].title) from \(playlistEditingValues.playlist!.title)?")
 			
 			HStack {
 				Button(action: {
 					print("Cancel")
-					self.playlistEditingValues.showRemoveTracksModal = false
+					playlistEditingValues.showRemoveTracksModal = false
 				}) {
 					Text("Cancel")
 				}
 				Button(action: {
-					let i = self.playlistEditingValues.indexToRemove!
-					let uuid = self.playlistEditingValues.playlist!.uuid
-					print("Delete Index \(i) from \(self.playlistEditingValues.playlist!.title)")
-					let success = self.session.removeTrack(index: i, from: uuid)
+					let i = playlistEditingValues.indexToRemove!
+					let uuid = playlistEditingValues.playlist!.uuid
+					print("Delete Index \(i) from \(playlistEditingValues.playlist!.title)")
+					let success = session.removeTrack(index: i, from: uuid)
 					if success {
-						self.session.helpers.offline.syncPlaylist(self.playlistEditingValues.playlist!)
-						self.viewState.refreshCurrentView()
-						self.playlistEditingValues.showRemoveTracksModal = false
+						session.helpers.offline.syncPlaylist(playlistEditingValues.playlist!)
+						viewState.refreshCurrentView()
+						playlistEditingValues.showRemoveTracksModal = false
 					}
 				}) {
 					Text("Delete")
@@ -155,22 +155,22 @@ struct DeletePlaylist: View {
 	
 	var body: some View {
 		VStack {
-			Text("Delete \(self.playlistEditingValues.playlist!.title)?")
+			Text("Delete \(playlistEditingValues.playlist!.title)?")
 			
 			HStack {
 				Button(action: {
 					print("Cancel")
-					self.playlistEditingValues.showDeleteModal = false
+					playlistEditingValues.showDeleteModal = false
 				}) {
 					Text("Cancel")
 				}
 				Button(action: {
-					print("Delete \(self.playlistEditingValues.playlist!.title)")
-					let success = self.session.deletePlaylist(playlistId: self.playlistEditingValues.playlist!.uuid)
+					print("Delete \(playlistEditingValues.playlist!.title)")
+					let success = session.deletePlaylist(playlistId: playlistEditingValues.playlist!.uuid)
 					if success {
-						self.playlistEditingValues.playlist!.removeOffline(session: self.session)
-						self.playlistEditingValues.showDeleteModal = false
-						self.viewState.refreshCurrentView()
+						playlistEditingValues.playlist!.removeOffline(session: session)
+						playlistEditingValues.showDeleteModal = false
+						viewState.refreshCurrentView()
 					}
 				}) {
 					Text("Delete")
@@ -193,14 +193,14 @@ struct EditPlaylist: View {
 	
 	var body: some View {
 		VStack {
-			Text("Edit \(self.playlistEditingValues.playlist!.title)")
+			Text("Edit \(playlistEditingValues.playlist!.title)")
 			TextField("New Playlist", text: $playlistName)
 				.onAppear {
-					self.playlistName = self.playlistEditingValues.playlist!.title
+					playlistName = playlistEditingValues.playlist!.title
 				}
 			TextField("Optional Playlist Description", text: $playlistDescription)
 				.onAppear {
-					self.playlistDescription = self.playlistEditingValues.playlist!.description ?? ""
+					playlistDescription = playlistEditingValues.playlist!.description ?? ""
 				}
 			if playlistEditingValues.playlist!.isOffline(session: session) {
 				Text("This playlist is saved offline, but won't anymore if renamed. You have to to add it to Offline items again manually, if you so desire.")
@@ -210,18 +210,18 @@ struct EditPlaylist: View {
 			HStack {
 				Button(action: {
 					print("Cancel")
-					self.playlistEditingValues.showEditModal = false
+					playlistEditingValues.showEditModal = false
 				}) {
 					Text("Cancel")
 				}
 				Button(action: {
-					print("Rename \(self.playlistEditingValues.playlist!.title)")
-					let success = self.session.editPlaylist(playlistId: self.playlistEditingValues.playlist!.uuid,
-															title: self.playlistName, description: self.playlistDescription)
+					print("Rename \(playlistEditingValues.playlist!.title)")
+					let success = session.editPlaylist(playlistId: playlistEditingValues.playlist!.uuid,
+															title: playlistName, description: playlistDescription)
 					if success {
-						self.playlistEditingValues.playlist!.removeOffline(session: self.session)
-						self.playlistEditingValues.showEditModal = false
-						self.viewState.refreshCurrentView()
+						playlistEditingValues.playlist!.removeOffline(session: session)
+						playlistEditingValues.showEditModal = false
+						viewState.refreshCurrentView()
 					}
 				}) {
 					Text("Rename")

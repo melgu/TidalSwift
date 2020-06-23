@@ -16,7 +16,7 @@ struct BackButton: View {
 			HStack {
 				Button(action: {
 					print("Back")
-					self.viewState.pop()
+					viewState.pop()
 				}) {
 					Image("chevron.left")
 						.primaryIconColor()

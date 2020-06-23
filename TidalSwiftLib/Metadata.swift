@@ -56,9 +56,9 @@ class Metadata {
 							 [track.trackNumber, album.numberOfTracks] as NSCopying & NSObjectProtocol,
 							 .integerArray))
 			
-			if album.artists != nil && !album.artists!.isEmpty {
+			if let artists = album.artists, !artists.isEmpty {
 				metadata.append((MP42MetadataKeyAlbumArtist,
-								 album.artists!.formArtistString() as NSCopying & NSObjectProtocol,
+								 artists.formArtistString() as NSCopying & NSObjectProtocol,
 								 .string))
 			}
 		}

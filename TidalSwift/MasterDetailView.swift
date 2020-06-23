@@ -22,12 +22,12 @@ struct MasterDetailView: View {
 	
 	var body: some View {
 		let selectionBinding = Binding<ViewType?>(
-			get: { self.viewState.stack.last?.viewType },
+			get: { viewState.stack.last?.viewType },
 			set: {
 //				print("Selection View: \($0?.rawValue ?? "nil")")
-				self.viewState.clearStack()
-				if $0 != nil {
-					self.viewState.push(view: TidalSwiftView(viewType: $0!))
+				viewState.clearStack()
+				if let viewType = $0 {
+					viewState.push(view: TidalSwiftView(viewType: viewType))
 				}
 			})
 		return NavigationView {
@@ -84,10 +84,10 @@ struct SearchField: View {
 	
 	var body: some View {
 		TextField("Search", text: $searchTerm, onCommit: {
-			print("Search Commit: \(self.searchTerm)")
-			self.viewState.searchTerm = self.searchTerm
-			if !self.searchTerm.isEmpty {
-				self.selection = .search
+			print("Search Commit: \(searchTerm)")
+			viewState.searchTerm = searchTerm
+			if !searchTerm.isEmpty {
+				selection = .search
 			}
 		})
 			.textFieldStyle(RoundedBorderTextFieldStyle())

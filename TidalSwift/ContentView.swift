@@ -21,27 +21,27 @@ struct ContentView: View {
 			.environmentObject(sc.player.queueInfo)
 			.environmentObject(sc.session.helpers.downloadStatus)
 			.background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
-				LoginView().environmentObject(self.loginInfo)
+				LoginView().environmentObject(loginInfo)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showAddTracksModal) {
-				AddToPlaylistView(session: self.sc.session)
-					.environmentObject(self.playlistEditingValues)
-					.environmentObject(self.viewState)
+				AddToPlaylistView(session: sc.session)
+					.environmentObject(playlistEditingValues)
+					.environmentObject(viewState)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showRemoveTracksModal) {
-				RemoveFromPlaylistView(session: self.sc.session)
-					.environmentObject(self.playlistEditingValues)
-					.environmentObject(self.viewState)
+				RemoveFromPlaylistView(session: sc.session)
+					.environmentObject(playlistEditingValues)
+					.environmentObject(viewState)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showDeleteModal) {
-				DeletePlaylist(session: self.sc.session)
-					.environmentObject(self.playlistEditingValues)
-					.environmentObject(self.viewState)
+				DeletePlaylist(session: sc.session)
+					.environmentObject(playlistEditingValues)
+					.environmentObject(viewState)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showEditModal) {
-				EditPlaylist(session: self.sc.session)
-					.environmentObject(self.playlistEditingValues)
-					.environmentObject(self.viewState)
+				EditPlaylist(session: sc.session)
+					.environmentObject(playlistEditingValues)
+					.environmentObject(viewState)
 			})
 	}
 }

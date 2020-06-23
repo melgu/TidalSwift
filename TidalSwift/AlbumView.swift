@@ -23,13 +23,16 @@ struct AlbumView: View {
 		ZStack {
 			ScrollView {
 				VStack(alignment: .leading) {
-					if viewState.stack.last?.album != nil && viewState.stack.last?.tracks != nil {
+					if let album = viewState.stack.last?.album,
+					   let tracks = viewState.stack.last?.tracks,
+					   let coverUrlSmall = album.getCoverUrl(session: session, resolution: 320),
+					   let coverUrlBig = album.getCoverUrl(session: session, resolution: 1280) {
 						ZStack(alignment: .bottomTrailing) {
 							HStack {
 								URLImageSourceView(
-									viewState.stack.last!.album!.getCoverUrl(session: session, resolution: 320)!,
+									coverUrlSmall,
 									isAnimationEnabled: true,
-									label: Text(viewState.stack.last!.album!.title)
+									label: Text(album.title)
 								)
 									.frame(width: 100, height: 100)
 									.cornerRadius(CORNERRADIUS)
@@ -38,23 +41,23 @@ struct AlbumView: View {
 									.onTapGesture {
 										let controller = CoverWindowController(rootView:
 											URLImageSourceView(
-												self.viewState.stack.last!.album!.getCoverUrl(session: self.session, resolution: 1280)!,
+												coverUrlBig,
 												isAnimationEnabled: true,
-												label: Text(self.viewState.stack.last!.album!.title)
+												label: Text(album.title)
 											)
 										)
-										controller.window?.title = self.viewState.stack.last!.album!.title
+										controller.window?.title = album.title
 										controller.showWindow(nil)
 									}
 								
 								VStack(alignment: .leading) {
 									HStack {
-										Text(viewState.stack.last!.album!.title)
+										Text(album.title)
 											.font(.title)
 											.lineLimit(1)
-											.toolTip(viewState.stack.last!.album!.title)
-										if viewState.stack.last!.album!.hasAttributes {
-											viewState.stack.last!.album!.attributeHStack
+											.toolTip(album.title)
+										if album.hasAttributes {
+											album.attributeHStack
 												.padding(.leading, -5)
 										}
 										Image("c.circle")
@@ -62,53 +65,53 @@ struct AlbumView: View {
 											.toolTip("Credits")
 											.onTapGesture {
 												let controller = ResizableWindowController(rootView:
-													CreditsView(session: self.session, album: self.viewState.stack.last!.album!)
-														.environmentObject(self.viewState)
+													CreditsView(session: session, album: album)
+														.environmentObject(viewState)
 												)
-												controller.window?.title = "Credits – \(self.viewState.stack.last!.album!.title)"
+												controller.window?.title = "Credits – \(album.title)"
 												controller.showWindow(nil)
 											}
 										if t || !t {
-											if viewState.stack.last!.album!.isInFavorites(session: session) ?? true {
+											if album.isInFavorites(session: session) ?? true {
 												Image("heart.fill")
 													.primaryIconColor()
 													.onTapGesture {
 														print("Remove from Favorites")
-														self.session.favorites!.removeAlbum(albumId: self.viewState.stack.last!.album!.id)
-														self.t.toggle()
+														session.favorites!.removeAlbum(albumId: album.id)
+														t.toggle()
 													}
 											} else {
 												Image("heart")
 													.primaryIconColor()
 													.onTapGesture {
 														print("Add to Favorites")
-														self.session.favorites!.addAlbum(albumId: self.viewState.stack.last!.album!.id)
-														self.t.toggle()
+														session.favorites!.addAlbum(albumId: album.id)
+														t.toggle()
 													}
 											}
 										}
-										if viewState.stack.last!.album!.url != nil {
+										if let url = album.url {
 											Image("square.and.arrow.up")
 												.primaryIconColor()
 												.toolTip("Copy URL")
 												.onTapGesture {
-													Pasteboard.copy(string: self.viewState.stack.last!.album!.url!.absoluteString)
+													Pasteboard.copy(string: url.absoluteString)
 												}
 										}
 									}
-									Text(viewState.stack.last!.album!.artists?.formArtistString() ?? "")
-									if viewState.stack.last!.album!.releaseDate != nil {
-										Text(DateFormatter.dateOnly.string(from: viewState.stack.last!.album!.releaseDate!))
+									Text(album.artists?.formArtistString() ?? "")
+									if let releaseDate = album.releaseDate {
+										Text(DateFormatter.dateOnly.string(from: releaseDate))
 									}
 								}
 								Spacer(minLength: 5)
 								VStack(alignment: .leading) {
-									if viewState.stack.last!.album!.numberOfTracks != nil {
-										Text("\(viewState.stack.last!.album!.numberOfTracks!) Tracks")
+									if let numberOfTracks = album.numberOfTracks {
+										Text("\(numberOfTracks) Tracks")
 											.foregroundColor(.secondary)
 									}
-									if viewState.stack.last!.album!.duration != nil {
-										Text(secondsToHoursMinutesSecondsString(seconds: viewState.stack.last!.album!.duration!))
+									if let duration = album.duration {
+										Text(secondsToHoursMinutesSecondsString(seconds: duration))
 											.foregroundColor(.secondary)
 									}
 									Spacer()
@@ -116,15 +119,15 @@ struct AlbumView: View {
 							}
 							Group {
 								if t || !t {
-									if viewState.stack.last!.album!.isOffline(session: session) {
+									if album.isOffline(session: session) {
 										Image("cloud.fill-big")
 											.primaryIconColor()
 											.onTapGesture {
 												print("Remove from Offline")
-												self.cloudPressed = false
-												self.viewState.stack.last!.album!.removeOffline(session: self.session)
-												self.viewState.refreshCurrentView()
-												self.t.toggle()
+												cloudPressed = false
+												album.removeOffline(session: session)
+												viewState.refreshCurrentView()
+												t.toggle()
 											}
 									} else {
 										if cloudPressed {
@@ -135,10 +138,10 @@ struct AlbumView: View {
 												.primaryIconColor()
 												.onTapGesture {
 													print("Add to Offline")
-													self.cloudPressed = true
-													self.viewState.stack.last!.album!.addOffline(session: self.session)
-													self.viewState.refreshCurrentView()
-													self.t.toggle()
+													cloudPressed = true
+													album.addOffline(session: session)
+													viewState.refreshCurrentView()
+													t.toggle()
 												}
 										}
 									}
@@ -148,7 +151,7 @@ struct AlbumView: View {
 						.frame(height: 100)
 						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 						
-						TrackList(wrappedTracks: viewState.stack.last!.tracks!.wrapped(), showCover: false, showAlbumTrackNumber: true,
+						TrackList(wrappedTracks: tracks.wrapped(), showCover: false, showAlbumTrackNumber: true,
 								  showArtist: true, showAlbum: false, playlist: nil,
 								  session: session, player: player)
 					} else {

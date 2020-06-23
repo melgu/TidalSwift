@@ -34,22 +34,22 @@ struct LyricsView: View {
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
-				if track != nil {
+				if let track = track {
 					HStack {
-						Text(track!.title)
+						Text(track.title)
 							.font(.title)
 							.padding(.bottom)
 						Spacer(minLength: 0)
 					}
-					Text(track!.artists.formArtistString())
+					Text(track.artists.formArtistString())
 						.font(.headline)
 						.padding(.bottom)
-					if loadingState == .successful {
-						Text(lyrics!)
+					if loadingState == .successful, let lyrics = lyrics {
+						Text(lyrics)
 							.contextMenu {
 								Button(action: {
 									print("Copy Lyrics")
-									Pasteboard.copy(string: self.lyrics!)
+									Pasteboard.copy(string: lyrics)
 								}) {
 									Text("Copy")
 								}
@@ -73,14 +73,14 @@ struct LyricsView: View {
 			.padding()
 		}
 		.onAppear {
-			self.currentIndexCancellable = self.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
-			self.queueCancellable = self.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { _ in self.fetchLyrics() })
-			self.fetchLyrics()
+			currentIndexCancellable = queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { _ in fetchLyrics() })
+			queueCancellable = queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { _ in fetchLyrics() })
+			fetchLyrics()
 		}
 		.onDisappear {
-			self.workItem?.cancel()
-			self.currentIndexCancellable?.cancel()
-			self.queueCancellable?.cancel()
+			workItem?.cancel()
+			currentIndexCancellable?.cancel()
+			queueCancellable?.cancel()
 		}
 	}
 	
@@ -94,27 +94,27 @@ struct LyricsView: View {
 		workItem?.cancel()
 		loadingState = .loading
 		workItem = createWorkItem()
-		if workItem != nil {
-			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
+		if let workItem = workItem {
+			DispatchQueue.global(qos: .userInitiated).async(execute: workItem)
 		}
 		
 	}
 	
 	func createWorkItem() -> DispatchWorkItem {
 		DispatchWorkItem {
-			guard let track = self.track else {
+			guard let track = track else {
 				DispatchQueue.main.async {
-					self.loadingState = .error
+					loadingState = .error
 				}
 				return
 			}
-			let t = self.lyricsHandler.getLyrics(for: track)
+			let t = lyricsHandler.getLyrics(for: track)
 			DispatchQueue.main.async {
 				if t != nil {
-					self.lyrics = t
-					self.loadingState = .successful
+					lyrics = t
+					loadingState = .successful
 				} else {
-					self.loadingState = .error
+					loadingState = .error
 				}
 			}
 		}

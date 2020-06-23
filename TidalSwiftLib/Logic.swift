@@ -361,8 +361,8 @@ public class Session {
 		// Genres: ???
 		
 		var tempResolutionY: Int
-		if resolutionY != nil {
-			tempResolutionY = resolutionY!
+		if let resolutionY = resolutionY {
+			tempResolutionY = resolutionY
 		} else {
 			tempResolutionY = resolution
 		}

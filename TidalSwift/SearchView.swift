@@ -33,31 +33,31 @@ struct SearchView: View {
 				}
 				.padding([.horizontal, .bottom])
 				
-				if viewState.stack.last?.searchResponse != nil {
-					if !viewState.stack.last!.searchResponse!.artists.isEmpty {
-						SearchViewArtists(artists: viewState.stack.last!.searchResponse!.artists, session: session, player: player)
+				if let searchResponse = viewState.stack.last?.searchResponse {
+					if !searchResponse.artists.isEmpty {
+						SearchViewArtists(artists: searchResponse.artists, session: session, player: player)
 						Divider()
 					}
-					if !viewState.stack.last!.searchResponse!.albums.isEmpty {
-						SearchViewAlbums(albums: viewState.stack.last!.searchResponse!.albums, session: session, player: player)
+					if !searchResponse.albums.isEmpty {
+						SearchViewAlbums(albums: searchResponse.albums, session: session, player: player)
 						Divider()
 					}
-					if !viewState.stack.last!.searchResponse!.playlists.isEmpty {
-						SearchViewPlaylists(playlists: viewState.stack.last!.searchResponse!.playlists, session: session, player: player)
+					if !searchResponse.playlists.isEmpty {
+						SearchViewPlaylists(playlists: searchResponse.playlists, session: session, player: player)
 						Divider()
 					}
-					if !viewState.stack.last!.searchResponse!.tracks.isEmpty {
-						SearchViewTracks(tracks: viewState.stack.last!.searchResponse!.tracks, session: session, player: player)
+					if !searchResponse.tracks.isEmpty {
+						SearchViewTracks(tracks: searchResponse.tracks, session: session, player: player)
 						Divider()
 					}
-					if !viewState.stack.last!.searchResponse!.videos.isEmpty {
-						SearchViewVideos(videos: viewState.stack.last!.searchResponse!.videos, session: session, player: player)
+					if !searchResponse.videos.isEmpty {
+						SearchViewVideos(videos: searchResponse.videos, session: session, player: player)
 					}
-					if viewState.stack.last!.searchResponse!.artists.isEmpty
-						&& viewState.stack.last!.searchResponse!.albums.isEmpty
-						&& viewState.stack.last!.searchResponse!.playlists.isEmpty
-						&& viewState.stack.last!.searchResponse!.tracks.isEmpty
-						&& viewState.stack.last!.searchResponse!.videos.isEmpty {
+					if searchResponse.artists.isEmpty
+						&& searchResponse.albums.isEmpty
+						&& searchResponse.playlists.isEmpty
+						&& searchResponse.tracks.isEmpty
+						&& searchResponse.videos.isEmpty {
 						Text("No Results")
 							.font(.callout)
 							.padding(.horizontal)
@@ -83,7 +83,7 @@ struct SearchViewArtists: View {
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
 					ForEach(artists) { artist in
-						ArtistGridItem(artist: artist, session: self.session, player: self.player)
+						ArtistGridItem(artist: artist, session: session, player: player)
 					}
 				}
 				.padding(10)
@@ -106,7 +106,7 @@ struct SearchViewAlbums: View {
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
 					ForEach(albums) { album in
-						AlbumGridItem(album: album, showArtists: true, session: self.session, player: self.player)
+						AlbumGridItem(album: album, showArtists: true, session: session, player: player)
 					}
 				}
 				.padding(10)
@@ -129,7 +129,7 @@ struct SearchViewPlaylists: View {
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
 					ForEach(playlists) { playlist in
-						PlaylistGridItem(playlist: playlist, session: self.session, player: self.player)
+						PlaylistGridItem(playlist: playlist, session: session, player: player)
 					}
 				}
 				.padding(10)
@@ -152,7 +152,7 @@ struct SearchViewTracks: View {
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
 					ForEach(tracks) { track in
-						TrackGridItem(track: track, showArtist: true, session: self.session, player: self.player)
+						TrackGridItem(track: track, showArtist: true, session: session, player: player)
 					}
 				}
 				.padding(10)
@@ -175,7 +175,7 @@ struct SearchViewVideos: View {
 			ScrollView(.horizontal) {
 				HStack(alignment: .top) {
 					ForEach(videos) { video in
-						VideoGridItem(video: video, showArtist: true, session: self.session, player: self.player)
+						VideoGridItem(video: video, showArtist: true, session: session, player: player)
 					}
 				}
 				.padding(10)

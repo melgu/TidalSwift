@@ -27,8 +27,8 @@ struct CreditsView: View {
 						.padding(.bottom)
 					Spacer(minLength: 0)
 				}
-				if credits != nil && !credits!.isEmpty {
-					ForEach(credits!) { credit in
+				if let credits = credits, !credits.isEmpty {
+					ForEach(credits) { credit in
 						Text(credit.type)
 							.bold()
 						Text("\(credit.contributors.formContributorString())\n")
@@ -45,31 +45,31 @@ struct CreditsView: View {
 			.padding()
 		}
 		.onAppear {
-			self.workItem = self.createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
+			workItem = createWorkItem()
+			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
 		}
 		.onDisappear {
-			self.workItem?.cancel()
+			workItem?.cancel()
 		}
 	}
 	
 	func createWorkItem() -> DispatchWorkItem {
 		DispatchWorkItem {
 			var t: [Credit]?
-			if self.track != nil {
-				t = self.track!.getCredits(session: self.session)
-			} else if self.album != nil {
-				t = self.album!.getCredits(session: self.session)
+			if let track = track {
+				t = track.getCredits(session: session)
+			} else if let album = album {
+				t = album.getCredits(session: session)
 			}
 			
 			if t != nil {
 				DispatchQueue.main.async {
-					self.credits = t
-					self.loadingState = .successful
+					credits = t
+					loadingState = .successful
 				}
 			} else {
 				DispatchQueue.main.async {
-					self.loadingState = .error
+					loadingState = .error
 				}
 			}
 		}

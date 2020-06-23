@@ -22,15 +22,15 @@ struct TrackList: View {
 	
 	var body: some View {
 		ForEach(wrappedTracks) { wrappedTrack in
-			TrackRow(track: wrappedTrack.track, showCover: self.showCover, showArtist: self.showArtist, showAlbum: self.showAlbum,
-					 trackNumber: self.showAlbumTrackNumber ? nil : wrappedTrack.id, session: self.session)
+			TrackRow(track: wrappedTrack.track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
+					 trackNumber: showAlbumTrackNumber ? nil : wrappedTrack.id, session: session)
 				.onTapGesture(count: 2) {
 					print("\(wrappedTrack.track.title)")
-					self.player.add(tracks: self.wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
-					self.player.play(atIndex: wrappedTrack.id)
+					player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
+					player.play(atIndex: wrappedTrack.id)
 				}
 				.contextMenu {
-					TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: self.playlist != nil ? wrappedTrack.id : nil, playlist: self.playlist, session: self.session, player: self.player)
+					TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: playlist != nil ? wrappedTrack.id : nil, playlist: playlist, session: session, player: player)
 				}
 			Divider()
 		}
@@ -92,20 +92,20 @@ struct TrackRow: View {
 			HStack {
 				HStack {
 					HStack {
-						if !self.queueInfo.queue.isEmpty &&
-							self.queueInfo.queue[self.queueInfo.currentIndex].track == self.track {
+						if !queueInfo.queue.isEmpty &&
+							queueInfo.queue[queueInfo.currentIndex].track == track {
 							Image("play.fill")
 								.secondaryIconColor()
 						}
-						if self.showCover {
-							if self.coverUrl != nil {
+						if showCover {
+							if let coverUrl = coverUrl {
 								URLImageSourceView(
-									self.coverUrl!,
+									coverUrl,
 									isAnimationEnabled: true,
-									label: Text(self.track.title)
+									label: Text(track.title)
 								)
-									.frame(width: 30, height: 30)
-									.cornerRadius(CORNERRADIUS)
+								.frame(width: 30, height: 30)
+								.cornerRadius(CORNERRADIUS)
 							} else {
 								Rectangle()
 									.foregroundColor(.black)
@@ -113,45 +113,45 @@ struct TrackRow: View {
 									.cornerRadius(CORNERRADIUS)
 							}
 						} else {
-							Text("\(self.trackNumber ?? self.track.trackNumber)")
+							Text("\(trackNumber ?? track.trackNumber)")
 								.fontWeight(.thin)
 								.foregroundColor(.secondary)
 						}
-						Text(self.track.title)
-						if self.track.version != nil {
-							Text("(\(self.track.version!))")
+						Text(track.title)
+						if let version = track.version {
+							Text(version)
 								.foregroundColor(.secondary)
 								.padding(.leading, -5)
 								.layoutPriority(-1)
 						}
-						self.track.attributeHStack
+						track.attributeHStack
 							.padding(.leading, -5)
 							.layoutPriority(1)
 						Spacer(minLength: 5)
 					}
-					.frame(width: metrics.size.width * self.widthFactorTrack)
-					.toolTip("\(self.track.title)\(self.track.version != nil ? " (\(self.track.version!))" : "")")
-					if self.showArtist {
+					.frame(width: metrics.size.width * widthFactorTrack)
+					.toolTip("\(track.title)\(track.version != nil ? " (\(track.version!))" : "")")
+					if showArtist {
 						HStack {
-							Text(self.track.artists.formArtistString())
+							Text(track.artists.formArtistString())
 							Spacer(minLength: 5)
 						}
-						.frame(width: metrics.size.width * self.widthFactorArtist)
-						.toolTip(self.track.artists.formArtistString())
+						.frame(width: metrics.size.width * widthFactorArtist)
+						.toolTip(track.artists.formArtistString())
 					}
-					if self.showAlbum {
+					if showAlbum {
 						HStack {
-							Text(self.track.album.title)
+							Text(track.album.title)
 							Spacer(minLength: 5)
 						}
-						.frame(width: metrics.size.width * self.widthFactorAlbum)
-						.toolTip(self.track.album.title)
+						.frame(width: metrics.size.width * widthFactorAlbum)
+						.toolTip(track.album.title)
 					}
 				}
 				Group {
-					Text(secondsToHoursMinutesSecondsString(seconds: self.track.duration))
+					Text(secondsToHoursMinutesSecondsString(seconds: track.duration))
 					Spacer()
-					if self.track.isOffline(session: self.session) {
+					if track.isOffline(session: session) {
 						Image("cloud.fill")
 							.secondaryIconColor()
 					}
@@ -159,38 +159,38 @@ struct TrackRow: View {
 						.primaryIconColor()
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:
-								CreditsView(session: self.session, track: self.track)
-									.environmentObject(self.viewState)
+																		CreditsView(session: session, track: track)
+																		.environmentObject(viewState)
 							)
-							controller.window?.title = "Credits – \(self.track.title)"
+							controller.window?.title = "Credits – \(track.title)"
 							controller.showWindow(nil)
 						}
-					if self.t || !self.t {
-						if self.track.isInFavorites(session: self.session) ?? false {
+					if t || !t {
+						if track.isInFavorites(session: session) ?? false {
 							Image("heart.fill")
 								.primaryIconColor()
 								.onTapGesture {
 									print("Remove from Favorites")
-									self.session.favorites!.removeTrack(trackId: self.track.id)
-									self.session.helpers.offline.asyncSyncFavoriteTracks()
-									//									self.viewState.refreshCurrentView()
-									self.t.toggle()
+									session.favorites!.removeTrack(trackId: track.id)
+									session.helpers.offline.asyncSyncFavoriteTracks()
+									//									viewState.refreshCurrentView()
+									t.toggle()
 								}
 						} else {
 							Image("heart")
 								.primaryIconColor()
 								.onTapGesture {
 									print("Add to Favorites")
-									self.session.favorites!.addTrack(trackId: self.track.id)
-									self.session.helpers.offline.asyncSyncFavoriteTracks()
-									//									self.viewState.refreshCurrentView()
-									self.t.toggle()
+									session.favorites!.addTrack(trackId: track.id)
+									session.helpers.offline.asyncSyncFavoriteTracks()
+//									viewState.refreshCurrentView()
+									t.toggle()
 								}
 						}
 					}
 				}
 			}
-			.foregroundColor(self.track.isUnavailable ? .secondary : .primary)
+			.foregroundColor(track.isUnavailable ? .secondary : .primary)
 		}
 		.lineLimit(1)
 		.frame(height: showCover ? 30 : 16) // Values tested "by hand"
