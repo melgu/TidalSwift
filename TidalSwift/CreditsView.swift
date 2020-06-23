@@ -44,17 +44,17 @@ struct CreditsView: View {
 			}
 			.padding()
 		}
-		.onAppear() {
+		.onAppear {
 			self.workItem = self.createWorkItem()
 			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
 		}
-		.onDisappear() {
+		.onDisappear {
 			self.workItem?.cancel()
 		}
 	}
 	
 	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			var t: [Credit]?
 			if self.track != nil {
 				t = self.track!.getCredits(session: self.session)

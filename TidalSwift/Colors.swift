@@ -94,4 +94,3 @@ extension NSImage {
 		return image
 	}
 }
-

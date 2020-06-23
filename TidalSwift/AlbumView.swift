@@ -45,7 +45,7 @@ struct AlbumView: View {
 										)
 										controller.window?.title = self.viewState.stack.last!.album!.title
 										controller.showWindow(nil)
-								}
+									}
 								
 								VStack(alignment: .leading) {
 									HStack {
@@ -67,7 +67,7 @@ struct AlbumView: View {
 												)
 												controller.window?.title = "Credits – \(self.viewState.stack.last!.album!.title)"
 												controller.showWindow(nil)
-										}
+											}
 										if t || !t {
 											if viewState.stack.last!.album!.isInFavorites(session: session) ?? true {
 												Image("heart.fill")
@@ -76,7 +76,7 @@ struct AlbumView: View {
 														print("Remove from Favorites")
 														self.session.favorites!.removeAlbum(albumId: self.viewState.stack.last!.album!.id)
 														self.t.toggle()
-												}
+													}
 											} else {
 												Image("heart")
 													.primaryIconColor()
@@ -84,7 +84,7 @@ struct AlbumView: View {
 														print("Add to Favorites")
 														self.session.favorites!.addAlbum(albumId: self.viewState.stack.last!.album!.id)
 														self.t.toggle()
-												}
+													}
 											}
 										}
 										if viewState.stack.last!.album!.url != nil {
@@ -93,7 +93,7 @@ struct AlbumView: View {
 												.toolTip("Copy URL")
 												.onTapGesture {
 													Pasteboard.copy(string: self.viewState.stack.last!.album!.url!.absoluteString)
-											}
+												}
 										}
 									}
 									Text(viewState.stack.last!.album!.artists?.formArtistString() ?? "")
@@ -125,7 +125,7 @@ struct AlbumView: View {
 												self.viewState.stack.last!.album!.removeOffline(session: self.session)
 												self.viewState.refreshCurrentView()
 												self.t.toggle()
-										}
+											}
 									} else {
 										if cloudPressed {
 											Image("cloud.fill-big")
@@ -139,7 +139,7 @@ struct AlbumView: View {
 													self.viewState.stack.last!.album!.addOffline(session: self.session)
 													self.viewState.refreshCurrentView()
 													self.t.toggle()
-											}
+												}
 										}
 									}
 								}

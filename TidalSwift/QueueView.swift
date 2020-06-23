@@ -43,7 +43,7 @@ struct QueueView: View {
 					VStack(alignment: .trailing) {
 						Text("\(queueInfo.queue.count) Tracks")
 							.foregroundColor(.secondary)
-						Text(secondsToHoursMinutesSecondsString(seconds: calculateTotalTime(for: queueInfo.queue.map { $0.track } )))
+						Text(secondsToHoursMinutesSecondsString(seconds: calculateTotalTime(for: queueInfo.queue.map { $0.track })))
 							.foregroundColor(.secondary)
 						Spacer()
 					}
@@ -59,16 +59,16 @@ struct QueueView: View {
 								.lineLimit(1)
 								.onTapGesture(count: 2) {
 									self.player.play(atIndex: item.id)
-							}
-							.contextMenu {
-								TrackContextMenu(track: item.track, session: self.session, player: self.player)
-							}
+								}
+								.contextMenu {
+									TrackContextMenu(track: item.track, session: self.session, player: self.player)
+								}
 							Spacer(minLength: 5)
 							Image("x.circle.fill")
 								.secondaryIconColor()
 								.onTapGesture {
 									self.player.removeTrack(atIndex: item.id)
-							}
+								}
 						}
 						.padding(.top, -12)
 					}

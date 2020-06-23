@@ -91,23 +91,21 @@ struct ArtistContextMenu: View {
 	
 	var body: some View {
 		Group {
-//			Group {
-				Button(action: {
-					self.player.add(artist: self.artist, .now)
-				}) {
-					Text("Play Now")
-				}
-				Button(action: {
-					self.player.add(artist: self.artist, .next)
-				}) {
-					Text("Add Next")
-				}
-				Button(action: {
-					self.player.add(artist: self.artist, .last)
-				}) {
-					Text("Add Last")
-				}
-//			}
+			Button(action: {
+				self.player.add(artist: self.artist, .now)
+			}) {
+				Text("Play Now")
+			}
+			Button(action: {
+				self.player.add(artist: self.artist, .next)
+			}) {
+				Text("Add Next")
+			}
+			Button(action: {
+				self.player.add(artist: self.artist, .last)
+			}) {
+				Text("Add Last")
+			}
 			Divider()
 			Group {
 				if t || !t {
@@ -132,21 +130,19 @@ struct ArtistContextMenu: View {
 				}
 			}
 			Divider()
-//			Group {
-				Button(action: {
-					print("Offline")
-				}) {
-					Text("Offline")
+			Button(action: {
+				print("Offline")
+			}) {
+				Text("Offline")
+			}
+			Button(action: {
+				print("Download all Albums of \(self.artist.name)")
+				DispatchQueue.global(qos: .background).async {
+					_ = self.session.helpers.downloadAllAlbums(from: self.artist)
 				}
-				Button(action: {
-					print("Download all Albums of \(self.artist.name)")
-					DispatchQueue.global(qos: .background).async {
-						_ = self.session.helpers.downloadAllAlbums(from: self.artist)
-					}
-				}) {
-					Text("Download all Albums")
-				}
-//			}
+			}) {
+				Text("Download all Albums")
+			}
 			Divider()
 			Group {
 				Button(action: {

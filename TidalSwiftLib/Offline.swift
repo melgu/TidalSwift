@@ -174,28 +174,28 @@ public class Offline {
 	
 	// The following always show the goal state (planned), i.e., after all downloads have finished
 	public func numberOfOfflineTracks() -> Int {
-		return db.tracks.count
+		db.tracks.count
 	}
 	public func allOfflineTracks() -> [Track] {
-		return db.tracks.map { (track, _) in track }
+		db.tracks.map { (track, _) in track }
 	}
 	
 	public func numberOfOfflineAlbums() -> Int {
-		return db.albums.count
+		db.albums.count
 	}
 	public func allOfflineAlbums() -> [Album] {
-		return db.albums
+		db.albums
 	}
 	
 	public func numberOfOfflinePlaylists() -> Int {
-		return db.playlists.count
+		db.playlists.count
 	}
 	public func allOfflinePlaylists() -> [Playlist] {
-		return db.playlists
+		db.playlists
 	}
 	
 	public func isTrackMarkedForOffline(track: Track) -> Bool {
-		return db.tracks[track] != nil
+		db.tracks[track] != nil
 	}
 	
 	// Actual state
@@ -216,8 +216,7 @@ public class Offline {
 					localTracksIds.append(id)
 				}
 			}
-		}
-		catch {
+		} catch {
 			displayError(title: "Offline: Couldn't load Track IDs from Disk", content: error.localizedDescription)
 			return nil
 		}
@@ -225,7 +224,7 @@ public class Offline {
 		return localTracksIds
 	}
 	
-	private var offlineTrackIdsCache: [Int]? = nil
+	private var offlineTrackIdsCache: [Int]?
 	private var offlineTrackIdsCacheIntact = false
 	private var offlineTrackIdsCacheSemaphore = DispatchSemaphore(value: 1)
 	private func invalidateOfflineTrackIdsCache() {
@@ -246,7 +245,7 @@ public class Offline {
 	}
 	
 	public func isTrackOffline(track: Track) -> Bool {
-		return offlineTrackIds()?.contains(track.id) ?? false
+		offlineTrackIds()?.contains(track.id) ?? false
 	}
 	
 	// MARK: - Sync
@@ -358,7 +357,7 @@ public class Offline {
 	
 	private var syncWI: DispatchWorkItem?
 	private func syncWIBuilder() -> DispatchWorkItem {
-		return DispatchWorkItem { [unowned self] in self.sync() }
+		DispatchWorkItem { [unowned self] in self.sync() }
 	}
 	
 	private func asyncSync() {
@@ -397,7 +396,7 @@ public class Offline {
 		db.semaphore.wait()
 		for track in tracks {
 			if var c = db.tracks[track] {
-				c = c - 1
+				c -= 1
 				if c <= 0 {
 					db.tracks[track] = nil
 				} else {
@@ -481,7 +480,7 @@ public class Offline {
 	
 	private var syncFavoriteTracksWI: DispatchWorkItem?
 	private func syncFavoriteTracksWIBuilder() -> DispatchWorkItem {
-		return DispatchWorkItem { [unowned self] in self.syncFavoriteTracks() }
+		DispatchWorkItem { [unowned self] in self.syncFavoriteTracks() }
 	}
 	
 	public func asyncSyncFavoriteTracks() {
@@ -501,11 +500,11 @@ public class Offline {
 	// MARK: - Album
 	
 	public func isAlbumOffline(album: Album) -> Bool {
-		return db.albums.contains(album)
+		db.albums.contains(album)
 	}
 	
 	public func getTracks(for album: Album) -> [Track]? {
-		return db.albumTracks[album]
+		db.albumTracks[album]
 	}
 	
 	// Probably no need to do async, as it's only a single quick call to the Tidal API
@@ -548,7 +547,7 @@ public class Offline {
 	}
 	
 	public func getTracks(for playlist: Playlist) -> [Track]? {
-		return db.playlistTracks[playlist]
+		db.playlistTracks[playlist]
 	}
 	
 	private func syncPlaylists() {
@@ -630,7 +629,7 @@ public class Offline {
 	
 	private var syncPlaylistsWI: DispatchWorkItem?
 	private func syncPlaylistsWIBuilder() -> DispatchWorkItem {
-		return DispatchWorkItem { [unowned self] in self.syncPlaylists() }
+		DispatchWorkItem { [unowned self] in self.syncPlaylists() }
 	}
 	
 	public func syncPlaylist(_ playlist: Playlist) {

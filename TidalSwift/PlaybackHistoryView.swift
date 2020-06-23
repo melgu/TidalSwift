@@ -37,16 +37,16 @@ struct PlaybackHistoryView: View {
 					ForEach(queueInfo.history) { item in
 						HStack {
 							Text("\(item.track.title) - \(item.track.artists.formArtistString())")
-								.fontWeight(item.id == self.queueInfo.history.count-1 ? .bold : .regular)
+								.fontWeight(item.id == self.queueInfo.history.count - 1 ? .bold : .regular)
 								.lineLimit(1)
 								.onTapGesture(count: 2) {
 									self.sc.player.clearQueue()
 									self.sc.player.add(tracks: self.queueInfo.history.map { $0.track }, .last)
 									self.sc.player.play(atIndex: item.id)
-							}
-							.contextMenu {
-								TrackContextMenu(track: item.track, session: self.sc.session, player: self.sc.player)
-							}
+								}
+								.contextMenu {
+									TrackContextMenu(track: item.track, session: self.sc.session, player: self.sc.player)
+								}
 							Spacer(minLength: 0)
 						}
 					}

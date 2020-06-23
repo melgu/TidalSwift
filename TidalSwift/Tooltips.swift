@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-public extension View {
+extension View {
 	/// Overlays this view with a view that provides a toolTip with the given string.
 	func toolTip(_ toolTip: String?) -> some View {
 		self.overlay(ToolTipView(toolTip))

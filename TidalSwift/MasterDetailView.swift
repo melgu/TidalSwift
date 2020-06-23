@@ -29,7 +29,7 @@ struct MasterDetailView: View {
 				if $0 != nil {
 					self.viewState.push(view: TidalSwiftView(viewType: $0!))
 				}
-		})
+			})
 		return NavigationView {
 			MasterView(selection: selectionBinding, session: session)
 			DetailView(session: session, player: player)

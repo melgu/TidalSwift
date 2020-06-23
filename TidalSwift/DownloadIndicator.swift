@@ -25,12 +25,12 @@ struct DownloadIndicator: View {
 							.autoconnect()
 							.sink { _ in
 								self.animationState.toggle()
-						}
-				}
-				.toolTip("Downloads currently running")
-				.onDisappear {
-					self.timerCancellable?.cancel()
-				}
+							}
+					}
+					.toolTip("Downloads currently running")
+					.onDisappear {
+						self.timerCancellable?.cancel()
+					}
 			}
 		}
 	}

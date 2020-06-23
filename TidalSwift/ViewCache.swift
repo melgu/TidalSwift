@@ -12,14 +12,14 @@ import TidalSwiftLib
 struct ViewCache: Codable {
 	var searchResponses: [String: SearchResponse] = [:]
 	
-	var newReleases: [Album]? = nil
-	var mixes: [MixesItem]? = nil
+	var newReleases: [Album]?
+	var mixes: [MixesItem]?
 	
-	var favoriteArtists: [Artist]? = nil
-	var favoriteAlbums: [Album]? = nil
-	var favoritePlaylists: [Playlist]? = nil
-	var favoriteTracks: [Track]? = nil
-	var favoriteVideos: [Video]? = nil
+	var favoriteArtists: [Artist]?
+	var favoriteAlbums: [Album]?
+	var favoritePlaylists: [Playlist]?
+	var favoriteTracks: [Track]?
+	var favoriteVideos: [Video]?
 	
 //	var artist: [Int: Artist] = [:]
 //	var album: [Int: Album] = [:]

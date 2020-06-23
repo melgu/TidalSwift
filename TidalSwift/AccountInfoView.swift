@@ -59,17 +59,17 @@ struct AccountInfoView: View {
 				}
 			}
 		}
-		.onAppear() {
+		.onAppear {
 			self.workItem = self.createWorkItem()
 			DispatchQueue.global(qos: .userInitiated).async(execute: self.workItem!)
 		}
-		.onDisappear() {
+		.onDisappear {
 			self.workItem?.cancel()
 		}
 	}
 	
 	func createWorkItem() -> DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			var tUser: User?
 			var tSubscription: Subscription?
 			

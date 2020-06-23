@@ -71,10 +71,10 @@ extension ViewState {
 				return
 			}
 			if self.stack.last!.id == view.id {
-				self.stack[self.stack.count-1] = view
+				self.stack[self.stack.count - 1] = view
 				if !self.history.isEmpty {
 					if self.history.last!.id == view.id {
-						self.history[self.history.count-1] = view
+						self.history[self.history.count - 1] = view
 					} else {
 						self.addToHistory(view)
 					}
@@ -119,7 +119,7 @@ extension ViewState {
 	}
 	
 	func searchWI(searchTerm: String) -> DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			let t = self.session.search(for: searchTerm)
 			
 			var view = TidalSwiftView(viewType: .search)
@@ -148,7 +148,7 @@ extension ViewState {
 	}
 	
 	var newReleasesWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			let t = self.session.helpers.newReleasesFromFavoriteArtists(number: 40)
 			
 			var view = TidalSwiftView(viewType: .newReleases)
@@ -177,7 +177,7 @@ extension ViewState {
 	}
 	
 	var myMixesWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			let t = self.session.getMixes()
 			
 			var view = TidalSwiftView(viewType: .myMixes)
@@ -212,7 +212,7 @@ extension ViewState {
 	}
 	
 	var mixWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			guard var view = self.stack.last else {
 				return
 			}
@@ -249,7 +249,7 @@ extension ViewState {
 	}
 	
 	var favoriteArtistsWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			var view = TidalSwiftView(viewType: .favoriteArtists)
 			guard let favorites = self.session.favorites else {
 				view.artists = self.cache.favoriteArtists
@@ -286,7 +286,7 @@ extension ViewState {
 	}
 	
 	var favoriteAlbumsWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			var view = TidalSwiftView(viewType: .favoriteAlbums)
 			guard let favorites = self.session.favorites else {
 				view.albums = self.cache.favoriteAlbums
@@ -323,7 +323,7 @@ extension ViewState {
 	}
 	
 	var favoritePlaylistsWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			var view = TidalSwiftView(viewType: .favoritePlaylists)
 			guard let favorites = self.session.favorites else {
 				view.playlists = self.cache.favoritePlaylists
@@ -360,7 +360,7 @@ extension ViewState {
 	}
 	
 	var favoriteTracksWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			var view = TidalSwiftView(viewType: .favoriteTracks)
 			guard let favorites = self.session.favorites else {
 				view.tracks = self.cache.favoriteTracks
@@ -398,7 +398,7 @@ extension ViewState {
 	}
 	
 	var favoriteVideosWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			var view = TidalSwiftView(viewType: .favoriteVideos)
 			guard let favorites = self.session.favorites else {
 				view.videos = self.cache.favoriteVideos
@@ -447,7 +447,7 @@ extension ViewState {
 	}
 	
 	var artistWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			guard var view = self.stack.last else {
 				return
 			}
@@ -507,7 +507,7 @@ extension ViewState {
 	}
 	
 	var albumWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			guard var view = self.stack.last else {
 				return
 			}
@@ -562,7 +562,7 @@ extension ViewState {
 	}
 	
 	var playlistWI: DispatchWorkItem {
-		return DispatchWorkItem {
+		DispatchWorkItem {
 			guard var view = self.stack.last else {
 				return
 			}

@@ -104,11 +104,11 @@ public struct Artist: Codable, Equatable, Identifiable, Hashable {
 	public let relationType: String? // e.g. SIMILAR_ARTIST
 	
 	public func bio(session: Session) -> ArtistBio? {
-		return session.getArtistBio(artistId: id)
+		session.getArtistBio(artistId: id)
 	}
 	
 	public func isInFavorites(session: Session) -> Bool? {
-		return session.favorites?.doFavoritesContainArtist(artistId: id)
+		session.favorites?.doFavoritesContainArtist(artistId: id)
 	}
 	
 	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
@@ -126,11 +126,11 @@ public struct Artist: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public func radio(session: Session) -> [Track]? {
-		return session.getArtistRadio(artistId: id)
+		session.getArtistRadio(artistId: id)
 	}
 	
 	public static func == (lhs: Artist, rhs: Artist) -> Bool {
-		return lhs.id == rhs.id
+		lhs.id == rhs.id
 	}
 	
 	public func hash(into hasher: inout Hasher) {
@@ -144,7 +144,7 @@ public struct ArtistBio: Decodable {
 	public let text: String
 	
 	public var lastUpdatedString: String {
-		return DateFormatter.dateOnly.string(from: lastUpdated)
+		DateFormatter.dateOnly.string(from: lastUpdated)
 	}
 }
 
@@ -184,11 +184,11 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 	public let artists: [Artist]?
 	
 	public var isCompilation: Bool {
-		return artist?.name == "Various Artists"
+		artist?.name == "Various Artists"
 	}
 	
 	public func isInFavorites(session: Session) -> Bool? {
-		return session.favorites?.doFavoritesContainAlbum(albumId: id)
+		session.favorites?.doFavoritesContainAlbum(albumId: id)
 	}
 	
 	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
@@ -202,7 +202,7 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public func isOffline(session: Session) -> Bool {
-		return session.helpers.offline.isAlbumOffline(album: self)
+		session.helpers.offline.isAlbumOffline(album: self)
 	}
 	
 	public func addOffline(session: Session) {
@@ -218,7 +218,7 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public static func == (lhs: Album, rhs: Album) -> Bool {
-		return lhs.id == rhs.id
+		lhs.id == rhs.id
 	}
 	
 	public func hash(into hasher: inout Hasher) {
@@ -267,7 +267,7 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 	public let squareImage: String?
 	
 	public func isInFavorites(session: Session) -> Bool? {
-		return session.favorites?.doFavoritesContainPlaylist(playlistId: uuid)
+		session.favorites?.doFavoritesContainPlaylist(playlistId: uuid)
 	}
 	
 	public func getImageUrl(session: Session, resolution: Int, resolutionY: Int? = nil) -> URL? {
@@ -303,7 +303,7 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public func isOffline(session: Session) -> Bool {
-		return session.helpers.offline.isPlaylistOffline(playlist: self)
+		session.helpers.offline.isPlaylistOffline(playlist: self)
 	}
 	
 	public func addOffline(session: Session) {
@@ -315,7 +315,7 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public static func == (lhs: Playlist, rhs: Playlist) -> Bool {
-		return lhs.uuid == rhs.uuid
+		lhs.uuid == rhs.uuid
 	}
 	
 	public func hash(into hasher: inout Hasher) {
@@ -373,15 +373,15 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	public let album: Album
 	
 	public func isInFavorites(session: Session) -> Bool? {
-		return session.favorites?.doFavoritesContainTrack(trackId: id)
+		session.favorites?.doFavoritesContainTrack(trackId: id)
 	}
 	
 	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
-		return album.getCoverUrl(session: session, resolution: resolution)
+		album.getCoverUrl(session: session, resolution: resolution)
 	}
 	
 	public func getCover(session: Session, resolution: Int) -> NSImage? {
-		return album.getCover(session: session, resolution: resolution)
+		album.getCover(session: session, resolution: resolution)
 	}
 	
 	public func getCredits(session: Session) -> [Credit]? {
@@ -389,19 +389,19 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public func getAudioUrl(session: Session) -> URL? {
-		return session.getAudioUrl(trackId: id)
+		session.getAudioUrl(trackId: id)
 	}
 	
 	public func isOffline(session: Session) -> Bool {
-		return session.helpers.offline.isTrackOffline(track: self)
+		session.helpers.offline.isTrackOffline(track: self)
 	}
 	
 	public func radio(session: Session) -> [Track]? {
-		return session.getTrackRadio(trackId: id)
+		session.getTrackRadio(trackId: id)
 	}
 	
 	public static func == (lhs: Track, rhs: Track) -> Bool {
-		return lhs.id == rhs.id
+		lhs.id == rhs.id
 	}
 	
 	public func hash(into hasher: inout Hasher) {
@@ -433,11 +433,11 @@ public struct Video: Codable, Equatable, Identifiable, Hashable {
 //	public let album: Album? // Sometimes Tidal returns empty object here which breaks things. In all other cases I found, returns nil otherwise, so doesn't matter anyways.
 	
 	public func isInFavorites(session: Session) -> Bool? {
-		return session.favorites?.doFavoritesContainVideo(videoId: id)
+		session.favorites?.doFavoritesContainVideo(videoId: id)
 	}
 	
 	public func getVideoUrl(session: Session) -> URL? {
-		return session.getVideoUrl(videoId: id)
+		session.getVideoUrl(videoId: id)
 	}
 	
 	public func getImageUrl(session: Session, resolution: Int) -> URL? {
@@ -455,7 +455,7 @@ public struct Video: Codable, Equatable, Identifiable, Hashable {
 	}
 	
 	public static func == (lhs: Video, rhs: Video) -> Bool {
-		return lhs.id == rhs.id
+		lhs.id == rhs.id
 	}
 	
 	public func hash(into hasher: inout Hasher) {
@@ -593,11 +593,11 @@ public struct MixesGraphicImage: Codable {
 	public let type: MixesGraphicImageType
 	
 	public func getImageUrl(session: Session, resolution: Int) -> URL? {
-		return session.getImageUrl(imageId: id, resolution: resolution)
+		session.getImageUrl(imageId: id, resolution: resolution)
 	}
 	
 	public func getImage(session: Session, resolution: Int) -> NSImage? {
-		return session.getImage(imageId: id, resolution: resolution)
+		session.getImage(imageId: id, resolution: resolution)
 	}
 }
 
@@ -642,11 +642,11 @@ public struct Genre: Decodable, Identifiable { // Also Mood
 	let image: String
 	
 	public func getImageUrl(session: Session, resolution: Int) -> URL? {
-		return session.getImageUrl(imageId: image, resolution: resolution)
+		session.getImageUrl(imageId: image, resolution: resolution)
 	}
 	
 	public func getImage(session: Session, resolution: Int) -> NSImage? {
-		return session.getImage(imageId: image, resolution: resolution)
+		session.getImage(imageId: image, resolution: resolution)
 	}
 }
 
@@ -683,11 +683,11 @@ public struct FeaturedItem: Decodable {
 	let openExternal: Bool
 	
 	public func getImageUrl(session: Session, resolution: Int, resolutionY: Int) -> URL? {
-		return session.getImageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
+		session.getImageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 	}
 	
 	public func getImage(session: Session, resolution: Int, resolutionY: Int) -> NSImage? {
-		return session.getImage(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
+		session.getImage(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 	}
 }
 
@@ -707,15 +707,15 @@ public struct FavoriteArtist: Decodable, Equatable, Identifiable {
 	public let item: Artist
 	
 	public static func == (lhs: FavoriteArtist, rhs: FavoriteArtist) -> Bool {
-		return lhs.item.id == rhs.item.id
+		lhs.item.id == rhs.item.id
 	}
 	
 	public static func == (lhs: FavoriteArtist, rhs: Artist) -> Bool {
-		return lhs.item.id == rhs.id
+		lhs.item.id == rhs.id
 	}
 	
 	public static func == (lhs: Artist, rhs: FavoriteArtist) -> Bool {
-		return lhs.id == rhs.item.id
+		lhs.id == rhs.item.id
 	}
 }
 
@@ -733,15 +733,15 @@ public struct FavoriteAlbum: Decodable, Equatable, Identifiable {
 	public let item: Album
 	
 	public static func == (lhs: FavoriteAlbum, rhs: FavoriteAlbum) -> Bool {
-		return lhs.item.id == rhs.item.id
+		lhs.item.id == rhs.item.id
 	}
 	
 	public static func == (lhs: FavoriteAlbum, rhs: Album) -> Bool {
-		return lhs.item.id == rhs.id
+		lhs.item.id == rhs.id
 	}
 	
 	public static func == (lhs: Album, rhs: FavoriteAlbum) -> Bool {
-		return lhs.id == rhs.item.id
+		lhs.id == rhs.item.id
 	}
 }
 
@@ -759,15 +759,15 @@ public struct FavoriteTrack: Decodable, Equatable, Identifiable {
 	public let item: Track
 	
 	public static func == (lhs: FavoriteTrack, rhs: FavoriteTrack) -> Bool {
-		return lhs.item.id == rhs.item.id
+		lhs.item.id == rhs.item.id
 	}
 	
 	public static func == (lhs: FavoriteTrack, rhs: Track) -> Bool {
-		return lhs.item.id == rhs.id
+		lhs.item.id == rhs.id
 	}
 	
 	public static func == (lhs: Track, rhs: FavoriteTrack) -> Bool {
-		return lhs.id == rhs.item.id
+		lhs.id == rhs.item.id
 	}
 }
 
@@ -785,15 +785,15 @@ public struct FavoriteVideo: Decodable, Equatable, Identifiable {
 	public let item: Video
 	
 	public static func == (lhs: FavoriteVideo, rhs: FavoriteVideo) -> Bool {
-		return lhs.item.id == rhs.item.id
+		lhs.item.id == rhs.item.id
 	}
 	
 	public static func == (lhs: FavoriteVideo, rhs: Video) -> Bool {
-		return lhs.item.id == rhs.id
+		lhs.item.id == rhs.id
 	}
 	
 	public static func == (lhs: Video, rhs: FavoriteVideo) -> Bool {
-		return lhs.id == rhs.item.id
+		lhs.id == rhs.item.id
 	}
 }
 
@@ -817,15 +817,15 @@ public struct FavoritePlaylist: Decodable, Equatable {
 	public let playlist: Playlist
 	
 	public static func == (lhs: FavoritePlaylist, rhs: FavoritePlaylist) -> Bool {
-		return lhs.playlist.uuid == rhs.playlist.uuid
+		lhs.playlist.uuid == rhs.playlist.uuid
 	}
 	
 	public static func == (lhs: FavoritePlaylist, rhs: Playlist) -> Bool {
-		return lhs.playlist.uuid == rhs.uuid
+		lhs.playlist.uuid == rhs.uuid
 	}
 	
 	public static func == (lhs: Playlist, rhs: FavoritePlaylist) -> Bool {
-		return lhs.uuid == rhs.playlist.uuid
+		lhs.uuid == rhs.playlist.uuid
 	}
 }
 

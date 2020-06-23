@@ -333,9 +333,9 @@ extension Album {
 	}
 	
 	var hasAttributes: Bool {
-		return self.explicit ?? false
-			|| self.audioQuality == .master
-			|| self.audioModes?.contains(.sony360RealityAudio) ?? false
-			|| self.audioModes?.contains(.dolbyAtmos) ?? false
+		self.explicit ?? false ||
+			self.audioQuality == .master ||
+			self.audioModes?.contains(.sony360RealityAudio) ?? false ||
+			self.audioModes?.contains(.dolbyAtmos) ?? false
 	}
 }

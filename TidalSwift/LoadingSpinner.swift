@@ -58,13 +58,13 @@ struct LoadingSpinner: View {
 					.animation(Animation.linear(duration: 1).repeatForever(autoreverses: false))
 					.onAppear {
 						self.animate.toggle()
-				}
+					}
 			} else if loadingState == .error {
 				Image("wifi.exclamationmark-big")
 				.toolTip("Your connection appears to be offline")
 					.onTapGesture {
 						self.viewState.refreshCurrentView()
-				}
+					}
 			}
 		}
 		.primaryIconColor()
