@@ -140,7 +140,7 @@ struct PlaylistContextMenu: View {
 						if playlist.isInFavorites(session: session) ?? false {
 							Button(action: {
 								print("Remove from Favorites")
-								session.favorites!.removePlaylist(playlistId: playlist.uuid)
+								session.favorites?.removePlaylist(playlistId: playlist.uuid)
 								t.toggle()
 							}) {
 								Text("Remove from Favorites")
@@ -148,7 +148,7 @@ struct PlaylistContextMenu: View {
 						} else {
 							Button(action: {
 								print("Add to Favorites")
-								session.favorites!.addPlaylist(playlistId: playlist.uuid)
+								session.favorites?.addPlaylist(playlistId: playlist.uuid)
 								t.toggle()
 							}) {
 								Text("Add to Favorites")

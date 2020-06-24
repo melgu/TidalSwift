@@ -109,15 +109,17 @@ struct MixPlaylistView: View {
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 								.onTapGesture {
-									let controller = CoverWindowController(rootView:
-										URLImageSourceView(
-											mix.graphic.images[0].getImageUrl(session: session, resolution: 320)!,
-											isAnimationEnabled: true,
-											label: Text(mix.title)
+									if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: 320) {
+										let controller = CoverWindowController(rootView:
+																				URLImageSourceView(
+																					imageUrl,
+																					isAnimationEnabled: true,
+																					label: Text(mix.title)
+																				)
 										)
-									)
-									controller.window?.title = mix.title
-									controller.showWindow(nil)
+										controller.window?.title = mix.title
+										controller.showWindow(nil)
+									}
 								}
 							
 							VStack(alignment: .leading) {
@@ -162,7 +164,7 @@ struct MixImage: View {
 							Text(mix.title)
 								.font(.system(size: metrics.size.width * 0.1))
 								.bold()
-								.foregroundColor(Color(hex: mix.graphic.images[0].vibrantColor)!)
+								.foregroundColor(Color(hex: mix.graphic.images[0].vibrantColor) ?? Color.gray)
 								.padding(metrics.size.width * 0.1)
 							Spacer()
 						}
@@ -173,134 +175,169 @@ struct MixImage: View {
 					VStack {
 						HStack {
 							// 4
-							URLImageSourceView(
-								mix.graphic.images[4].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
+							}
+							
 							// 0 1
-							URLImageSourceView(
-								mix.graphic.images[0].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
-							URLImageSourceView(
-								mix.graphic.images[1].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							}
+							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
+							}
 							
 							// 2 3 4
-							URLImageSourceView(
-								mix.graphic.images[2].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
-							URLImageSourceView(
-								mix.graphic.images[3].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							}
+							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
-							URLImageSourceView(
-								mix.graphic.images[4].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							}
+							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
+							}
 							
 							// 0 1
-							URLImageSourceView(
-								mix.graphic.images[0].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
-							URLImageSourceView(
-								mix.graphic.images[1].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							}
+							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
+							}
+							
 							Spacer()
 								.frame(width: metrics.size.width * 0.2)
 						}
 						HStack {
 							Spacer()
 								.frame(width: metrics.size.width * 0.2)
+							
 							// 2 3 4
-							URLImageSourceView(
-								mix.graphic.images[2].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(.trailing, metrics.size.width * 0.01)
-							URLImageSourceView(
-								mix.graphic.images[3].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							}
+							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
-							URLImageSourceView(
-								mix.graphic.images[4].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							}
+							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
+							}
 							
 							// 0 1
-							URLImageSourceView(
-								mix.graphic.images[0].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
-							URLImageSourceView(
-								mix.graphic.images[1].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							}
+							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
+							}
 							
 							// 2 3 4
-							URLImageSourceView(
-								mix.graphic.images[2].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
-							URLImageSourceView(
-								mix.graphic.images[3].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							}
+							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
-							URLImageSourceView(
-								mix.graphic.images[4].getImageUrl(session: session, resolution: 160)!,
-								isAnimationEnabled: true,
-								label: Text(mix.title)
-							)
+							}
+							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: 160) {
+								URLImageSourceView(
+									imageUrl,
+									isAnimationEnabled: true,
+									label: Text(mix.title)
+								)
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
+							}
 						}
 					}
 					.padding(metrics.size.width * 0.06)
@@ -317,9 +354,9 @@ struct MixImage: View {
 				.clipped()
 				.overlay(
 					RoundedRectangle(cornerRadius: CORNERRADIUS)
-						.stroke(Color(hex: mix.graphic.images[0].vibrantColor)!, lineWidth: metrics.size.width * 0.1)
+						.stroke(Color(hex: mix.graphic.images[0].vibrantColor) ?? Color.gray, lineWidth: metrics.size.width * 0.1)
 				)
-					.background(Color(hex: mix.graphic.images[0].vibrantColor)!.colorMultiply(Color.gray))
+				.background((Color(hex: mix.graphic.images[0].vibrantColor) ?? Color.gray).colorMultiply(Color.gray))
 			} else {
 				Rectangle()
 					.foregroundColor(Color.black)

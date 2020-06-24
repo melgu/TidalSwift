@@ -147,10 +147,11 @@ class Player {
 				queueInfo.queue[queueInfo.currentIndex + 1..<queueInfo.queue.count].shuffled()
 			queueInfo.assignQueueIndices()
 		} else {
-			let i = queueInfo.nonShuffledQueue.firstIndex(where: { $0 == queueInfo.queue[queueInfo.currentIndex] })!
-			queueInfo.queue = queueInfo.nonShuffledQueue
-			queueInfo.assignQueueIndices()
-			queueInfo.currentIndex = i
+			if let i = queueInfo.nonShuffledQueue.firstIndex(where: { $0 == queueInfo.queue[queueInfo.currentIndex] }) {
+				queueInfo.queue = queueInfo.nonShuffledQueue
+				queueInfo.assignQueueIndices()
+				queueInfo.currentIndex = i
+			}
 		}
 	}
 	
@@ -326,7 +327,10 @@ class Player {
 	
 	func removeTrack(atIndex: Int) {
 		if playbackInfo.shuffle {
-			let nonShuffledIndex = queueInfo.nonShuffledQueue.firstIndex(of: queueInfo.queue[atIndex])!
+			guard let nonShuffledIndex = queueInfo.nonShuffledQueue.firstIndex(of: queueInfo.queue[atIndex]) else {
+				print("ERROR - Player.removeTrack(): queueInfo.nonShuffledQueue.firstIndex is nil")
+				return
+			}
 			queueInfo.nonShuffledQueue.remove(at: nonShuffledIndex)
 		} else {
 			queueInfo.nonShuffledQueue.remove(at: atIndex)

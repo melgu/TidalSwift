@@ -26,10 +26,12 @@ class Lyrics {
 		guard let artist = track.artists.first else {
 			return ""
 		}
-		let artistString = artist.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
-		let trackString = track.title.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
-		let urlString = "http://lyric-api.herokuapp.com/api/find/\(artistString)/\(trackString)"
-		let url = URL(string: urlString)!
+		guard let artistString = artist.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed),
+			  let trackString = track.title.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed),
+			  let url = URL(string: "http://lyric-api.herokuapp.com/api/find/\(artistString)/\(trackString)") else {
+			print("Lyrics failed (URL Error)")
+			return nil
+		}
 		let request = URLRequest(url: url)
 		
 		var downloadedContent: Data?

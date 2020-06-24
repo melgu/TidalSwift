@@ -118,55 +118,55 @@ struct DetailView: View {
 	var body: some View {
 		VStack {
 			PlayerInfoView(session: session, player: player)
-			if viewState.stack.isEmpty {
-				Spacer()
-			} else {
+			if let viewType = viewState.stack.last?.viewType {
 				HStack {
 					// Search
-					if viewState.stack.last!.viewType == .search {
+					if viewType == .search {
 						SearchView(session: session, player: player)
 					}
 						
 					// News
-					else if viewState.stack.last!.viewType == .newReleases {
+					else if viewType == .newReleases {
 						NewReleases(session: session, player: player)
-					} else if viewState.stack.last!.viewType == .myMixes {
+					} else if viewType == .myMixes {
 						MyMixes(session: session, player: player)
 					}
 						
 						// Favorites
-					else if viewState.stack.last!.viewType == .favoritePlaylists {
+					else if viewType == .favoritePlaylists {
 						FavoritePlaylists(session: session, player: player)
-					} else if viewState.stack.last!.viewType == .favoriteAlbums {
+					} else if viewType == .favoriteAlbums {
 						FavoriteAlbums(session: session, player: player)
-					} else if viewState.stack.last!.viewType == .favoriteTracks {
+					} else if viewType == .favoriteTracks {
 						FavoriteTracks(session: session, player: player)
-					} else if viewState.stack.last!.viewType == .favoriteVideos {
+					} else if viewType == .favoriteVideos {
 						FavoriteVideos(session: session, player: player)
-					} else if viewState.stack.last!.viewType == .favoriteArtists {
+					} else if viewType == .favoriteArtists {
 						FavoriteArtists(session: session, player: player)
 					}
 					
-					else if viewState.stack.last!.viewType == .offlinePlaylists {
+					else if viewType == .offlinePlaylists {
 						OfflinePlaylistsView(session: session, player: player)
-					} else if viewState.stack.last!.viewType == .offlineAlbums {
+					} else if viewType == .offlineAlbums {
 						OfflineAlbumsView(session: session, player: player)
-					} else if viewState.stack.last!.viewType == .offlineTracks {
+					} else if viewType == .offlineTracks {
 						OfflineTracksView(session: session, player: player)
 					}
 						
 						
 					// Single Things
-					else if viewState.stack.last!.viewType == .artist {
+					else if viewType == .artist {
 						ArtistView(session: session, player: player, viewState: viewState)
-					} else if viewState.stack.last!.viewType == .album {
+					} else if viewType == .album {
 						AlbumView(session: session, player: player)
-					} else if viewState.stack.last!.viewType == .playlist {
+					} else if viewType == .playlist {
 						PlaylistView(session: session, player: player)
-					} else if viewState.stack.last!.viewType == .mix {
+					} else if viewType == .mix {
 						MixPlaylistView(session: session, player: player)
 					}
 				}
+			} else {
+				Spacer()
 			}
 		}
 	}

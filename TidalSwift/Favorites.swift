@@ -60,7 +60,7 @@ struct FavoritePlaylists: View {
 				}
 				if let playlists = viewState.stack.last?.playlists {
 					HStack {
-						Text("\(playlists.count) \(viewState.stack.last!.playlists!.count == 1 ? "Playlist" : "Playlists")")
+						Text("\(playlists.count) \(playlists.count == 1 ? "Playlist" : "Playlists")")
 						Spacer()
 					}
 					PlaylistGrid(playlists: playlists.sortedPlaylists(by: sortingState.favoritePlaylistSorting).reversed(sortingState.favoritePlaylistReversed), session: session, player: player)
