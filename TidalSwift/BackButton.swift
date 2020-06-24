@@ -14,10 +14,10 @@ struct BackButton: View {
 	var body: some View {
 		VStack {
 			HStack {
-				Button(action: {
+				Button {
 					print("Back")
 					viewState.pop()
-				}) {
+				} label: {
 					Image("chevron.left")
 						.primaryIconColor()
 				}

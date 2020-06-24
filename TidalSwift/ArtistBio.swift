@@ -35,10 +35,10 @@ struct ArtistBioView: View {
 							.multilineTextAlignment(.center)
 					}
 					.contextMenu {
-						Button(action: {
+						Button {
 							print("Copy Artist Bio")
 							Pasteboard.copy(string: bio.text)
-						}) {
+						} label: {
 							Text("Copy")
 						}
 					}

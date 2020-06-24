@@ -47,10 +47,10 @@ struct LyricsView: View {
 					if loadingState == .successful, let lyrics = lyrics {
 						Text(lyrics)
 							.contextMenu {
-								Button(action: {
+								Button {
 									print("Copy Lyrics")
 									Pasteboard.copy(string: lyrics)
-								}) {
+								} label: {
 									Text("Copy")
 								}
 							}

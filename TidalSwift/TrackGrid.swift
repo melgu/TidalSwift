@@ -105,19 +105,19 @@ struct TrackContextMenu: View {
 		Group {
 			Group {
 				if track.streamReady {
-					Button(action: {
+					Button {
 						player.add(track: track, .now)
-					}) {
+					} label: {
 						Text("Play Now")
 					}
-					Button(action: {
+					Button {
 						player.add(track: track, .next)
-					}) {
+					} label: {
 						Text("Add Next")
 					}
-					Button(action: {
+					Button {
 						player.add(track: track, .last)
-					}) {
+					} label: {
 						Text("Add Last")
 					}
 				} else {
@@ -129,17 +129,17 @@ struct TrackContextMenu: View {
 			Group {
 				if track.artists[0].name != "Various Artists" {
 					ForEach(track.artists) { artist in
-						Button(action: {
+						Button {
 							viewState.push(artist: artist)
-						}) {
+						} label: {
 							Text("Go to \(artist.name)")
 						}
 					}
 					Divider()
 				}
-				Button(action: {
+				Button {
 					viewState.push(album: track.album)
-				}) {
+				} label: {
 					Text("Go to Album")
 				}
 			}
@@ -147,68 +147,68 @@ struct TrackContextMenu: View {
 			Group {
 				if t || !t {
 					if track.isInFavorites(session: session) ?? false {
-						Button(action: {
+						Button {
 							print("Remove from Favorites")
 							session.favorites?.removeTrack(trackId: track.id)
 							session.helpers.offline.asyncSyncFavoriteTracks()
 							viewState.refreshCurrentView()
 							t.toggle()
-						}) {
+						} label: {
 							Text("Remove from Favorites")
 						}
 					} else {
-						Button(action: {
+						Button {
 							print("Add to Favorites")
 							session.favorites?.addTrack(trackId: track.id)
 							session.helpers.offline.asyncSyncFavoriteTracks()
 							viewState.refreshCurrentView()
 							t.toggle()
-						}) {
+						} label: {
 							Text("Add to Favorites")
 						}
 					}
 				}
 				if track.streamReady {
-					Button(action: {
+					Button {
 						print("Add \(track.title) to Playlist")
 						playlistEditingValues.tracks = [track]
 						playlistEditingValues.showAddTracksModal = true
-					}) {
+					} label: {
 						Text("Add to Playlist …")
 					}
 				}
 				if indexInPlaylist != nil {
-					Button(action: {
+					Button {
 						print("Remove \(track.title) from Playlist")
 						playlistEditingValues.tracks = [track]
 						playlistEditingValues.indexToRemove = indexInPlaylist
 						playlistEditingValues.playlist = playlist
 						playlistEditingValues.showRemoveTracksModal = true
-					}) {
+					} label: {
 						Text("Remove from Playlist …")
 					}
 				}
 				Divider()
 				if track.streamReady {
-					Button(action: {
+					Button {
 						print("Download")
 						DispatchQueue.global(qos: .background).async {
 							_ = session.helpers.download(track: track)
 						}
-					}) {
+					} label: {
 						Text("Download")
 					}
 					Divider()
-					Button(action: {
+					Button {
 						print("Radio")
 						if let radioTracks = track.radio(session: session) {
 							player.add(tracks: radioTracks, .now)
 						}
-					}) {
+					} label: {
 						Text("Radio")
 					}
 					if let coverUrl = track.album.getCoverUrl(session: session, resolution: 1280) {
-						Button(action: {
+						Button {
 							print("Cover")
 							let controller = CoverWindowController(rootView:
 								URLImageSourceView(
@@ -219,11 +219,11 @@ struct TrackContextMenu: View {
 							)
 							controller.window?.title = "\(track.title) – \(track.album.title)"
 							controller.showWindow(nil)
-						}) {
+						} label: {
 							Text("Cover")
 						}
 					}
-					Button(action: {
+					Button {
 						print("Credits")
 						let controller = ResizableWindowController(rootView:
 							CreditsView(session: session, track: track)
@@ -231,13 +231,13 @@ struct TrackContextMenu: View {
 						)
 						controller.window?.title = "Credits – \(track.title)"
 						controller.showWindow(nil)
-					}) {
+					} label: {
 						Text("Credits")
 					}
-					Button(action: {
+					Button {
 						print("Share Track")
 						Pasteboard.copy(string: track.url.absoluteString)
-					}) {
+					} label: {
 						Text("Copy URL")
 					}
 				}

@@ -110,7 +110,7 @@ struct VideoContextMenu: View {
 	var body: some View {
 		Group {
 			if video.streamReady {
-				Button(action: {
+				Button {
 					print("Play Video: \(video.title)")
 					guard let url = video.getVideoUrl(session: session) else {
 						return
@@ -120,7 +120,7 @@ struct VideoContextMenu: View {
 					let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
 					controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
 					controller.showWindow(nil)
-				}) {
+				} label: {
 					Text("Play")
 				}
 			} else {
@@ -131,9 +131,9 @@ struct VideoContextMenu: View {
 			if video.artists[0].name != "Various Artists" {
 				Group {
 					ForEach(video.artists) { artist in
-						Button(action: {
+						Button {
 							viewState.push(artist: artist)
-						}) {
+						} label: {
 							Text("Go to \(artist.name)")
 						}
 					}
@@ -143,35 +143,35 @@ struct VideoContextMenu: View {
 			Group {
 				if t || !t {
 					if video.isInFavorites(session: session) ?? true {
-						Button(action: {
+						Button {
 							print("Remove from Favorites")
 							session.favorites?.removeVideo(videoId: video.id)
 							viewState.refreshCurrentView()
 							t.toggle()
-						}) {
+						} label: {
 							Text("Remove from Favorites")
 						}
 					} else {
-						Button(action: {
+						Button {
 							print("Add to Favorites")
 							session.favorites?.addVideo(videoId: video.id)
 							t.toggle()
-						}) {
+						} label: {
 							Text("Add to Favorites")
 						}
 					}
 				}
 				if video.streamReady {
-					Button(action: {
+					Button {
 						print("Add \(video.title) to Playlist")
-					}) {
+					} label: {
 						Text("Add to Playlist …")
 					}
 				}
 				if video.streamReady {
 					Divider()
 					if let imagegUrl = video.getImageUrl(session: session, resolution: 1280) {
-						Button(action: {
+						Button {
 							print("Preview Image")
 							let controller = CoverWindowController(rootView:
 								URLImageSourceView(
@@ -182,7 +182,7 @@ struct VideoContextMenu: View {
 							)
 							controller.window?.title = video.title
 							controller.showWindow(nil)
-						}) {
+						} label: {
 							Text("Preview Image")
 						}
 					}

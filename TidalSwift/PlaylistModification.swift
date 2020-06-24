@@ -66,13 +66,13 @@ struct AddToPlaylistView: View {
 					.foregroundColor(.secondary)
 				
 				HStack {
-					Button(action: {
+					Button {
 						print("Cancel")
 						playlistEditingValues.showAddTracksModal = false
-					}) {
+					} label: {
 						Text("Cancel")
 					}
-					Button(action: {
+					Button {
 						print("Add to \(selectedPlaylist)")
 						guard !playlistEditingValues.tracks.isEmpty else {
 							print("Tried to add zero tracks to a playlist")
@@ -99,7 +99,7 @@ struct AddToPlaylistView: View {
 							}
 							playlistEditingValues.showAddTracksModal = false
 						}
-					}) {
+					} label: {
 						Text("Add")
 					}
 					.disabled(selectedPlaylist == "")
@@ -122,13 +122,13 @@ struct RemoveFromPlaylistView: View {
 				Text("Delete \(playlistEditingValues.tracks[0].title) from \(playlist.title)?")
 				
 				HStack {
-					Button(action: {
+					Button {
 						print("Cancel")
 						playlistEditingValues.showRemoveTracksModal = false
-					}) {
+					} label: {
 						Text("Cancel")
 					}
-					Button(action: {
+					Button {
 						let i = playlistEditingValues.indexToRemove!
 						let uuid = playlist.uuid
 						print("Delete Index \(i) from \(playlist.title)")
@@ -138,7 +138,7 @@ struct RemoveFromPlaylistView: View {
 							viewState.refreshCurrentView()
 							playlistEditingValues.showRemoveTracksModal = false
 						}
-					}) {
+					} label: {
 						Text("Delete")
 					}
 				}
@@ -163,13 +163,13 @@ struct DeletePlaylist: View {
 				Text("Delete \(playlist.title)?")
 				
 				HStack {
-					Button(action: {
+					Button {
 						print("Cancel")
 						playlistEditingValues.showDeleteModal = false
-					}) {
+					} label: {
 						Text("Cancel")
 					}
-					Button(action: {
+					Button {
 						print("Delete \(playlist.title)")
 						let success = session.deletePlaylist(playlistId: playlist.uuid)
 						if success {
@@ -177,7 +177,7 @@ struct DeletePlaylist: View {
 							playlistEditingValues.showDeleteModal = false
 							viewState.refreshCurrentView()
 						}
-					}) {
+					} label: {
 						Text("Delete")
 					}
 				}
@@ -217,13 +217,13 @@ struct EditPlaylist: View {
 				}
 				
 				HStack {
-					Button(action: {
+					Button {
 						print("Cancel")
 						playlistEditingValues.showEditModal = false
-					}) {
+					} label: {
 						Text("Cancel")
 					}
-					Button(action: {
+					Button {
 						print("Rename \(playlist.title)")
 						let success = session.editPlaylist(playlistId: playlist.uuid,
 																title: playlistName, description: playlistDescription)
@@ -232,7 +232,7 @@ struct EditPlaylist: View {
 							playlistEditingValues.showEditModal = false
 							viewState.refreshCurrentView()
 						}
-					}) {
+					} label: {
 						Text("Rename")
 					}
 				}

@@ -184,19 +184,19 @@ struct AlbumContextMenu: View {
 		Group {
 			Group {
 				if album.streamReady ?? false {
-					Button(action: {
+					Button {
 						player.add(album: album, .now)
-					}) {
+					} label: {
 						Text("Play Now")
 					}
-					Button(action: {
+					Button {
 						player.add(album: album, .next)
-					}) {
+					} label: {
 						Text("Add Next")
 					}
-					Button(action: {
+					Button {
 						player.add(album: album, .last)
-					}) {
+					} label: {
 						Text("Add Last")
 					}
 				} else {
@@ -208,9 +208,9 @@ struct AlbumContextMenu: View {
 			if let artists = album.artists, artists[0].name != "Various Artists" {
 				Group {
 					ForEach(album.artists!) { artist in
-						Button(action: {
+						Button {
 							viewState.push(artist: artist)
-						}) {
+						} label: {
 							Text("Go to \(artist.name)")
 						}
 					}
@@ -220,68 +220,68 @@ struct AlbumContextMenu: View {
 			Group {
 				if t || !t {
 					if album.isInFavorites(session: session) ?? false {
-						Button(action: {
+						Button {
 							print("Remove from Favorites")
 							session.favorites?.removeAlbum(albumId: album.id)
 							viewState.refreshCurrentView()
 							t.toggle()
-						}) {
+						} label: {
 							Text("Remove from Favorites")
 						}
 					} else {
-						Button(action: {
+						Button {
 							print("Add to Favorites")
 							session.favorites?.addAlbum(albumId: album.id)
 							t.toggle()
-						}) {
+						} label: {
 							Text("Add to Favorites")
 						}
 					}
 				}
 				if album.streamReady ?? false {
-					Button(action: {
+					Button {
 						print("Add \(album.title) to Playlist")
 						if let tracks = session.getAlbumTracks(albumId: album.id) {
 							playlistEditingValues.tracks = tracks
 							playlistEditingValues.showAddTracksModal = true
 						}
-					}) {
+					} label: {
 						Text("Add to Playlist …")
 					}
 					Divider()
 					Group {
 						if t || !t {
 							if album.isOffline(session: session) {
-								Button(action: {
+								Button {
 									print("Remove from Offline")
 									album.removeOffline(session: session)
 									viewState.refreshCurrentView()
 									t.toggle()
-								}) {
+								} label: {
 									Text("Remove from Offline")
 								}
 							} else {
-								Button(action: {
+								Button {
 									print("Add to Offline")
 									album.addOffline(session: session)
-								}) {
+								} label: {
 									Text("Add to Offline")
 								}
 							}
 						}
 						
-						Button(action: {
+						Button {
 							print("Download")
 							DispatchQueue.global(qos: .background).async {
 								_ = session.helpers.download(album: album)
 							}
-						}) {
+						} label: {
 							Text("Download")
 						}
 					}
 					Divider()
 					if let coverUrl = album.getCoverUrl(session: session, resolution: 1280) {
-						Button(action: {
+						Button {
 							print("Cover")
 							let controller = CoverWindowController(rootView:
 								URLImageSourceView(
@@ -292,11 +292,11 @@ struct AlbumContextMenu: View {
 							)
 							controller.window?.title = album.title
 							controller.showWindow(nil)
-						}) {
+						} label: {
 							Text("Cover")
 						}
 					}
-					Button(action: {
+					Button {
 						print("Credits")
 						let controller = ResizableWindowController(rootView:
 							CreditsView(session: session, album: album)
@@ -304,14 +304,14 @@ struct AlbumContextMenu: View {
 						)
 						controller.window?.title = "Credits – \(album.title)"
 						controller.showWindow(nil)
-					}) {
+					} label: {
 						Text("Credits")
 					}
 					if let url = album.url {
-						Button(action: {
+						Button {
 							print("Share")
 							Pasteboard.copy(string: url.absoluteString)
-						}) {
+						} label: {
 							Text("Copy URL")
 						}
 					}

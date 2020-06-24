@@ -374,46 +374,46 @@ struct MixContextMenu: View {
 	
 	var body: some View {
 		Group {
-			Button(action: {
+			Button {
 				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
 					player.add(tracks: tracks, .now)
 				}
-			}) {
+			} label: {
 				Text("Play Now")
 			}
-			Button(action: {
+			Button {
 				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
 					player.add(tracks: tracks, .next)
 				}
-			}) {
+			} label: {
 				Text("Add Next")
 			}
-			Button(action: {
+			Button {
 				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
 					player.add(tracks: tracks, .last)
 				}
-			}) {
+			} label: {
 				Text("Add Last")
 			}
 			Divider()
-			Button(action: {
+			Button {
 				print("Add \(mix.title) to Playlist")
 				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
 					playlistEditingValues.tracks = tracks
 					playlistEditingValues.showAddTracksModal = true
 				}
-			}) {
+			} label: {
 				Text("Add to Playlist …")
 			}
 			Divider()
-			Button(action: {
+			Button {
 				print("Download")
 				DispatchQueue.global(qos: .background).async {
 					if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
 						_ = session.helpers.download(tracks: tracks, parentFolder: mix.title)
 					}
 				}
-			}) {
+			} label: {
 				Text("Download")
 			}
 		}

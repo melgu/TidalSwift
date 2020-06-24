@@ -15,9 +15,9 @@ struct ReverseButton: View {
 	@Binding var reversed: Bool
 	
 	var body: some View {
-		Button(action: {
+		Button {
 			reversed.toggle()
-		}) {
+		} label: {
 			if reversed {
 				Text("∨")
 //				Image("arrow.down")
