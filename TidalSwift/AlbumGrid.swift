@@ -144,7 +144,7 @@ struct AlbumGridItem: View {
 			}
 		}
 		.padding(5)
-		.toolTip("\(album.title)\(album.artists != nil ? " – \(album.artists!.formArtistString())" : "")")
+		.toolTip(toolTipString)
 		.onTapGesture(count: 2) {
 			print("Second Click. \(album.title)")
 			player.add(album: album, .now)
@@ -159,6 +159,14 @@ struct AlbumGridItem: View {
 		.contextMenu {
 			AlbumContextMenu(album: album, session: session, player: player)
 		}
+	}
+	
+	var toolTipString: String {
+		var s = album.title
+		if let artists = album.artists {
+			s += " – \(artists.formArtistString())"
+		}
+		return s
 	}
 }
 
@@ -214,7 +222,7 @@ struct AlbumContextMenu: View {
 					if album.isInFavorites(session: session) ?? false {
 						Button(action: {
 							print("Remove from Favorites")
-							session.favorites!.removeAlbum(albumId: album.id)
+							session.favorites?.removeAlbum(albumId: album.id)
 							viewState.refreshCurrentView()
 							t.toggle()
 						}) {
@@ -223,7 +231,7 @@ struct AlbumContextMenu: View {
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							session.favorites!.addAlbum(albumId: album.id)
+							session.favorites?.addAlbum(albumId: album.id)
 							t.toggle()
 						}) {
 							Text("Add to Favorites")

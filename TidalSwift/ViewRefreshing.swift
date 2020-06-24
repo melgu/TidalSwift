@@ -70,10 +70,10 @@ extension ViewState {
 				print("replaceCurrentView(): Fetched View \(view.viewType.rawValue) is exactly the same, so it's not replaced")
 				return
 			}
-			if stack.last!.id == view.id {
+			if let stackId = stack.last?.id, stackId == view.id {
 				stack[stack.count - 1] = view
 				if !history.isEmpty {
-					if history.last!.id == view.id {
+					if let historyId = history.last?.id, historyId == view.id {
 						history[history.count - 1] = view
 					} else {
 						addToHistory(view)
@@ -567,7 +567,7 @@ extension ViewState {
 				return
 			}
 			
-			guard let playlist = stack.last!.playlist else {
+			guard let playlist = stack.last?.playlist else {
 				view.loadingState = .error
 				replaceCurrentView(with: view)
 				return

@@ -12,7 +12,7 @@ import XCTest
 class HelpersTests: XCTestCase {
 	
 //	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
-	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: "")))
+	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: ""), urlType: .offline))
 	var helpers: Helpers { session.helpers }
 	
     override func setUp() {
@@ -45,7 +45,9 @@ class HelpersTests: XCTestCase {
 		}
 		XCTAssert(albums[0].releaseDate! > albums[29].releaseDate!)
 //		for album in albums {
-//			print("\(album.artist!.name) - \(album.title) - \(album.releaseDate!)")
+//			if let artist = album.artist, let releaseDate = album.releaseDate {
+//				print("\(artist.name) - \(album.title) - \(releaseDate)")
+//			}
 //		}
     }
 

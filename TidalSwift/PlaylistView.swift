@@ -67,7 +67,7 @@ struct PlaylistView: View {
 													.primaryIconColor()
 													.onTapGesture {
 														print("Remove from Favorites")
-														session.favorites!.removePlaylist(playlistId: playlist.uuid)
+														session.favorites?.removePlaylist(playlistId: playlist.uuid)
 														t.toggle()
 													}
 											} else {
@@ -75,7 +75,7 @@ struct PlaylistView: View {
 													.primaryIconColor()
 													.onTapGesture {
 														print("Add to Favorites")
-														session.favorites!.addPlaylist(playlistId: playlist.uuid)
+														session.favorites?.addPlaylist(playlistId: playlist.uuid)
 														t.toggle()
 													}
 											}

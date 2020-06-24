@@ -112,7 +112,7 @@ struct ArtistContextMenu: View {
 					if artist.isInFavorites(session: session) ?? true {
 						Button(action: {
 							print("Remove from Favorites")
-							session.favorites!.removeArtist(artistId: artist.id)
+							session.favorites?.removeArtist(artistId: artist.id)
 							viewState.refreshCurrentView()
 							t.toggle()
 						}) {
@@ -121,7 +121,7 @@ struct ArtistContextMenu: View {
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							session.favorites!.addArtist(artistId: artist.id)
+							session.favorites?.addArtist(artistId: artist.id)
 							t.toggle()
 						}) {
 							Text("Add to Favorites")

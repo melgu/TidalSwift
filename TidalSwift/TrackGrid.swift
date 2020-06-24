@@ -61,7 +61,7 @@ struct TrackGridItem: View {
 			}
 		}
 		.padding(5)
-		.toolTip("\(track.title)\(track.version != nil ? " (\(track.version!))" : "") – \(track.artists.formArtistString())")
+		.toolTip(toolTipString)
 		.onTapGesture(count: 2) {
 			print("\(track.title)")
 			player.add(track: track, .now)
@@ -70,6 +70,15 @@ struct TrackGridItem: View {
 		.contextMenu {
 			TrackContextMenu(track: track, session: session, player: player)
 		}
+	}
+	
+	var toolTipString: String {
+		var s = track.title
+		if let version = track.version {
+			s += " (\(version))"
+		}
+		s += track.artists.formArtistString()
+		return s
 	}
 }
 
@@ -140,7 +149,7 @@ struct TrackContextMenu: View {
 					if track.isInFavorites(session: session) ?? false {
 						Button(action: {
 							print("Remove from Favorites")
-							session.favorites!.removeTrack(trackId: track.id)
+							session.favorites?.removeTrack(trackId: track.id)
 							session.helpers.offline.asyncSyncFavoriteTracks()
 							viewState.refreshCurrentView()
 							t.toggle()
@@ -150,7 +159,7 @@ struct TrackContextMenu: View {
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							session.favorites!.addTrack(trackId: track.id)
+							session.favorites?.addTrack(trackId: track.id)
 							session.helpers.offline.asyncSyncFavoriteTracks()
 							viewState.refreshCurrentView()
 							t.toggle()

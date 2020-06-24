@@ -107,7 +107,7 @@ struct ArtistView: View {
 								.primaryIconColor()
 								.onTapGesture {
 									print("Remove from Favorites")
-									session.favorites!.removeArtist(artistId: artist.id)
+									session.favorites?.removeArtist(artistId: artist.id)
 									t.toggle()
 								}
 						} else {
@@ -115,7 +115,7 @@ struct ArtistView: View {
 								.primaryIconColor()
 								.onTapGesture {
 									print("Add to Favorites")
-									session.favorites!.addArtist(artistId: artist.id)
+									session.favorites?.addArtist(artistId: artist.id)
 									t.toggle()
 								}
 						}

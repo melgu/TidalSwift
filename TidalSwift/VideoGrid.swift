@@ -145,7 +145,7 @@ struct VideoContextMenu: View {
 					if video.isInFavorites(session: session) ?? true {
 						Button(action: {
 							print("Remove from Favorites")
-							session.favorites!.removeVideo(videoId: video.id)
+							session.favorites?.removeVideo(videoId: video.id)
 							viewState.refreshCurrentView()
 							t.toggle()
 						}) {
@@ -154,7 +154,7 @@ struct VideoContextMenu: View {
 					} else {
 						Button(action: {
 							print("Add to Favorites")
-							session.favorites!.addVideo(videoId: video.id)
+							session.favorites?.addVideo(videoId: video.id)
 							t.toggle()
 						}) {
 							Text("Add to Favorites")

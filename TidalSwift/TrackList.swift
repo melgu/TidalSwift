@@ -130,7 +130,7 @@ struct TrackRow: View {
 						Spacer(minLength: 5)
 					}
 					.frame(width: metrics.size.width * widthFactorTrack)
-					.toolTip("\(track.title)\(track.version != nil ? " (\(track.version!))" : "")")
+					.toolTip(trackToolTipString)
 					if showArtist {
 						HStack {
 							Text(track.artists.formArtistString())
@@ -171,7 +171,7 @@ struct TrackRow: View {
 								.primaryIconColor()
 								.onTapGesture {
 									print("Remove from Favorites")
-									session.favorites!.removeTrack(trackId: track.id)
+									session.favorites?.removeTrack(trackId: track.id)
 									session.helpers.offline.asyncSyncFavoriteTracks()
 									//									viewState.refreshCurrentView()
 									t.toggle()
@@ -181,7 +181,7 @@ struct TrackRow: View {
 								.primaryIconColor()
 								.onTapGesture {
 									print("Add to Favorites")
-									session.favorites!.addTrack(trackId: track.id)
+									session.favorites?.addTrack(trackId: track.id)
 									session.helpers.offline.asyncSyncFavoriteTracks()
 //									viewState.refreshCurrentView()
 									t.toggle()
@@ -194,5 +194,14 @@ struct TrackRow: View {
 		}
 		.lineLimit(1)
 		.frame(height: showCover ? 30 : 16) // Values tested "by hand"
+	}
+	
+	var trackToolTipString: String {
+		var s = track.title
+		if let version = track.version {
+			s += " (\(version))"
+		}
+		s += track.artists.formArtistString()
+		return s
 	}
 }

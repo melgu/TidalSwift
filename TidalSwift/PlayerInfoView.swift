@@ -73,7 +73,7 @@ struct PlayerInfoView: View {
 											.fontWeight(.light)
 											.foregroundColor(.secondary)
 									}
-									.toolTip("\(track.title)\(track.version != nil ? " (\(track.version!))" : "")")
+									.toolTip(trackToolTipString(for: track))
 									Text("\(track.artists.formArtistString()) – \(track.album.title)")
 										.foregroundColor(.secondary)
 									.toolTip("\(track.artists.formArtistString()) – \(track.album.title)")
@@ -215,6 +215,15 @@ struct PlayerInfoView: View {
 			}
 			.primaryIconColor()
 		}
+	}
+	
+	func trackToolTipString(for track: Track) -> String {
+		var s = track.title
+		if let version = track.version {
+			s += " (\(version))"
+		}
+		s += track.artists.formArtistString()
+		return s
 	}
 }
 

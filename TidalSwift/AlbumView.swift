@@ -77,7 +77,7 @@ struct AlbumView: View {
 													.primaryIconColor()
 													.onTapGesture {
 														print("Remove from Favorites")
-														session.favorites!.removeAlbum(albumId: album.id)
+														session.favorites?.removeAlbum(albumId: album.id)
 														t.toggle()
 													}
 											} else {
@@ -85,7 +85,7 @@ struct AlbumView: View {
 													.primaryIconColor()
 													.onTapGesture {
 														print("Add to Favorites")
-														session.favorites!.addAlbum(albumId: album.id)
+														session.favorites?.addAlbum(albumId: album.id)
 														t.toggle()
 													}
 											}

@@ -118,28 +118,32 @@ struct RemoveFromPlaylistView: View {
 	
 	var body: some View {
 		VStack {
-			Text("Delete \(playlistEditingValues.tracks[0].title) from \(playlistEditingValues.playlist!.title)?")
-			
-			HStack {
-				Button(action: {
-					print("Cancel")
-					playlistEditingValues.showRemoveTracksModal = false
-				}) {
-					Text("Cancel")
-				}
-				Button(action: {
-					let i = playlistEditingValues.indexToRemove!
-					let uuid = playlistEditingValues.playlist!.uuid
-					print("Delete Index \(i) from \(playlistEditingValues.playlist!.title)")
-					let success = session.removeTrack(index: i, from: uuid)
-					if success {
-						session.helpers.offline.syncPlaylist(playlistEditingValues.playlist!)
-						viewState.refreshCurrentView()
+			if let playlist = playlistEditingValues.playlist {
+				Text("Delete \(playlistEditingValues.tracks[0].title) from \(playlist.title)?")
+				
+				HStack {
+					Button(action: {
+						print("Cancel")
 						playlistEditingValues.showRemoveTracksModal = false
+					}) {
+						Text("Cancel")
 					}
-				}) {
-					Text("Delete")
+					Button(action: {
+						let i = playlistEditingValues.indexToRemove!
+						let uuid = playlist.uuid
+						print("Delete Index \(i) from \(playlist.title)")
+						let success = session.removeTrack(index: i, from: uuid)
+						if success {
+							session.helpers.offline.syncPlaylist(playlist)
+							viewState.refreshCurrentView()
+							playlistEditingValues.showRemoveTracksModal = false
+						}
+					}) {
+						Text("Delete")
+					}
 				}
+			} else {
+				Text("Missing Playlist")
 			}
 		}
 		.padding()
@@ -155,26 +159,30 @@ struct DeletePlaylist: View {
 	
 	var body: some View {
 		VStack {
-			Text("Delete \(playlistEditingValues.playlist!.title)?")
-			
-			HStack {
-				Button(action: {
-					print("Cancel")
-					playlistEditingValues.showDeleteModal = false
-				}) {
-					Text("Cancel")
-				}
-				Button(action: {
-					print("Delete \(playlistEditingValues.playlist!.title)")
-					let success = session.deletePlaylist(playlistId: playlistEditingValues.playlist!.uuid)
-					if success {
-						playlistEditingValues.playlist!.removeOffline(session: session)
+			if let playlist = playlistEditingValues.playlist {
+				Text("Delete \(playlist.title)?")
+				
+				HStack {
+					Button(action: {
+						print("Cancel")
 						playlistEditingValues.showDeleteModal = false
-						viewState.refreshCurrentView()
+					}) {
+						Text("Cancel")
 					}
-				}) {
-					Text("Delete")
+					Button(action: {
+						print("Delete \(playlist.title)")
+						let success = session.deletePlaylist(playlistId: playlist.uuid)
+						if success {
+							playlist.removeOffline(session: session)
+							playlistEditingValues.showDeleteModal = false
+							viewState.refreshCurrentView()
+						}
+					}) {
+						Text("Delete")
+					}
 				}
+			} else {
+				Text("Missing Playlist")
 			}
 		}
 		.padding()
@@ -193,39 +201,43 @@ struct EditPlaylist: View {
 	
 	var body: some View {
 		VStack {
-			Text("Edit \(playlistEditingValues.playlist!.title)")
-			TextField("New Playlist", text: $playlistName)
-				.onAppear {
-					playlistName = playlistEditingValues.playlist!.title
-				}
-			TextField("Optional Playlist Description", text: $playlistDescription)
-				.onAppear {
-					playlistDescription = playlistEditingValues.playlist!.description ?? ""
-				}
-			if playlistEditingValues.playlist!.isOffline(session: session) {
-				Text("This playlist is saved offline, but won't anymore if renamed. You have to to add it to Offline items again manually, if you so desire.")
-					.foregroundColor(.secondary)
-			}
-			
-			HStack {
-				Button(action: {
-					print("Cancel")
-					playlistEditingValues.showEditModal = false
-				}) {
-					Text("Cancel")
-				}
-				Button(action: {
-					print("Rename \(playlistEditingValues.playlist!.title)")
-					let success = session.editPlaylist(playlistId: playlistEditingValues.playlist!.uuid,
-															title: playlistName, description: playlistDescription)
-					if success {
-						playlistEditingValues.playlist!.removeOffline(session: session)
-						playlistEditingValues.showEditModal = false
-						viewState.refreshCurrentView()
+			if let playlist = playlistEditingValues.playlist {
+				Text("Edit \(playlist.title)")
+				TextField("New Playlist", text: $playlistName)
+					.onAppear {
+						playlistName = playlist.title
 					}
-				}) {
-					Text("Rename")
+				TextField("Optional Playlist Description", text: $playlistDescription)
+					.onAppear {
+						playlistDescription = playlist.description ?? ""
+					}
+				if playlist.isOffline(session: session) {
+					Text("This playlist is saved offline, but won't anymore if renamed. You have to to add it to Offline items again manually, if you so desire.")
+						.foregroundColor(.secondary)
 				}
+				
+				HStack {
+					Button(action: {
+						print("Cancel")
+						playlistEditingValues.showEditModal = false
+					}) {
+						Text("Cancel")
+					}
+					Button(action: {
+						print("Rename \(playlist.title)")
+						let success = session.editPlaylist(playlistId: playlist.uuid,
+																title: playlistName, description: playlistDescription)
+						if success {
+							playlist.removeOffline(session: session)
+							playlistEditingValues.showEditModal = false
+							viewState.refreshCurrentView()
+						}
+					}) {
+						Text("Rename")
+					}
+				}
+			} else {
+				Text("Missing Playlist")
 			}
 		}
 		.padding()
