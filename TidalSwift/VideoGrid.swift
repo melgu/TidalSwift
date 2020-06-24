@@ -105,7 +105,6 @@ struct VideoContextMenu: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playbackInfo: PlaybackInfo
-	@State var t: Bool = false
 	
 	var body: some View {
 		Group {
@@ -141,24 +140,20 @@ struct VideoContextMenu: View {
 				Divider()
 			}
 			Group {
-				if t || !t {
-					if video.isInFavorites(session: session) ?? true {
-						Button {
-							print("Remove from Favorites")
-							session.favorites?.removeVideo(videoId: video.id)
-							viewState.refreshCurrentView()
-							t.toggle()
-						} label: {
-							Text("Remove from Favorites")
-						}
-					} else {
-						Button {
-							print("Add to Favorites")
-							session.favorites?.addVideo(videoId: video.id)
-							t.toggle()
-						} label: {
-							Text("Add to Favorites")
-						}
+				if video.isInFavorites(session: session) ?? true {
+					Button {
+						print("Remove from Favorites")
+						session.favorites?.removeVideo(videoId: video.id)
+						viewState.refreshCurrentView()
+					} label: {
+						Text("Remove from Favorites")
+					}
+				} else {
+					Button {
+						print("Add to Favorites")
+						session.favorites?.addVideo(videoId: video.id)
+					} label: {
+						Text("Add to Favorites")
 					}
 				}
 				if video.streamReady {

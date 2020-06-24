@@ -97,8 +97,6 @@ struct PlaylistContextMenu: View {
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	
-	@State var t: Bool = false
-	
 	var body: some View {
 		Group {
 //			Group{
@@ -136,23 +134,19 @@ struct PlaylistContextMenu: View {
 						Text("Delete Playlist …")
 					}
 				} else {
-					if t || !t {
-						if playlist.isInFavorites(session: session) ?? false {
-							Button {
-								print("Remove from Favorites")
-								session.favorites?.removePlaylist(playlistId: playlist.uuid)
-								t.toggle()
-							} label: {
-								Text("Remove from Favorites")
-							}
-						} else {
-							Button {
-								print("Add to Favorites")
-								session.favorites?.addPlaylist(playlistId: playlist.uuid)
-								t.toggle()
-							} label: {
-								Text("Add to Favorites")
-							}
+					if playlist.isInFavorites(session: session) ?? false {
+						Button {
+							print("Remove from Favorites")
+							session.favorites?.removePlaylist(playlistId: playlist.uuid)
+						} label: {
+							Text("Remove from Favorites")
+						}
+					} else {
+						Button {
+							print("Add to Favorites")
+							session.favorites?.addPlaylist(playlistId: playlist.uuid)
+						} label: {
+							Text("Add to Favorites")
 						}
 					}
 				}
@@ -168,29 +162,25 @@ struct PlaylistContextMenu: View {
 			}
 			Divider()
 			Group {
-				if t || !t {
-					if playlist.isOffline(session: session) {
-						Button {
-							print("Remove from Offline")
-							playlist.removeOffline(session: session)
-							viewState.refreshCurrentView()
-							t.toggle()
-						} label: {
-							Text("Remove from Offline")
-						}
-					} else {
-						Button {
-							print("Add to Offline")
-							DispatchQueue.global(qos: .background).async {
-								playlist.addOffline(session: session)
-								DispatchQueue.main.async {
-									viewState.refreshCurrentView()
-									t.toggle()
-								}
+				if playlist.isOffline(session: session) {
+					Button {
+						print("Remove from Offline")
+						playlist.removeOffline(session: session)
+						viewState.refreshCurrentView()
+					} label: {
+						Text("Remove from Offline")
+					}
+				} else {
+					Button {
+						print("Add to Offline")
+						DispatchQueue.global(qos: .background).async {
+							playlist.addOffline(session: session)
+							DispatchQueue.main.async {
+								viewState.refreshCurrentView()
 							}
-						} label: {
-							Text("Add to Offline")
 						}
+					} label: {
+						Text("Add to Offline")
 					}
 				}
 				

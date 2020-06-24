@@ -178,8 +178,6 @@ struct AlbumContextMenu: View {
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	
-	@State var t: Bool = false
-	
 	var body: some View {
 		Group {
 			Group {
@@ -218,24 +216,20 @@ struct AlbumContextMenu: View {
 				Divider()
 			}
 			Group {
-				if t || !t {
-					if album.isInFavorites(session: session) ?? false {
-						Button {
-							print("Remove from Favorites")
-							session.favorites?.removeAlbum(albumId: album.id)
-							viewState.refreshCurrentView()
-							t.toggle()
-						} label: {
-							Text("Remove from Favorites")
-						}
-					} else {
-						Button {
-							print("Add to Favorites")
-							session.favorites?.addAlbum(albumId: album.id)
-							t.toggle()
-						} label: {
-							Text("Add to Favorites")
-						}
+				if album.isInFavorites(session: session) ?? false {
+					Button {
+						print("Remove from Favorites")
+						session.favorites?.removeAlbum(albumId: album.id)
+						viewState.refreshCurrentView()
+					} label: {
+						Text("Remove from Favorites")
+					}
+				} else {
+					Button {
+						print("Add to Favorites")
+						session.favorites?.addAlbum(albumId: album.id)
+					} label: {
+						Text("Add to Favorites")
 					}
 				}
 				if album.streamReady ?? false {
@@ -250,23 +244,20 @@ struct AlbumContextMenu: View {
 					}
 					Divider()
 					Group {
-						if t || !t {
-							if album.isOffline(session: session) {
-								Button {
-									print("Remove from Offline")
-									album.removeOffline(session: session)
-									viewState.refreshCurrentView()
-									t.toggle()
-								} label: {
-									Text("Remove from Offline")
-								}
-							} else {
-								Button {
-									print("Add to Offline")
-									album.addOffline(session: session)
-								} label: {
-									Text("Add to Offline")
-								}
+						if album.isOffline(session: session) {
+							Button {
+								print("Remove from Offline")
+								album.removeOffline(session: session)
+								viewState.refreshCurrentView()
+							} label: {
+								Text("Remove from Offline")
+							}
+						} else {
+							Button {
+								print("Add to Offline")
+								album.addOffline(session: session)
+							} label: {
+								Text("Add to Offline")
 							}
 						}
 						

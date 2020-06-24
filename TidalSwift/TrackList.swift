@@ -46,14 +46,12 @@ struct TrackRow: View {
 	let trackNumber: Int?
 	let session: Session
 	
-	var coverUrl: URL?
 	var widthFactorTrack: CGFloat
 	var widthFactorArtist: CGFloat
 	var widthFactorAlbum: CGFloat
 	
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var queueInfo: QueueInfo
-	@State var t: Bool = false
 	
 	init(track: Track, showCover: Bool = false, showArtist: Bool, showAlbum: Bool,
 		 trackNumber: Int? = nil, session: Session) {
@@ -67,10 +65,6 @@ struct TrackRow: View {
 			self.trackNumber = nil
 		}
 		self.session = session
-		
-		if showCover {
-			self.coverUrl = track.getCoverUrl(session: session, resolution: 80)
-		}
 		
 		if showArtist && showAlbum { // Both
 			self.widthFactorTrack = 0.28
@@ -98,7 +92,7 @@ struct TrackRow: View {
 								.secondaryIconColor()
 						}
 						if showCover {
-							if let coverUrl = coverUrl {
+							if let coverUrl = track.getCoverUrl(session: session, resolution: 80) {
 								URLImageSourceView(
 									coverUrl,
 									isAnimationEnabled: true,
@@ -159,34 +153,30 @@ struct TrackRow: View {
 						.primaryIconColor()
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:
-																		CreditsView(session: session, track: track)
-																		.environmentObject(viewState)
+								CreditsView(session: session, track: track)
+								.environmentObject(viewState)
 							)
 							controller.window?.title = "Credits – \(track.title)"
 							controller.showWindow(nil)
 						}
-					if t || !t {
-						if track.isInFavorites(session: session) ?? false {
-							Image("heart.fill")
-								.primaryIconColor()
-								.onTapGesture {
-									print("Remove from Favorites")
-									session.favorites?.removeTrack(trackId: track.id)
-									session.helpers.offline.asyncSyncFavoriteTracks()
-									//									viewState.refreshCurrentView()
-									t.toggle()
-								}
-						} else {
-							Image("heart")
-								.primaryIconColor()
-								.onTapGesture {
-									print("Add to Favorites")
-									session.favorites?.addTrack(trackId: track.id)
-									session.helpers.offline.asyncSyncFavoriteTracks()
-//									viewState.refreshCurrentView()
-									t.toggle()
-								}
-						}
+					if track.isInFavorites(session: session) ?? false {
+						Image("heart.fill")
+							.primaryIconColor()
+							.onTapGesture {
+								print("Remove from Favorites")
+								session.favorites?.removeTrack(trackId: track.id)
+								session.helpers.offline.asyncSyncFavoriteTracks()
+								viewState.refreshCurrentView()
+							}
+					} else {
+						Image("heart")
+							.primaryIconColor()
+							.onTapGesture {
+								print("Add to Favorites")
+								session.favorites?.addTrack(trackId: track.id)
+								session.helpers.offline.asyncSyncFavoriteTracks()
+								viewState.refreshCurrentView()
+							}
 					}
 				}
 			}

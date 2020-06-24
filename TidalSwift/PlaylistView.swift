@@ -16,8 +16,6 @@ struct PlaylistView: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	
-	@State var t: Bool = false
-	
 	var isUserPlaylist: Bool {
 		viewState.stack.last?.playlist?.creator.id == session.userId
 	}
@@ -46,11 +44,11 @@ struct PlaylistView: View {
 								.toolTip("Show image in new window")
 								.onTapGesture {
 									let controller = CoverWindowController(rootView:
-																			URLImageSourceView(
-																				imageUrlBig,
-																				isAnimationEnabled: true,
-																				label: Text(playlist.title)
-																			)
+										URLImageSourceView(
+											imageUrlBig,
+											isAnimationEnabled: true,
+											label: Text(playlist.title)
+										)
 									)
 									controller.window?.title = playlist.title
 									controller.showWindow(nil)
@@ -61,24 +59,20 @@ struct PlaylistView: View {
 										Text(playlist.title)
 											.font(.title)
 											.lineLimit(2)
-										if t || !t {
-											if playlist.isInFavorites(session: session) ?? true {
-												Image("heart.fill")
-													.primaryIconColor()
-													.onTapGesture {
-														print("Remove from Favorites")
-														session.favorites?.removePlaylist(playlistId: playlist.uuid)
-														t.toggle()
-													}
-											} else {
-												Image("heart")
-													.primaryIconColor()
-													.onTapGesture {
-														print("Add to Favorites")
-														session.favorites?.addPlaylist(playlistId: playlist.uuid)
-														t.toggle()
-													}
-											}
+										if playlist.isInFavorites(session: session) ?? true {
+											Image("heart.fill")
+												.primaryIconColor()
+												.onTapGesture {
+													print("Remove from Favorites")
+													session.favorites?.removePlaylist(playlistId: playlist.uuid)
+												}
+										} else {
+											Image("heart")
+												.primaryIconColor()
+												.onTapGesture {
+													print("Add to Favorites")
+													session.favorites?.addPlaylist(playlistId: playlist.uuid)
+												}
 										}
 										Image("square.and.arrow.up")
 											.primaryIconColor()
@@ -103,31 +97,26 @@ struct PlaylistView: View {
 									Spacer()
 								}
 							}
-							if t || !t {
-								if playlist.isOffline(session: session) {
-									Image("cloud.fill-big")
-										.primaryIconColor()
-										.onTapGesture {
-											print("Remove from Offline")
-											playlist.removeOffline(session: session)
-											viewState.refreshCurrentView()
-											t.toggle()
-										}
-								} else {
-									Image("cloud-big")
-										.primaryIconColor()
-										.onTapGesture {
-											print("Add to Offline")
-											t.toggle()
-											DispatchQueue.global(qos: .background).async {
-												playlist.addOffline(session: session)
-												DispatchQueue.main.async {
-													viewState.refreshCurrentView()
-													t.toggle()
-												}
+							if playlist.isOffline(session: session) {
+								Image("cloud.fill-big")
+									.primaryIconColor()
+									.onTapGesture {
+										print("Remove from Offline")
+										playlist.removeOffline(session: session)
+										viewState.refreshCurrentView()
+									}
+							} else {
+								Image("cloud-big")
+									.primaryIconColor()
+									.onTapGesture {
+										print("Add to Offline")
+										DispatchQueue.global(qos: .background).async {
+											playlist.addOffline(session: session)
+											DispatchQueue.main.async {
+												viewState.refreshCurrentView()
 											}
 										}
-								}
+									}
 							}
 						}
 						.frame(height: 100)

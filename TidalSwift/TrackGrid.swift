@@ -91,7 +91,6 @@ struct TrackContextMenu: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
-	@State var t: Bool = false
 	
 	init(track: Track, indexInPlaylist: Int? = nil, playlist: Playlist? = nil, session: Session, player: Player) {
 		self.track = track
@@ -145,14 +144,12 @@ struct TrackContextMenu: View {
 			}
 			Divider()
 			Group {
-				if t || !t {
 					if track.isInFavorites(session: session) ?? false {
 						Button {
 							print("Remove from Favorites")
 							session.favorites?.removeTrack(trackId: track.id)
 							session.helpers.offline.asyncSyncFavoriteTracks()
 							viewState.refreshCurrentView()
-							t.toggle()
 						} label: {
 							Text("Remove from Favorites")
 						}
@@ -162,12 +159,10 @@ struct TrackContextMenu: View {
 							session.favorites?.addTrack(trackId: track.id)
 							session.helpers.offline.asyncSyncFavoriteTracks()
 							viewState.refreshCurrentView()
-							t.toggle()
 						} label: {
 							Text("Add to Favorites")
 						}
 					}
-				}
 				if track.streamReady {
 					Button {
 						print("Add \(track.title) to Playlist")

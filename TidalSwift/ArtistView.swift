@@ -30,7 +30,6 @@ struct ArtistView: View {
 	}
 	
 	@State var bottomSectionType: BottomSectionType = .albums
-	@State var t: Bool = false
 	
 	init(session: Session, player: Player, viewState: ViewState) {
 		self.session = session
@@ -74,11 +73,11 @@ struct ArtistView: View {
 				.toolTip("Show image in new window")
 				.onTapGesture {
 					let controller = CoverWindowController(rootView:
-															URLImageSourceView(
-																pictureUrlBig,
-																isAnimationEnabled: true,
-																label: Text(artist.name)
-															)
+						URLImageSourceView(
+							pictureUrlBig,
+							isAnimationEnabled: true,
+							label: Text(artist.name)
+						)
 					)
 					controller.window?.title = artist.name
 					controller.showWindow(nil)
@@ -95,30 +94,26 @@ struct ArtistView: View {
 						.toolTip("Artist Bio")
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:
-																		ArtistBioView(session: session, artist: artist)
+								ArtistBioView(session: session, artist: artist)
 																		.environmentObject(viewState)
 							)
 							controller.window?.title = "Bio – \(artist.name)"
 							controller.showWindow(nil)
 						}
-					if t || !t {
-						if artist.isInFavorites(session: session) ?? true {
-							Image("heart.fill")
-								.primaryIconColor()
-								.onTapGesture {
-									print("Remove from Favorites")
-									session.favorites?.removeArtist(artistId: artist.id)
-									t.toggle()
-								}
-						} else {
-							Image("heart")
-								.primaryIconColor()
-								.onTapGesture {
-									print("Add to Favorites")
-									session.favorites?.addArtist(artistId: artist.id)
-									t.toggle()
-								}
-						}
+					if artist.isInFavorites(session: session) ?? true {
+						Image("heart.fill")
+							.primaryIconColor()
+							.onTapGesture {
+								print("Remove from Favorites")
+								session.favorites?.removeArtist(artistId: artist.id)
+							}
+					} else {
+						Image("heart")
+							.primaryIconColor()
+							.onTapGesture {
+								print("Add to Favorites")
+								session.favorites?.addArtist(artistId: artist.id)
+							}
 					}
 					if let url = artist.url {
 						Image("square.and.arrow.up")

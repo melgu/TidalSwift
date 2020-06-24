@@ -16,7 +16,6 @@ struct AlbumView: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	
-	@State var t: Bool = false
 	@State var cloudPressed: Bool = false
 	
 	var body: some View {
@@ -71,24 +70,20 @@ struct AlbumView: View {
 												controller.window?.title = "Credits – \(album.title)"
 												controller.showWindow(nil)
 											}
-										if t || !t {
-											if album.isInFavorites(session: session) ?? true {
-												Image("heart.fill")
-													.primaryIconColor()
-													.onTapGesture {
-														print("Remove from Favorites")
-														session.favorites?.removeAlbum(albumId: album.id)
-														t.toggle()
-													}
-											} else {
-												Image("heart")
-													.primaryIconColor()
-													.onTapGesture {
-														print("Add to Favorites")
-														session.favorites?.addAlbum(albumId: album.id)
-														t.toggle()
-													}
-											}
+										if album.isInFavorites(session: session) ?? true {
+											Image("heart.fill")
+												.primaryIconColor()
+												.onTapGesture {
+													print("Remove from Favorites")
+													session.favorites?.removeAlbum(albumId: album.id)
+												}
+										} else {
+											Image("heart")
+												.primaryIconColor()
+												.onTapGesture {
+													print("Add to Favorites")
+													session.favorites?.addAlbum(albumId: album.id)
+												}
 										}
 										if let url = album.url {
 											Image("square.and.arrow.up")
@@ -118,32 +113,28 @@ struct AlbumView: View {
 								}
 							}
 							Group {
-								if t || !t {
-									if album.isOffline(session: session) {
+								if album.isOffline(session: session) {
+									Image("cloud.fill-big")
+										.primaryIconColor()
+										.onTapGesture {
+											print("Remove from Offline")
+											cloudPressed = false
+											album.removeOffline(session: session)
+											viewState.refreshCurrentView()
+										}
+								} else {
+									if cloudPressed {
 										Image("cloud.fill-big")
+											.secondaryIconColor()
+									} else {
+										Image("cloud-big")
 											.primaryIconColor()
 											.onTapGesture {
-												print("Remove from Offline")
-												cloudPressed = false
-												album.removeOffline(session: session)
+												print("Add to Offline")
+												cloudPressed = true
+												album.addOffline(session: session)
 												viewState.refreshCurrentView()
-												t.toggle()
 											}
-									} else {
-										if cloudPressed {
-											Image("cloud.fill-big")
-												.secondaryIconColor()
-										} else {
-											Image("cloud-big")
-												.primaryIconColor()
-												.onTapGesture {
-													print("Add to Offline")
-													cloudPressed = true
-													album.addOffline(session: session)
-													viewState.refreshCurrentView()
-													t.toggle()
-												}
-										}
 									}
 								}
 							}
