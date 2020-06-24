@@ -102,67 +102,67 @@ struct PlaylistContextMenu: View {
 	var body: some View {
 		Group {
 //			Group{
-				Button(action: {
+				Button {
 					player.add(playlist: playlist, .now)
-				}) {
+				} label: {
 					Text("Play Now")
 				}
-				Button(action: {
+				Button {
 					player.add(playlist: playlist, .next)
-				}) {
+				} label: {
 					Text("Add Next")
 				}
-				Button(action: {
+				Button {
 					player.add(playlist: playlist, .last)
-				}) {
+				} label: {
 					Text("Add Last")
 				}
 //			}
 			Divider()
 			Group {
 				if playlist.creator.id == session.userId { // My playlist
-					Button(action: {
+					Button {
 						print("Edit Playlist")
 						playlistEditingValues.playlist = playlist
 						playlistEditingValues.showEditModal = true
-					}) {
+					} label: {
 						Text("Edit Playlist …")
 					}
-					Button(action: {
+					Button {
 						print("Delete Playlist")
 						playlistEditingValues.playlist = playlist
 						playlistEditingValues.showDeleteModal = true
-					}) {
+					} label: {
 						Text("Delete Playlist …")
 					}
 				} else {
 					if t || !t {
 						if playlist.isInFavorites(session: session) ?? false {
-							Button(action: {
+							Button {
 								print("Remove from Favorites")
 								session.favorites?.removePlaylist(playlistId: playlist.uuid)
 								t.toggle()
-							}) {
+							} label: {
 								Text("Remove from Favorites")
 							}
 						} else {
-							Button(action: {
+							Button {
 								print("Add to Favorites")
 								session.favorites?.addPlaylist(playlistId: playlist.uuid)
 								t.toggle()
-							}) {
+							} label: {
 								Text("Add to Favorites")
 							}
 						}
 					}
 				}
-				Button(action: {
+				Button {
 					print("Add \(playlist.title) to Playlist")
 					if let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) {
 						playlistEditingValues.tracks = tracks
 						playlistEditingValues.showAddTracksModal = true
 					}
-				}) {
+				} label: {
 					Text("Add to Playlist …")
 				}
 			}
@@ -170,16 +170,16 @@ struct PlaylistContextMenu: View {
 			Group {
 				if t || !t {
 					if playlist.isOffline(session: session) {
-						Button(action: {
+						Button {
 							print("Remove from Offline")
 							playlist.removeOffline(session: session)
 							viewState.refreshCurrentView()
 							t.toggle()
-						}) {
+						} label: {
 							Text("Remove from Offline")
 						}
 					} else {
-						Button(action: {
+						Button {
 							print("Add to Offline")
 							DispatchQueue.global(qos: .background).async {
 								playlist.addOffline(session: session)
@@ -188,25 +188,25 @@ struct PlaylistContextMenu: View {
 									t.toggle()
 								}
 							}
-						}) {
+						} label: {
 							Text("Add to Offline")
 						}
 					}
 				}
 				
-				Button(action: {
+				Button {
 					print("Download")
 					DispatchQueue.global(qos: .background).async {
 						_ = session.helpers.download(playlist: playlist)
 					}
-				}) {
+				} label: {
 					Text("Download")
 				}
 			}
 			Divider()
 			Group {
 				if let imageUrl = playlist.getImageUrl(session: session, resolution: 750) {
-					Button(action: {
+					Button {
 						print("Image")
 						let controller = CoverWindowController(rootView:
 							URLImageSourceView(
@@ -217,14 +217,14 @@ struct PlaylistContextMenu: View {
 						)
 						controller.window?.title = playlist.title
 						controller.showWindow(nil)
-					}) {
+					} label: {
 						Text("Image")
 					}
 				}
-				Button(action: {
+				Button {
 					print("Share Playlist")
 					Pasteboard.copy(string: playlist.url.absoluteString)
-				}) {
+				} label: {
 					Text("Copy URL")
 				}
 			}

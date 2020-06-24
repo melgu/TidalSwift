@@ -91,70 +91,70 @@ struct ArtistContextMenu: View {
 	
 	var body: some View {
 		Group {
-			Button(action: {
+			Button {
 				player.add(artist: artist, .now)
-			}) {
+			} label: {
 				Text("Play Now")
 			}
-			Button(action: {
+			Button {
 				player.add(artist: artist, .next)
-			}) {
+			} label: {
 				Text("Add Next")
 			}
-			Button(action: {
+			Button {
 				player.add(artist: artist, .last)
-			}) {
+			} label: {
 				Text("Add Last")
 			}
 			Divider()
 			Group {
 				if t || !t {
 					if artist.isInFavorites(session: session) ?? true {
-						Button(action: {
+						Button {
 							print("Remove from Favorites")
 							session.favorites?.removeArtist(artistId: artist.id)
 							viewState.refreshCurrentView()
 							t.toggle()
-						}) {
+						} label: {
 							Text("Remove from Favorites")
 						}
 					} else {
-						Button(action: {
+						Button {
 							print("Add to Favorites")
 							session.favorites?.addArtist(artistId: artist.id)
 							t.toggle()
-						}) {
+						} label: {
 							Text("Add to Favorites")
 						}
 					}
 				}
 			}
 			Divider()
-			Button(action: {
+			Button {
 				print("Offline")
-			}) {
+			} label: {
 				Text("Offline")
 			}
-			Button(action: {
+			Button {
 				print("Download all Albums of \(artist.name)")
 				DispatchQueue.global(qos: .background).async {
 					_ = session.helpers.downloadAllAlbums(from: artist)
 				}
-			}) {
+			} label: {
 				Text("Download all Albums")
 			}
 			Divider()
 			Group {
-				Button(action: {
+				Button {
 					print("Radio")
 					if let radioTracks = artist.radio(session: session) {
 						player.add(tracks: radioTracks, .now)
 					}
-				}) {
+				} label: {
 					Text("Radio")
 				}
 				if let pictureUrl = artist.getPictureUrl(session: session, resolution: 750) {
-					Button(action: {
+					Button {
 						print("Picture")
 						let controller = CoverWindowController(rootView:
 							URLImageSourceView(
@@ -165,11 +165,11 @@ struct ArtistContextMenu: View {
 						)
 						controller.window?.title = artist.name
 						controller.showWindow(nil)
-					}) {
+					} label: {
 						Text("Picture")
 					}
 				}
-				Button(action: {
+				Button {
 					print("Bio")
 					let controller = ResizableWindowController(rootView:
 						ArtistBioView(session: session, artist: artist)
@@ -177,14 +177,14 @@ struct ArtistContextMenu: View {
 					)
 					controller.window?.title = "Bio – \(artist.name)"
 					controller.showWindow(nil)
-				}) {
+				} label: {
 					Text("Bio")
 				}
 				if let url = artist.url {
-					Button(action: {
+					Button {
 						print("Share Artist")
 						Pasteboard.copy(string: url.absoluteString)
-					}) {
+					} label: {
 						Text("Copy URL")
 					}
 				}

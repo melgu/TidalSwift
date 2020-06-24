@@ -22,9 +22,9 @@ struct PlaybackHistoryView: View {
 						.padding(.bottom)
 					Spacer(minLength: 5)
 					VStack {
-						Button(action: {
+						Button {
 							queueInfo.clearHistory()
-						}) {
+						} label: {
 							Text("Clear")
 						}
 						Spacer(minLength: 0)

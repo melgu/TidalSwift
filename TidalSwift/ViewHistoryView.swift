@@ -21,9 +21,9 @@ struct ViewHistoryView: View {
 						.padding(.bottom)
 					Spacer(minLength: 5)
 					VStack {
-						Button(action: {
+						Button {
 							viewState.clearHistory()
-						}) {
+						} label: {
 							Text("Clear")
 						}
 						Spacer(minLength: 0)
