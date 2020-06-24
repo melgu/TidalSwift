@@ -87,8 +87,6 @@ struct ArtistContextMenu: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	
-	@State var t: Bool = false
-	
 	var body: some View {
 		Group {
 			Button {
@@ -108,24 +106,20 @@ struct ArtistContextMenu: View {
 			}
 			Divider()
 			Group {
-				if t || !t {
-					if artist.isInFavorites(session: session) ?? true {
-						Button {
-							print("Remove from Favorites")
-							session.favorites?.removeArtist(artistId: artist.id)
-							viewState.refreshCurrentView()
-							t.toggle()
-						} label: {
-							Text("Remove from Favorites")
-						}
-					} else {
-						Button {
-							print("Add to Favorites")
-							session.favorites?.addArtist(artistId: artist.id)
-							t.toggle()
-						} label: {
-							Text("Add to Favorites")
-						}
+				if artist.isInFavorites(session: session) ?? true {
+					Button {
+						print("Remove from Favorites")
+						session.favorites?.removeArtist(artistId: artist.id)
+						viewState.refreshCurrentView()
+					} label: {
+						Text("Remove from Favorites")
+					}
+				} else {
+					Button {
+						print("Add to Favorites")
+						session.favorites?.addArtist(artistId: artist.id)
+					} label: {
+						Text("Add to Favorites")
 					}
 				}
 			}
