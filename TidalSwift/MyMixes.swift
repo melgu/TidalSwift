@@ -379,7 +379,7 @@ struct MixContextMenu: View {
 					player.add(tracks: tracks, .now)
 				}
 			} label: {
-				Text("Play Now")
+				Text("Add Now")
 			}
 			Button {
 				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {

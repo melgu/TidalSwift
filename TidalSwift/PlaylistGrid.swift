@@ -103,7 +103,7 @@ struct PlaylistContextMenu: View {
 				Button {
 					player.add(playlist: playlist, .now)
 				} label: {
-					Text("Play Now")
+					Text("Add Now")
 				}
 				Button {
 					player.add(playlist: playlist, .next)

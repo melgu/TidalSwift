@@ -107,7 +107,7 @@ struct TrackContextMenu: View {
 					Button {
 						player.add(track: track, .now)
 					} label: {
-						Text("Play Now")
+						Text("Add Now")
 					}
 					Button {
 						player.add(track: track, .next)
