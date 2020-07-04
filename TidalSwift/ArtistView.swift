@@ -58,6 +58,24 @@ struct ArtistView: View {
 		}
 	}
 	
+	var body: some View {
+		ZStack {
+			// TODO: Bring ScroolView back in?
+			if let artist = artist {
+				VStack(alignment: .leading) {
+					headerSection(artist, viewState: viewState)
+					topTrackSection()
+					Divider()
+					bottomSection(artist)
+				}
+				.padding(.top, 50) // Has to be 50 instead of 40 like the others to look the same
+			}  else {
+				Text("Couldn't load Artist")
+			}
+			BackButton()
+		}
+	}
+	
 	func headerSection(_ artist: Artist, viewState: ViewState) -> some View {
 		HStack {
 			if let pictureUrlSmall = artist.getPictureUrl(session: session, resolution: 320),
@@ -168,23 +186,5 @@ struct ArtistView: View {
 			Spacer(minLength: 0)
 		}
 		.padding(.horizontal)
-	}
-	
-	var body: some View {
-		ZStack {
-			// TODO: Bring ScroolView back in?
-			if let artist = artist {
-				VStack(alignment: .leading) {
-					headerSection(artist, viewState: viewState)
-					topTrackSection()
-					Divider()
-					bottomSection(artist)
-				}
-				.padding(.top, 50) // Has to be 50 instead of 40 like the others to look the same
-			}  else {
-				Text("Couldn't load Artist")
-			}
-			BackButton()
-		}
 	}
 }
