@@ -76,6 +76,7 @@ struct AlbumView: View {
 												.onTapGesture {
 													print("Remove from Favorites")
 													session.favorites?.removeAlbum(albumId: album.id)
+													viewState.refreshCurrentView()
 												}
 										} else {
 											Image("heart")
@@ -83,6 +84,7 @@ struct AlbumView: View {
 												.onTapGesture {
 													print("Add to Favorites")
 													session.favorites?.addAlbum(albumId: album.id)
+													viewState.refreshCurrentView()
 												}
 										}
 										if let url = album.url {
@@ -143,8 +145,7 @@ struct AlbumView: View {
 						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 						
 						TrackList(wrappedTracks: tracks.wrapped(), showCover: false, showAlbumTrackNumber: true,
-								  showArtist: true, showAlbum: false, playlist: nil,
-								  session: session, player: player)
+								  showArtist: true, showAlbum: false, playlist: nil, session: session, player: player)
 					} else {
 						HStack {
 							Spacer()
