@@ -185,7 +185,7 @@ struct AlbumContextMenu: View {
 					Button {
 						player.add(album: album, .now)
 					} label: {
-						Text("Play Now")
+						Text("Add Now")
 					}
 					Button {
 						player.add(album: album, .next)

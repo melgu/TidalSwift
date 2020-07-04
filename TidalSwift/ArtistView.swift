@@ -58,7 +58,7 @@ struct ArtistView: View {
 		}
 	}
 	
-	func headerSection(_ artist: Artist) -> some View {
+	func headerSection(_ artist: Artist, viewState: ViewState) -> some View {
 		HStack {
 			if let pictureUrlSmall = artist.getPictureUrl(session: session, resolution: 320),
 			   let pictureUrlBig = artist.getPictureUrl(session: session, resolution: 750) {
@@ -106,6 +106,7 @@ struct ArtistView: View {
 							.onTapGesture {
 								print("Remove from Favorites")
 								session.favorites?.removeArtist(artistId: artist.id)
+								viewState.refreshCurrentView()
 							}
 					} else {
 						Image("heart")
@@ -113,6 +114,7 @@ struct ArtistView: View {
 							.onTapGesture {
 								print("Add to Favorites")
 								session.favorites?.addArtist(artistId: artist.id)
+								viewState.refreshCurrentView()
 							}
 					}
 					if let url = artist.url {
@@ -173,7 +175,7 @@ struct ArtistView: View {
 			// TODO: Bring ScroolView back in?
 			if let artist = artist {
 				VStack(alignment: .leading) {
-					headerSection(artist)
+					headerSection(artist, viewState: viewState)
 					topTrackSection()
 					Divider()
 					bottomSection(artist)

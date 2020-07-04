@@ -92,7 +92,7 @@ struct ArtistContextMenu: View {
 			Button {
 				player.add(artist: artist, .now)
 			} label: {
-				Text("Play Now")
+				Text("Add Now")
 			}
 			Button {
 				player.add(artist: artist, .next)
