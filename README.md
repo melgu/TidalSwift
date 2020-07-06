@@ -15,7 +15,7 @@ It supports all major features of the official Tidal app, while adding additiona
 
 Unlike the official Tidal app, this app can display new releases by your favorite artists.
 
-![New Releases](README.assets/New Releases.png)
+![New Releases](README.assets/NewReleases.png)
 
 ### Lyrics
 
@@ -25,7 +25,7 @@ Also, unlike the official app, TidalSwift can display the Lyrics of the currentl
 
 ### My Mixes
 
-![My Mixes](README.assets/My Mixes.png)
+![My Mixes](README.assets/MyMixes.png)
 
 ### Search
 
@@ -45,9 +45,9 @@ Also, unlike the official app, TidalSwift can display the Lyrics of the currentl
 
 ### Detail Views
 
-![Album View](README.assets/Album View.png)
+![Album View](README.assets/AlbumView.png)
 
-![Artist View](README.assets/Artist View.png)
+![Artist View](README.assets/ArtistView.png)
 
 ### Login
 
@@ -61,5 +61,5 @@ Also, unlike the official app, TidalSwift can display the Lyrics of the currentl
 
 TidalSwift obviously supports the macOS Dark Mode.
 
-![Artist View (Dark Mode)](README.assets/Artist View (Dark Mode).png)
+![Artist View (Dark Mode)](README.assets/ArtistView-DarkMode.png)
 
