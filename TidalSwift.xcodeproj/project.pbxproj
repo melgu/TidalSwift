@@ -173,6 +173,22 @@
 		B07685B8232079C800538D55 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		B07685BC2320C12D00538D55 /* QueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueView.swift; sourceTree = "<group>"; };
 		B07C5EF522C8797A00710752 /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadata.swift; sourceTree = "<group>"; };
+		B0807AA224B2BA630055524E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		B0807AA424B2BA630055524E /* Artist View.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Artist View.png"; sourceTree = "<group>"; };
+		B0807AA524B2BA630055524E /* My Mixes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "My Mixes.png"; sourceTree = "<group>"; };
+		B0807AA624B2BA630055524E /* Login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Login.png; sourceTree = "<group>"; };
+		B0807AA724B2BA630055524E /* Artists.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Artists.png; sourceTree = "<group>"; };
+		B0807AA824B2BA630055524E /* Playlists.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Playlists.png; sourceTree = "<group>"; };
+		B0807AA924B2BA630055524E /* Album View.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Album View.png"; sourceTree = "<group>"; };
+		B0807AAA24B2BA630055524E /* Lyrics.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Lyrics.png; sourceTree = "<group>"; };
+		B0807AAB24B2BA630055524E /* Search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Search.png; sourceTree = "<group>"; };
+		B0807AAC24B2BA630055524E /* Videos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Videos.png; sourceTree = "<group>"; };
+		B0807AAD24B2BA630055524E /* Credits.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Credits.png; sourceTree = "<group>"; };
+		B0807AAE24B2BA630055524E /* Artist View (Dark Mode).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Artist View (Dark Mode).png"; sourceTree = "<group>"; };
+		B0807AAF24B2BA630055524E /* Albums.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Albums.png; sourceTree = "<group>"; };
+		B0807AB024B2BA630055524E /* New Releases.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "New Releases.png"; sourceTree = "<group>"; };
+		B0807AB124B2BA630055524E /* Tracks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Tracks.png; sourceTree = "<group>"; };
+		B0807AB724B2BB9B0055524E /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		B08642062381C71D005402D1 /* ViewHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHistoryView.swift; sourceTree = "<group>"; };
 		B086420823826C1A005402D1 /* PlaybackHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackHistoryView.swift; sourceTree = "<group>"; };
 		B08980062427CE3800B5943A /* SortingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortingState.swift; sourceTree = "<group>"; };
@@ -311,6 +327,27 @@
 			path = ProjectModule;
 			sourceTree = "<group>";
 		};
+		B0807AA324B2BA630055524E /* README.assets */ = {
+			isa = PBXGroup;
+			children = (
+				B0807AA424B2BA630055524E /* Artist View.png */,
+				B0807AA524B2BA630055524E /* My Mixes.png */,
+				B0807AA624B2BA630055524E /* Login.png */,
+				B0807AA724B2BA630055524E /* Artists.png */,
+				B0807AA824B2BA630055524E /* Playlists.png */,
+				B0807AA924B2BA630055524E /* Album View.png */,
+				B0807AAA24B2BA630055524E /* Lyrics.png */,
+				B0807AAB24B2BA630055524E /* Search.png */,
+				B0807AAC24B2BA630055524E /* Videos.png */,
+				B0807AAD24B2BA630055524E /* Credits.png */,
+				B0807AAE24B2BA630055524E /* Artist View (Dark Mode).png */,
+				B0807AAF24B2BA630055524E /* Albums.png */,
+				B0807AB024B2BA630055524E /* New Releases.png */,
+				B0807AB124B2BA630055524E /* Tracks.png */,
+			);
+			path = README.assets;
+			sourceTree = "<group>";
+		};
 		B0A42FEA22E972B4006421A8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -334,14 +371,17 @@
 		B0E582C5223764A400ADAE6C = {
 			isa = PBXGroup;
 			children = (
-				B073660222E9C5C000758E5E /* .gitattributes */,
-				B0E6AED72255AEBE00D7DA7B /* .swiftlint.yml */,
 				B0E8078A230615AD00E43B5D /* TidalSwift */,
 				B0E807A0230615AF00E43B5D /* TidalSwiftTests */,
 				B0443FEC2305F7250019D0D8 /* TidalSwiftLib */,
 				B0443FF92305F7250019D0D8 /* TidalSwiftLibTests */,
 				B0A42FEA22E972B4006421A8 /* Frameworks */,
 				B0E582CF223764A500ADAE6C /* Products */,
+				B0E6AED72255AEBE00D7DA7B /* .swiftlint.yml */,
+				B0807AB724B2BB9B0055524E /* .gitignore */,
+				B073660222E9C5C000758E5E /* .gitattributes */,
+				B0807AA224B2BA630055524E /* README.md */,
+				B0807AA324B2BA630055524E /* README.assets */,
 			);
 			sourceTree = "<group>";
 		};
