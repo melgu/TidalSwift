@@ -55,13 +55,13 @@ class Network {
 			let urlString = request.url!.absoluteString + "?" + encodeParameters(parameters)
 			request.url = URL(string: urlString)
 		}
-		//	print("=== Network Request ===")
-		//	print("\(request.httpMethod!) Request with URL: \(request.url!.absoluteString)")
-		//	print("Headers: \(request.allHTTPHeaderFields!)")
-		//	if let httpBody = request.httpBody {
-		//		print("Body: \(String(data: httpBody, encoding: String.Encoding.utf8)!)")
-		//	}
-		//	print("=======================")
+//			print("=== Network Request ===")
+//			print("\(request.httpMethod!) Request with URL: \(request.url!.absoluteString)")
+//			print("Headers: \(request.allHTTPHeaderFields!)")
+//			if let httpBody = request.httpBody {
+//				print("Body: \(String(data: httpBody, encoding: String.Encoding.utf8)!)")
+//			}
+//			print("=======================")
 		
 		var networkResponse = Response(statusCode: nil, etag: nil, content: nil, ok: false)
 		
@@ -70,14 +70,14 @@ class Network {
 			guard let data = data,
 				let response = response as? HTTPURLResponse,
 				error == nil else { // check for fundamental networking error
-					//				print("error", error ?? "Unknown error")
-					semaphore.signal()
-					return
+//				print("error", error ?? "Unknown error")
+				semaphore.signal()
+				return
 			}
 			
 			guard (200..<299) ~= response.statusCode else {	// check for http errors
-				//			print("statusCode should be 2xx, but is \(response.statusCode)")
-				//			print("response = \(response)")
+//				print("statusCode should be 2xx, but is \(response.statusCode)")
+//				print("response = \(response)")
 				networkResponse.statusCode = response.statusCode
 				semaphore.signal()
 				return
@@ -91,7 +91,7 @@ class Network {
 				etag = Int(String(etagSubString))
 			}
 			
-			//		print("responseString = \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
+//			print("responseString = \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
 			networkResponse = Response(statusCode: response.statusCode, etag: etag, content: data, ok: true)
 			semaphore.signal()
 		}
