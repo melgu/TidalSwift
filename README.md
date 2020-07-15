@@ -13,13 +13,13 @@ It supports all major features of the official Tidal app, while adding additiona
 
 ### New Releases
 
-Unlike the official Tidal app, this app can display new releases by your favorite artists.
+Unlike the official Tidal app, TidalSwift can display new releases by your favorite artists.
 
 ![New Releases](README.assets/NewReleases.png)
 
 ### Lyrics
 
-Also, unlike the official app, TidalSwift can display the Lyrics of the currently playing song.
+Also, unlike the official app, it can display the Lyrics of the currently playing song.
 
 ![Lyrics](README.assets/Lyrics.png)
 

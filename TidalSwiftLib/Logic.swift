@@ -81,8 +81,8 @@ public class Config {
 		 loginCredentials: LoginCredentials,
 		 urlType: AudioUrlType,
 		 apiToken: String? = nil,
-		 apiLocation: String = "https://api.tidal.com/v1/",
-		 imageLocation: String = "https://resources.tidal.com/images/",
+		 apiLocation: String = "https://api.tidal.com/v1",
+		 imageLocation: String = "https://resources.tidal.com/images",
 		 imageSize: Int = 1280) {
 		self.quality = quality
 		self.loginCredentials = loginCredentials
