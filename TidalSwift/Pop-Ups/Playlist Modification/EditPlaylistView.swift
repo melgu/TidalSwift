@@ -1,0 +1,65 @@
+//
+//  EditPlaylistView.swift
+//  TidalSwift
+//
+//  Created by Melvin Gundlach on 01.08.20.
+//  Copyright © 2020 Melvin Gundlach. All rights reserved.
+//
+
+import SwiftUI
+import TidalSwiftLib
+
+struct EditPlaylistView: View {
+	let session: Session
+	
+	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@EnvironmentObject var viewState: ViewState
+	
+	@State var playlistName: String = ""
+	@State var playlistDescription: String = ""
+	@State var showEmptyNameWarning: Bool = false
+	
+	var body: some View {
+		VStack {
+			if let playlist = playlistEditingValues.playlist {
+				Text("Edit \(playlist.title)")
+				TextField("New Playlist", text: $playlistName)
+					.onAppear {
+						playlistName = playlist.title
+					}
+				TextField("Optional Playlist Description", text: $playlistDescription)
+					.onAppear {
+						playlistDescription = playlist.description ?? ""
+					}
+				if playlist.isOffline(session: session) {
+					Text("This playlist is saved offline, but won't anymore if renamed. You have to to add it to Offline items again manually, if you so desire.")
+						.foregroundColor(.secondary)
+				}
+				
+				HStack {
+					Button {
+						print("Cancel")
+						playlistEditingValues.showEditModal = false
+					} label: {
+						Text("Cancel")
+					}
+					Button {
+						print("Rename \(playlist.title)")
+						let success = session.editPlaylist(playlistId: playlist.uuid,
+																title: playlistName, description: playlistDescription)
+						if success {
+							playlist.removeOffline(session: session)
+							playlistEditingValues.showEditModal = false
+							viewState.refreshCurrentView()
+						}
+					} label: {
+						Text("Rename")
+					}
+				}
+			} else {
+				Text("Missing Playlist")
+			}
+		}
+		.padding()
+	}
+}

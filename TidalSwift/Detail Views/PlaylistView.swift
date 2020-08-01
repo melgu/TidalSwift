@@ -43,12 +43,9 @@ struct PlaylistView: View {
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 								.toolTip("Show image in new window")
 								.onTapGesture {
-									let controller = CoverWindowController(rootView:
-										URLImageSourceView(
-											imageUrlBig,
-											isAnimationEnabled: true,
-											label: Text(playlist.title)
-										)
+									let controller = ImageWindowController(
+										imageUrl: imageUrlBig,
+										title: playlist.title
 									)
 									controller.window?.title = playlist.title
 									controller.showWindow(nil)

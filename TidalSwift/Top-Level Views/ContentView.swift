@@ -34,12 +34,12 @@ struct ContentView: View {
 					.environmentObject(viewState)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showDeleteModal) {
-				DeletePlaylist(session: sc.session)
+				DeletePlaylistView(session: sc.session)
 					.environmentObject(playlistEditingValues)
 					.environmentObject(viewState)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showEditModal) {
-				EditPlaylist(session: sc.session)
+				EditPlaylistView(session: sc.session)
 					.environmentObject(playlistEditingValues)
 					.environmentObject(viewState)
 			})
