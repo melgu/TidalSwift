@@ -107,7 +107,7 @@ struct PlaylistContextMenu: View {
 				Button {
 					print("Download")
 					DispatchQueue.global(qos: .background).async {
-						_ = session.helpers.download(playlist: playlist)
+						_ = session.helpers.download.download(playlist: playlist)
 					}
 				} label: {
 					Text("Download")

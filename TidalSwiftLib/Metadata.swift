@@ -10,7 +10,6 @@ import Foundation
 import MP42Foundation
 
 class Metadata {
-	
 	unowned let session: Session
 	
 	init(session: Session) {
@@ -18,7 +17,6 @@ class Metadata {
 	}
 	
 	func setMetadata(for track: Track, at path: URL) {
-		
 		var m4aFile: MP42File
 		do {
 			m4aFile = try MP42File(url: path)

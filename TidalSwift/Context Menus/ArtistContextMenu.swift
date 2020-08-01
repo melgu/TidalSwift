@@ -61,7 +61,7 @@ struct ArtistContextMenu: View {
 			Button {
 				print("Download all Albums of \(artist.name)")
 				DispatchQueue.global(qos: .background).async {
-					_ = session.helpers.downloadAllAlbums(from: artist)
+					_ = session.helpers.download.downloadAllAlbums(from: artist)
 				}
 			} label: {
 				Text("Download all Albums")
