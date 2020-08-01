@@ -90,12 +90,9 @@ struct ArtistView: View {
 				.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 				.toolTip("Show image in new window")
 				.onTapGesture {
-					let controller = CoverWindowController(rootView:
-						URLImageSourceView(
-							pictureUrlBig,
-							isAnimationEnabled: true,
-							label: Text(artist.name)
-						)
+					let controller = ImageWindowController(
+						imageUrl: pictureUrlBig,
+						title: artist.name
 					)
 					controller.window?.title = artist.name
 					controller.showWindow(nil)

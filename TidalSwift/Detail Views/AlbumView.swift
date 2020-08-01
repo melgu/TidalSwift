@@ -38,12 +38,9 @@ struct AlbumView: View {
 									.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 									.toolTip("Show cover in new window")
 									.onTapGesture {
-										let controller = CoverWindowController(rootView:
-											URLImageSourceView(
-												coverUrlBig,
-												isAnimationEnabled: true,
-												label: Text(album.title)
-											)
+										let controller = ImageWindowController(
+											imageUrl: coverUrlBig,
+											title: album.title
 										)
 										controller.window?.title = album.title
 										controller.showWindow(nil)

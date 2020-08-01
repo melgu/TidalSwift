@@ -38,16 +38,12 @@ struct PlayerInfoView: View {
 										.toolTip("Show cover in new window")
 										.onTapGesture {
 											print("Big Cover")
-											let trackTitle = track.title
-											let albumTitle = track.album.title
-											let controller = CoverWindowController(rootView:
-												URLImageSourceView(
-													coverUrlBig,
-													isAnimationEnabled: true,
-													label: Text("\(trackTitle) – \(albumTitle)")
-												)
+											let title = "\(track.title) – \(track.album.title)"
+											let controller = ImageWindowController(
+												imageUrl: coverUrlBig,
+												title: title
 											)
-											controller.window?.title = "\(trackTitle) – \(albumTitle)"
+											controller.window?.title = title
 											controller.showWindow(nil)
 										}
 								} else {

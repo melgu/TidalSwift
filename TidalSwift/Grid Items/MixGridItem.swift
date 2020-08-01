@@ -1,56 +1,14 @@
 //
-//  MyMixes.swift
+//  MixGridItem.swift
 //  TidalSwift
 //
-//  Created by Melvin Gundlach on 27.10.19.
-//  Copyright © 2019 Melvin Gundlach. All rights reserved.
+//  Created by Melvin Gundlach on 01.08.20.
+//  Copyright © 2020 Melvin Gundlach. All rights reserved.
 //
 
 import SwiftUI
 import TidalSwiftLib
 import ImageIOSwiftUI
-import Grid
-
-struct MyMixes: View {
-	let session: Session
-	let player: Player
-	
-	@EnvironmentObject var viewState: ViewState
-	
-	var body: some View {
-		ScrollView {
-			VStack(alignment: .leading) {
-				HStack {
-					Text("My Mixes")
-						.font(.largeTitle)
-					Spacer()
-					LoadingSpinner()
-				}
-				
-				if let mixes = viewState.stack.last?.mixes {
-					MixGrid(mixes: mixes, session: session, player: player)
-				}
-				Spacer(minLength: 0)
-			}
-			.padding(.horizontal)
-		}
-	}
-}
-
-struct MixGrid: View {
-	let mixes: [MixesItem]
-	let session: Session
-	let player: Player
-	
-	var body: some View {
-		Grid(mixes) { mix in
-			MixGridItem(mix: mix, session: session, player: player)
-		}
-		.gridStyle(
-			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(210), spacing: 10)
-		)
-	}
-}
 
 struct MixGridItem: View {
 	let mix: MixesItem
@@ -88,63 +46,6 @@ struct MixGridItem: View {
 		}
 		.contextMenu {
 			MixContextMenu(mix: mix, session: session, player: player)
-		}
-	}
-}
-
-struct MixPlaylistView: View {
-	let session: Session
-	let player: Player
-	
-	@EnvironmentObject var viewState: ViewState
-	
-	var body: some View {
-		ZStack {
-			ScrollView {
-				VStack(alignment: .leading) {
-					if let mix = viewState.stack.last?.mix, let tracks = viewState.stack.last?.tracks {
-						HStack {
-							MixImage(mix: mix, session: session)
-								.frame(width: 100, height: 100)
-								.cornerRadius(CORNERRADIUS)
-								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-								.onTapGesture {
-									if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: 320) {
-										let controller = CoverWindowController(rootView:
-																				URLImageSourceView(
-																					imageUrl,
-																					isAnimationEnabled: true,
-																					label: Text(mix.title)
-																				)
-										)
-										controller.window?.title = mix.title
-										controller.showWindow(nil)
-									}
-								}
-							
-							VStack(alignment: .leading) {
-								Text(mix.title)
-									.font(.title)
-									.lineLimit(2)
-								Text(mix.subTitle)
-									.foregroundColor(.secondary)
-							}
-							Spacer(minLength: 0)
-							LoadingSpinner()
-						}
-						.frame(height: 100)
-						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
-						
-						TrackList(wrappedTracks: tracks.wrapped(), showCover: true, showAlbumTrackNumber: false,
-								  showArtist: true, showAlbum: true, playlist: nil,
-								  session: session, player: player)
-					}
-					Spacer(minLength: 0)
-				}
-				.padding(.top, 40)
-				
-			}
-			BackButton()
 		}
 	}
 }
@@ -362,103 +263,5 @@ struct MixImage: View {
 					.foregroundColor(Color.black)
 			}
 		}
-	}
-}
-
-struct MixContextMenu: View {
-	let mix: MixesItem
-	let session: Session
-	let player: Player
-	
-	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
-	
-	var body: some View {
-		Group {
-			Button {
-				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-					player.add(tracks: tracks, .now)
-				}
-			} label: {
-				Text("Add Now")
-			}
-			Button {
-				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-					player.add(tracks: tracks, .next)
-				}
-			} label: {
-				Text("Add Next")
-			}
-			Button {
-				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-					player.add(tracks: tracks, .last)
-				}
-			} label: {
-				Text("Add Last")
-			}
-			Divider()
-			Button {
-				print("Add \(mix.title) to Playlist")
-				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-					playlistEditingValues.tracks = tracks
-					playlistEditingValues.showAddTracksModal = true
-				}
-			} label: {
-				Text("Add to Playlist …")
-			}
-			Divider()
-			Button {
-				print("Download")
-				DispatchQueue.global(qos: .background).async {
-					if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-						_ = session.helpers.download(tracks: tracks, parentFolder: mix.title)
-					}
-				}
-			} label: {
-				Text("Download")
-			}
-		}
-	}
-}
-
-
-// MARK: - Color Extension
-
-extension Color {
-	public init?(hex: String) {
-		let r, g, b, a: Double
-		
-		if hex.hasPrefix("#") {
-			let start = hex.index(hex.startIndex, offsetBy: 1)
-			let hexColor = String(hex[start...])
-			
-			if hexColor.count == 8 {
-				let scanner = Scanner(string: hexColor)
-				var hexNumber: UInt64 = 0
-				
-				if scanner.scanHexInt64(&hexNumber) {
-					r = Double((hexNumber & 0xff000000) >> 24) / 255
-					g = Double((hexNumber & 0x00ff0000) >> 16) / 255
-					b = Double((hexNumber & 0x0000ff00) >> 8) / 255
-					a = Double(hexNumber & 0x000000ff) / 255
-					
-					self.init(red: r, green: g, blue: b, opacity: a)
-					return
-				}
-			} else if hexColor.count == 6 {
-				let scanner = Scanner(string: hexColor)
-				var hexNumber: UInt64 = 0
-				
-				if scanner.scanHexInt64(&hexNumber) {
-					r = Double((hexNumber & 0xff0000) >> 16) / 255
-					g = Double((hexNumber & 0x00ff00) >> 8) / 255
-					b = Double(hexNumber & 0x0000ff) / 255
-					
-					self.init(red: r, green: g, blue: b)
-					return
-				}
-			}
-		}
-		
-		return nil
 	}
 }
