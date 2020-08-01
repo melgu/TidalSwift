@@ -72,14 +72,14 @@ struct AddToPlaylistView: View {
 								showEmptyNameWarning = true
 								return
 							}
-							guard let playlist = session.createPlaylist(title: newPlaylistName, description: newPlaylistDescription) else {
+							guard let playlist = session.playlistEditing.createPlaylist(title: newPlaylistName, description: newPlaylistDescription) else {
 								print("Error creating Playlist")
 								return
 							}
 							selectedPlaylist = playlist.uuid
 						}
 						let ids = playlistEditingValues.tracks.map { $0.id }
-						let success = session.addTracks(ids, to: selectedPlaylist, duplicate: false)
+						let success = session.playlistEditing.addTracks(ids, to: selectedPlaylist, duplicate: false)
 						if success {
 							if let playlist = session.getPlaylist(playlistId: selectedPlaylist) {
 								session.helpers.offline.syncPlaylist(playlist)

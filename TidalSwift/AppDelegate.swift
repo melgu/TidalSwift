@@ -547,7 +547,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		print("Menu: downloadTrack")
 		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
 		DispatchQueue.global(qos: .background).async {
-			_ = self.sc.session.helpers.download(track: track)
+			_ = self.sc.session.helpers.download.download(track: track)
 		}
 	}
 	@IBAction func downloadAlbum(_ sender: Any) {

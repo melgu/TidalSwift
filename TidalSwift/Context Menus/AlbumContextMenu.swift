@@ -103,7 +103,7 @@ struct AlbumContextMenu: View {
 						Button {
 							print("Download")
 							DispatchQueue.global(qos: .background).async {
-								_ = session.helpers.download(album: album)
+								_ = session.helpers.download.download(album: album)
 							}
 						} label: {
 							Text("Download")

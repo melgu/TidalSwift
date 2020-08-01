@@ -54,7 +54,7 @@ struct MixContextMenu: View {
 				print("Download")
 				DispatchQueue.global(qos: .background).async {
 					if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-						_ = session.helpers.download(tracks: tracks, parentFolder: mix.title)
+						_ = session.helpers.download.download(tracks: tracks, parentFolder: mix.title)
 					}
 				}
 			} label: {

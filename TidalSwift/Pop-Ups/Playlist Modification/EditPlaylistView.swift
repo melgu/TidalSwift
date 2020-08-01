@@ -15,7 +15,7 @@ struct EditPlaylistView: View {
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
 	@EnvironmentObject var viewState: ViewState
 	
-	@State var playlistName: String = ""
+	@State var playlistTitle: String = ""
 	@State var playlistDescription: String = ""
 	@State var showEmptyNameWarning: Bool = false
 	
@@ -23,9 +23,9 @@ struct EditPlaylistView: View {
 		VStack {
 			if let playlist = playlistEditingValues.playlist {
 				Text("Edit \(playlist.title)")
-				TextField("New Playlist", text: $playlistName)
+				TextField("New Playlist", text: $playlistTitle)
 					.onAppear {
-						playlistName = playlist.title
+						playlistTitle = playlist.title
 					}
 				TextField("Optional Playlist Description", text: $playlistDescription)
 					.onAppear {
@@ -45,8 +45,7 @@ struct EditPlaylistView: View {
 					}
 					Button {
 						print("Rename \(playlist.title)")
-						let success = session.editPlaylist(playlistId: playlist.uuid,
-																title: playlistName, description: playlistDescription)
+						let success = playlist.edit(title: playlistTitle, description: playlistDescription, session: self.session)
 						if success {
 							playlist.removeOffline(session: session)
 							playlistEditingValues.showEditModal = false

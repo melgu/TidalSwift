@@ -1,0 +1,162 @@
+//
+//  Artist.swift
+//  TidalSwiftLib
+//
+//  Created by Melvin Gundlach on 01.08.20.
+//  Copyright © 2020 Melvin Gundlach. All rights reserved.
+//
+
+import Foundation
+import SwiftUI
+
+struct Artists: Decodable {
+	let limit: Int
+	let offset: Int
+	let totalNumberOfItems: Int
+	let items: [Artist]
+}
+
+public enum ArtistType: String, Codable {
+	case artist = "ARTIST"
+	case contributor = "CONTRIBUTOR"
+}
+
+public struct Artist: Codable, Equatable, Identifiable, Hashable {
+	public let id: Int
+	public let name: String
+	public let artistTypes: Set<ArtistType>?
+	public let url: URL?
+	public let picture: String?
+	public let popularity: Int?
+	public let type: String? // What role he/she played
+	public let banner: String?
+	public let relationType: String? // e.g. SIMILAR_ARTIST
+	
+	public func bio(session: Session) -> ArtistBio? {
+		session.getArtistBio(artistId: id)
+	}
+	
+	public func isInFavorites(session: Session) -> Bool? {
+		session.favorites?.doFavoritesContainArtist(artistId: id)
+	}
+	
+	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
+		guard let picture = picture else {
+			return nil
+		}
+		return session.getImageUrl(imageId: picture, resolution: resolution)
+	}
+	
+	public func getPicture(session: Session, resolution: Int) -> NSImage? {
+		guard let picture = picture else {
+			return nil
+		}
+		return session.getImage(imageId: picture, resolution: resolution)
+	}
+	
+	public func radio(session: Session) -> [Track]? {
+		session.getArtistRadio(artistId: id)
+	}
+	
+	public static func == (lhs: Artist, rhs: Artist) -> Bool {
+		lhs.id == rhs.id
+	}
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
+}
+
+public struct ArtistBio: Decodable {
+	public let source: String
+	public let lastUpdated: Date
+	public let text: String
+	
+	public var lastUpdatedString: String {
+		DateFormatter.dateOnly.string(from: lastUpdated)
+	}
+}
+
+// MARK: - Artist & Contributor String
+
+extension Array where Element == Artist {
+	public func formArtistString() -> String {
+		var artistString: String = ""
+		let artists = self
+		
+		guard !artists.isEmpty else {
+			return artistString
+		}
+		
+		// First
+		artistString += artists[0].name
+		
+		guard artists.count > 1 else {
+			return artistString
+		}
+		
+		// Middles
+		if artists.count > 2 {
+			for i in 1 ..< artists.count - 1 {
+				artistString += ", \(artists[i].name)"
+			}
+		}
+		
+		// Last
+		artistString += " & \(artists.last!.name)"
+		
+		return artistString
+	}
+}
+
+extension Array where Element == Contributor {
+	public func formContributorString() -> String {
+		var contributorString: String = ""
+		let contributors = self
+		
+		guard !contributors.isEmpty else {
+			return contributorString
+		}
+		
+		// First
+		contributorString += contributors[0].name
+		
+		guard contributors.count > 1 else {
+			return contributorString
+		}
+		
+		// Middles
+		if contributors.count > 2 {
+			for i in 1 ..< contributors.count - 1 {
+				contributorString += ", \(contributors[i].name)"
+			}
+		}
+		
+		// Last
+		contributorString += " & \(contributors.last!.name)"
+		
+		return contributorString
+	}
+}
+
+public enum ArtistSorting: Int, Codable {
+	case dateAdded // to Favorites
+	case name
+	case popularity
+}
+
+extension Array where Element == Artist {
+	public func sortedArtists(by sorting: ArtistSorting) -> [Artist] {
+		switch sorting {
+		case .dateAdded:
+			return self
+		case .name:
+			return self.sorted { $0.name.lowercased() < $1.name.lowercased() }
+		case .popularity:
+			return self.sorted {
+				($0.popularity ?? 0, $0.name.lowercased()) <
+					($1.popularity ?? 0, $1.name.lowercased())
+			}
+		}
+	}
+}

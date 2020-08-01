@@ -29,7 +29,7 @@ struct DeletePlaylistView: View {
 					}
 					Button {
 						print("Delete \(playlist.title)")
-						let success = session.deletePlaylist(playlistId: playlist.uuid)
+						let success = playlist.delete(session: session)
 						if success {
 							playlist.removeOffline(session: session)
 							playlistEditingValues.showDeleteModal = false
