@@ -41,7 +41,7 @@ public class PlaylistEditing {
 		addTracks([trackId], to: playlistId, duplicate: duplicate)
 	}
 	
-	public func removeTrack(atIndex index: Int, from playlistId: String) -> Bool {
+	public func removeItem(atIndex index: Int, from playlistId: String) -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)/items/\(index)")!
 		var parameters = session.sessionParameters
 		parameters["order"] = "INDEX"
@@ -50,7 +50,7 @@ public class PlaylistEditing {
 		return response.ok
 	}
 	
-	public func moveTrack(fromIndex: Int, toIndex: Int, in playlistId: String) -> Bool {
+	public func moveItem(fromIndex: Int, toIndex: Int, in playlistId: String) -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)/items/\(fromIndex)")!
 		var parameters = session.sessionParameters
 		parameters["toIndex"] = "\(toIndex)"
@@ -58,7 +58,7 @@ public class PlaylistEditing {
 		return response.ok
 	}
 	
-	public func createPlaylist(title: String, description: String) -> Playlist? {
+	public func create(title: String, description: String) -> Playlist? {
 		guard let userId = session.userId else {
 			return nil
 		}
@@ -83,7 +83,7 @@ public class PlaylistEditing {
 		return playlistResponse
 	}
 	
-	public func editPlaylist(playlistId: String, title: String, description: String) -> Bool {
+	public func edit(playlistId: String, title: String, description: String) -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)")!
 		var parameters = session.sessionParameters
 		parameters["title"] = "\(title)"
@@ -92,7 +92,7 @@ public class PlaylistEditing {
 		return response.ok
 	}
 	
-	public func deletePlaylist(playlistId: String) -> Bool {
+	public func delete(playlistId: String) -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)")!
 		let response = Network.delete(url: url, parameters: session.sessionParameters, etag: etag(for: playlistId))
 		return response.ok

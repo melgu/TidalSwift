@@ -11,13 +11,12 @@ import XCTest
 
 class LogicTests: XCTestCase {
 	
-//	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
 	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: ""), urlType: .offline))
 	
 	var tempConfig: Config?
 	var tempSession: Session?
 
-    override func setUp() {
+    override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 		
 		// Before messing with UserDefaults, load Session with saved values into variable
@@ -33,7 +32,7 @@ class LogicTests: XCTestCase {
 		}
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
 		
 		// Delete UserDefaults
@@ -54,7 +53,7 @@ class LogicTests: XCTestCase {
 		session.saveSession()
 		let r = session.loadSession()
 		
-		XCTAssert(r)
+		XCTAssertTrue(r)
 		XCTAssertEqual(tempSessionId, session.sessionId)
 		XCTAssertEqual(tempCountryCode, session.countryCode)
 		XCTAssertEqual(tempUserId, session.userId)
@@ -78,7 +77,7 @@ class LogicTests: XCTestCase {
 //		let config = Config(quality: .hifi, loginCredentials: loginInfo)
 //		session = Session(config: config)
 //		let result = session.login()
-//		XCTAssert(result)
+//		XCTAssertTrue(result)
 //	}
 
 	// Login Testing commented out to prevent potential ban from the server if done too often
@@ -99,7 +98,7 @@ class LogicTests: XCTestCase {
 	}
 	
 	func testCheckLogin() {
-		XCTAssert(session.checkLogin())
+		XCTAssertTrue(session.checkLogin())
 		
 		let loginCredentials = LoginCredentials(username: "", password: "")
 		let config = Config(quality: .hifi, loginCredentials: loginCredentials, urlType: .offline)
@@ -116,7 +115,7 @@ class LogicTests: XCTestCase {
 		// Values here are for an account inside a HIFI Family plan.
 		XCTAssertEqual(info?.status, "ACTIVE")
 		XCTAssertEqual(info?.subscription.type, "HIFI")
-		XCTAssertEqual(info?.subscription.offlineGracePeriod, 30)
+		XCTAssertEqual(info?.subscription.offlineGracePeriod, 31)
 		XCTAssertEqual(info?.highestSoundQuality, .hifi) // "LOSSLESS" although Master is possible
 		XCTAssertEqual(info?.premiumAccess, true)
 		XCTAssertEqual(info?.canGetTrial, false)
@@ -130,7 +129,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 //		print(trackUrl)
-		XCTAssert(trackUrl.absoluteString.contains(".m4a"))
+		XCTAssertTrue(trackUrl.absoluteString.contains(".m4a"))
 		
 		let optionalTrackUrl2 = session.getAudioUrl(trackId: 59978883)
 		XCTAssertNotNil(optionalTrackUrl2)
@@ -138,7 +137,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 //		print(trackUrl2)
-		XCTAssert(trackUrl2.absoluteString.contains(".m4a"))
+		XCTAssertTrue(trackUrl2.absoluteString.contains(".m4a"))
 	}
 	
 	// Stops playback if you're listening in the web player or official app
@@ -149,7 +148,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 //		print(videoUrl)
-		XCTAssert(videoUrl.absoluteString.contains(".m3u8"))
+		XCTAssertTrue(videoUrl.absoluteString.contains(".m3u8"))
 		
 		let optionalVideoUrl2 = session.getVideoUrl(videoId: 98785108)
 		XCTAssertNotNil(optionalVideoUrl2)
@@ -157,7 +156,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 //		print(videoUrl2)
-		XCTAssert(videoUrl2.absoluteString.contains(".m3u8"))
+		XCTAssertTrue(videoUrl2.absoluteString.contains(".m3u8"))
 	}
 	
 	func testGetImageUrl() {
@@ -797,7 +796,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 		
-		XCTAssert(albumComp.isCompilation)
+		XCTAssertTrue(albumComp.isCompilation)
 		XCTAssertFalse(albumNotComp.isCompilation)
 	}
 	
@@ -894,7 +893,7 @@ class LogicTests: XCTestCase {
 		guard let artistAlbumsFilterAppearances = optionalArtistAlbumsFilterAppearances else {
 			return
 		}
-		XCTAssert(artistAlbumsFilterAppearances.count >= 10) // Probably going to be more in the future
+		XCTAssertTrue(artistAlbumsFilterAppearances.count >= 10) // Probably going to be more in the future
 	}
 	
 	func testGetArtistVideos() {
@@ -904,7 +903,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 		
-		XCTAssert(artistVideos.count > 6)
+		XCTAssertTrue(artistVideos.count > 6)
 		guard artistVideos.count > 6 else {
 			return
 		}
@@ -927,7 +926,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 		
-		XCTAssertEqual(artistTopTracks.count, 155)
+		XCTAssertEqual(artistTopTracks.count, 156)
 		
 		XCTAssertEqual(artistTopTracks[0].id, 70974090)
 		XCTAssertEqual(artistTopTracks[0].title, "Zieh die Schuh aus")
@@ -1200,8 +1199,8 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(playlists[0].publicPlaylist, true)
 		XCTAssertEqual(playlists[0].url, URL(string:
 			"http://www.tidal.com/playlist/98676f10-0aa1-4c8c-ba84-4f84e370f3d2"))
-		XCTAssertEqual(playlists[0].image, "9a365961-8836-42ea-b1a2-1584cb08dae1")
-		XCTAssertEqual(playlists[0].squareImage, "523c695e-ed93-4dcc-8c25-dbe42e806a94")
+		XCTAssertEqual(playlists[0].image?.count, 36)
+		XCTAssertEqual(playlists[0].squareImage?.count, 36)
 		XCTAssertEqual(playlists[0].type, .editorial)
 		XCTAssertEqual(playlists[0].creator.id, 0)
 	}
@@ -1266,486 +1265,6 @@ class LogicTests: XCTestCase {
 		XCTAssertFalse(featured.isEmpty)
 	}
 	
-	
-	// MARK: - Favorites
-	
-	// Return
-	
-	// TODO: Test Order and Order Direction
-	
-	func testArtists() {
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		let optionalArtists = favorites.artists()
-		XCTAssertNotNil(optionalArtists)
-		guard let artists = optionalArtists else {
-			return
-		}
-		XCTAssertFalse(artists.isEmpty)
-		
-		// Test order
-		let dateAsc = favorites.artists(order: .dateAdded, orderDirection: .ascending)
-		let dateDesc = favorites.artists(order: .dateAdded, orderDirection: .descending)
-		XCTAssertNotNil(dateAsc)
-		XCTAssertNotNil(dateDesc)
-		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
-		
-		let nameAsc = favorites.artists(order: .name, orderDirection: .ascending)
-		let nameDesc = favorites.artists(order: .name, orderDirection: .descending)
-		XCTAssertNotNil(nameAsc)
-		XCTAssertNotNil(nameDesc)
-		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
-	}
-	
-	func testAlbums() {
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		let optionalAlbums = favorites.albums()
-		XCTAssertNotNil(optionalAlbums)
-		guard let albums = optionalAlbums else {
-			return
-		}
-		XCTAssertFalse(albums.isEmpty)
-		
-		// Test order
-		let dateAsc = favorites.albums(order: .dateAdded, orderDirection: .ascending)
-		let dateDesc = favorites.albums(order: .dateAdded, orderDirection: .descending)
-		XCTAssertNotNil(dateAsc)
-		XCTAssertNotNil(dateDesc)
-		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
-
-		let nameAsc = favorites.albums(order: .name, orderDirection: .ascending)
-		let nameDesc = favorites.albums(order: .name, orderDirection: .descending)
-		XCTAssertNotNil(nameAsc)
-		XCTAssertNotNil(nameDesc)
-		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
-
-		let artistAsc = favorites.albums(order: .artist, orderDirection: .ascending)
-		let artistDesc = favorites.albums(order: .artist, orderDirection: .descending)
-		XCTAssertNotNil(artistAsc)
-		XCTAssertNotNil(artistDesc)
-//		XCTAssertEqual(artistAsc?.reversed(), artistDesc)
-		// Isn't exactly reversed in my case, because of multiple albums from the same artist
-
-		let releaseAsc = favorites.albums(order: .releaseDate, orderDirection: .ascending)
-		let releaseDesc = favorites.albums(order: .releaseDate, orderDirection: .descending)
-		XCTAssertNotNil(releaseAsc)
-		XCTAssertNotNil(releaseDesc)
-		
-		// Have to compare the dates instead of the IDs, because when two items are released at
-		// the same moment, those items are sorted alphabetically
-		let nilDate = DateFormatter.iso8601OptionalTime.date(from: "2000-01-01T00:00:00.000GMT")!
-		var releaseAscDates = [Date]()
-		for item in releaseAsc ?? [FavoriteAlbum]() {
-			releaseAscDates.append(item.item.releaseDate ?? nilDate)
-		}
-		var releaseDescDates = [Date]()
-		for item in releaseDesc ?? [FavoriteAlbum]() {
-			releaseDescDates.append(item.item.releaseDate ?? nilDate)
-		}
-//		XCTAssertEqual(releaseAscDates.reversed(), releaseDescDates) // TODO: Why does this fail?
-	}
-	
-	func testTracks() {
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		let optionalTracks = favorites.tracks()
-		XCTAssertNotNil(optionalTracks)
-		guard let tracks = optionalTracks else {
-			return
-		}
-		XCTAssertFalse(tracks.isEmpty)
-		
-		// Test order
-		let nameAsc = favorites.tracks(order: .name, orderDirection: .ascending)
-		let nameDesc = favorites.tracks(order: .name, orderDirection: .descending)
-		XCTAssertNotNil(nameAsc)
-		XCTAssertNotNil(nameDesc)
-		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
-		
-		let artistAsc = favorites.tracks(order: .artist, orderDirection: .ascending)
-		let artistDesc = favorites.tracks(order: .artist, orderDirection: .descending)
-		XCTAssertNotNil(artistAsc)
-		XCTAssertNotNil(artistDesc)
-		XCTAssertEqual(artistAsc?.reversed(), artistDesc)
-		
-		let albumAsc = favorites.tracks(order: .album, orderDirection: .ascending)
-		let albumDesc = favorites.tracks(order: .album, orderDirection: .descending)
-		XCTAssertNotNil(albumAsc)
-		XCTAssertNotNil(albumDesc)
-//		XCTAssertEqual(albumAsc?.reversed(), albumDesc)
-		// When sorting by album, the above test fails when there are two tracks from the same album,
-		// because those tracks are in the same order no matter if sorted by ascending or descending
-		
-		let dateAsc = favorites.tracks(order: .dateAdded, orderDirection: .ascending)
-		let dateDesc = favorites.tracks(order: .dateAdded, orderDirection: .descending)
-		XCTAssertNotNil(dateAsc)
-		XCTAssertNotNil(dateDesc)
-		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
-		
-		let lengthAsc = favorites.tracks(order: .length, orderDirection: .ascending)
-		let lengthDesc = favorites.tracks(order: .length, orderDirection: .descending)
-		XCTAssertNotNil(lengthAsc)
-		XCTAssertNotNil(lengthDesc)
-	}
-	
-	func testVideos() {
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		let optionalVideos = favorites.videos()
-		XCTAssertNotNil(optionalVideos)
-		guard let videos = optionalVideos else {
-			return
-		}
-		XCTAssertFalse(videos.isEmpty)
-		
-		// Test order
-		let nameAsc = favorites.videos(order: .name, orderDirection: .ascending)
-		let nameDesc = favorites.videos(order: .name, orderDirection: .descending)
-		XCTAssertNotNil(nameAsc)
-		XCTAssertNotNil(nameDesc)
-		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
-		
-		let artistAsc = favorites.videos(order: .artist, orderDirection: .ascending)
-		let artistDesc = favorites.videos(order: .artist, orderDirection: .descending)
-		XCTAssertNotNil(artistAsc)
-		XCTAssertNotNil(artistDesc)
-		XCTAssertEqual(artistAsc?.reversed(), artistDesc)
-		
-		let dateAsc = favorites.videos(order: .dateAdded, orderDirection: .ascending)
-		let dateDesc = favorites.videos(order: .dateAdded, orderDirection: .descending)
-		XCTAssertNotNil(dateAsc)
-		XCTAssertNotNil(dateDesc)
-		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
-		
-		let lengthAsc = favorites.videos(order: .length, orderDirection: .ascending)
-		let lengthDesc = favorites.videos(order: .length, orderDirection: .descending)
-		XCTAssertNotNil(lengthAsc)
-		XCTAssertNotNil(lengthDesc)
-	}
-	
-	func testPlaylists() {
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		let optionalPlaylists = favorites.playlists()
-		XCTAssertNotNil(optionalPlaylists)
-		if let playlists = optionalPlaylists {
-			XCTAssertFalse(playlists.isEmpty)
-		}
-		
-		// Test order
-		let dateAsc = favorites.playlists(order: .dateAdded, orderDirection: .ascending)
-		let dateDesc = favorites.playlists(order: .dateAdded, orderDirection: .descending)
-		XCTAssertNotNil(dateAsc)
-		XCTAssertNotNil(dateDesc)
-		XCTAssertEqual(dateAsc?.reversed(), dateDesc)
-		
-		let nameAsc = favorites.playlists(order: .name, orderDirection: .ascending)
-		let nameDesc = favorites.playlists(order: .name, orderDirection: .descending)
-		XCTAssertNotNil(nameAsc)
-		XCTAssertNotNil(nameDesc)
-		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
-	}
-	
-	func testUserPlaylists() {
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		let optionalUserPlaylists = favorites.artists()
-		XCTAssertNotNil(optionalUserPlaylists)
-		guard let userPlaylists = optionalUserPlaylists else {
-			return
-		}
-		XCTAssertFalse(userPlaylists.isEmpty)
-	}
-	
-	// Add & Delete
-	// Make sure you don't have the chosen artist, album etc. in your favorites
-	// The respective artist, album etc. will be gone after the tests
-	
-	func testArtistAddAndDelete() {
-		let demoArtistId = 7771771
-		
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		
-		XCTAssertFalse((favorites.artists()?.contains { (artist) -> Bool in
-			artist.item.id == demoArtistId
-		})!)
-		
-		let r1 = favorites.addArtist(artistId: demoArtistId)
-		XCTAssert(r1)
-		
-		XCTAssert((favorites.artists()?.contains { (artist) -> Bool in
-			artist.item.id == demoArtistId
-		})!)
-		
-		let r2 = favorites.removeArtist(artistId: demoArtistId)
-		XCTAssert(r2)
-		
-		XCTAssertFalse((favorites.artists()?.contains { (artist) -> Bool in
-			artist.item.id == demoArtistId
-		})!)
-	}
-	
-	func testAlbumAddAndDelete() {
-		let demoAlbumId = 65929420
-		
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		
-		XCTAssertFalse((favorites.albums()?.contains { (album) -> Bool in
-			album.item.id == demoAlbumId
-		})!)
-		
-		let r1 = favorites.addAlbum(albumId: demoAlbumId)
-		XCTAssert(r1)
-		
-		XCTAssert((favorites.albums()?.contains { (album) -> Bool in
-			album.item.id == demoAlbumId
-		})!)
-		
-		let r2 = favorites.removeAlbum(albumId: demoAlbumId)
-		XCTAssert(r2)
-		
-		XCTAssertFalse((favorites.albums()?.contains { (album) -> Bool in
-			album.item.id == demoAlbumId
-		})!)
-	}
-	
-	func testTrackAddAndDelete() {
-		let demoTrackId = 65929421
-		
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		
-		XCTAssertFalse((favorites.tracks()?.contains { (track) -> Bool in
-			track.item.id == demoTrackId
-		})!)
-		
-		let r1 = favorites.addTrack(trackId: demoTrackId)
-		XCTAssert(r1)
-		
-		XCTAssert((favorites.tracks()?.contains { (track) -> Bool in
-			track.item.id == demoTrackId
-		})!)
-		
-		let r2 = favorites.removeTrack(trackId: demoTrackId)
-		XCTAssert(r2)
-		
-		XCTAssertFalse((favorites.tracks()?.contains { (track) -> Bool in
-			track.item.id == demoTrackId
-		})!)
-	}
-	
-	func testVideoAddAndDelete() {
-		let demoVideoId = 104569734
-		
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-		
-		XCTAssertFalse((favorites.videos()?.contains { (video) -> Bool in
-			video.item.id == demoVideoId
-		})!)
-		
-		let r1 = favorites.addVideo(videoId: demoVideoId)
-		XCTAssert(r1)
-		
-		XCTAssert((favorites.videos()?.contains { (video) -> Bool in
-			video.item.id == demoVideoId
-		})!)
-		
-		let r2 = favorites.removeVideo(videoId: demoVideoId)
-		XCTAssert(r2)
-
-		XCTAssertFalse((favorites.videos()?.contains { (video) -> Bool in
-			video.item.id == demoVideoId
-		})!)
-	}
-	
-	func testPlaylistAddAndDelete() {
-		let demoPlaylistId = "627c2039-ef15-46b2-9891-3773dd3d5aa5"
-
-		XCTAssertNotNil(session.favorites)
-		guard let favorites = session.favorites else {
-			return
-		}
-
-		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
-			playlist.playlist.uuid == demoPlaylistId
-		})!)
-
-		let r1 = favorites.addPlaylist(playlistId: demoPlaylistId)
-		XCTAssert(r1)
-
-		XCTAssert((favorites.playlists()?.contains { (playlist) -> Bool in
-			playlist.playlist.uuid == demoPlaylistId
-		})!)
-
-		let r2 = favorites.removePlaylist(playlistId: demoPlaylistId)
-		XCTAssert(r2)
-
-		XCTAssertFalse((favorites.playlists()?.contains { (playlist) -> Bool in
-			playlist.playlist.uuid == demoPlaylistId
-		})!)
-	}
-	
-	
-	// MARK: - Playlist Editing
-	
-	func testPlaylistEditing() {
-		let demoTrackId1 = 59978883
-		let demoTrackId2 = 59978884
-		let demoVideoId = 98785108
-		
-		XCTAssertNotNil(session.userId)
-		guard let userId = session.userId else {
-			return
-		}
-		
-		// Before
-		
-		let userPlaylistCountBefore = session.getUserPlaylists(userId: userId)?.count
-		
-		// Create Playlist
-		
-		let optionalPlaylist1 = session.createPlaylist(title: "Test", description: "Test Description")
-		XCTAssertNotNil(optionalPlaylist1)
-		guard let playlist1 = optionalPlaylist1 else {
-			return
-		}
-		
-		XCTAssertEqual(playlist1.title, "Test")
-		XCTAssertEqual(playlist1.description, "Test Description")
-		XCTAssertEqual(playlist1.creator.id, session.userId)
-		XCTAssertEqual(playlist1.numberOfTracks, 0)
-		XCTAssertEqual(playlist1.numberOfVideos, 0)
-
-		// Add Track
-		
-		let r1 = session.addTracks([demoTrackId1, demoTrackId2], to: playlist1.uuid, duplicate: false)
-		XCTAssert(r1)
-
-		let optionalPlaylist2 = session.getPlaylist(playlistId: playlist1.uuid)
-		XCTAssertNotNil(optionalPlaylist2)
-		guard let playlist2 = optionalPlaylist2 else {
-			return
-		}
-
-		XCTAssertEqual(playlist2.numberOfTracks, 2)
-		XCTAssertEqual(playlist2.numberOfVideos, 0)
-		
-		let optionalPlaylist2Tracks = session.getPlaylistTracks(playlistId: playlist1.uuid)
-		XCTAssertNotNil(optionalPlaylist2Tracks)
-		guard let playlist2Tracks = optionalPlaylist2Tracks else {
-			return
-		}
-		
-		XCTAssertEqual(playlist2Tracks[0].id, 59978883)
-		XCTAssertEqual(playlist2Tracks[1].id, 59978884)
-		
-		// Add Video
-		
-		let r2 = session.addTrack(demoVideoId, to: playlist1.uuid, duplicate: false)
-		XCTAssert(r2)
-
-		let optionalPlaylist3 = session.getPlaylist(playlistId: playlist1.uuid)
-		XCTAssertNotNil(optionalPlaylist3)
-		guard let playlist3 = optionalPlaylist3 else {
-			return
-		}
-
-		XCTAssertEqual(playlist3.numberOfTracks, 2)
-		XCTAssertEqual(playlist3.numberOfVideos, 1)
-		
-		let optionalPlaylist3Tracks = session.getPlaylistTracks(playlistId: playlist1.uuid)
-		XCTAssertNotNil(optionalPlaylist3Tracks)
-		guard let playlist3Tracks = optionalPlaylist3Tracks else {
-			return
-		}
-		
-		XCTAssertEqual(playlist3Tracks[0].id, 59978883) // Track
-//		XCTAssertEqual(playlist3Tracks[2].id, 98785108) // Video
-		XCTAssertEqual(playlist3Tracks[2].id, 98785110) // Video
-		// For some reason after adding it, the Video ID changes. Possibly has something to do with regions:
-		// https://github.com/jackfagner/OpenTidl/issues/5
-		// 98785110 is actually a track when I try to add it.
-		// When adding 98785108 the resulting 98785110 in the playlist is a video (and is counted as such).
-		
-		// Move Video from position 2 to 0
-		
-		let r3 = session.moveTrack(from: 2, to: 0, in: playlist1.uuid)
-		XCTAssert(r3)
-		
-		let optionalPlaylist4Tracks = session.getPlaylistTracks(playlistId: playlist1.uuid)
-		XCTAssertNotNil(optionalPlaylist4Tracks)
-		guard let playlist4Tracks = optionalPlaylist4Tracks else {
-			return
-		}
-		
-		XCTAssertEqual(playlist4Tracks.count, 3)
-		
-//		XCTAssertEqual(playlist4Tracks[0].id, 98785108) // Video (same problem as above)
-		XCTAssertEqual(playlist4Tracks[0].id, 98785110) // Video
-		XCTAssertEqual(playlist4Tracks[1].id, 59978883) // Track
-		XCTAssertEqual(playlist4Tracks[2].id, 59978884) // Track
-		
-		// Remove Track
-
-		let r4 = session.removeTrack(index: 2, from: playlist1.uuid)
-		XCTAssert(r4)
-
-		let optionalPlaylist5 = session.getPlaylist(playlistId: playlist1.uuid)
-		XCTAssertNotNil(optionalPlaylist5)
-		guard let playlist5 = optionalPlaylist5 else {
-			return
-		}
-
-		XCTAssertEqual(playlist5.numberOfTracks, 1)
-		XCTAssertEqual(playlist5.numberOfVideos, 1)
-		
-		// Edit Playlist name and description
-		
-		let r5 = session.editPlaylist(playlistId: playlist1.uuid, title: "Changed Test", description: "Changed Description")
-		XCTAssert(r5)
-
-		let optionalPlaylist6 = session.getPlaylist(playlistId: playlist1.uuid)
-		XCTAssertNotNil(optionalPlaylist6)
-		guard let playlist6 = optionalPlaylist6 else {
-			return
-		}
-
-		XCTAssertEqual(playlist6.title, "Changed Test")
-		XCTAssertEqual(playlist6.description, "Changed Description")
-		
-		// Delete Playlist
-		
-		let r6 = session.deletePlaylist(playlistId: playlist1.uuid)
-		XCTAssert(r6)
-
-		let userPlaylistCountAfter = session.getUserPlaylists(userId: userId)?.count
-		XCTAssertEqual(userPlaylistCountBefore, userPlaylistCountAfter)
-	}
-	
 	// MARK: - Artist String
 	
 	func testFormArtistString() {
@@ -1765,31 +1284,4 @@ class LogicTests: XCTestCase {
 		let threeArtists = [artist1, artist2, artist3]
 		XCTAssertEqual(threeArtists.formArtistString(), "Jacob Collier, Metropole Orkest & Jules Buckley")
 	}
-	
-	// MARK: - Date
-	
-	func testDateDecoder() {
-		// Tests if the DateDecoder defined at the bottom of Codable correctly decodes a date.
-		// Makes sure there is no time zone switching.
-		let rawString = "2016-07-15"
-		let date = DateFormatter.iso8601OptionalTime.date(from: rawString)!
-		let resultString = "2016-07-15 00:00:00 +0000"
-		XCTAssertEqual(resultString, "\(date)")
-		
-		// Test sub-second accuracy
-		let subSecondString = "2019-03-28T06:49:21.123GMT"
-		let subSecondDate = DateFormatter.iso8601OptionalTime.date(from: subSecondString)!
-		let wrongResult = "2019-03-28T06:49:21.000GMT"
-		let subSecondResult = DateFormatter.iso8601OptionalTime.string(from: subSecondDate)
-		XCTAssertNotEqual(wrongResult, subSecondResult)
-		XCTAssertEqual(subSecondString, subSecondResult)
-	}
-	
-	func testDateOnlyFormatter() {
-		let rawString = "2019-03-28T06:49:21.123GMT"
-		let date = DateFormatter.iso8601OptionalTime.date(from: rawString)!
-		let formattedDateString = DateFormatter.dateOnly.string(from: date)
-		XCTAssertEqual(formattedDateString, "28. March 2019")
-	}
-
 }

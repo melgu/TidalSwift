@@ -81,31 +81,9 @@ public struct ArtistBio: Decodable {
 
 extension Array where Element == Artist {
 	public func formArtistString() -> String {
-		var artistString: String = ""
-		let artists = self
+		let artistsAsContributors = self.map { Contributor(id: $0.id, name: $0.name) }
 		
-		guard !artists.isEmpty else {
-			return artistString
-		}
-		
-		// First
-		artistString += artists[0].name
-		
-		guard artists.count > 1 else {
-			return artistString
-		}
-		
-		// Middles
-		if artists.count > 2 {
-			for i in 1 ..< artists.count - 1 {
-				artistString += ", \(artists[i].name)"
-			}
-		}
-		
-		// Last
-		artistString += " & \(artists.last!.name)"
-		
-		return artistString
+		return artistsAsContributors.formContributorString()
 	}
 }
 

@@ -72,7 +72,7 @@ struct AddToPlaylistView: View {
 								showEmptyNameWarning = true
 								return
 							}
-							guard let playlist = session.playlistEditing.createPlaylist(title: newPlaylistName, description: newPlaylistDescription) else {
+							guard let playlist = session.playlistEditing.create(title: newPlaylistName, description: newPlaylistDescription) else {
 								print("Error creating Playlist")
 								return
 							}
