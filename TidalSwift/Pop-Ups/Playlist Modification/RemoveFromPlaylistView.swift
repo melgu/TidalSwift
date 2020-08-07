@@ -30,7 +30,7 @@ struct RemoveFromPlaylistView: View {
 					Button {
 						let i = playlistEditingValues.indexToRemove!
 						print("Delete Index \(i) from \(playlist.title)")
-						let success = playlist.removeTrack(atIndex: i, session: session)
+						let success = playlist.removeItem(atIndex: i, session: session)
 						if success {
 							session.helpers.offline.syncPlaylist(playlist)
 							viewState.refreshCurrentView()

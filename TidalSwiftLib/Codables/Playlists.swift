@@ -103,20 +103,28 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 		return session.playlistEditing.addTrack(track.id, to: uuid, duplicate: duplicate)
 	}
 	
-	public func removeTrack(atIndex index: Int, session: Session) -> Bool {
-		return session.playlistEditing.removeTrack(atIndex: index, from: uuid)
+	public func removeItem(atIndex index: Int, session: Session) -> Bool {
+		return session.playlistEditing.removeItem(atIndex: index, from: uuid)
 	}
 	
-	public func moveTrack(fromIndex: Int, toIndex: Int, session: Session) -> Bool {
-		return session.playlistEditing.moveTrack(fromIndex: fromIndex, toIndex: toIndex, in: uuid)
+	public func addVideos(_ videos: [Video], duplicate: Bool, session: Session) -> Bool {
+		return session.playlistEditing.addTracks(videos.map(\.id), to: uuid, duplicate: duplicate)
+	}
+	
+	public func addVideo(_ video: Video, duplicate: Bool, session: Session) -> Bool {
+		return session.playlistEditing.addTrack(video.id, to: uuid, duplicate: duplicate)
+	}
+	
+	public func moveItem(fromIndex: Int, toIndex: Int, session: Session) -> Bool {
+		return session.playlistEditing.moveItem(fromIndex: fromIndex, toIndex: toIndex, in: uuid)
 	}
 	
 	public func edit(title: String, description: String, session: Session) -> Bool {
-		return session.playlistEditing.editPlaylist(playlistId: uuid, title: title, description: description)
+		return session.playlistEditing.edit(playlistId: uuid, title: title, description: description)
 	}
 	
 	public func delete(session: Session) -> Bool {
-		return session.playlistEditing.deletePlaylist(playlistId: uuid)
+		return session.playlistEditing.delete(playlistId: uuid)
 	}
 	
 	public static func == (lhs: Playlist, rhs: Playlist) -> Bool {

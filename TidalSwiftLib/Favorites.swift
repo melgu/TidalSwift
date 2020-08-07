@@ -154,7 +154,7 @@ public class Favorites {
 		var tempOffset = offset
 		var tempPlaylists: [FavoritePlaylist] = []
 		while tempLimit > 0 {
-			print("tempLimit: \(tempLimit), tempOffset: \(tempOffset)")
+//			print("tempLimit: \(tempLimit), tempOffset: \(tempOffset)")
 			var parameters = session.sessionParameters
 			if tempLimit > 50 { // Maximum of 50 allowed by Tidal
 				parameters["limit"] = "50"

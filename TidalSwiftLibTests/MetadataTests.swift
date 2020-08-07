@@ -11,13 +11,13 @@ import XCTest
 
 class MetadataTests: XCTestCase {
 	
-//	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials()))
-	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: "")))
+//	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: readDemoLoginCredentials(), urlType: .offline))
+	var session: Session = Session(config: Config(quality: .hifi, loginCredentials: LoginCredentials(username: "", password: ""), urlType: .offline))
 	var metadata: Metadata?
 	
 	let demoFolderName = "TidalSwift_Test_Metadata"
 
-    override func setUp() {
+	override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 		
 		_ = session.loadSession()
@@ -27,7 +27,7 @@ class MetadataTests: XCTestCase {
 		metadata = Metadata(session: session)
     }
 
-    override func tearDown() {
+	override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
 		
 		do {

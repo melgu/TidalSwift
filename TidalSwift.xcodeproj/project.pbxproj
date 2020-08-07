@@ -34,7 +34,6 @@
 		B03B9AFA23A48AE200679A1A /* SF Symbols.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B03B9AF923A48AE200679A1A /* SF Symbols.xcassets */; };
 		B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F420A230DF66200587A4A /* PlaybackInfo.swift */; };
 		B0443FF42305F7250019D0D8 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
-		B0443FFB2305F7250019D0D8 /* TidalSwiftLibTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0443FFA2305F7250019D0D8 /* TidalSwiftLibTests.swift */; };
 		B0443FFD2305F7250019D0D8 /* TidalSwiftLib.h in Headers */ = {isa = PBXBuildFile; fileRef = B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B04440082305F7390019D0D8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B04440102305F7820019D0D8 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */; };
@@ -73,6 +72,9 @@
 		B0608E2B24D5EA7D00DD9692 /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0608E2A24D5EA7D00DD9692 /* Download.swift */; };
 		B0608E2D24D5FC5500DD9692 /* PlaylistEditing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0608E2C24D5FC5500DD9692 /* PlaylistEditing.swift */; };
 		B0617B3523C436C600CD59A3 /* OfflineOverviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0617B3423C436C600CD59A3 /* OfflineOverviews.swift */; };
+		B06506C224DCBD8C0092D5F5 /* PlaylistEditingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06506C124DCBD8C0092D5F5 /* PlaylistEditingTests.swift */; };
+		B06506C424DCCD520092D5F5 /* FavoritesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06506C324DCCD520092D5F5 /* FavoritesTests.swift */; };
+		B06506C624DCCE110092D5F5 /* DateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06506C524DCCE110092D5F5 /* DateTests.swift */; };
 		B0755F802305F86900CD2387 /* SDAVAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = B0B2A3F722E9AF3F0005E411 /* SDAVAssetExportSession.h */; };
 		B07685B9232079C800538D55 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07685B8232079C800538D55 /* SearchView.swift */; };
 		B07685BD2320C12D00538D55 /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07685BC2320C12D00538D55 /* QueueView.swift */; };
@@ -226,7 +228,6 @@
 		B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TidalSwiftLib.h; sourceTree = "<group>"; };
 		B0443FEE2305F7250019D0D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0443FF32305F7250019D0D8 /* TidalSwiftLibTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TidalSwiftLibTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0443FFA2305F7250019D0D8 /* TidalSwiftLibTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TidalSwiftLibTests.swift; sourceTree = "<group>"; };
 		B0443FFC2305F7250019D0D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B04440122305F7C40019D0D8 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		B045A66D24626F7F001C8E3F /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
@@ -264,6 +265,9 @@
 		B0608E2A24D5EA7D00DD9692 /* Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
 		B0608E2C24D5FC5500DD9692 /* PlaylistEditing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditing.swift; sourceTree = "<group>"; };
 		B0617B3423C436C600CD59A3 /* OfflineOverviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineOverviews.swift; sourceTree = "<group>"; };
+		B06506C124DCBD8C0092D5F5 /* PlaylistEditingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditingTests.swift; sourceTree = "<group>"; };
+		B06506C324DCCD520092D5F5 /* FavoritesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesTests.swift; sourceTree = "<group>"; };
+		B06506C524DCCE110092D5F5 /* DateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTests.swift; sourceTree = "<group>"; };
 		B073660222E9C5C000758E5E /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitattributes; path = "../../../../../System/Volumes/Data/Users/melvin/Documents/Xcode Projects/TidalSwift/.gitattributes"; sourceTree = "<group>"; };
 		B07685B8232079C800538D55 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		B07685BC2320C12D00538D55 /* QueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueView.swift; sourceTree = "<group>"; };
@@ -441,12 +445,14 @@
 		B0443FF92305F7250019D0D8 /* TidalSwiftLibTests */ = {
 			isa = PBXGroup;
 			children = (
-				B0443FFA2305F7250019D0D8 /* TidalSwiftLibTests.swift */,
 				B0443FFC2305F7250019D0D8 /* Info.plist */,
 				B0B49A8C22C46DB700F07B34 /* NetworkTests.swift */,
 				B0E582F1224329A000ADAE6C /* LogicTests.swift */,
 				B0DAFDDB229CDBEE00BA669F /* HelpersTests.swift */,
 				B0D7DD962305FA76004391AD /* MetadataTests.swift */,
+				B06506C124DCBD8C0092D5F5 /* PlaylistEditingTests.swift */,
+				B06506C324DCCD520092D5F5 /* FavoritesTests.swift */,
+				B06506C524DCCE110092D5F5 /* DateTests.swift */,
 			);
 			path = TidalSwiftLibTests;
 			sourceTree = "<group>";
@@ -1036,11 +1042,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B06506C224DCBD8C0092D5F5 /* PlaylistEditingTests.swift in Sources */,
+				B06506C424DCCD520092D5F5 /* FavoritesTests.swift in Sources */,
 				B0D7DDAD2305FC45004391AD /* LogicTests.swift in Sources */,
+				B06506C624DCCE110092D5F5 /* DateTests.swift in Sources */,
 				B0D7DDAC2305FC45004391AD /* MetadataTests.swift in Sources */,
 				B0D7DDAE2305FC45004391AD /* NetworkTests.swift in Sources */,
 				B0D7DDAF2305FC45004391AD /* HelpersTests.swift in Sources */,
-				B0443FFB2305F7250019D0D8 /* TidalSwiftLibTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
