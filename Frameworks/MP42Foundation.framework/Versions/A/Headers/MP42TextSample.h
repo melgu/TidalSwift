@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MP42MediaFormat.h"
-#import "MP42Image.h"
+#import <MP42Foundation/MP42MediaFormat.h>
+#import <MP42Foundation/MP42Image.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite, copy) NSString *title;
 @property (nonatomic, readwrite, retain, nullable) MP42Image *image;
 @property (nonatomic, readwrite) MP42Duration timestamp;
+
+- (NSComparisonResult)compare:(MP42TextSample *)otherObject;
 
 @end
 

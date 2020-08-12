@@ -8,18 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-#import "MP42Track.h"
-#import "MP42VideoTrack.h"
-#import "MP42AudioTrack.h"
-#import "MP42SubtitleTrack.h"
-#import "MP42ClosedCaptionTrack.h"
-#import "MP42ChapterTrack.h"
-#import "MP42Metadata.h"
+#import <MP42Foundation/MP42Track.h>
+#import <MP42Foundation/MP42VideoTrack.h>
+#import <MP42Foundation/MP42AudioTrack.h>
+#import <MP42Foundation/MP42SubtitleTrack.h>
+#import <MP42Foundation/MP42ClosedCaptionTrack.h>
+#import <MP42Foundation/MP42ChapterTrack.h>
+#import <MP42Foundation/MP42Metadata.h>
 
-#import "MP42MediaFormat.h"
-#import "MP42Logging.h"
+#import <MP42Foundation/MP42MediaFormat.h>
+#import <MP42Foundation/MP42Logging.h>
 
-#import "MP42SecurityAccessToken.h"
+#import <MP42Foundation/MP42SecurityAccessToken.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

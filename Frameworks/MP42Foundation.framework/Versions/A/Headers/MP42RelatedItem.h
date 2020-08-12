@@ -7,9 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MP42Foundation/MP42Utilities.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+MP42_OBJC_DIRECT_MEMBERS
 @interface MP42RelatedItem : NSObject<NSFilePresenter>
 
 @property (nonatomic, readonly) NSURL *URL;

@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#import "MP42Track.h"
+#import <MP42Foundation/MP42Track.h>
 
 @interface MP42AudioTrack : MP42Track <NSSecureCoding, NSCopying>
 

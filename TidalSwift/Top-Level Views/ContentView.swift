@@ -43,5 +43,8 @@ struct ContentView: View {
 					.environmentObject(playlistEditingValues)
 					.environmentObject(viewState)
 			})
+			.touchBar {
+				TouchBarView(player: sc.player, playbackInfo: sc.player.playbackInfo)
+			}
 	}
 }

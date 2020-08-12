@@ -6,7 +6,18 @@
 //  Copyright (c) 2013 Damiano Galassi. All rights reserved.
 //
 
-#import "MP42MediaFormat.h"
+#import <MP42Foundation/MP42MediaFormat.h>
+
+// Direct method and property calls increases performance and reduces binary size.
+#if defined(__IPHONE_14_0) || defined(__MAC_10_16) || defined(__MAC_11_0) || defined(__TVOS_14_0) || defined(__WATCHOS_7_0)
+#define MP42_OBJC_DIRECT_MEMBERS __attribute__((objc_direct_members))
+#define MP42_OBJC_DIRECT __attribute__((objc_direct))
+#define MP42_DIRECT ,direct
+#else
+#define MP42_OBJC_DIRECT_MEMBERS
+#define MP42_OBJC_DIRECT
+#define MP42_DIRECT
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
