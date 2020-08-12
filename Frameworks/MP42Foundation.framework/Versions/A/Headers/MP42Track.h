@@ -7,9 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MP42MediaFormat.h"
-#import "MP42ConversionSettings.h"
-#import "MP42SecurityAccessToken.h"
+#import <MP42Foundation/MP42Utilities.h>
+#import <MP42Foundation/MP42ConversionSettings.h>
+#import <MP42Foundation/MP42SecurityAccessToken.h>
+
+@class MP42SampleBuffer;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -48,6 +50,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) BOOL canExport;
 - (BOOL)exportToURL:(NSURL *)url error:(NSError * __autoreleasing *)error;
+
+#pragma mark - Private
+
+- (void)enqueue:(MP42SampleBuffer *)sample MP42_OBJC_DIRECT;
+- (nullable MP42SampleBuffer *)copyNextSample MP42_OBJC_DIRECT;
 
 @end
 

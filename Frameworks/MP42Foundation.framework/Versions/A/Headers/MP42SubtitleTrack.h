@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MP42VideoTrack.h"
+#import <MP42Foundation/MP42VideoTrack.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

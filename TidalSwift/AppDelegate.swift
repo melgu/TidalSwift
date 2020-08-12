@@ -217,23 +217,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				}
 			}
 			if let data = UserDefaults.standard.data(forKey: "SortingState") {
-				if let codableFSS = try? JSONDecoder().decode(CodableSortingState.self, from: data) {
-					sortingState.favoritePlaylistSorting = codableFSS.favoritePlaylistSorting
-					sortingState.favoritePlaylistReversed = codableFSS.favoritePlaylistReversed
-					sortingState.favoriteAlbumSorting = codableFSS.favoriteAlbumSorting
-					sortingState.favoriteAlbumReversed = codableFSS.favoriteAlbumReversed
-					sortingState.favoriteTrackSorting = codableFSS.favoriteTrackSorting
-					sortingState.favoriteTrackReversed = codableFSS.favoriteTrackReversed
-					sortingState.favoriteVideoSorting = codableFSS.favoriteVideoSorting
-					sortingState.favoriteVideoReversed = codableFSS.favoriteVideoReversed
-					sortingState.favoriteArtistSorting = codableFSS.favoriteArtistSorting
-					sortingState.favoriteArtistReversed = codableFSS.favoriteArtistReversed
-					sortingState.offlinePlaylistSorting = codableFSS.offlinePlaylistSorting
-					sortingState.offlinePlaylistReversed = codableFSS.offlinePlaylistReversed
-					sortingState.offlineAlbumSorting = codableFSS.offlineAlbumSorting
-					sortingState.offlineAlbumReversed = codableFSS.offlineAlbumReversed
-					sortingState.offlineTrackSorting = codableFSS.offlineTrackSorting
-					sortingState.offlineTrackReversed = codableFSS.offlineTrackReversed
+				if let codableSS = try? JSONDecoder().decode(CodableSortingState.self, from: data) {
+					sortingState.favoritePlaylistSorting = codableSS.favoritePlaylistSorting
+					sortingState.favoritePlaylistReversed = codableSS.favoritePlaylistReversed
+					sortingState.favoriteAlbumSorting = codableSS.favoriteAlbumSorting
+					sortingState.favoriteAlbumReversed = codableSS.favoriteAlbumReversed
+					sortingState.favoriteTrackSorting = codableSS.favoriteTrackSorting
+					sortingState.favoriteTrackReversed = codableSS.favoriteTrackReversed
+					sortingState.favoriteVideoSorting = codableSS.favoriteVideoSorting
+					sortingState.favoriteVideoReversed = codableSS.favoriteVideoReversed
+					sortingState.favoriteArtistSorting = codableSS.favoriteArtistSorting
+					sortingState.favoriteArtistReversed = codableSS.favoriteArtistReversed
+					sortingState.offlinePlaylistSorting = codableSS.offlinePlaylistSorting
+					sortingState.offlinePlaylistReversed = codableSS.offlinePlaylistReversed
+					sortingState.offlineAlbumSorting = codableSS.offlineAlbumSorting
+					sortingState.offlineAlbumReversed = codableSS.offlineAlbumReversed
+					sortingState.offlineTrackSorting = codableSS.offlineTrackSorting
+					sortingState.offlineTrackReversed = codableSS.offlineTrackReversed
 				}
 			}
 			
@@ -338,7 +338,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func saveFavoritesSortingState() {
-		let codableFSS = CodableSortingState(favoritePlaylistSorting: sortingState.favoritePlaylistSorting,
+		let codableSS = CodableSortingState(favoritePlaylistSorting: sortingState.favoritePlaylistSorting,
 													  favoritePlaylistReversed: sortingState.favoritePlaylistReversed,
 													  favoriteAlbumSorting: sortingState.favoriteAlbumSorting,
 													  favoriteAlbumReversed: sortingState.favoriteAlbumReversed,
@@ -354,8 +354,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 													  offlineAlbumReversed: sortingState.offlinePlaylistReversed,
 													  offlineTrackSorting: sortingState.offlineTrackSorting,
 													  offlineTrackReversed: sortingState.offlineTrackReversed)
-		let codableFSSData = try? JSONEncoder().encode(codableFSS)
-		UserDefaults.standard.set(codableFSSData, forKey: "SortingState")
+		let codableSSData = try? JSONEncoder().encode(codableSS)
+		UserDefaults.standard.set(codableSSData, forKey: "SortingState")
 		
 		UserDefaults.standard.synchronize()
 	}

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MP42MediaFormat.h"
+#import <MP42Foundation/MP42MediaFormat.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

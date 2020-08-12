@@ -106,6 +106,7 @@
 		B0CDC77523664A1500E90FBF /* MyMixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CDC77423664A1500E90FBF /* MyMixes.swift */; };
 		B0D1785F238CBFD80073B251 /* ViewRefreshing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D1785E238CBFD80073B251 /* ViewRefreshing.swift */; };
 		B0D17861238CE53B0073B251 /* ViewCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D17860238CE53B0073B251 /* ViewCache.swift */; };
+		B0D62EA424E49D4D00F5AD4D /* TouchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D62EA324E49D4D00F5AD4D /* TouchBarView.swift */; };
 		B0D7DD9F2305FB2E004391AD /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DAFDD92296417500BA669F /* Helpers.swift */; };
 		B0D7DDA02305FB2E004391AD /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E1223764C100ADAE6C /* Network.swift */; };
 		B0D7DDA12305FB2E004391AD /* DisplayError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E582E52238C84F00ADAE6C /* DisplayError.swift */; };
@@ -318,6 +319,7 @@
 		B0CDC77423664A1500E90FBF /* MyMixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMixes.swift; sourceTree = "<group>"; };
 		B0D1785E238CBFD80073B251 /* ViewRefreshing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewRefreshing.swift; sourceTree = "<group>"; };
 		B0D17860238CE53B0073B251 /* ViewCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCache.swift; sourceTree = "<group>"; };
+		B0D62EA324E49D4D00F5AD4D /* TouchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchBarView.swift; sourceTree = "<group>"; };
 		B0D7DD962305FA76004391AD /* MetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataTests.swift; sourceTree = "<group>"; };
 		B0D974CA230C031E00695388 /* MasterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterDetailView.swift; sourceTree = "<group>"; };
 		B0D974CC230CC1D200695388 /* Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorites.swift; sourceTree = "<group>"; };
@@ -713,6 +715,7 @@
 				B0A67AA62395CB1100BD3921 /* WrappedTrack.swift */,
 				B0A67AAC2395DB6700BD3921 /* Pasteboard.swift */,
 				B0E8B8D824D5D3F60093A706 /* SecondsToHoursMinutesSecondsString.swift */,
+				B0D62EA324E49D4D00F5AD4D /* TouchBarView.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1120,6 +1123,7 @@
 				B0E8B8A724D5C7380093A706 /* MixGrid.swift in Sources */,
 				B0CDC7732362649300E90FBF /* PlaylistEditingValues.swift in Sources */,
 				B0D974CF230CC9BB00695388 /* ArtistGrid.swift in Sources */,
+				B0D62EA424E49D4D00F5AD4D /* TouchBarView.swift in Sources */,
 				B02382472348543E00BC2B0C /* NewReleases.swift in Sources */,
 				B0D974D1230CC9C600695388 /* PlaylistGrid.swift in Sources */,
 				B0E8B8A524D5C70F0093A706 /* MixPlaylistView.swift in Sources */,
@@ -1440,7 +1444,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 29;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1470,7 +1474,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 29;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;

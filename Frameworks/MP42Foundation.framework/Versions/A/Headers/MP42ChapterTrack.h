@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MP42Track.h"
-#import "MP42TextSample.h"
+#import <MP42Foundation/MP42Track.h>
+#import <MP42Foundation/MP42TextSample.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

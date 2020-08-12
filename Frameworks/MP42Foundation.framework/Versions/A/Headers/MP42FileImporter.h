@@ -7,11 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AudioToolbox/AudioToolbox.h>
+#import <MP42Foundation/MP42Utilities.h>
+
+@class MP42SampleBuffer;
+@class MP42AudioTrack;
+@class MP42VideoTrack;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class MP42Metadata;
 @class MP42Track;
+
 
 @interface MP42FileImporter : NSObject
 
@@ -23,6 +30,25 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSURL *fileURL;
 @property (nonatomic, readonly) MP42Metadata *metadata;
 @property (nonatomic, readonly) NSArray<MP42Track *> *tracks;
+
+#pragma mark - Override
+
+- (NSUInteger)timescaleForTrack:(MP42Track *)track;
+- (NSSize)sizeForTrack:(MP42VideoTrack *)track;
+- (nullable NSData *)magicCookieForTrack:(MP42Track *)track;
+- (AudioStreamBasicDescription)audioDescriptionForTrack:(MP42AudioTrack *)track;
+- (BOOL)cleanUp:(MP42Track *)track fileHandle:(MP42FileHandle)fileHandle;
+
+- (BOOL)audioTrackUsesExplicitEncoderDelay:(MP42Track *)track;
+- (BOOL)supportsPreciseTimestamps;
+- (void)demux;
+
+#pragma mark - Private
+
+- (void)enqueue:(MP42SampleBuffer * NS_RELEASES_ARGUMENT)sample MP42_OBJC_DIRECT;
+
+@property (nonatomic, readwrite MP42_DIRECT) double progress;
+@property (nonatomic, readonly, getter=isCancelled MP42_DIRECT) BOOL cancelled;
 
 @end
 
