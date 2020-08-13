@@ -230,8 +230,8 @@ struct ProgressBar: View {
 	@Environment(\.colorScheme) var colorScheme: ColorScheme
 	
 	var body: some View {
-		ValueSlider(value: $playbackInfo.fraction) { ended in
-			if ended {
+		ValueSlider(value: $playbackInfo.fraction) { down in
+			if down { // Only apply while scrubbing, not when releasing
 				player.seek(to: Double(playbackInfo.fraction))
 			}
 		}

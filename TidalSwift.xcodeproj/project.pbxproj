@@ -715,7 +715,6 @@
 				B0A67AA62395CB1100BD3921 /* WrappedTrack.swift */,
 				B0A67AAC2395DB6700BD3921 /* Pasteboard.swift */,
 				B0E8B8D824D5D3F60093A706 /* SecondsToHoursMinutesSecondsString.swift */,
-				B0D62EA324E49D4D00F5AD4D /* TouchBarView.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -749,6 +748,7 @@
 				B0D974D4230CD60D00695388 /* PlayerInfoView.swift */,
 				B0D974CC230CC1D200695388 /* Favorites.swift */,
 				B0617B3423C436C600CD59A3 /* OfflineOverviews.swift */,
+				B0D62EA324E49D4D00F5AD4D /* TouchBarView.swift */,
 			);
 			path = "Top-Level Views";
 			sourceTree = "<group>";
