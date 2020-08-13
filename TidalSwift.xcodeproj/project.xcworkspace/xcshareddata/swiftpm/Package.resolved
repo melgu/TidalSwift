@@ -30,10 +30,10 @@
       },
       {
         "package": "UpdateNotification",
-        "repositoryURL": "git@bitbucket.org:MikelG/updatenotification.git",
+        "repositoryURL": "git@github.com:melgu/UpdateNotification.git",
         "state": {
           "branch": "main",
-          "revision": "e5579e0f910aad7557dc0afd7c33f68bdd7cc5d4",
+          "revision": "9dbcbf977051ddd8e433183dc2b5b22b9d2bffb6",
           "version": null
         }
       }
