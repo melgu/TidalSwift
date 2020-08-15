@@ -113,7 +113,7 @@ public enum AlbumSorting: Int, Codable {
 }
 
 extension Array where Element == Album {
-	public func sortedAlbums(by sorting: AlbumSorting) -> [Album] {
+	public func sortedAlbums(by sorting: AlbumSorting) -> [Album] { // TODO: Add reversed parameter
 		switch sorting {
 		case .dateAdded:
 			return self
