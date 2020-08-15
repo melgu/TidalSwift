@@ -38,7 +38,7 @@ public class Helpers {
 			allReleases += albums
 		}
 		
-		allReleases.sort { $0.releaseDate! > $1.releaseDate! }
+		allReleases.sort { $0.releaseDate ?? Date.distantPast > $1.releaseDate ?? Date.distantPast }
 		return Array(allReleases.prefix(number))
 	}
 }
