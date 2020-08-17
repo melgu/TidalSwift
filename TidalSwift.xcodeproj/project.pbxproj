@@ -29,7 +29,7 @@
 		B01B09CD234B15D6007A4E15 /* Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CC234B15D6007A4E15 /* Lyrics.swift */; };
 		B01B09CF234B1C7B007A4E15 /* LyricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CE234B1C7B007A4E15 /* LyricsView.swift */; };
 		B02382472348543E00BC2B0C /* NewReleases.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02382462348543E00BC2B0C /* NewReleases.swift */; };
-		B039D69F2317480C00E6784F /* CoverWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B039D69E2317480C00E6784F /* CoverWindowController.swift */; };
+		B039D69F2317480C00E6784F /* ImageWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B039D69E2317480C00E6784F /* ImageWindowController.swift */; };
 		B03B9ADE23A1FC2E00679A1A /* Offline.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03B9ADD23A1FC2E00679A1A /* Offline.swift */; };
 		B03B9AFA23A48AE200679A1A /* SF Symbols.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B03B9AF923A48AE200679A1A /* SF Symbols.xcassets */; };
 		B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F420A230DF66200587A4A /* PlaybackInfo.swift */; };
@@ -222,7 +222,7 @@
 		B01B09CC234B15D6007A4E15 /* Lyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lyrics.swift; sourceTree = "<group>"; };
 		B01B09CE234B1C7B007A4E15 /* LyricsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsView.swift; sourceTree = "<group>"; };
 		B02382462348543E00BC2B0C /* NewReleases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReleases.swift; sourceTree = "<group>"; };
-		B039D69E2317480C00E6784F /* CoverWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverWindowController.swift; sourceTree = "<group>"; };
+		B039D69E2317480C00E6784F /* ImageWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWindowController.swift; sourceTree = "<group>"; };
 		B03B9ADD23A1FC2E00679A1A /* Offline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Offline.swift; sourceTree = "<group>"; };
 		B03B9AF923A48AE200679A1A /* SF Symbols.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "SF Symbols.xcassets"; sourceTree = "<group>"; };
 		B03F420A230DF66200587A4A /* PlaybackInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackInfo.swift; sourceTree = "<group>"; };
@@ -631,11 +631,11 @@
 				B07685B8232079C800538D55 /* SearchView.swift */,
 				B02382462348543E00BC2B0C /* NewReleases.swift */,
 				B0CDC77423664A1500E90FBF /* MyMixes.swift */,
+				B0E8B8A624D5C7380093A706 /* MixGrid.swift */,
 				B0D974D0230CC9C600695388 /* PlaylistGrid.swift */,
 				B0D974CE230CC9BB00695388 /* ArtistGrid.swift */,
 				B08AB536230ACACA004CBBE8 /* AlbumGrid.swift */,
 				B0CAD8DA2348358B00A9BAA6 /* VideoGrid.swift */,
-				B0E8B8A624D5C7380093A706 /* MixGrid.swift */,
 			);
 			path = Grids;
 			sourceTree = "<group>";
@@ -655,7 +655,7 @@
 			isa = PBXGroup;
 			children = (
 				B0A1E2762349DB0100BBC4F0 /* ResizableWindowController.swift */,
-				B039D69E2317480C00E6784F /* CoverWindowController.swift */,
+				B039D69E2317480C00E6784F /* ImageWindowController.swift */,
 				B0A85FFC230DE2E3000C4C4E /* VideoPlayerController.swift */,
 				B08642062381C71D005402D1 /* ViewHistoryView.swift */,
 				B086420823826C1A005402D1 /* PlaybackHistoryView.swift */,
@@ -671,12 +671,12 @@
 		B0E8B88A24D5BEE10093A706 /* Grid Items */ = {
 			isa = PBXGroup;
 			children = (
+				B0E8B8A224D5C6750093A706 /* MixGridItem.swift */,
 				B0E8B88B24D5BF0A0093A706 /* PlaylistGridItem.swift */,
 				B0E8B89224D5C44E0093A706 /* ArtistGridItem.swift */,
 				B0E8B89624D5C4980093A706 /* AlbumGridItem.swift */,
 				B0E8B89A24D5C58F0093A706 /* TrackGridItem.swift */,
 				B0E8B89E24D5C6110093A706 /* VideoGridItem.swift */,
-				B0E8B8A224D5C6750093A706 /* MixGridItem.swift */,
 			);
 			path = "Grid Items";
 			sourceTree = "<group>";
@@ -1104,7 +1104,7 @@
 				B07685B9232079C800538D55 /* SearchView.swift in Sources */,
 				B0E8B8CE24D5D2470093A706 /* RefreshOffline.swift in Sources */,
 				B0E8B89924D5C5100093A706 /* AlbumContextMenu.swift in Sources */,
-				B039D69F2317480C00E6784F /* CoverWindowController.swift in Sources */,
+				B039D69F2317480C00E6784F /* ImageWindowController.swift in Sources */,
 				B0E8B8C624D5D1DA0093A706 /* RefreshFavoriteVideos.swift in Sources */,
 				B0E8B8D124D5D2CA0093A706 /* AddToPlaylistView.swift in Sources */,
 				B08980072427CE3800B5943A /* SortingState.swift in Sources */,

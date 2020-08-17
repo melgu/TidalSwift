@@ -19,7 +19,7 @@ struct MixGridItem: View {
 	
 	var body: some View {
 		VStack {
-			MixImage(mix: mix, session: session)
+			MixImage(mix: mix, highResolutionImages: false, session: session)
 				.frame(width: 160, height: 160)
 				.cornerRadius(CORNERRADIUS)
 				.shadow(radius: SHADOWRADIUS, y: SHADOWY)
@@ -52,7 +52,11 @@ struct MixGridItem: View {
 
 struct MixImage: View {
 	let mix: MixesItem
+	let highResolutionImages: Bool
 	let session: Session
+	
+	let lowResolution: Int = 160
+	let highResolution: Int = 480
 	
 	@State var scrollImages = false
 	
@@ -76,7 +80,7 @@ struct MixImage: View {
 					VStack {
 						HStack {
 							// 4
-							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -87,7 +91,7 @@ struct MixImage: View {
 							}
 							
 							// 0 1
-							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -96,7 +100,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
-							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -107,7 +111,7 @@ struct MixImage: View {
 							}
 							
 							// 2 3 4
-							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -116,7 +120,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
-							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -125,7 +129,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
-							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -136,7 +140,7 @@ struct MixImage: View {
 							}
 							
 							// 0 1
-							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -145,7 +149,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
-							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -163,7 +167,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.2)
 							
 							// 2 3 4
-							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -172,7 +176,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(.trailing, metrics.size.width * 0.01)
 							}
-							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -181,7 +185,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
-							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -192,7 +196,7 @@ struct MixImage: View {
 							}
 							
 							// 0 1
-							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -201,7 +205,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
-							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -212,7 +216,7 @@ struct MixImage: View {
 							}
 							
 							// 2 3 4
-							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -221,7 +225,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
-							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -230,7 +234,7 @@ struct MixImage: View {
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
-							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: 160) {
+							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
 								URLImageSourceView(
 									imageUrl,
 									isAnimationEnabled: true,
@@ -246,10 +250,10 @@ struct MixImage: View {
 					.rotationEffect(Angle(degrees: -12))
 					.position(CGPoint(x: metrics.size.width * 2, y: metrics.size.width * 0.4))
 					.scaleEffect(1)
-					.animation(Animation.linear(duration: 10).repeatForever(autoreverses: false))
-					.onAppear {
-						scrollImages.toggle()
-					}
+//					.animation(Animation.linear(duration: 10).repeatForever(autoreverses: false))
+//					.onAppear {
+//						scrollImages.toggle()
+//					}
 				}
 				.contentShape(Rectangle())
 				.clipped()

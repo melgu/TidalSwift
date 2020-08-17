@@ -23,7 +23,7 @@ struct VideoGridItem: View {
 			if let imageUrl = video.getImageUrl(session: session, resolution: 320) {
 				URLImageSourceView(
 					imageUrl,
-					isAnimationEnabled: true,
+					isAnimationEnabled: false,
 					label: Text(video.title)
 				)
 					.aspectRatio(contentMode: .fit)
