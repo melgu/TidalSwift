@@ -32,7 +32,7 @@ struct PlayerInfoView: View {
 						}
 					
 					PlaybackControls(player: player)
-					.frame(width: 200)
+						.frame(width: 200)
 					Spacer()
 					VolumeControl(player: player)
 					Spacer()
@@ -221,20 +221,20 @@ struct ProgressBar: View {
 		}
 		.valueSliderStyle(
 			HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
-				Rectangle()
-					.foregroundColor(.playbackProgressBarForeground(for: colorScheme))
-					.frame(height: 5),
+																	Rectangle()
+																	.foregroundColor(.playbackProgressBarForeground(for: colorScheme))
+																	.frame(height: 5),
 																   mask: Rectangle()
 			)
-				.background(Color.playbackProgressBarBackground(for: colorScheme))
-				.frame(height: 5)
-				.cornerRadius(3)
-				.toolTip((playbackInfo.playbackTimeInfo)),
-									   thumb: EmptyView(),
-									   thumbSize: .zero,
-									   options: .interactiveTrack)
-		)
+			.background(Color.playbackProgressBarBackground(for: colorScheme))
 			.frame(height: 5)
+			.cornerRadius(3)
+			.toolTip((playbackInfo.playbackTimeInfo)),
+			thumb: EmptyView(),
+			thumbSize: .zero,
+			options: .interactiveTrack)
+		)
+		.frame(height: 5)
 	}
 }
 
@@ -252,17 +252,19 @@ struct VolumeControl: View {
 				}
 			ValueSlider(value: $playbackInfo.volume, in: 0.0...1.0)
 				.valueSliderStyle(
-					HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
-						Rectangle()
-							.foregroundColor(.secondary)
-							.frame(height: 4))
-						.background(Color.secondary)
-						.frame(height: 4)
-						.cornerRadius(3),
+					HorizontalValueSliderStyle(track:
+												HorizontalValueTrack(view:
+													Rectangle()
+														.foregroundColor(.secondary)
+														.frame(height: 4)
+												)
+												.background(Color.secondary)
+												.frame(height: 4)
+												.cornerRadius(3),
 											   thumbSize: CGSize(width: 15, height: 15),
 											   options: .interactiveTrack)
-			)
-				.frame(width: 80)
+				)
+				.frame(width: 80, height: 30)
 				.layoutPriority(1)
 		}
 	}
