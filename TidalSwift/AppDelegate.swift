@@ -41,6 +41,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var playingCancellable: AnyCancellable?
 	var shuffleCancellable: AnyCancellable?
 	var repeatCancellable: AnyCancellable?
+	var pauseAfterCancellable: AnyCancellable?
 	var queueCancellable: AnyCancellable?
 	var currentIndexCancellable: AnyCancellable?
 	var volumeCancellable: AnyCancellable?
@@ -202,6 +203,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 					sc.player.playbackInfo.volume = codablePI.volume
 					sc.player.playbackInfo.shuffle = codablePI.shuffle
 					sc.player.playbackInfo.repeatState = codablePI.repeatState
+					sc.player.playbackInfo.pauseAfter = codablePI.pauseAfter
 					
 					// QueueInfo
 					sc.player.queueInfo.nonShuffledQueue = codablePI.nonShuffledQueue
@@ -318,6 +320,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 											volume: sc.player.playbackInfo.volume,
 											shuffle: sc.player.playbackInfo.shuffle,
 											repeatState: sc.player.playbackInfo.repeatState,
+											pauseAfter: sc.player.playbackInfo.pauseAfter,
 											nonShuffledQueue: sc.player.queueInfo.nonShuffledQueue,
 											queue: sc.player.queueInfo.queue,
 											currentIndex: sc.player.queueInfo.currentIndex,
@@ -396,6 +399,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		})
 		repeatCancellable = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self ] in
 			self.repeatLabel(repeatState: $0)
+			self.savePlaybackInfoOnNextTick = true
+		})
+		pauseAfterCancellable = sc.player.playbackInfo.$pauseAfter.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
+			self.pauseAfterState(enabled: $0)
 			self.savePlaybackInfoOnNextTick = true
 		})
 		volumeCancellable = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
@@ -496,6 +503,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playingCancellable?.cancel()
 		shuffleCancellable?.cancel()
 		repeatCancellable?.cancel()
+		pauseAfterCancellable?.cancel()
 		
 		queueCancellable?.cancel()
 		currentIndexCancellable?.cancel()
@@ -675,6 +683,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	
+	@IBAction func addQueueToPlaylist(_ sender: Any) {
+		let tracks = sc.player.queueInfo.queue.unwrapped()
+		print("Add \(tracks.count) to Playlist")
+		playlistEditingValues.tracks = tracks
+		playlistEditingValues.showAddTracksModal = true
+	}
+	
 	// MARK: - Control
 	
 	@IBOutlet weak var play: NSMenuItem!
@@ -750,6 +765,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			repeatAll.state = .off
 			repeatSingle.state = .on
 		}
+	}
+	
+	@IBOutlet weak var pauseAfterCurrentTrack: NSMenuItem!
+	@IBAction func pauseAfterCurrentTrack(_ sender: Any) {
+		sc.player.playbackInfo.pauseAfter.toggle()
+	}
+	func pauseAfterState(enabled: Bool) {
+		pauseAfterCurrentTrack.state = enabled ? .on : .off
 	}
 	
 	@IBAction func clearQueue(_ sender: Any) {
