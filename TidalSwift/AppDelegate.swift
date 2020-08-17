@@ -297,9 +297,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		window.makeKeyAndOrderFront(nil)
 		
-		if updateNotification.checkForUpdates() {
-			updateNotification.showNewVersionView()
-		}
+		updateCheck()
 		
 		sc.session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
 		
@@ -313,6 +311,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
 		true
+	}
+	
+	func updateCheck() {
+		DispatchQueue.global(qos: .background).async { [unowned self] in
+			if updateNotification.checkForUpdates() {
+				DispatchQueue.main.async {
+					updateNotification.showNewVersionView()
+				}
+			}
+		}
 	}
 	
 	func savePlaybackState() {

@@ -94,7 +94,7 @@ struct SearchField: View {
 		})
 		.textFieldStyle(RoundedBorderTextFieldStyle())
 		.introspectTextField { textField in
-			print("Introspect SearchField")
+//			print("Introspect SearchField")
 			if becomeFirstResponder {
 				textField.becomeFirstResponder()
 				becomeFirstResponder = false
