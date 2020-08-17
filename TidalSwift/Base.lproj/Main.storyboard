@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17147" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17147"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -207,6 +208,13 @@
                                                 <action selector="albumRemoveFavorites:" target="Voe-Tx-rLC" id="qnx-i7-kcv"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="qsU-oT-M1j"/>
+                                        <menuItem title="Add Queue to Playlist ..." id="aXn-08-ql0">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="addQueueToPlaylist:" target="Voe-Tx-rLC" id="atO-BI-eUg"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -287,6 +295,11 @@
                                                     </menuItem>
                                                 </items>
                                             </menu>
+                                        </menuItem>
+                                        <menuItem title="Pause after current Track" keyEquivalent="p" id="eF6-lJ-eoi">
+                                            <connections>
+                                                <action selector="pauseAfterCurrentTrack:" target="Voe-Tx-rLC" id="BWA-8Q-SbW"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="Y10-5D-Uc4"/>
                                         <menuItem title="Clear Queue" id="sI7-lB-3s2">
@@ -435,6 +448,7 @@
                         <outlet property="goToAlbum" destination="f16-Gd-3QD" id="lqr-La-wCe"/>
                         <outlet property="goToArtist" destination="aZC-T4-e8V" id="flN-ka-6n6"/>
                         <outlet property="mute" destination="EJc-FY-8Q5" id="QuD-KR-PQq"/>
+                        <outlet property="pauseAfterCurrentTrack" destination="eF6-lJ-eoi" id="k1s-d9-EYU"/>
                         <outlet property="play" destination="qju-kD-hsU" id="iVO-B9-1FG"/>
                         <outlet property="playlistToggleOffline" destination="AsP-6Z-Yp5" id="mHg-L7-a2r"/>
                         <outlet property="removeFromFavorites" destination="SH1-du-oJp" id="4bF-Bj-FUN"/>

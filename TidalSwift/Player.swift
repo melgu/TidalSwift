@@ -135,6 +135,10 @@ class Player {
 			print("Not possible to stream \(queueInfo.queue[queueInfo.currentIndex].track.title)")
 			next()
 		}
+		
+		if playbackInfo.pauseAfter {
+			pause()
+		}
 	}
 	
 	func shuffle(enabled: Bool) {

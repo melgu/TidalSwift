@@ -16,6 +16,7 @@ final class PlaybackInfo: ObservableObject {
 	@Published var volume: Float = 1.0
 	@Published var shuffle: Bool = false
 	@Published var repeatState: RepeatState = .off
+	@Published var pauseAfter: Bool = false
 }
 
 enum RepeatState: Int, CaseIterable, Codable {
@@ -39,6 +40,7 @@ struct CodablePlaybackInfo: Codable {
 	var volume: Float
 	var shuffle: Bool
 	var repeatState: RepeatState
+	var pauseAfter: Bool
 	
 	// QueueInfo
 	var nonShuffledQueue: [WrappedTrack]
