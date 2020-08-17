@@ -15,163 +15,26 @@ struct PlayerInfoView: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var playbackInfo: PlaybackInfo
+	
 	@EnvironmentObject var queueInfo: QueueInfo
 	
 	var body: some View {
 		VStack {
 			GeometryReader { metrics in
 				HStack {
-					HStack {
-						if !player.queueInfo.queue.isEmpty,
-						   let track = queueInfo.queue[queueInfo.currentIndex].track {
-							HStack {
-								if let coverUrlSmall = track.getCoverUrl(session: session, resolution: 320),
-								   let coverUrlBig = track.getCoverUrl(session: session, resolution: 1280) {
-									URLImageSourceView(
-										coverUrlSmall,
-										isAnimationEnabled: true,
-										label: Text(track.album.title)
-									)
-										.frame(width: 30, height: 30)
-										.cornerRadius(CORNERRADIUS)
-										.toolTip("Show cover in new window")
-										.onTapGesture {
-											print("Big Cover")
-											let title = "\(track.title) – \(track.album.title)"
-											let controller = ImageWindowController(
-												imageUrl: coverUrlBig,
-												title: title
-											)
-											controller.window?.title = title
-											controller.showWindow(nil)
-										}
-								} else {
-									Rectangle()
-										.foregroundColor(.black)
-										.frame(width: 30, height: 30)
-										.cornerRadius(CORNERRADIUS)
-								}
-								
-								VStack(alignment: .leading) {
-									HStack {
-										Text("\(track.title)")
-										if let version = track.version {
-											Text(version)
-												.foregroundColor(.secondary)
-												.padding(.leading, -5)
-												.layoutPriority(-1)
-										}
-										Text(player.currentQualityString())
-											.fontWeight(.light)
-											.foregroundColor(.orange)
-										Text(player.maxQualityString())
-											.fontWeight(.light)
-											.foregroundColor(.secondary)
-									}
-									.toolTip(trackToolTipString(for: track))
-									Text("\(track.artists.formArtistString()) – \(track.album.title)")
-										.foregroundColor(.secondary)
-									.toolTip("\(track.artists.formArtistString()) – \(track.album.title)")
-								}
-								Spacer()
-									.layoutPriority(-1)
+					TrackInfoView(player: player, session: session)
+						.frame(width: metrics.size.width / 2 - 100)
+						.contextMenu {
+							if !queueInfo.queue.isEmpty,
+							   let track = queueInfo.queue[queueInfo.currentIndex].track {
+								TrackContextMenu(track: track, session: session, player: player)
 							}
-						} else {
-							Spacer()
 						}
-					}
-					.frame(width: metrics.size.width / 2 - 100)
-					.contextMenu {
-						if !queueInfo.queue.isEmpty,
-						   let track = queueInfo.queue[queueInfo.currentIndex].track {
-							TrackContextMenu(track: track, session: session, player: player)
-						}
-					}
 					
-					VStack {
-						HStack {
-							Spacer()
-							Group {
-								if playbackInfo.shuffle {
-									Image(nsImage: NSImage(named: "shuffle")!.tint(color: .controlAccentColor))
-								} else {
-									Image("shuffle")
-										.primaryIconColor()
-										.onTapGesture {
-											playbackInfo.shuffle.toggle()
-										}
-								}
-							}
-							.toolTip("Shuffle")
-							.onTapGesture {
-								playbackInfo.shuffle.toggle()
-							}
-							Image("backward.fill")
-								.primaryIconColor()
-								.onTapGesture {
-									player.previous()
-								}
-							if playbackInfo.playing {
-								Image("pause.fill")
-									.primaryIconColor()
-									.onTapGesture {
-										player.pause()
-									}
-							} else {
-								Image("play.fill")
-									.primaryIconColor()
-									.onTapGesture {
-										player.play()
-									}
-							}
-							Image("forward.fill")
-								.primaryIconColor()
-								.onTapGesture {
-									player.next()
-								}
-							Group {
-								if playbackInfo.repeatState == .single {
-									Image(nsImage: NSImage(named: "repeat1")!.tint(color: .controlAccentColor))
-								} else if playbackInfo.repeatState == .all {
-									Image(nsImage: NSImage(named: "repeat")!.tint(color: .controlAccentColor))
-								} else {
-									Image("repeat")
-										.primaryIconColor()
-								}
-							}
-							.toolTip("Repeat")
-							.onTapGesture {
-								player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
-								print("Repeat: \(player.playbackInfo.repeatState)")
-							}
-							Spacer()
-						}
-						ProgressBar(player: player)
-					}
+					PlaybackControls(player: player)
 					.frame(width: 200)
 					Spacer()
-					HStack {
-						speakerSymbol()
-							.frame(width: 20, alignment: .leading)
-							.onTapGesture {
-								player.toggleMute()
-							}
-						ValueSlider(value: $playbackInfo.volume, in: 0.0...1.0)
-							.valueSliderStyle(
-								HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
-									Rectangle()
-										.foregroundColor(.secondary)
-										.frame(height: 4))
-									.background(Color.secondary)
-									.frame(height: 4)
-									.cornerRadius(3),
-														   thumbSize: CGSize(width: 15, height: 15),
-														   options: .interactiveTrack)
-						)
-							.frame(width: 80)
-							.layoutPriority(1)
-					}
+					VolumeControl(player: player)
 					Spacer()
 					DownloadIndicator()
 					Image("quote.bubble")
@@ -195,21 +58,73 @@ struct PlayerInfoView: View {
 			Divider()
 		}
 	}
+}
+
+struct TrackInfoView: View {
+	let player: Player
+	let session: Session
 	
-	func speakerSymbol() -> some View {
-		Group {
-			Group { () -> Image in
-				if playbackInfo.volume > 0.66 {
-					return Image("speaker.3.fill")
-				} else if playbackInfo.volume > 0.33 {
-					return Image("speaker.2.fill")
-				} else if playbackInfo.volume > 0 {
-					return Image("speaker.1.fill")
-				} else {
-					return Image("speaker.fill") // or 􀊣
+	@EnvironmentObject var queueInfo: QueueInfo
+	
+	var body: some View {
+		HStack {
+			if !player.queueInfo.queue.isEmpty,
+			   let track = queueInfo.queue[queueInfo.currentIndex].track {
+				HStack {
+					if let coverUrlSmall = track.getCoverUrl(session: session, resolution: 320),
+					   let coverUrlBig = track.getCoverUrl(session: session, resolution: 1280) {
+						URLImageSourceView(
+							coverUrlSmall,
+							isAnimationEnabled: true,
+							label: Text(track.album.title)
+						)
+						.frame(width: 30, height: 30)
+						.cornerRadius(CORNERRADIUS)
+						.toolTip("Show cover in new window")
+						.onTapGesture {
+							print("Big Cover")
+							let title = "\(track.title) – \(track.album.title)"
+							let controller = ImageWindowController(
+								imageUrl: coverUrlBig,
+								title: title
+							)
+							controller.window?.title = title
+							controller.showWindow(nil)
+						}
+					} else {
+						Rectangle()
+							.foregroundColor(.black)
+							.frame(width: 30, height: 30)
+							.cornerRadius(CORNERRADIUS)
+					}
+					
+					VStack(alignment: .leading) {
+						HStack {
+							Text("\(track.title)")
+							if let version = track.version {
+								Text(version)
+									.foregroundColor(.secondary)
+									.padding(.leading, -5)
+									.layoutPriority(-1)
+							}
+							Text(player.currentQualityString())
+								.fontWeight(.light)
+								.foregroundColor(.orange)
+							Text(player.maxQualityString())
+								.fontWeight(.light)
+								.foregroundColor(.secondary)
+						}
+						.toolTip(trackToolTipString(for: track))
+						Text("\(track.artists.formArtistString()) – \(track.album.title)")
+							.foregroundColor(.secondary)
+							.toolTip("\(track.artists.formArtistString()) – \(track.album.title)")
+					}
+					Spacer()
+						.layoutPriority(-1)
 				}
+			} else {
+				Spacer()
 			}
-			.primaryIconColor()
 		}
 	}
 	
@@ -220,6 +135,75 @@ struct PlayerInfoView: View {
 		}
 		s += track.artists.formArtistString()
 		return s
+	}
+}
+
+struct PlaybackControls: View {
+	let player: Player
+	
+	@EnvironmentObject var playbackInfo: PlaybackInfo
+	
+	var body: some View {
+		VStack {
+			HStack {
+				Spacer()
+				Group {
+					if playbackInfo.shuffle {
+						Image(nsImage: NSImage(named: "shuffle")!.tint(color: .controlAccentColor))
+					} else {
+						Image("shuffle")
+							.primaryIconColor()
+							.onTapGesture {
+								playbackInfo.shuffle.toggle()
+							}
+					}
+				}
+				.toolTip("Shuffle")
+				.onTapGesture {
+					playbackInfo.shuffle.toggle()
+				}
+				Image("backward.fill")
+					.primaryIconColor()
+					.onTapGesture {
+						player.previous()
+					}
+				if playbackInfo.playing {
+					Image("pause.fill")
+						.primaryIconColor()
+						.onTapGesture {
+							player.pause()
+						}
+				} else {
+					Image("play.fill")
+						.primaryIconColor()
+						.onTapGesture {
+							player.play()
+						}
+				}
+				Image("forward.fill")
+					.primaryIconColor()
+					.onTapGesture {
+						player.next()
+					}
+				Group {
+					if playbackInfo.repeatState == .single {
+						Image(nsImage: NSImage(named: "repeat1")!.tint(color: .controlAccentColor))
+					} else if playbackInfo.repeatState == .all {
+						Image(nsImage: NSImage(named: "repeat")!.tint(color: .controlAccentColor))
+					} else {
+						Image("repeat")
+							.primaryIconColor()
+					}
+				}
+				.toolTip("Repeat")
+				.onTapGesture {
+					player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
+					print("Repeat: \(player.playbackInfo.repeatState)")
+				}
+				Spacer()
+			}
+			ProgressBar(player: player)
+		}
 	}
 }
 
@@ -251,5 +235,52 @@ struct ProgressBar: View {
 									   options: .interactiveTrack)
 		)
 			.frame(height: 5)
+	}
+}
+
+struct VolumeControl: View {
+	let player: Player
+	
+	@EnvironmentObject var playbackInfo: PlaybackInfo
+	
+	var body: some View {
+		HStack {
+			speakerSymbol()
+				.frame(width: 20, alignment: .leading)
+				.onTapGesture {
+					player.toggleMute()
+				}
+			ValueSlider(value: $playbackInfo.volume, in: 0.0...1.0)
+				.valueSliderStyle(
+					HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
+						Rectangle()
+							.foregroundColor(.secondary)
+							.frame(height: 4))
+						.background(Color.secondary)
+						.frame(height: 4)
+						.cornerRadius(3),
+											   thumbSize: CGSize(width: 15, height: 15),
+											   options: .interactiveTrack)
+			)
+				.frame(width: 80)
+				.layoutPriority(1)
+		}
+	}
+	
+	func speakerSymbol() -> some View {
+		Group {
+			Group { () -> Image in
+				if playbackInfo.volume > 0.66 {
+					return Image("speaker.3.fill")
+				} else if playbackInfo.volume > 0.33 {
+					return Image("speaker.2.fill")
+				} else if playbackInfo.volume > 0 {
+					return Image("speaker.1.fill")
+				} else {
+					return Image("speaker.fill") // or 􀊣
+				}
+			}
+			.primaryIconColor()
+		}
 	}
 }
