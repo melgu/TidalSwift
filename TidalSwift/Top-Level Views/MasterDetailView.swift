@@ -8,6 +8,7 @@
 
 import SwiftUI
 import TidalSwiftLib
+import Introspect
 
 struct MasterDetailView: View {
     let session: Session
@@ -81,16 +82,24 @@ struct SearchField: View {
 	@EnvironmentObject var viewState: ViewState
 	
 	@State var searchTerm: String
+	@State var becomeFirstResponder = true
 	
 	var body: some View {
 		TextField("Search", text: $searchTerm, onCommit: {
 			print("Search Commit: \(searchTerm)")
 			viewState.searchTerm = searchTerm
-			if !searchTerm.isEmpty {
+			if !searchTerm.isEmpty && searchTerm != viewState.lastSearchTerm {
 				selection = .search
 			}
 		})
-			.textFieldStyle(RoundedBorderTextFieldStyle())
+		.textFieldStyle(RoundedBorderTextFieldStyle())
+		.introspectTextField { textField in
+			print("Introspect SearchField")
+			if becomeFirstResponder {
+				textField.becomeFirstResponder()
+				becomeFirstResponder = false
+			}
+		}
 	}
 }
 

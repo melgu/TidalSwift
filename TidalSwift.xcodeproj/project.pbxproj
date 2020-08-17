@@ -120,6 +120,7 @@
 		B0D974CF230CC9BB00695388 /* ArtistGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D974CE230CC9BB00695388 /* ArtistGrid.swift */; };
 		B0D974D1230CC9C600695388 /* PlaylistGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D974D0230CC9C600695388 /* PlaylistGrid.swift */; };
 		B0D974D5230CD60D00695388 /* PlayerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D974D4230CD60D00695388 /* PlayerInfoView.swift */; };
+		B0D9CB4424EB02A000ECCB09 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = B0D9CB4324EB02A000ECCB09 /* Introspect */; };
 		B0E40E7C24265CAD00987879 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E40E7A24265C8000987879 /* Extensions.swift */; };
 		B0E40E7E2426DDC100987879 /* FavoritesConverters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E40E7D2426DDC100987879 /* FavoritesConverters.swift */; };
 		B0E8078C230615AD00E43B5D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E8078B230615AD00E43B5D /* AppDelegate.swift */; };
@@ -407,6 +408,7 @@
 				B0F6B245240D875D00F35C8A /* Sliders in Frameworks */,
 				B08B819B235F85C3001C35C9 /* TidalSwiftLib.framework in Frameworks */,
 				B09CB16A23751D0700677763 /* ImageIOSwiftUI in Frameworks */,
+				B0D9CB4424EB02A000ECCB09 /* Introspect in Frameworks */,
 				B0F6B242240D86FD00F35C8A /* Grid in Frameworks */,
 				B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */,
 			);
@@ -858,6 +860,7 @@
 				B0F6B241240D86FD00F35C8A /* Grid */,
 				B0F6B244240D875D00F35C8A /* Sliders */,
 				B0EAD6F624E4EB4D0009A5E2 /* UpdateNotification */,
+				B0D9CB4324EB02A000ECCB09 /* Introspect */,
 			);
 			productName = TidalSwift;
 			productReference = B0E80789230615AD00E43B5D /* TidalSwift.app */;
@@ -924,6 +927,7 @@
 				B0F6B240240D86FD00F35C8A /* XCRemoteSwiftPackageReference "swiftui-grid" */,
 				B0F6B243240D875D00F35C8A /* XCRemoteSwiftPackageReference "swiftui-sliders" */,
 				B0EAD6F524E4EB4D0009A5E2 /* XCRemoteSwiftPackageReference "UpdateNotification" */,
+				B0D9CB4224EB02A000ECCB09 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = B0E582CF223764A500ADAE6C /* Products */;
 			projectDirPath = "";
@@ -1444,7 +1448,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 31;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1474,7 +1478,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 31;
 				DEVELOPMENT_ASSET_PATHS = "TidalSwift/Preview\\ Content";
 				DEVELOPMENT_TEAM = V7E5P7292M;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1610,6 +1614,14 @@
 				minimumVersion = 1.0.2;
 			};
 		};
+		B0D9CB4224EB02A000ECCB09 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:siteline/SwiftUI-Introspect.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 		B0EAD6F524E4EB4D0009A5E2 /* XCRemoteSwiftPackageReference "UpdateNotification" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:melgu/UpdateNotification.git";
@@ -1641,6 +1653,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B09CB16823751D0700677763 /* XCRemoteSwiftPackageReference "ImageIOSwift" */;
 			productName = ImageIOSwiftUI;
+		};
+		B0D9CB4324EB02A000ECCB09 /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0D9CB4224EB02A000ECCB09 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
 		};
 		B0EAD6F624E4EB4D0009A5E2 /* UpdateNotification */ = {
 			isa = XCSwiftPackageProductDependency;

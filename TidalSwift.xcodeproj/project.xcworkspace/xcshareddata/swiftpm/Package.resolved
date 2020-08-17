@@ -20,6 +20,15 @@
         }
       },
       {
+        "package": "Introspect",
+        "repositoryURL": "git@github.com:siteline/SwiftUI-Introspect.git",
+        "state": {
+          "branch": null,
+          "revision": "de5c32c15ae169cfcb27397ffb2734dcd0e1e6d5",
+          "version": "0.1.0"
+        }
+      },
+      {
         "package": "Sliders",
         "repositoryURL": "git@github.com:spacenation/swiftui-sliders.git",
         "state": {
@@ -33,7 +42,7 @@
         "repositoryURL": "git@github.com:melgu/UpdateNotification.git",
         "state": {
           "branch": "main",
-          "revision": "9dbcbf977051ddd8e433183dc2b5b22b9d2bffb6",
+          "revision": "8f8df49c6bde522be5ad257e861d2e6bdb2c0975",
           "version": null
         }
       }
