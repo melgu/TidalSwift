@@ -243,7 +243,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 					viewState.stack = tempStack
 				}
 			}
-			viewState.searchTerm = UserDefaults.standard.string(forKey: "SearchTerm") ?? ""
+			if let searchTerm = UserDefaults.standard.string(forKey: "SearchTerm") {
+				viewState.searchTerm = searchTerm
+				viewState.lastSearchTerm = searchTerm
+			}
 			
 			if let data = UserDefaults.standard.data(forKey: "ViewStateHistory") {
 				if let tempHistory = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
