@@ -21,19 +21,14 @@ struct MixPlaylistView: View {
 				VStack(alignment: .leading) {
 					if let mix = viewState.stack.last?.mix, let tracks = viewState.stack.last?.tracks {
 						HStack {
-							MixImage(mix: mix, session: session)
+							MixImage(mix: mix, highResolutionImages: false, session: session)
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 								.onTapGesture {
-									if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: 320) {
-										let controller = ImageWindowController(
-											imageUrl: imageUrl,
-											title: mix.title
-										)
-										controller.window?.title = mix.title
-										controller.showWindow(nil)
-									}
+									let controller = ResizableWindowController(rootView: MixImage(mix: mix, highResolutionImages: true, session: session), width: 640, height: 640)
+									controller.window?.title = mix.title
+									controller.showWindow(nil)
 								}
 							
 							VStack(alignment: .leading) {
