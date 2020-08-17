@@ -250,10 +250,11 @@ struct MixImage: View {
 					.rotationEffect(Angle(degrees: -12))
 					.position(CGPoint(x: metrics.size.width * 2, y: metrics.size.width * 0.4))
 					.scaleEffect(1)
-//					.animation(Animation.linear(duration: 10).repeatForever(autoreverses: false))
-//					.onAppear {
-//						scrollImages.toggle()
-//					}
+					.onAppear {
+						withAnimation(Animation.linear(duration: 10).repeatForever(autoreverses: false)) {
+							scrollImages.toggle()
+						}
+					}
 				}
 				.contentShape(Rectangle())
 				.clipped()
