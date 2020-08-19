@@ -11,17 +11,16 @@ import SDAVAssetExportSession
 
 public final class DownloadStatus: ObservableObject {
 	@Published public var downloadingTasks: Int = 0
-	private let semaphore = DispatchSemaphore(value: 1)
 	
 	func startTask() {
-		DispatchQueue.main.sync {
-			downloadingTasks += 1
+		DispatchQueue.main.async { [weak self] in
+			self?.downloadingTasks += 1
 		}
 	}
 	
 	func finishTask() {
-		DispatchQueue.main.sync {
-			downloadingTasks -= 1
+		DispatchQueue.main.async { [weak self] in
+			self?.downloadingTasks -= 1
 		}
 	}
 }
