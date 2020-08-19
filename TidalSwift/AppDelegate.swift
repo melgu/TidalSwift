@@ -297,7 +297,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		window.makeKeyAndOrderFront(nil)
 		
-		updateCheck()
+		updateCheck(showNoUpdatesAlert: false)
 		
 		sc.session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
 		
@@ -313,11 +313,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		true
 	}
 	
-	func updateCheck() {
+	func updateCheck(showNoUpdatesAlert: Bool) {
 		DispatchQueue.global(qos: .background).async { [unowned self] in
 			if updateNotification.checkForUpdates() {
 				DispatchQueue.main.async {
 					updateNotification.showNewVersionView()
+				}
+			} else if showNoUpdatesAlert {
+				DispatchQueue.main.async {
+					let alert = NSAlert()
+					alert.messageText = "No updates available"
+					alert.informativeText = "You are already on the latest version"
+					alert.alertStyle = .informational
+					alert.addButton(withTitle: "OK")
+					alert.runModal()
 				}
 			}
 		}
@@ -536,16 +545,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	// MARK: - TidalSwift
 	
 	@IBAction func checkForUpdates(_ sender: Any) {
-		if updateNotification.checkForUpdates() {
-			updateNotification.showNewVersionView()
-		} else {
-			let alert = NSAlert()
-			alert.messageText = "No updates available"
-			alert.informativeText = "You are already on the latest version"
-			alert.alertStyle = .informational
-			alert.addButton(withTitle: "OK")
-			alert.runModal()
-		}
+		updateCheck(showNoUpdatesAlert: true)
 	}
 	
 	@IBAction func changelog(_ sender: Any) {
