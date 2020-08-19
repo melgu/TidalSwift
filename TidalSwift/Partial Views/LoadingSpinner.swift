@@ -54,6 +54,7 @@ struct LoadingSpinner: View {
 		Group {
 			if loadingState == .loading {
 				Image("arrow.2.circlepath-big")
+					.primaryIconColor()
 					.frame(width: 30, height: 30)
 					.rotationEffect(animate ? .degrees(360) : .degrees(0))
 					.animation(Animation.linear(duration: 1).repeatForever(autoreverses: false))
@@ -62,13 +63,13 @@ struct LoadingSpinner: View {
 					}
 			} else if loadingState == .error {
 				Image("wifi.exclamationmark-big")
-				.toolTip("Your connection appears to be offline")
+					.primaryIconColor()
+					.toolTip("Your connection appears to be offline")
 					.onTapGesture {
 						viewState.refreshCurrentView()
 					}
 			}
 		}
-		.primaryIconColor()
 	}
 }
 
