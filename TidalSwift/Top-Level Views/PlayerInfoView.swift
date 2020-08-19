@@ -55,7 +55,7 @@ struct PlayerInfoView: View {
 			}
 			.frame(height: 30)
 			.padding([.top, .horizontal])
-			Divider()
+//			Divider()
 		}
 	}
 }

@@ -222,13 +222,13 @@ class FavoritesTests: XCTestCase {
 		let dateDesc = favorites.playlists(order: .dateAdded, orderDirection: .descending)
 		XCTAssertNotNil(dateAsc)
 		XCTAssertNotNil(dateDesc)
-		XCTAssertEqual(dateAsc?.reversed(), dateDesc) // TODO: Vermutlich ein Unterschied, wenn zwei Playlists das gleiche Datum haben
+		XCTAssertEqual(dateAsc?.reversed(), dateDesc) // TODO: Probably a difference if two playlists have the same date
 		
 		let nameAsc = favorites.playlists(order: .name, orderDirection: .ascending)
 		let nameDesc = favorites.playlists(order: .name, orderDirection: .descending)
 		XCTAssertNotNil(nameAsc)
 		XCTAssertNotNil(nameDesc)
-		XCTAssertEqual(nameAsc?.reversed(), nameDesc) // TODO: Vermutlich ein Unterschied, wenn zwei Playlists das gleiche Datum haben
+		XCTAssertEqual(nameAsc?.reversed(), nameDesc) // TODO: Probably a difference if two playlists have the same date
 	}
 	
 	func testUserPlaylists() {
@@ -384,8 +384,9 @@ class FavoritesTests: XCTestCase {
 		XCTAssertTrue(r1)
 		
 		
-		// TODO: Warum funktionieren die kommenden Tests nicht?
-		// Die Playlist wird tatsächlich hinzugefügt, taucht aber hier in der Abfrage nicht auf
+		// TODO: Why don't the following tests work?
+		// The playlist is actually added, but does not appear in the query here
+		// Caching maybe?
 		guard let doFavoritesContainPlaylist2 = favorites.doFavoritesContainPlaylist(playlistId: demoPlaylistId) else {
 			XCTFail("favorites.doFavoritesContainPlaylist() is nil")
 			return
