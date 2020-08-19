@@ -54,6 +54,7 @@ struct LoadingSpinner: View {
 		Group {
 			if loadingState == .loading {
 				Image("arrow.2.circlepath-big")
+					.frame(width: 30, height: 30)
 					.rotationEffect(animate ? .degrees(360) : .degrees(0))
 					.animation(Animation.linear(duration: 1).repeatForever(autoreverses: false))
 					.onAppear {
