@@ -3,7 +3,7 @@
 //  MP42Foundation
 //
 //  Created by Andrew Hyatt on 4/19/18.
-//  Copyright © 2018 Damiano Galassi. All rights reserved.
+//  Copyright © 2020 Damiano Galassi. All rights reserved.
 //
 
 #ifndef MP42Foundation_h

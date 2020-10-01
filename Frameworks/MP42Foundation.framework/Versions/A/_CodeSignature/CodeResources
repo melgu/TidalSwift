@@ -6,7 +6,7 @@
 	<dict>
 		<key>Resources/Info.plist</key>
 		<data>
-		WElVAtXc0CCOwpBkFkmQ+Qw3soY=
+		FSfpe7itm1tvM+gTVrhRHABiepw=
 		</data>
 		<key>Resources/en.lproj/InfoPlist.strings</key>
 		<dict>
@@ -154,92 +154,92 @@
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>Headers/MP42-Swift.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			cCR/HJ0jiASjRgNJ37i7kL2vFTI=
+			</data>
+			<key>hash2</key>
+			<data>
+			lTsFCFrULwGN59pD8MujwwiZTFYBojJiZiWoO84YY+A=
+			</data>
+		</dict>
 		<key>Headers/MP42AudioTrack.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			1loK1yjUn+DWttvMSIHTUU6py7c=
+			VlniboWgZq3ounfSe8UI4OGFvz4=
 			</data>
 			<key>hash2</key>
 			<data>
-			N0QM3LJYQj2WarWuq3v+3sPCrBSg3b0AjLwK0UEG9ME=
+			5EPqAbofpkHSVTFfqUmjs2xOLl39NKLhXte/RTa/2V4=
 			</data>
 		</dict>
 		<key>Headers/MP42ChapterTrack.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			wXOIsWkKV+GGgVh0XrpojpBC3ro=
+			5E76T1sSbmWFqB29HD1YeuKFIJM=
 			</data>
 			<key>hash2</key>
 			<data>
-			WXdBj8FKrabGyZlgpCli434POEk2QOuZgab2CfRn9uM=
+			8T/SIxcZVXR966bWIsYQr+FLD3pcJsvpDreTkHDT/DU=
 			</data>
 		</dict>
 		<key>Headers/MP42ClosedCaptionTrack.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			lcYQ6ZOX9lIlKCuHeoh5Npa2Urw=
+			AGWs20jsIeYNavCr6x5fCtwaDVE=
 			</data>
 			<key>hash2</key>
 			<data>
-			IzOF1HTxFKhJfxPLpju2u4aOlROasQBoUygST2oJLGs=
+			UIalyMPQ+2WlmNhkNowRKwpev5cEWydUv2LHKyFAhGo=
 			</data>
 		</dict>
 		<key>Headers/MP42ConversionSettings.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			jIRX8v74fjJV5ISLu++UPcpxTyM=
+			yM6Ap9F64OEjaL2PWrqvmTSWr9U=
 			</data>
 			<key>hash2</key>
 			<data>
-			6Dl0wOZpVqfSeFf8DzbdZ4tt17ouG3awDVBkCxXCNoQ=
+			2F28icPOUveIkCR+CIxgvbKw3pdelxby29gFVF1JAYE=
 			</data>
 		</dict>
 		<key>Headers/MP42File.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			IBmc6xhH/y6p4bI0s/8M8XM2ccQ=
+			BE/zGnaR9bpeVz2o09/vfVaTZYI=
 			</data>
 			<key>hash2</key>
 			<data>
-			SjquQUqoXYDd4Zl9HPviEGr5d+wGK5UtrEaNvbkx9FM=
+			se4Iius2iQlR14EeogQUPNuyEuv2gRgQtERlFB8ozfs=
 			</data>
 		</dict>
 		<key>Headers/MP42FileImporter.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			WghxmYyCH61BMVvkXf0CUWxiHGo=
+			X06LTAjoeeJHoAglvpG4LPnAb9I=
 			</data>
 			<key>hash2</key>
 			<data>
-			je/C4kJZd3vzxtHDlTM08aFy2g0XhlsEuODLhUU9zDo=
-			</data>
-		</dict>
-		<key>Headers/MP42Foundation-Swift.h</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			hzNXx5OGSDXILy2GxvznT36pr/Y=
-			</data>
-			<key>hash2</key>
-			<data>
-			VFJnkDWvOEyHNS39yx2ciHzXnAaQzLo2xXHDf9xJ1Sc=
+			sCq/Mur7osoq85Q4mkmyvWcStAIJa2a/xXClOVC3/68=
 			</data>
 		</dict>
 		<key>Headers/MP42Foundation.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			fVQ6Vxybdy8ETpHKL66a+jDEViQ=
+			82JLUzoIkh0Lj0oO7UxlVKIRimQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			34yf8VSFXDWG7EguFhzst9GAlC5kG0i1WKLo8YG7efo=
+			nFVIc4/oDbk0HR7KjMSzyGxMUxxTL90nrbb4l++Wqfg=
 			</data>
 		</dict>
 		<key>Headers/MP42Image.h</key>
@@ -268,11 +268,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			e9GI/0KlhQjulcgclowq4nT6jYo=
+			vbOlog4rBIu0VL8o5Qdq29cad8I=
 			</data>
 			<key>hash2</key>
 			<data>
-			39SloBmd72aQoh/r6GUSem8ZCI8MP2KQTArMVbZ3BbE=
+			x4/sfbJXnbJEHPIWl42mO5h6LJp8qzW+646Zjx85JoA=
 			</data>
 		</dict>
 		<key>Headers/MP42MediaFormat.h</key>
@@ -290,275 +290,209 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			cxZu/x2furWCjs8m+m50893v3/c=
+			uK/oed1mdXma0nO3mHm7iK+qKrg=
 			</data>
 			<key>hash2</key>
 			<data>
-			C7cuyfQGzXl7dMaK5nqw/aO+xbC3KW8KAHhSUvuBmhE=
+			PLqFuaE3as3G2iUeGYf3PybvDfUYRZGaixt8p44Drok=
 			</data>
 		</dict>
 		<key>Headers/MP42MetadataFormat.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			J6fQJmArudiLv/f+CbPP+tYZbvM=
+			/kdZN+Q612AFRmyx9xIwh6IjtmY=
 			</data>
 			<key>hash2</key>
 			<data>
-			7371XpxMkrWO7jnJfa0N6fYeRREti2Sm8xfg+1mzTRI=
+			OhtN4IiVXJNMHGQeogVGWOT1X7R7PxtNpxkIO5Yhpg4=
 			</data>
 		</dict>
 		<key>Headers/MP42MetadataItem.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			tT9UuOA3acVT7Gtw+CfUroBQJVE=
+			mRGffRLtdp9HhaPoIJO5bSlI3UQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			+zZZRwLus/6Y19N+TIOsxkA/6dfdJJp3FwoyUtLhlhE=
+			JQtgeM5h8llN/Xe6JdwL+XaHLX7eX1iFDyL19x4d50w=
 			</data>
 		</dict>
 		<key>Headers/MP42RelatedItem.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			JsmgDX4ULnItllrY+tcqRK7jGq0=
+			EwkqwnAPTn1P9K0vfOQduN1TO/Y=
 			</data>
 			<key>hash2</key>
 			<data>
-			og169QX9yuxIsGstIuxRyBqA8MKf8I8k5xr0ueXcDcs=
+			WIRkFEhVTn6d5W+yctfqeuvwS+ubKRqB8zy8fHq0yWk=
 			</data>
 		</dict>
 		<key>Headers/MP42SecurityAccessToken.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			iUNZ5Rs0tq/11FoxlGDrqtnpqPI=
+			R/GaaUfatBKSkQ8RkPHqX9PlEEM=
 			</data>
 			<key>hash2</key>
 			<data>
-			WN64VGjz5v/zDxhIPwlhUdQPgYmlQM6ZaGfLO8C1No0=
+			GTnKKj3edVXPlHZghcLMM2rGMNC14nVN5YjbyAiDQGM=
 			</data>
 		</dict>
 		<key>Headers/MP42SubtitleTrack.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			8VIszDotNbVA9SXdij46D5drpaM=
+			wt5xxAD7M1mLJaoMe49fGYqGLrk=
 			</data>
 			<key>hash2</key>
 			<data>
-			0cA7PMDh/Tv6svAj+AG+Tm5MAu1pz7N5mrESGCtK4ZQ=
+			3CX7Vh0+prJXJnPqjZ5qi/nx1vZS6ocR5s2PMqQPj0g=
 			</data>
 		</dict>
 		<key>Headers/MP42TextSample.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			1ad2f/jrX9AB7B9ZLFkRWL/IIWQ=
+			50yUN4wfpTXO9ojUFShhC1BBlSg=
 			</data>
 			<key>hash2</key>
 			<data>
-			Qb5RLA7hg82DPEQLF6pFYCSfARxb5He/AdzcQ5oKPbI=
+			ifpf67COIZzhuhM50Lp/ofPzZI9+HoZqbNeJ923+W+w=
 			</data>
 		</dict>
 		<key>Headers/MP42Track.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			uU4ZAH3RV3PVeWdGqcyMuMa2oTQ=
+			Si/OOaQtV8pH7g4ehIYVHJYs6V4=
 			</data>
 			<key>hash2</key>
 			<data>
-			Foks0xjIdsjp2GL22epHs1+ljrR/qvcFIM+Ea7Ldjdc=
+			sT4Znst8pDF9RrnPgsL2qagS244MWrhYn7s59kqJuD0=
 			</data>
 		</dict>
 		<key>Headers/MP42Utilities.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			viR3LUaqfRGTk9gdPpsjVez0k6g=
+			lB/qAueDtBUqKednKJYZNcKA1iE=
 			</data>
 			<key>hash2</key>
 			<data>
-			dDo2BS91EwIecN2Lo+35KasnPJLlFe6KJUbRkhLg1jQ=
+			Wj/IuegA0jGc9Mt8XU/69sOT0nTp3T0tCZNrR63zyCg=
 			</data>
 		</dict>
 		<key>Headers/MP42VideoTrack.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			t8sfLKGPNNvBN7xFHrGB8LKunEE=
+			jJPDKjfjIxO85eBinEd+6eGLzGs=
 			</data>
 			<key>hash2</key>
 			<data>
-			WEm7j7PSJqhjjwLxRZbHiFAWFagMtKOLhY3jW70fTqg=
+			ixTOaiQ6GjoxJO9gNr3O2PQq9IFC5neQgQRt2D4dWcs=
 			</data>
 		</dict>
 		<key>Headers/NSString+MP42Additions.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			S42uAubbGLYa8CdKFtd4fnIwvHk=
+			OtdM7OPilB3h18+/SNdsJW4YcBw=
 			</data>
 			<key>hash2</key>
 			<data>
-			jrgTj100fUSvWs0zEHU04/KgDFEDhmDnTZ7NdYVXL0A=
-			</data>
-		</dict>
-		<key>Modules/MP42Foundation.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Hn8T2trS4jvRHhUXmK1EtzjFDTk=
-			</data>
-			<key>hash2</key>
-			<data>
-			M1FjdFmJLZ8LZutzxEyqt6TqvP09czJKUaIuzf13a7o=
-			</data>
-		</dict>
-		<key>Modules/MP42Foundation.swiftmodule/Project/arm64.swiftsourceinfo</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Hn8T2trS4jvRHhUXmK1EtzjFDTk=
-			</data>
-			<key>hash2</key>
-			<data>
-			M1FjdFmJLZ8LZutzxEyqt6TqvP09czJKUaIuzf13a7o=
+			MHCyGm7Www6D0yQk6ftjhGEXeQPtu251Zkw5myCnM14=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/x86_64-apple-macos.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			3iSJ7CYJFi+10D+XIhcZTlb6OR8=
+			3ul0lJMLjsVNUiZKrMEuqPqzJpg=
 			</data>
 			<key>hash2</key>
 			<data>
-			NTf+TGMxSalmSuJVPdTZarvJLjtf31t0BWHOw2cKjNY=
+			gEFQttU6qFykhANgX05JGDAC0BmsMIjM/gmrEiieZPk=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/x86_64.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			3iSJ7CYJFi+10D+XIhcZTlb6OR8=
+			3ul0lJMLjsVNUiZKrMEuqPqzJpg=
 			</data>
 			<key>hash2</key>
 			<data>
-			NTf+TGMxSalmSuJVPdTZarvJLjtf31t0BWHOw2cKjNY=
-			</data>
-		</dict>
-		<key>Modules/MP42Foundation.swiftmodule/arm64-apple-macos.swiftdoc</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			PFaZzcbJ36Ws+v9ywsdviXJe5MA=
-			</data>
-			<key>hash2</key>
-			<data>
-			DnS32wQL86vZPWE8j648wqA05SV1sapUnVuwnHNTOfQ=
-			</data>
-		</dict>
-		<key>Modules/MP42Foundation.swiftmodule/arm64-apple-macos.swiftmodule</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Y500s3+MWvdJBxayoxyUpgWO0YE=
-			</data>
-			<key>hash2</key>
-			<data>
-			+pIN6Y6/yoQ8S325cRjVNsBVjOIkkD+qYdrjte6HB1A=
-			</data>
-		</dict>
-		<key>Modules/MP42Foundation.swiftmodule/arm64.swiftdoc</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			PFaZzcbJ36Ws+v9ywsdviXJe5MA=
-			</data>
-			<key>hash2</key>
-			<data>
-			DnS32wQL86vZPWE8j648wqA05SV1sapUnVuwnHNTOfQ=
-			</data>
-		</dict>
-		<key>Modules/MP42Foundation.swiftmodule/arm64.swiftmodule</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Y500s3+MWvdJBxayoxyUpgWO0YE=
-			</data>
-			<key>hash2</key>
-			<data>
-			+pIN6Y6/yoQ8S325cRjVNsBVjOIkkD+qYdrjte6HB1A=
+			gEFQttU6qFykhANgX05JGDAC0BmsMIjM/gmrEiieZPk=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64-apple-macos.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			6uEYXEjZV/uYwJSx0HwueH3ctGg=
+			K2uPv8/tOZYDKAzPGv1QjeXyPvw=
 			</data>
 			<key>hash2</key>
 			<data>
-			qBkKxfTtF9kt9X790qCkc850lgfGdr/BpNjEgPc3/Hc=
+			Fr8NLK1BS8SXc4s+kkxZ+r8TV0nsDbrifx82cri1VvE=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64-apple-macos.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			89H4b6Pe3AMfTBLMMad2HlOCjA4=
+			aJPZqM90YIhBCabbYZKvXH8D9ug=
 			</data>
 			<key>hash2</key>
 			<data>
-			BPbytNxmMHgpsNHrVIQGAHauzSZLDb5odOKnjJozxpg=
+			ud+O8+wBjVEOxKnotyrYMCUGUjCn/J0IilcxiJ1iqkc=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			6uEYXEjZV/uYwJSx0HwueH3ctGg=
+			K2uPv8/tOZYDKAzPGv1QjeXyPvw=
 			</data>
 			<key>hash2</key>
 			<data>
-			qBkKxfTtF9kt9X790qCkc850lgfGdr/BpNjEgPc3/Hc=
+			Fr8NLK1BS8SXc4s+kkxZ+r8TV0nsDbrifx82cri1VvE=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			89H4b6Pe3AMfTBLMMad2HlOCjA4=
+			aJPZqM90YIhBCabbYZKvXH8D9ug=
 			</data>
 			<key>hash2</key>
 			<data>
-			BPbytNxmMHgpsNHrVIQGAHauzSZLDb5odOKnjJozxpg=
+			ud+O8+wBjVEOxKnotyrYMCUGUjCn/J0IilcxiJ1iqkc=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			bBd7ErnaWFQv4Czu7Aina91deB4=
+			oWS9AYDU5i7KF4QjlnOSHJM2OgA=
 			</data>
 			<key>hash2</key>
 			<data>
-			5jGZOjfFikLvmkHWJfB0WkNYawGutinkgRviWrNFGjc=
+			VmvtpkKZ7zvtg/VhUtd2l8d6AZdxkvIuYALoEA+dDKU=
 			</data>
 		</dict>
 		<key>Resources/Info.plist</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			WElVAtXc0CCOwpBkFkmQ+Qw3soY=
+			FSfpe7itm1tvM+gTVrhRHABiepw=
 			</data>
 			<key>hash2</key>
 			<data>
-			2yiobKr6PPllt2e2YP+0SHFCnRHQe9lYP7VfJw4m2Yo=
+			QE0OpxPc9JjEZmO8tDDk9i+iHtKIcBWxNCC4V6jwINU=
 			</data>
 		</dict>
 		<key>Resources/en.lproj/InfoPlist.strings</key>

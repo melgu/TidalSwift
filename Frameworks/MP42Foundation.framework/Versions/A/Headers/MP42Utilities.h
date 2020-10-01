@@ -3,7 +3,7 @@
 //  MP42Foundation
 //
 //  Created by Damiano Galassi on 16/11/13.
-//  Copyright (c) 2013 Damiano Galassi. All rights reserved.
+//  Copyright (c) 2020 Damiano Galassi. All rights reserved.
 //
 
 #import <MP42Foundation/MP42MediaFormat.h>
@@ -21,8 +21,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-NSString * StringFromTime(long long time, long timeScale);
-MP42Duration TimeFromString(NSString *SMPTE_string, MP42Duration timeScale);
+NSString * StringFromTime(long long time, int32_t timeScale);
+MP42Duration TimeFromString(NSString *SMPTE_string, int32_t timeScale);
 
 BOOL isTrackMuxable(FourCharCode formatName);
 BOOL trackNeedConversion(FourCharCode formatName);

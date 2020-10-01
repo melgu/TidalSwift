@@ -6,6 +6,6 @@ framework module MP42Foundation {
 }
 
 module MP42Foundation.Swift {
-    header "MP42Foundation-Swift.h"
+    header "MP42-Swift.h"
     requires objc
 }

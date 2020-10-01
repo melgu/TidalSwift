@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 06/02/09.
-//  Copyright 2009 Damiano Galassi. All rights reserved.
+//  Copyright 2020 Damiano Galassi. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MP42ChapterTrack : MP42Track <NSSecureCoding>
 
-- (instancetype)initWithSourceURL:(NSURL *)URL trackID:(NSInteger)trackID fileHandle:(MP42FileHandle)fileHandle;
+- (instancetype)initWithSourceURL:(NSURL *)URL trackID:(MP42TrackId)trackID fileHandle:(MP42FileHandle)fileHandle;
 + (instancetype)chapterTrackFromFile:(NSURL *)URL;
 
 - (NSUInteger)addChapter:(MP42TextSample *)chapter;

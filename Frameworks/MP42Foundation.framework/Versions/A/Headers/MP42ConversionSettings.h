@@ -3,7 +3,7 @@
 //  MP42Foundation
 //
 //  Created by Damiano Galassi on 12/09/2016.
-//  Copyright © 2016 Damiano Galassi. All rights reserved.
+//  Copyright © 2020 Damiano Galassi. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -21,11 +21,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MP42AudioConversionSettings : MP42ConversionSettings <NSCopying, NSSecureCoding>
 
-+ (instancetype)audioConversionWithBitRate:(NSUInteger)bitrate mixDown:(MP42AudioMixdown)mixDown drc:(float)drc;
++ (instancetype)audioConversionWithBitRate:(UInt32)bitrate mixDown:(MP42AudioMixdown)mixDown drc:(float)drc;
 
-- (instancetype)initWithFormat:(FourCharCode)format bitRate:(NSUInteger)bitRate mixDown:(MP42AudioMixdown)mixDown drc:(float)drc;
+- (instancetype)initWithFormat:(FourCharCode)format bitRate:(UInt32)bitRate mixDown:(MP42AudioMixdown)mixDown drc:(float)drc;
 
-@property (nonatomic, readonly) NSUInteger bitRate;
+@property (nonatomic, readonly) UInt32 bitRate;
 
 @property (nonatomic, readonly) MP42AudioMixdown mixDown;
 @property (nonatomic, readonly) float drc;
