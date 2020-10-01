@@ -3,7 +3,7 @@
 //  Subler
 //
 //  Created by Damiano Galassi on 31/01/10.
-//  Copyright 2010 Damiano Galassi All rights reserved.
+//  Copyright 2020 Damiano Galassi All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -19,7 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 @class MP42Metadata;
 @class MP42Track;
 
-
 @interface MP42FileImporter : NSObject
 
 + (NSArray<NSString *> *)supportedFileFormats;
@@ -33,15 +32,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Override
 
-- (NSUInteger)timescaleForTrack:(MP42Track *)track;
-- (NSSize)sizeForTrack:(MP42VideoTrack *)track;
 - (nullable NSData *)magicCookieForTrack:(MP42Track *)track;
 - (AudioStreamBasicDescription)audioDescriptionForTrack:(MP42AudioTrack *)track;
-- (BOOL)cleanUp:(MP42Track *)track fileHandle:(MP42FileHandle)fileHandle;
 
 - (BOOL)audioTrackUsesExplicitEncoderDelay:(MP42Track *)track;
 - (BOOL)supportsPreciseTimestamps;
+
+- (void)setup;
 - (void)demux;
+- (void)cleanUp:(MP42Track *)track fileHandle:(MP42FileHandle)fileHandle;
 
 #pragma mark - Private
 
