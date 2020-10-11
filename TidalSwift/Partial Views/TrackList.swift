@@ -21,20 +21,39 @@ struct TrackList: View {
 	let player: Player
 	
 	var body: some View {
-		ForEach(wrappedTracks) { wrappedTrack in
-			TrackRow(track: wrappedTrack.track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
-					 trackNumber: showAlbumTrackNumber ? nil : wrappedTrack.id, session: session)
-				.onTapGesture(count: 2) {
-					print("\(wrappedTrack.track.title)")
-					player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
-					player.play(atIndex: wrappedTrack.id)
+		if #available(OSX 11.0, *) {
+			LazyVStack {
+				ForEach(wrappedTracks) { wrappedTrack in
+					TrackRow(track: wrappedTrack.track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
+							 trackNumber: showAlbumTrackNumber ? nil : wrappedTrack.id, session: session)
+						.onTapGesture(count: 2) {
+							print("\(wrappedTrack.track.title)")
+							player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
+							player.play(atIndex: wrappedTrack.id)
+						}
+						.contextMenu {
+							TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: playlist != nil ? wrappedTrack.id : nil, playlist: playlist, session: session, player: player)
+						}
+					Divider()
 				}
-				.contextMenu {
-					TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: playlist != nil ? wrappedTrack.id : nil, playlist: playlist, session: session, player: player)
-				}
-			Divider()
+			}
+			.padding(.horizontal)
+		} else {
+			ForEach(wrappedTracks) { wrappedTrack in
+				TrackRow(track: wrappedTrack.track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
+						 trackNumber: showAlbumTrackNumber ? nil : wrappedTrack.id, session: session)
+					.onTapGesture(count: 2) {
+						print("\(wrappedTrack.track.title)")
+						player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
+						player.play(atIndex: wrappedTrack.id)
+					}
+					.contextMenu {
+						TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: playlist != nil ? wrappedTrack.id : nil, playlist: playlist, session: session, player: player)
+					}
+				Divider()
+			}
+			.padding(.horizontal)
 		}
-		.padding(.horizontal)
 	}
 }
 
