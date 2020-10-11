@@ -48,6 +48,8 @@ struct MasterView: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	
+	@State var becomeFirstResponder = true
+	
 	var body: some View {
 		VStack {
 			SearchField(selection: $selection, searchTerm: viewState.searchTerm)
@@ -72,6 +74,12 @@ struct MasterView: View {
 //					Text("Videos").tag(ViewType.favoriteVideos) // Add when Video downloading works
 				}
 			}.listStyle(SidebarListStyle())
+			.introspectScrollView { scrollView in
+				if becomeFirstResponder {
+					scrollView.becomeFirstResponder()
+					becomeFirstResponder = false
+				}
+			}
 		}
 	}
 }
@@ -82,7 +90,6 @@ struct SearchField: View {
 	@EnvironmentObject var viewState: ViewState
 	
 	@State var searchTerm: String
-	@State var becomeFirstResponder = true
 	
 	var body: some View {
 		TextField("Search", text: $searchTerm, onCommit: {
@@ -93,13 +100,6 @@ struct SearchField: View {
 			}
 		})
 		.textFieldStyle(RoundedBorderTextFieldStyle())
-		.introspectTextField { textField in
-//			print("Introspect SearchField")
-			if becomeFirstResponder {
-				textField.becomeFirstResponder()
-				becomeFirstResponder = false
-			}
-		}
 	}
 }
 
