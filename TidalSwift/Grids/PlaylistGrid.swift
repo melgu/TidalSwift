@@ -16,11 +16,20 @@ struct PlaylistGrid: View {
 	let player: Player
 	
 	var body: some View {
-		Grid(playlists) { playlist in
-			PlaylistGridItem(playlist: playlist, session: session, player: player)
-		}
-		.gridStyle(
-			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(200), spacing: 10)
-		)
+		if #available(OSX 11.0, *) {
+					LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
+						ForEach(playlists) { playlist in
+							PlaylistGridItem(playlist: playlist, session: session, player: player)
+						}
+					}
+				} else {
+					Grid(playlists) { playlist in
+						PlaylistGridItem(playlist: playlist, session: session, player: player)
+					}
+					.gridStyle(
+						ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(200), spacing: 10)
+					)
+				}
+		
 	}
 }

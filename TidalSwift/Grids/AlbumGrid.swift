@@ -36,11 +36,19 @@ struct AlbumGrid: View {
 	}
 	
 	var body: some View {
-		Grid(albums) { album in
-			AlbumGridItem(album: album, showArtists: showArtists, showReleaseDate: showReleaseDate, session: session, player: player)
+		if #available(OSX 11.0, *) {
+			LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
+				ForEach(albums) { album in
+					AlbumGridItem(album: album, showArtists: showArtists, showReleaseDate: showReleaseDate, session: session, player: player)
+				}
+			}
+		} else {
+			Grid(albums) { album in
+				AlbumGridItem(album: album, showArtists: showArtists, showReleaseDate: showReleaseDate, session: session, player: player)
+			}
+			.gridStyle(
+				ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(rowHeight), spacing: 10)
+			)
 		}
-		.gridStyle(
-			ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(rowHeight), spacing: 10)
-		)
 	}
 }
