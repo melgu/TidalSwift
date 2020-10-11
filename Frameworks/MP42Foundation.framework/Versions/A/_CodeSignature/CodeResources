@@ -151,6 +151,24 @@
 		<data>
 		TcmT4XpeP0ZGlqs26+RUF+7fK3Q=
 		</data>
+		<key>Resources/zh-Hans.lproj/InfoPlist.strings</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			UiJmpfTPdmBCZVi1Ou28cW2Lkwc=
+			</data>
+			<key>optional</key>
+			<true/>
+		</dict>
+		<key>Resources/zh-Hans.lproj/Localizable.strings</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			ZnOzNdxPftwCuflT+BB/NhYPhzs=
+			</data>
+			<key>optional</key>
+			<true/>
+		</dict>
 	</dict>
 	<key>files2</key>
 	<dict>
@@ -158,11 +176,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			cCR/HJ0jiASjRgNJ37i7kL2vFTI=
+			D1lXqVrXBqkNe7J+dKXjt3EvcbA=
 			</data>
 			<key>hash2</key>
 			<data>
-			lTsFCFrULwGN59pD8MujwwiZTFYBojJiZiWoO84YY+A=
+			C3y8JijHPGApHyE4p9TDgMx3rB1MRM0MHiKQq6vVnCU=
 			</data>
 		</dict>
 		<key>Headers/MP42AudioTrack.h</key>
@@ -407,6 +425,28 @@
 			MHCyGm7Www6D0yQk6ftjhGEXeQPtu251Zkw5myCnM14=
 			</data>
 		</dict>
+		<key>Modules/MP42Foundation.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			Yv/Vd5mzJVP2J6fRlx1mVyTgiTQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			I7huFyzEs1aw+Mo1zB4Q6N0ySB2PJeZJz9RIUaSXiZg=
+			</data>
+		</dict>
+		<key>Modules/MP42Foundation.swiftmodule/Project/arm64.swiftsourceinfo</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			Yv/Vd5mzJVP2J6fRlx1mVyTgiTQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			I7huFyzEs1aw+Mo1zB4Q6N0ySB2PJeZJz9RIUaSXiZg=
+			</data>
+		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/x86_64-apple-macos.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
@@ -427,6 +467,50 @@
 			<key>hash2</key>
 			<data>
 			gEFQttU6qFykhANgX05JGDAC0BmsMIjM/gmrEiieZPk=
+			</data>
+		</dict>
+		<key>Modules/MP42Foundation.swiftmodule/arm64-apple-macos.swiftdoc</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			dTIa6g3CCKJmTAvvFInXO1lfxaE=
+			</data>
+			<key>hash2</key>
+			<data>
+			qsE7XMi3k1lQYZsv7OOCO/PxvhUZLqE0kS+Em+/sAiM=
+			</data>
+		</dict>
+		<key>Modules/MP42Foundation.swiftmodule/arm64-apple-macos.swiftmodule</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			sctwMiWYbovCzTdyxlzklKaWNBA=
+			</data>
+			<key>hash2</key>
+			<data>
+			MVIci92jh+iXeIIl4IIMeuq5Vt21aYWC/Tf5JlUbSAU=
+			</data>
+		</dict>
+		<key>Modules/MP42Foundation.swiftmodule/arm64.swiftdoc</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			dTIa6g3CCKJmTAvvFInXO1lfxaE=
+			</data>
+			<key>hash2</key>
+			<data>
+			qsE7XMi3k1lQYZsv7OOCO/PxvhUZLqE0kS+Em+/sAiM=
+			</data>
+		</dict>
+		<key>Modules/MP42Foundation.swiftmodule/arm64.swiftmodule</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			sctwMiWYbovCzTdyxlzklKaWNBA=
+			</data>
+			<key>hash2</key>
+			<data>
+			MVIci92jh+iXeIIl4IIMeuq5Vt21aYWC/Tf5JlUbSAU=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64-apple-macos.swiftdoc</key>
@@ -852,6 +936,32 @@
 			<data>
 			3oG1LBGk/3/eGWDXx3Fzac6X3BlQ/SBHZU7ZODwqNYs=
 			</data>
+		</dict>
+		<key>Resources/zh-Hans.lproj/InfoPlist.strings</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			UiJmpfTPdmBCZVi1Ou28cW2Lkwc=
+			</data>
+			<key>hash2</key>
+			<data>
+			4pBY0REyu2YHRg/vWl+GmnxNOsZLbJw8tldphKpPLfg=
+			</data>
+			<key>optional</key>
+			<true/>
+		</dict>
+		<key>Resources/zh-Hans.lproj/Localizable.strings</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			ZnOzNdxPftwCuflT+BB/NhYPhzs=
+			</data>
+			<key>hash2</key>
+			<data>
+			NNVJWjM3pyvkrLbmsKZ2pS7uJXb5HJXy6WestTuWcFs=
+			</data>
+			<key>optional</key>
+			<true/>
 		</dict>
 	</dict>
 	<key>rules</key>
