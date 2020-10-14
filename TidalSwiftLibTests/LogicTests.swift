@@ -115,7 +115,7 @@ class LogicTests: XCTestCase {
 		// Values here are for an account inside a HIFI Family plan.
 		XCTAssertEqual(info?.status, "ACTIVE")
 		XCTAssertEqual(info?.subscription.type, "HIFI")
-		XCTAssertEqual(info?.subscription.offlineGracePeriod, 31)
+		XCTAssertEqual(info?.subscription.offlineGracePeriod, 30)
 		XCTAssertEqual(info?.highestSoundQuality, .hifi) // "LOSSLESS" although Master is possible
 		XCTAssertEqual(info?.premiumAccess, true)
 		XCTAssertEqual(info?.canGetTrial, false)
@@ -215,7 +215,7 @@ class LogicTests: XCTestCase {
 	
 	func testSearchArtist() {
 		let searchResult = session.search(for: "Roger Cicero")
-		XCTAssertEqual(searchResult?.artists.count, 2)
+		XCTAssertEqual(searchResult?.artists.count, 3)
 		XCTAssertEqual(searchResult?.artists[0].id, 16579)
 		XCTAssertEqual(searchResult?.artists[0].name, "Roger Cicero")
 		XCTAssertEqual(searchResult?.artists[0].url,
@@ -327,7 +327,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(searchResult?.tracks[0].id, 59978883)
 		XCTAssertEqual(searchResult?.tracks[0].title, "In My Room")
 		XCTAssertEqual(searchResult?.tracks[0].duration, 289)
-		XCTAssertEqual(searchResult?.tracks[0].replayGain, -7.04)
+		XCTAssertEqual(searchResult?.tracks[0].replayGain, -2.91)
 		XCTAssertEqual(searchResult?.tracks[0].peak, 0.944366)
 		XCTAssertEqual(searchResult?.tracks[0].allowStreaming, true)
 		XCTAssertEqual(searchResult?.tracks[0].streamReady, true)
@@ -490,7 +490,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(track.id, 59978883)
 		XCTAssertEqual(track.title, "In My Room")
 		XCTAssertEqual(track.duration, 289)
-		XCTAssertEqual(track.replayGain, -7.04)
+		XCTAssertEqual(track.replayGain, -2.91)
 		XCTAssertEqual(track.peak, 0.944366)
 		XCTAssertEqual(track.allowStreaming, true)
 		XCTAssertEqual(track.streamReady, true)
@@ -931,7 +931,7 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(artistTopTracks[0].id, 70974090)
 		XCTAssertEqual(artistTopTracks[0].title, "Zieh die Schuh aus")
 		XCTAssertEqual(artistTopTracks[0].duration, 196)
-		XCTAssertEqual(artistTopTracks[0].replayGain, -11.04)
+		XCTAssertEqual(artistTopTracks[0].replayGain, -8.77)
 		XCTAssertEqual(artistTopTracks[0].peak, 0.978058)
 		XCTAssertEqual(artistTopTracks[0].allowStreaming, true)
 		XCTAssertEqual(artistTopTracks[0].streamReady, true)
@@ -960,10 +960,10 @@ class LogicTests: XCTestCase {
 		XCTAssertEqual(artistTopTracks[0].album.title, "Glück ist leicht - Das Beste von 2006 - 2016")
 		
 		// More Tracks
-		XCTAssertEqual(artistTopTracks[1].id, 27228983)
-		XCTAssertEqual(artistTopTracks[1].title, #"Wenn es morgen schon zu Ende wär' (Aus "Sing meinen Song")"#)
-		XCTAssertEqual(artistTopTracks[2].id, 27228982)
-		XCTAssertEqual(artistTopTracks[2].title, "Glück ist leicht")
+		XCTAssertEqual(artistTopTracks[1].id, 70974091)
+		XCTAssertEqual(artistTopTracks[1].title, "Ich atme ein")
+		XCTAssertEqual(artistTopTracks[2].id, 27228983)
+		XCTAssertEqual(artistTopTracks[2].title, #"Wenn es morgen schon zu Ende wär' (Aus "Sing meinen Song")"#)
 	}
 
 	func testGetArtistBio() {
@@ -1023,7 +1023,7 @@ class LogicTests: XCTestCase {
 			return
 		}
 		
-		XCTAssertEqual(artistRadio.count, 100)
+		XCTAssertEqual(artistRadio.count, 99)
 		
 		// Impossible to write consistent tests as the tracks are regularly changing
 		

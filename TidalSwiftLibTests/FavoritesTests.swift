@@ -96,7 +96,7 @@ class FavoritesTests: XCTestCase {
 		let nameDesc = favorites.albums(order: .name, orderDirection: .descending)
 		XCTAssertNotNil(nameAsc)
 		XCTAssertNotNil(nameDesc)
-		XCTAssertEqual(nameAsc?.reversed(), nameDesc)
+		XCTAssertEqual(nameAsc?.reversed(), nameDesc) // TODO: Probably a difference if two albums have the same name
 
 		let artistAsc = favorites.albums(order: .artist, orderDirection: .ascending)
 		let artistDesc = favorites.albums(order: .artist, orderDirection: .descending)

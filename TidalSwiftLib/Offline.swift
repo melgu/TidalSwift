@@ -357,7 +357,7 @@ public class Offline {
 	
 	private var syncWI: DispatchWorkItem?
 	private func syncWIBuilder() -> DispatchWorkItem {
-		DispatchWorkItem { [unowned self] in self.sync() }
+		DispatchWorkItem { [weak self] in self?.sync() }
 	}
 	
 	private func asyncSync() {
