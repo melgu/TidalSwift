@@ -1,4 +1,4 @@
-![Icon](TidalSwift/Assets.xcassets/Icon.imageset/Icon-128.png)
+<img src="TidalSwift/Assets.xcassets/Icon.imageset/Icon-256.png" width="128">
 
 # TidalSwift
 
