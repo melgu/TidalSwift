@@ -6,7 +6,7 @@
 	<dict>
 		<key>Resources/Info.plist</key>
 		<data>
-		FSfpe7itm1tvM+gTVrhRHABiepw=
+		vX/CVOzZv0TTW/+5zz3G4mO39kg=
 		</data>
 		<key>Resources/en.lproj/InfoPlist.strings</key>
 		<dict>
@@ -176,11 +176,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			D1lXqVrXBqkNe7J+dKXjt3EvcbA=
+			Yn0GHA8vKUKbQTKIMpX5uT98Q/U=
 			</data>
 			<key>hash2</key>
 			<data>
-			C3y8JijHPGApHyE4p9TDgMx3rB1MRM0MHiKQq6vVnCU=
+			s1gqhTHSdJz5U1FYYRG424bnH10+CHdQ40OSg2GXvSU=
 			</data>
 		</dict>
 		<key>Headers/MP42AudioTrack.h</key>
@@ -429,132 +429,132 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Yv/Vd5mzJVP2J6fRlx1mVyTgiTQ=
+			zYLcFkx5MIM6OIrb19bqALCWKvM=
 			</data>
 			<key>hash2</key>
 			<data>
-			I7huFyzEs1aw+Mo1zB4Q6N0ySB2PJeZJz9RIUaSXiZg=
+			UWtqEajzkMjIvdfz7aLTXWHwRUuIzP52PFOzmm9S5Nc=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/arm64.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Yv/Vd5mzJVP2J6fRlx1mVyTgiTQ=
+			zYLcFkx5MIM6OIrb19bqALCWKvM=
 			</data>
 			<key>hash2</key>
 			<data>
-			I7huFyzEs1aw+Mo1zB4Q6N0ySB2PJeZJz9RIUaSXiZg=
+			UWtqEajzkMjIvdfz7aLTXWHwRUuIzP52PFOzmm9S5Nc=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/x86_64-apple-macos.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			3ul0lJMLjsVNUiZKrMEuqPqzJpg=
+			xo22AKkHRh4kOuZ23NO2yyLilS4=
 			</data>
 			<key>hash2</key>
 			<data>
-			gEFQttU6qFykhANgX05JGDAC0BmsMIjM/gmrEiieZPk=
+			gAyZpqiTBx/T1g+vp16h8Gv5eZmPLxEPtfvqjr3aaio=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/x86_64.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			3ul0lJMLjsVNUiZKrMEuqPqzJpg=
+			xo22AKkHRh4kOuZ23NO2yyLilS4=
 			</data>
 			<key>hash2</key>
 			<data>
-			gEFQttU6qFykhANgX05JGDAC0BmsMIjM/gmrEiieZPk=
+			gAyZpqiTBx/T1g+vp16h8Gv5eZmPLxEPtfvqjr3aaio=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/arm64-apple-macos.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			dTIa6g3CCKJmTAvvFInXO1lfxaE=
+			YiAAcwQyaoXS6YPJqRq5wPnKOqg=
 			</data>
 			<key>hash2</key>
 			<data>
-			qsE7XMi3k1lQYZsv7OOCO/PxvhUZLqE0kS+Em+/sAiM=
+			JLUmtu5tYqg80dxcsLBCEJAlKgEhVu7cpbvZCVhJF+s=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/arm64-apple-macos.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			sctwMiWYbovCzTdyxlzklKaWNBA=
+			9DXhzxtl3IdjRyU+tJnRr6AoHus=
 			</data>
 			<key>hash2</key>
 			<data>
-			MVIci92jh+iXeIIl4IIMeuq5Vt21aYWC/Tf5JlUbSAU=
+			unl+gg0NjUhVhpl8SzC3/FyOeXqlTVECSU9HOIsNOJw=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/arm64.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			dTIa6g3CCKJmTAvvFInXO1lfxaE=
+			YiAAcwQyaoXS6YPJqRq5wPnKOqg=
 			</data>
 			<key>hash2</key>
 			<data>
-			qsE7XMi3k1lQYZsv7OOCO/PxvhUZLqE0kS+Em+/sAiM=
+			JLUmtu5tYqg80dxcsLBCEJAlKgEhVu7cpbvZCVhJF+s=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			sctwMiWYbovCzTdyxlzklKaWNBA=
+			9DXhzxtl3IdjRyU+tJnRr6AoHus=
 			</data>
 			<key>hash2</key>
 			<data>
-			MVIci92jh+iXeIIl4IIMeuq5Vt21aYWC/Tf5JlUbSAU=
+			unl+gg0NjUhVhpl8SzC3/FyOeXqlTVECSU9HOIsNOJw=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64-apple-macos.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			K2uPv8/tOZYDKAzPGv1QjeXyPvw=
+			Qvvl7YGZI3AjjsGzwi8w1WYep2I=
 			</data>
 			<key>hash2</key>
 			<data>
-			Fr8NLK1BS8SXc4s+kkxZ+r8TV0nsDbrifx82cri1VvE=
+			K016p67901y8A08BpvGw/Xt9F91zFPFhON8Gu1Wkxe8=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64-apple-macos.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			aJPZqM90YIhBCabbYZKvXH8D9ug=
+			eGFECMWh4MQFaKHNJKx1xb5RxlI=
 			</data>
 			<key>hash2</key>
 			<data>
-			ud+O8+wBjVEOxKnotyrYMCUGUjCn/J0IilcxiJ1iqkc=
+			gL36FaelYntBRg5zBmVQBP6t10+YtmZrESftG8FU9HY=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			K2uPv8/tOZYDKAzPGv1QjeXyPvw=
+			Qvvl7YGZI3AjjsGzwi8w1WYep2I=
 			</data>
 			<key>hash2</key>
 			<data>
-			Fr8NLK1BS8SXc4s+kkxZ+r8TV0nsDbrifx82cri1VvE=
+			K016p67901y8A08BpvGw/Xt9F91zFPFhON8Gu1Wkxe8=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			aJPZqM90YIhBCabbYZKvXH8D9ug=
+			eGFECMWh4MQFaKHNJKx1xb5RxlI=
 			</data>
 			<key>hash2</key>
 			<data>
-			ud+O8+wBjVEOxKnotyrYMCUGUjCn/J0IilcxiJ1iqkc=
+			gL36FaelYntBRg5zBmVQBP6t10+YtmZrESftG8FU9HY=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -572,11 +572,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			FSfpe7itm1tvM+gTVrhRHABiepw=
+			vX/CVOzZv0TTW/+5zz3G4mO39kg=
 			</data>
 			<key>hash2</key>
 			<data>
-			QE0OpxPc9JjEZmO8tDDk9i+iHtKIcBWxNCC4V6jwINU=
+			IzKOODaTkXod0DTUZooGo4MDlrcw3PvFA6GIb5K8rDo=
 			</data>
 		</dict>
 		<key>Resources/en.lproj/InfoPlist.strings</key>
