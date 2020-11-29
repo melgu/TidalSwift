@@ -1,4 +1,4 @@
-<img src="TidalSwift/Assets.xcassets/Icon.imageset/Icon-256.png" alt="Icon" width="128">
+<img src="TidalSwift/Assets.xcassets/AppIcon.appiconset/icon-256.png" alt="Icon" width="128">
 
 # TidalSwift
 
@@ -21,7 +21,7 @@ Unlike the official Tidal app, TidalSwift can display new releases by your favor
 
 Also, unlike the official app, it can display the Lyrics of the currently playing song.
 
-<img src="README.assets/Lyrics.png" alt="Icon" width="400">
+<img src="README.assets/Lyrics.png" alt="Lyrics" width="400">
 
 ### Offline
 
@@ -33,7 +33,7 @@ This is a big one. The official desktop app still doesn't support offline playba
 
 It even goes a step further. You can download music to your hard drive and do with it whatever you want.
 
-<img src="README.assets/Downloads.png" alt="Icon" width="180">
+<img src="README.assets/Downloads.png" alt="Context Menu: Download highlighted" width="180">
 
 ### My Mixes
 
@@ -67,7 +67,7 @@ It even goes a step further. You can download music to your hard drive and do wi
 
 ### Credits
 
-<img src="README.assets/Credits.png" alt="Icon" width="400">
+<img src="README.assets/Credits.png" alt="Credits" width="400">
 
 ### Dark Mode
 
