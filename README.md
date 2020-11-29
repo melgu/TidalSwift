@@ -21,7 +21,19 @@ Unlike the official Tidal app, TidalSwift can display new releases by your favor
 
 Also, unlike the official app, it can display the Lyrics of the currently playing song.
 
-![Lyrics](README.assets/Lyrics.png)
+<img src="README.assets/Lyrics.png" alt="Icon" width="400">
+
+### Offline
+
+This is a big one. The official desktop app still doesn't support offline playback – and probably never will. This app does!
+
+![My Mixes](README.assets/OfflineTracks.png)
+
+### Downloads
+
+It even goes a step further. You can download music to your hard drive and do with it whatever you want.
+
+<img src="README.assets/Downloads.png" alt="Icon" width="180">
 
 ### My Mixes
 
@@ -55,7 +67,7 @@ Also, unlike the official app, it can display the Lyrics of the currently playin
 
 ### Credits
 
-![Credits](README.assets/Credits.png)
+<img src="README.assets/Credits.png" alt="Icon" width="400">
 
 ### Dark Mode
 
