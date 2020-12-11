@@ -1,4 +1,4 @@
-<img src="TidalSwift/Assets.xcassets/AppIcon.appiconset/icon-256.png" alt="Icon" width="128">
+<img src="README.assets/Icon.png" alt="Icon" width="128">
 
 # TidalSwift
 
