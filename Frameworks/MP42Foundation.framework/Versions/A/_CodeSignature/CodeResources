@@ -6,7 +6,7 @@
 	<dict>
 		<key>Resources/Info.plist</key>
 		<data>
-		vX/CVOzZv0TTW/+5zz3G4mO39kg=
+		srGFB7HvQ53iuUtZqYboHiU+9PY=
 		</data>
 		<key>Resources/en.lproj/InfoPlist.strings</key>
 		<dict>
@@ -164,7 +164,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ZnOzNdxPftwCuflT+BB/NhYPhzs=
+			yPJGIEeNDgxGX9sAiTIDYmFP6Oc=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -174,10 +174,6 @@
 	<dict>
 		<key>Headers/MP42-Swift.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Yn0GHA8vKUKbQTKIMpX5uT98Q/U=
-			</data>
 			<key>hash2</key>
 			<data>
 			s1gqhTHSdJz5U1FYYRG424bnH10+CHdQ40OSg2GXvSU=
@@ -185,10 +181,6 @@
 		</dict>
 		<key>Headers/MP42AudioTrack.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			VlniboWgZq3ounfSe8UI4OGFvz4=
-			</data>
 			<key>hash2</key>
 			<data>
 			5EPqAbofpkHSVTFfqUmjs2xOLl39NKLhXte/RTa/2V4=
@@ -196,10 +188,6 @@
 		</dict>
 		<key>Headers/MP42ChapterTrack.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			5E76T1sSbmWFqB29HD1YeuKFIJM=
-			</data>
 			<key>hash2</key>
 			<data>
 			8T/SIxcZVXR966bWIsYQr+FLD3pcJsvpDreTkHDT/DU=
@@ -207,10 +195,6 @@
 		</dict>
 		<key>Headers/MP42ClosedCaptionTrack.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			AGWs20jsIeYNavCr6x5fCtwaDVE=
-			</data>
 			<key>hash2</key>
 			<data>
 			UIalyMPQ+2WlmNhkNowRKwpev5cEWydUv2LHKyFAhGo=
@@ -218,10 +202,6 @@
 		</dict>
 		<key>Headers/MP42ConversionSettings.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			yM6Ap9F64OEjaL2PWrqvmTSWr9U=
-			</data>
 			<key>hash2</key>
 			<data>
 			2F28icPOUveIkCR+CIxgvbKw3pdelxby29gFVF1JAYE=
@@ -229,10 +209,6 @@
 		</dict>
 		<key>Headers/MP42File.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			BE/zGnaR9bpeVz2o09/vfVaTZYI=
-			</data>
 			<key>hash2</key>
 			<data>
 			se4Iius2iQlR14EeogQUPNuyEuv2gRgQtERlFB8ozfs=
@@ -240,10 +216,6 @@
 		</dict>
 		<key>Headers/MP42FileImporter.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			X06LTAjoeeJHoAglvpG4LPnAb9I=
-			</data>
 			<key>hash2</key>
 			<data>
 			sCq/Mur7osoq85Q4mkmyvWcStAIJa2a/xXClOVC3/68=
@@ -251,10 +223,6 @@
 		</dict>
 		<key>Headers/MP42Foundation.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			82JLUzoIkh0Lj0oO7UxlVKIRimQ=
-			</data>
 			<key>hash2</key>
 			<data>
 			nFVIc4/oDbk0HR7KjMSzyGxMUxxTL90nrbb4l++Wqfg=
@@ -262,10 +230,6 @@
 		</dict>
 		<key>Headers/MP42Image.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			RCvIN95UH0QotEEgOKIZ86rb7p8=
-			</data>
 			<key>hash2</key>
 			<data>
 			p3X69Oo2D8ISQw0VZ1Lw6yh0gZR0D5AT19yeHtnVawM=
@@ -273,10 +237,6 @@
 		</dict>
 		<key>Headers/MP42Languages.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			0EZjTyHT8EnBS8KBrFwq0Q5T070=
-			</data>
 			<key>hash2</key>
 			<data>
 			nt7jKNED8IEcE2qgMWkJ5lG4jL+hTdu4+aMdcQr5xYA=
@@ -284,10 +244,6 @@
 		</dict>
 		<key>Headers/MP42Logging.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			vbOlog4rBIu0VL8o5Qdq29cad8I=
-			</data>
 			<key>hash2</key>
 			<data>
 			x4/sfbJXnbJEHPIWl42mO5h6LJp8qzW+646Zjx85JoA=
@@ -295,10 +251,6 @@
 		</dict>
 		<key>Headers/MP42MediaFormat.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			cyuK+y3cIfPkEWwnK1te/jOFn4U=
-			</data>
 			<key>hash2</key>
 			<data>
 			P4JTZjWnNRz2YwHLEzSTh1V009DWljmFTeGb+I/zQQ4=
@@ -306,10 +258,6 @@
 		</dict>
 		<key>Headers/MP42Metadata.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			uK/oed1mdXma0nO3mHm7iK+qKrg=
-			</data>
 			<key>hash2</key>
 			<data>
 			PLqFuaE3as3G2iUeGYf3PybvDfUYRZGaixt8p44Drok=
@@ -317,10 +265,6 @@
 		</dict>
 		<key>Headers/MP42MetadataFormat.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			/kdZN+Q612AFRmyx9xIwh6IjtmY=
-			</data>
 			<key>hash2</key>
 			<data>
 			OhtN4IiVXJNMHGQeogVGWOT1X7R7PxtNpxkIO5Yhpg4=
@@ -328,10 +272,6 @@
 		</dict>
 		<key>Headers/MP42MetadataItem.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			mRGffRLtdp9HhaPoIJO5bSlI3UQ=
-			</data>
 			<key>hash2</key>
 			<data>
 			JQtgeM5h8llN/Xe6JdwL+XaHLX7eX1iFDyL19x4d50w=
@@ -339,10 +279,6 @@
 		</dict>
 		<key>Headers/MP42RelatedItem.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			EwkqwnAPTn1P9K0vfOQduN1TO/Y=
-			</data>
 			<key>hash2</key>
 			<data>
 			WIRkFEhVTn6d5W+yctfqeuvwS+ubKRqB8zy8fHq0yWk=
@@ -350,10 +286,6 @@
 		</dict>
 		<key>Headers/MP42SecurityAccessToken.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			R/GaaUfatBKSkQ8RkPHqX9PlEEM=
-			</data>
 			<key>hash2</key>
 			<data>
 			GTnKKj3edVXPlHZghcLMM2rGMNC14nVN5YjbyAiDQGM=
@@ -361,10 +293,6 @@
 		</dict>
 		<key>Headers/MP42SubtitleTrack.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			wt5xxAD7M1mLJaoMe49fGYqGLrk=
-			</data>
 			<key>hash2</key>
 			<data>
 			3CX7Vh0+prJXJnPqjZ5qi/nx1vZS6ocR5s2PMqQPj0g=
@@ -372,10 +300,6 @@
 		</dict>
 		<key>Headers/MP42TextSample.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			50yUN4wfpTXO9ojUFShhC1BBlSg=
-			</data>
 			<key>hash2</key>
 			<data>
 			ifpf67COIZzhuhM50Lp/ofPzZI9+HoZqbNeJ923+W+w=
@@ -383,10 +307,6 @@
 		</dict>
 		<key>Headers/MP42Track.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Si/OOaQtV8pH7g4ehIYVHJYs6V4=
-			</data>
 			<key>hash2</key>
 			<data>
 			sT4Znst8pDF9RrnPgsL2qagS244MWrhYn7s59kqJuD0=
@@ -394,10 +314,6 @@
 		</dict>
 		<key>Headers/MP42Utilities.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			lB/qAueDtBUqKednKJYZNcKA1iE=
-			</data>
 			<key>hash2</key>
 			<data>
 			Wj/IuegA0jGc9Mt8XU/69sOT0nTp3T0tCZNrR63zyCg=
@@ -405,10 +321,6 @@
 		</dict>
 		<key>Headers/MP42VideoTrack.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			jJPDKjfjIxO85eBinEd+6eGLzGs=
-			</data>
 			<key>hash2</key>
 			<data>
 			ixTOaiQ6GjoxJO9gNr3O2PQq9IFC5neQgQRt2D4dWcs=
@@ -416,10 +328,6 @@
 		</dict>
 		<key>Headers/NSString+MP42Additions.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			OtdM7OPilB3h18+/SNdsJW4YcBw=
-			</data>
 			<key>hash2</key>
 			<data>
 			MHCyGm7Www6D0yQk6ftjhGEXeQPtu251Zkw5myCnM14=
@@ -427,10 +335,6 @@
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			zYLcFkx5MIM6OIrb19bqALCWKvM=
-			</data>
 			<key>hash2</key>
 			<data>
 			UWtqEajzkMjIvdfz7aLTXWHwRUuIzP52PFOzmm9S5Nc=
@@ -438,10 +342,6 @@
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/arm64.swiftsourceinfo</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			zYLcFkx5MIM6OIrb19bqALCWKvM=
-			</data>
 			<key>hash2</key>
 			<data>
 			UWtqEajzkMjIvdfz7aLTXWHwRUuIzP52PFOzmm9S5Nc=
@@ -449,10 +349,6 @@
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/x86_64-apple-macos.swiftsourceinfo</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			xo22AKkHRh4kOuZ23NO2yyLilS4=
-			</data>
 			<key>hash2</key>
 			<data>
 			gAyZpqiTBx/T1g+vp16h8Gv5eZmPLxEPtfvqjr3aaio=
@@ -460,10 +356,6 @@
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/Project/x86_64.swiftsourceinfo</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			xo22AKkHRh4kOuZ23NO2yyLilS4=
-			</data>
 			<key>hash2</key>
 			<data>
 			gAyZpqiTBx/T1g+vp16h8Gv5eZmPLxEPtfvqjr3aaio=
@@ -471,10 +363,6 @@
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/arm64-apple-macos.swiftdoc</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			YiAAcwQyaoXS6YPJqRq5wPnKOqg=
-			</data>
 			<key>hash2</key>
 			<data>
 			JLUmtu5tYqg80dxcsLBCEJAlKgEhVu7cpbvZCVhJF+s=
@@ -482,21 +370,13 @@
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/arm64-apple-macos.swiftmodule</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			9DXhzxtl3IdjRyU+tJnRr6AoHus=
-			</data>
 			<key>hash2</key>
 			<data>
-			unl+gg0NjUhVhpl8SzC3/FyOeXqlTVECSU9HOIsNOJw=
+			F8vTHDMgbwGuUxKVNjUwtkaVHblHDPjrnemUZsMoEZ4=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/arm64.swiftdoc</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			YiAAcwQyaoXS6YPJqRq5wPnKOqg=
-			</data>
 			<key>hash2</key>
 			<data>
 			JLUmtu5tYqg80dxcsLBCEJAlKgEhVu7cpbvZCVhJF+s=
@@ -504,21 +384,13 @@
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/arm64.swiftmodule</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			9DXhzxtl3IdjRyU+tJnRr6AoHus=
-			</data>
 			<key>hash2</key>
 			<data>
-			unl+gg0NjUhVhpl8SzC3/FyOeXqlTVECSU9HOIsNOJw=
+			F8vTHDMgbwGuUxKVNjUwtkaVHblHDPjrnemUZsMoEZ4=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64-apple-macos.swiftdoc</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Qvvl7YGZI3AjjsGzwi8w1WYep2I=
-			</data>
 			<key>hash2</key>
 			<data>
 			K016p67901y8A08BpvGw/Xt9F91zFPFhON8Gu1Wkxe8=
@@ -526,21 +398,13 @@
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64-apple-macos.swiftmodule</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			eGFECMWh4MQFaKHNJKx1xb5RxlI=
-			</data>
 			<key>hash2</key>
 			<data>
-			gL36FaelYntBRg5zBmVQBP6t10+YtmZrESftG8FU9HY=
+			TTAqqztBDFTL3ZKfrHUIn9rFG+4JaftmF5AmyazIYog=
 			</data>
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64.swiftdoc</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Qvvl7YGZI3AjjsGzwi8w1WYep2I=
-			</data>
 			<key>hash2</key>
 			<data>
 			K016p67901y8A08BpvGw/Xt9F91zFPFhON8Gu1Wkxe8=
@@ -548,21 +412,13 @@
 		</dict>
 		<key>Modules/MP42Foundation.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			eGFECMWh4MQFaKHNJKx1xb5RxlI=
-			</data>
 			<key>hash2</key>
 			<data>
-			gL36FaelYntBRg5zBmVQBP6t10+YtmZrESftG8FU9HY=
+			TTAqqztBDFTL3ZKfrHUIn9rFG+4JaftmF5AmyazIYog=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			oWS9AYDU5i7KF4QjlnOSHJM2OgA=
-			</data>
 			<key>hash2</key>
 			<data>
 			VmvtpkKZ7zvtg/VhUtd2l8d6AZdxkvIuYALoEA+dDKU=
@@ -570,21 +426,13 @@
 		</dict>
 		<key>Resources/Info.plist</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			vX/CVOzZv0TTW/+5zz3G4mO39kg=
-			</data>
 			<key>hash2</key>
 			<data>
-			IzKOODaTkXod0DTUZooGo4MDlrcw3PvFA6GIb5K8rDo=
+			1b2x8qraeefT2Kb12gwYvqQqpSC+qp7O0LbShk+sO3k=
 			</data>
 		</dict>
 		<key>Resources/en.lproj/InfoPlist.strings</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			MiLKDDnrUKr4EmuvhS5VQwxHGK8=
-			</data>
 			<key>hash2</key>
 			<data>
 			Oc8u4Ht7Mz58F50L9NeYpbcq9qTlhPUeZCcDu/pPyCg=
@@ -594,10 +442,6 @@
 		</dict>
 		<key>Resources/it.lproj/InfoPlist.strings</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			wbTYzu5izYRXkgPhA+ApuCRp2QM=
-			</data>
 			<key>hash2</key>
 			<data>
 			5KoL2Lb0fdBGXr+B8SUcQ1eG+TpiF0PUVYs7uTRafyU=
@@ -607,10 +451,6 @@
 		</dict>
 		<key>Resources/it.lproj/Localizable.strings</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			vleKZ6SCXBbcqXm9tBCuZvB+QsY=
-			</data>
 			<key>hash2</key>
 			<data>
 			d+onf3mb42mYrDyowBX22VFYuD/aNH24na2Qq4f7hY4=
@@ -620,10 +460,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/ambigs.train</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			ADrovSmGrUVHSLYJxman9VABeyQ=
-			</data>
 			<key>hash2</key>
 			<data>
 			cX5TT9QzDtP5vbAG8EZaomM8yoZnhqj41Gnb1LAcEMI=
@@ -631,10 +467,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/api_config</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			zSw1i2slavDkpxqgix0bQfRa4iU=
-			</data>
 			<key>hash2</key>
 			<data>
 			KSm8Dx0rp38oz8Iw97g1srVAOMD50ujkxa2kOAPJmf0=
@@ -642,10 +474,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/bigram</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			TfSRmidZKDFP8f/uiEjUVpZOFdM=
-			</data>
 			<key>hash2</key>
 			<data>
 			ZeZYOrxhejTUCRKFGB8kk9MSwpaoVimsPAktO5O25VQ=
@@ -653,10 +481,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/box.train</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			1Izo+PdQCPzS/9vMFZ+leTOMMcw=
-			</data>
 			<key>hash2</key>
 			<data>
 			sIy89NBPjS5uSGpJUVklCBvDwwn2ifa69Vw2aK2zX+k=
@@ -664,10 +488,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/box.train.stderr</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			MCGwkexNNF+X53FVCsSLkP+FINo=
-			</data>
 			<key>hash2</key>
 			<data>
 			bS1tClywfVXlYMXOD4IYju4p6i4Pvz+QQ/hkq2yDAts=
@@ -675,10 +495,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/digits</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			vtEA9VrF15739Cgo03Oswl2uY2g=
-			</data>
 			<key>hash2</key>
 			<data>
 			51fZW7HlFESGDqENfyyLuKDJxMzFig6MZ+jcKTOlbi4=
@@ -686,10 +502,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/hocr</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			6IZtwROeOJIn5DONLIXzw/VZc1k=
-			</data>
 			<key>hash2</key>
 			<data>
 			1qfsfFFDMXpZ/OI5MFT2t6gmGCS5NOdCb90k/rySmtY=
@@ -697,10 +509,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/inter</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			aRXZcIAxrc9N0cvrUM1OQ5Dvh/A=
-			</data>
 			<key>hash2</key>
 			<data>
 			RjA7+DZo5Eb0lm0ev3QYrZ8MXgiDa8WdmMrju/w67p0=
@@ -708,10 +516,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/kannada</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			L2hnU3Xwaj0GTp6ASZ62qRgfwSE=
-			</data>
 			<key>hash2</key>
 			<data>
 			fTT+yZKDFCo6ItFX3FzIgkuT7pI+V25r/RsCYDnC6PA=
@@ -719,10 +523,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/linebox</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			nzcLxUe6x6vxyg9OBZ55BoqxwBk=
-			</data>
 			<key>hash2</key>
 			<data>
 			6wJ5UnsAmlNDKp4d3oW/QoFJATk1Rrw2W7YYN/gzVck=
@@ -730,10 +530,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/logfile</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			YcS9OcFz+MINzaIY3itoQmUU81k=
-			</data>
 			<key>hash2</key>
 			<data>
 			Xu1eQeX7vwhig2wOTNp4IfjghEFkWFjsaCGrQdkm4ZU=
@@ -741,10 +537,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/lstm.train</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			RlijNAagB0H+DQ6mHzkKCT/XbC8=
-			</data>
 			<key>hash2</key>
 			<data>
 			ElPNJ2ulFFV+i+TOaNxNwZPpZYKMZJ+vu/y75zHN8X8=
@@ -752,10 +544,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/lstmdebug</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			2XNyZmWS9WCiMQZGPckRsm/aJnY=
-			</data>
 			<key>hash2</key>
 			<data>
 			YtQNen2AMV4QzcolYdLd8pgfU9/b1WdROwTTbzrdf04=
@@ -763,10 +551,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/makebox</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			oEEkNBHW+UF9Bd6iipWpkZIRODs=
-			</data>
 			<key>hash2</key>
 			<data>
 			qP4goryf8eno7QbVaEUzbJeGJ7jpZWAKvWPx9BLBj/4=
@@ -774,10 +558,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/pdf</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			HNdKbSp/5s3YKT5z42oICplfisI=
-			</data>
 			<key>hash2</key>
 			<data>
 			VNVugd/v4omw0uTHvJu+ZicR9bglXBKLc7zWbvtruho=
@@ -785,10 +565,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/quiet</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			lq6pTJ1LNuxCfJeStfETap/dH/s=
-			</data>
 			<key>hash2</key>
 			<data>
 			ipP62CUfYbXxe4YoIDoOBoxx4JB81jASqyKvt7Vg/OM=
@@ -796,10 +572,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/rebox</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			0zDggAWpexc78Y5wiZ2/PZGMwmI=
-			</data>
 			<key>hash2</key>
 			<data>
 			c8o119cQhPuI4uuaXFOtkWgnVLOuy5GN7OdZHsIqCyY=
@@ -807,10 +579,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/strokewidth</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			jmZbbKi+x0sXKv1RmkX7tBhUBs8=
-			</data>
 			<key>hash2</key>
 			<data>
 			/7FAqt0+JtDZs7NV1ZK1DP+LLDzgOUtKbeT6vBwJQsk=
@@ -818,10 +586,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/tsv</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			pInrezR5Ez8fftRIbvMD1uv7+JM=
-			</data>
 			<key>hash2</key>
 			<data>
 			WdB5u3XYs9fIOaNWRYDLVZ42LJOp1w8jTkIcDD52fgQ=
@@ -829,10 +593,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/txt</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			1OGzMiXVMMDsmRZN6CR8vpL8z2k=
-			</data>
 			<key>hash2</key>
 			<data>
 			dIn7SVH9GBkUJxQIV3gJ+HR0Ra251JgzK5aSiv1yplA=
@@ -840,10 +600,6 @@
 		</dict>
 		<key>Resources/tessdata/configs/unlv</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			4xLuvmUvC834AUZ3b1Ntvn4gt0Q=
-			</data>
 			<key>hash2</key>
 			<data>
 			GwLngB3nHwdXomum10npGCoNmXGSmWa+u2f5nbhzP0A=
@@ -851,10 +607,6 @@
 		</dict>
 		<key>Resources/tessdata/eng.traineddata</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			MavUleD3GdtPUkxEfp2FUSSgsNY=
-			</data>
 			<key>hash2</key>
 			<data>
 			fUMivSp3SXJIeWg/w5EstULxmQbIO8waUhMlVkJxcLI=
@@ -862,10 +614,6 @@
 		</dict>
 		<key>Resources/tessdata/pdf.ttf</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			wuUIzUdng/P1rvK/FawAHo0iNU0=
-			</data>
 			<key>hash2</key>
 			<data>
 			x4RUIJJaI9iO2DCmOVe4r4Wmao2vjZ/JDoQ2c7LvGlk=
@@ -873,10 +621,6 @@
 		</dict>
 		<key>Resources/tessdata/tessconfigs/batch</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			GiydRK31helJKBM2IzmeAJUCgwE=
-			</data>
 			<key>hash2</key>
 			<data>
 			2REHw6jBwxGwDGSu5Wy85NSIlMbldiFl8ex4cce3v04=
@@ -884,10 +628,6 @@
 		</dict>
 		<key>Resources/tessdata/tessconfigs/batch.nochop</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			4vLCgrg08CtUkCfriDlwawXCCQE=
-			</data>
 			<key>hash2</key>
 			<data>
 			Wsq7U0z9T9j+ERyFSVXh/6k5BhnvQ3dbGl+69Sg/aLs=
@@ -895,10 +635,6 @@
 		</dict>
 		<key>Resources/tessdata/tessconfigs/matdemo</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			B6JbXkp+Opv16rg/TUjPaIpHTcY=
-			</data>
 			<key>hash2</key>
 			<data>
 			0JjN9v/mkczJ36RJBgP2rjPN0xMBDO36UAB+vePd0tA=
@@ -906,10 +642,6 @@
 		</dict>
 		<key>Resources/tessdata/tessconfigs/msdemo</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			IkcoqHwHfC5Gz+WC9xc+v4IBC4M=
-			</data>
 			<key>hash2</key>
 			<data>
 			JrfYwkOb+OOXaZkntfqI+ZbnXrrG00gzotrgdurgk1U=
@@ -917,10 +649,6 @@
 		</dict>
 		<key>Resources/tessdata/tessconfigs/nobatch</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			rcg7GeeTSRscbqD9i0bNnzLlkvw=
-			</data>
 			<key>hash2</key>
 			<data>
 			AbpHGcgLb+kRsJGnwFEktk7uzpZOCcBY74+YBdrKVGs=
@@ -928,10 +656,6 @@
 		</dict>
 		<key>Resources/tessdata/tessconfigs/segdemo</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			TcmT4XpeP0ZGlqs26+RUF+7fK3Q=
-			</data>
 			<key>hash2</key>
 			<data>
 			3oG1LBGk/3/eGWDXx3Fzac6X3BlQ/SBHZU7ZODwqNYs=
@@ -939,10 +663,6 @@
 		</dict>
 		<key>Resources/zh-Hans.lproj/InfoPlist.strings</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			UiJmpfTPdmBCZVi1Ou28cW2Lkwc=
-			</data>
 			<key>hash2</key>
 			<data>
 			4pBY0REyu2YHRg/vWl+GmnxNOsZLbJw8tldphKpPLfg=
@@ -952,13 +672,9 @@
 		</dict>
 		<key>Resources/zh-Hans.lproj/Localizable.strings</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			ZnOzNdxPftwCuflT+BB/NhYPhzs=
-			</data>
 			<key>hash2</key>
 			<data>
-			NNVJWjM3pyvkrLbmsKZ2pS7uJXb5HJXy6WestTuWcFs=
+			szc5WMvE88jiRkxr9dcSS5gin6E1EDErklFkO19pxhc=
 			</data>
 			<key>optional</key>
 			<true/>
