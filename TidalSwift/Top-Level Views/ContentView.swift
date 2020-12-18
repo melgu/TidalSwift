@@ -16,7 +16,7 @@ struct ContentView: View {
 	@EnvironmentObject var viewState: ViewState
 	
 	var body: some View {
-		MasterDetailView(session: sc.session, player: sc.player)
+		TopDetailView(session: sc.session, player: sc.player)
 			.environmentObject(sc.player.playbackInfo)
 			.environmentObject(sc.player.queueInfo)
 			.environmentObject(sc.session.helpers.downloadStatus)
