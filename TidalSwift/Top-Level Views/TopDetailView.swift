@@ -10,7 +10,7 @@ import SwiftUI
 import TidalSwiftLib
 import Introspect
 
-struct MasterDetailView: View {
+struct TopDetailView: View {
     let session: Session
 	let player: Player
 	
@@ -32,7 +32,7 @@ struct MasterDetailView: View {
 				}
 			})
 		return NavigationView {
-			MasterView(selection: selectionBinding, session: session)
+			TopView(selection: selectionBinding, session: session)
 			DetailView(session: session, player: player)
 				.frame(minWidth: 850)
 		}
@@ -40,7 +40,7 @@ struct MasterDetailView: View {
 	}
 }
 
-struct MasterView: View {
+struct TopView: View {
 	@Binding var selection: ViewType?
 //	@Binding var searchTerm: String
 	
