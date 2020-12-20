@@ -54,6 +54,7 @@ struct PlaylistGridItem: View {
 				}
 			}
 			Text(playlist.title)
+				.lineLimit(1)
 				.frame(width: 160)
 		}
 		.padding(5)
