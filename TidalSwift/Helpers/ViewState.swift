@@ -89,6 +89,7 @@ final class ViewState: ObservableObject {
 	var cache: ViewCache
 	
 	var searchTerm: String = ""
+	@Published var newReleasesIncludeEps: Bool = false
 	@Published var stack: [TidalSwiftView] = []
 	@Published var history: [TidalSwiftView] = []
 	var maxHistoryItems: Int = 100

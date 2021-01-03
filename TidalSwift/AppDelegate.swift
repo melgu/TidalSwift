@@ -250,6 +250,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				viewState.lastSearchTerm = searchTerm
 			}
 			
+			viewState.newReleasesIncludeEps = UserDefaults.standard.bool(forKey: "NewReleasesIncludeEps")
+			
 			if let data = UserDefaults.standard.data(forKey: "ViewStateHistory") {
 				if let tempHistory = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
 					viewState.history = tempHistory
@@ -351,6 +353,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	func saveViewState() {
 		UserDefaults.standard.set(viewState.searchTerm, forKey: "SearchTerm")
+		UserDefaults.standard.set(viewState.newReleasesIncludeEps, forKey: "NewReleasesIncludeEps")
 		let viewStackData = try? JSONEncoder().encode(viewState.stack)
 		UserDefaults.standard.set(viewStackData, forKey: "ViewStateStack")
 		let viewHistoryData = try? JSONEncoder().encode(viewState.history)
