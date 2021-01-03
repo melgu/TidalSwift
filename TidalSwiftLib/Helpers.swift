@@ -38,6 +38,7 @@ public class Helpers {
 			allReleases += albums
 		}
 		
+		allReleases = Array(Set(allReleases)) // Remove possible duplicates
 		allReleases.sort { $0.releaseDate ?? Date.distantPast > $1.releaseDate ?? Date.distantPast }
 		return Array(allReleases.prefix(number))
 	}
