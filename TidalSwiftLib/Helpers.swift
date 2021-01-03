@@ -23,7 +23,7 @@ public class Helpers {
 		self.download = Download(session: session, metadata: self.metadata, downloadStatus: downloadStatus)
 	}
 	
-	public func newReleasesFromFavoriteArtists(number: Int = 30) -> [Album]? {
+	public func newReleasesFromFavoriteArtists(number: Int = 30, includeEps: Bool) -> [Album]? {
 		let optionalFavoriteArtists = session.favorites?.artists()
 		guard let favoriteArtists = optionalFavoriteArtists else {
 			return nil
@@ -31,11 +31,18 @@ public class Helpers {
 		
 		var allReleases = [Album]()
 		for artist in favoriteArtists {
-			let optionalAlbums = session.getArtistAlbums(artistId: artist.item.id, limit: number)
-			guard let albums = optionalAlbums else {
-				continue
+			if let albums = session.getArtistAlbums(artistId: artist.item.id,
+													filter: nil,
+													limit: number) {
+				allReleases += albums
 			}
-			allReleases += albums
+			if includeEps {
+				if let albums = session.getArtistAlbums(artistId: artist.item.id,
+														filter: .epsAndSingles,
+														limit: number) {
+					allReleases += albums
+				}
+			}
 		}
 		
 		allReleases = Array(Set(allReleases)) // Remove possible duplicates

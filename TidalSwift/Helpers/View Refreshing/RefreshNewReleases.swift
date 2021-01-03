@@ -21,7 +21,7 @@ extension ViewState {
 	
 	var newReleasesWI: DispatchWorkItem {
 		DispatchWorkItem { [self] in
-			let t = session.helpers.newReleasesFromFavoriteArtists(number: 40)
+			let t = session.helpers.newReleasesFromFavoriteArtists(number: 40, includeEps: newReleasesIncludeEps)
 			
 			var view = TidalSwiftView(viewType: .newReleases)
 			if t != nil {

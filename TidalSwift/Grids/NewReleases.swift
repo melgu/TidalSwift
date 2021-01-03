@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 import TidalSwiftLib
 
 struct NewReleases: View {
@@ -14,6 +15,8 @@ struct NewReleases: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	
+	@State var cancellable: AnyCancellable?
 	
 	var body: some View {
 		ScrollView {
@@ -23,6 +26,7 @@ struct NewReleases: View {
 						.font(.largeTitle)
 					Spacer()
 					LoadingSpinner()
+					Toggle("Include EPs and Singles", isOn: $viewState.newReleasesIncludeEps)
 				}
 				
 				if let albums = viewState.stack.last?.albums {
@@ -31,6 +35,15 @@ struct NewReleases: View {
 				Spacer(minLength: 0)
 			}
 			.padding(.horizontal)
+		}
+		.onAppear {
+			cancellable = viewState.$newReleasesIncludeEps
+				.sink { _ in
+					viewState.refreshCurrentView()
+				}
+		}
+		.onDisappear {
+			cancellable?.cancel()
 		}
 	}
 }
