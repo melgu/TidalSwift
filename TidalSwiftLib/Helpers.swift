@@ -29,24 +29,23 @@ public class Helpers {
 			return nil
 		}
 		
-		var allReleases = [Album]()
+		var allReleases = Set<Album>() 
 		for artist in favoriteArtists {
 			if let albums = session.getArtistAlbums(artistId: artist.item.id,
 													filter: nil,
 													limit: number) {
-				allReleases += albums
+				allReleases.formUnion(albums)
 			}
 			if includeEps {
 				if let albums = session.getArtistAlbums(artistId: artist.item.id,
 														filter: .epsAndSingles,
 														limit: number) {
-					allReleases += albums
+					allReleases.formUnion(albums)
 				}
 			}
 		}
 		
-		allReleases = Array(Set(allReleases)) // Remove possible duplicates
-		allReleases.sort { $0.releaseDate ?? Date.distantPast > $1.releaseDate ?? Date.distantPast }
-		return Array(allReleases.prefix(number))
+		let sortedReleases = Array(allReleases).sorted { $0.releaseDate ?? Date.distantPast > $1.releaseDate ?? Date.distantPast }
+		return Array(sortedReleases.prefix(number))
 	}
 }
