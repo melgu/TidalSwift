@@ -210,7 +210,7 @@ struct TrackRow: View {
 		if let version = track.version {
 			s += " (\(version))"
 		}
-		s += track.artists.formArtistString()
+		s += " – \(track.artists.formArtistString())"
 		return s
 	}
 }
