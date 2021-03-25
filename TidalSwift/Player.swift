@@ -259,6 +259,7 @@ class Player {
 	}
 	
 	func add(tracks: [Track], _ when: When, playAt index: Int = 0) {
+		let tracks = tracks.filter { !$0.isUnavailable }
 		if when == .now {
 			addNow(tracks: tracks, playAt: index)
 		} else if when == .next {
