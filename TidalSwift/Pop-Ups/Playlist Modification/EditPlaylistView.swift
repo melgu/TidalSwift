@@ -12,8 +12,8 @@ import TidalSwiftLib
 struct EditPlaylistView: View {
 	let session: Session
 	
-	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
-	@EnvironmentObject var viewState: ViewState
+	@ObservedObject var playlistEditingValues: PlaylistEditingValues
+	@ObservedObject var viewState: ViewState
 	
 	@State var playlistTitle: String = ""
 	@State var playlistDescription: String = ""

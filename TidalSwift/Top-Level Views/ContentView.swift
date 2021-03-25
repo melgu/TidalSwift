@@ -10,41 +10,36 @@ import SwiftUI
 import TidalSwiftLib
 
 struct ContentView: View {
-	@EnvironmentObject var sc: SessionContainer
-	@EnvironmentObject var loginInfo: LoginInfo
-	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
-	@EnvironmentObject var viewState: ViewState
+	@ObservedObject var sessionContainer: SessionContainer
+	@ObservedObject var loginInfo: LoginInfo
+	@ObservedObject var playlistEditingValues: PlaylistEditingValues
+	@ObservedObject var viewState: ViewState
+	@ObservedObject var sortingState: SortingState
 	
 	var body: some View {
-		TopDetailView(session: sc.session, player: sc.player)
-			.environmentObject(sc.player.playbackInfo)
-			.environmentObject(sc.player.queueInfo)
-			.environmentObject(sc.session.helpers.downloadStatus)
+		TopDetailView(session: sessionContainer.session, player: sessionContainer.player)
+			.environmentObject(viewState)
+			.environmentObject(sortingState)
+			.environmentObject(sessionContainer.player.playbackInfo)
+			.environmentObject(sessionContainer.player.queueInfo)
+			.environmentObject(sessionContainer.session.helpers.downloadStatus)
 			.background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
-				LoginView().environmentObject(loginInfo)
+				LoginView(loginInfo: loginInfo)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showAddTracksModal) {
-				AddToPlaylistView(session: sc.session)
-					.environmentObject(playlistEditingValues)
-					.environmentObject(viewState)
+				AddToPlaylistView(session: sessionContainer.session, playlistEditingValues: playlistEditingValues, viewState: viewState)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showRemoveTracksModal) {
-				RemoveFromPlaylistView(session: sc.session)
-					.environmentObject(playlistEditingValues)
-					.environmentObject(viewState)
+				RemoveFromPlaylistView(session: sessionContainer.session, playlistEditingValues: playlistEditingValues, viewState: viewState)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showDeleteModal) {
-				DeletePlaylistView(session: sc.session)
-					.environmentObject(playlistEditingValues)
-					.environmentObject(viewState)
+				DeletePlaylistView(session: sessionContainer.session, playlistEditingValues: playlistEditingValues, viewState: viewState)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showEditModal) {
-				EditPlaylistView(session: sc.session)
-					.environmentObject(playlistEditingValues)
-					.environmentObject(viewState)
+				EditPlaylistView(session: sessionContainer.session, playlistEditingValues: playlistEditingValues, viewState: viewState)
 			})
 			.touchBar {
-				TouchBarView(player: sc.player, playbackInfo: sc.player.playbackInfo)
+				TouchBarView(player: sessionContainer.player, playbackInfo: sessionContainer.player.playbackInfo)
 			}
 	}
 }
