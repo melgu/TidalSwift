@@ -28,7 +28,7 @@ struct TrackList: View {
 							 trackNumber: showAlbumTrackNumber ? nil : wrappedTrack.id, session: session)
 						.onTapGesture(count: 2) {
 							if wrappedTrack.track.isUnavailable { return }
-							print("\(wrappedTrack.track.title)")
+							print("\(wrappedTrack.track.id) \(wrappedTrack.track.title)")
 							player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
 							player.play(atIndex: wrappedTrack.id)
 						}
@@ -45,7 +45,7 @@ struct TrackList: View {
 						 trackNumber: showAlbumTrackNumber ? nil : wrappedTrack.id, session: session)
 					.onTapGesture(count: 2) {
 						if wrappedTrack.track.isUnavailable { return }
-						print("\(wrappedTrack.track.title)")
+						print("\(wrappedTrack.track.id) \(wrappedTrack.track.title)")
 						player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
 						player.play(atIndex: wrappedTrack.id)
 					}

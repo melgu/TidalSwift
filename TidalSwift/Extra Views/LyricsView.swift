@@ -85,9 +85,9 @@ struct LyricsView: View {
 	}
 	
 	func fetchLyrics() {
-		print("Lyrics Fetch for \(track?.title ?? "nil")")
+//		print("Lyrics Fetch for \(track?.title ?? "nil")")
 		if track == lastTrack {
-			print("Lyrics: Same as lastTrack")
+//			print("Lyrics: Same as lastTrack")
 			return
 		}
 		lastTrack = track
