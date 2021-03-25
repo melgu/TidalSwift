@@ -215,7 +215,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		B010113E23063BC200DE13C8 /* Demo Login Information.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Demo Login Information.txt"; sourceTree = "<group>"; };
 		B014CA52236742E600282931 /* SessionContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContainer.swift; sourceTree = "<group>"; };
 		B016FAF323575CB200ECE565 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		B01B09CA234ADADB007A4E15 /* CreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsView.swift; sourceTree = "<group>"; };
@@ -602,7 +601,6 @@
 				B0E80797230615AE00E43B5D /* Info.plist */,
 				B045A66D24626F7F001C8E3F /* Credits.rtf */,
 				B0E80798230615AE00E43B5D /* TidalSwift.entitlements */,
-				B010113E23063BC200DE13C8 /* Demo Login Information.txt */,
 				B0E80791230615AE00E43B5D /* Preview Content */,
 			);
 			path = TidalSwift;
