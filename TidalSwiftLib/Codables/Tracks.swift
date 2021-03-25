@@ -16,6 +16,14 @@ struct Tracks: Decodable {
 	let items: [Track]
 }
 
+public struct TrackMixes: Codable {
+	public let trackMix: String?
+	
+	enum CodingKeys: String, CodingKey {
+		case trackMix = "TRACK_MIX"
+	}
+}
+
 public struct Track: Codable, Equatable, Identifiable, Hashable {
 	public let id: Int
 	public let title: String
@@ -31,6 +39,7 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	public let version: String?
 	public let popularity: Int
 	public let copyright: String?
+	public let description: String?
 	public let url: URL
 	public let isrc: String?
 	public let editable: Bool
@@ -40,6 +49,10 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	public let artist: Artist?
 	public let artists: [Artist]
 	public let album: Album
+	public let mixes: TrackMixes?
+	public let dateAdded: Date?
+	public let index: Int?
+	public let itemUuid: UUID?
 	
 	public func isInFavorites(session: Session) -> Bool? {
 		session.favorites?.doFavoritesContainTrack(trackId: id)
