@@ -74,6 +74,7 @@ enum : MP42VideoCodecType
     kMP42VideoCodecType_H264_PSinBitstream  = 'avc3',
     kMP42VideoCodecType_HEVC                = 'hvc1',
     kMP42VideoCodecType_HEVC_PSinBitstream  = 'hev1',
+    kMP42VideoCodecType_DolbyVisionHEVC     = 'dvh1',
     kMP42VideoCodecType_MPEG4Video          = 'mp4v',
     kMP42VideoCodecType_MPEG2Video          = 'mp2v',
     kMP42VideoCodecType_MPEG1Video          = 'mp1v',
@@ -82,7 +83,7 @@ enum : MP42VideoCodecType
 
     kMP42VideoCodecType_Theora              = 'XiTh',
     kMP42VideoCodecType_VP8                 = 'VP8 ',
-    kMP42VideoCodecType_VP9                 = 'VP9 ',
+    kMP42VideoCodecType_VP9                 = 'vp09',
     kMP42VideoCodecType_AV1                 = 'av01',
 
     kMP42VideoCodecType_AppleProRes4444     = 'ap4h',
