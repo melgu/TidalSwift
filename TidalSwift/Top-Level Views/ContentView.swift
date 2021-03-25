@@ -18,6 +18,7 @@ struct ContentView: View {
 	
 	var body: some View {
 		TopDetailView(session: sessionContainer.session, player: sessionContainer.player)
+			.environmentObject(sessionContainer)
 			.environmentObject(viewState)
 			.environmentObject(sortingState)
 			.environmentObject(sessionContainer.player.playbackInfo)

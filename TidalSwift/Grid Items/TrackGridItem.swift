@@ -107,6 +107,7 @@ extension Track {
 	}
 	
 	var isUnavailable: Bool {
+		!streamReady ||
 		audioModes?.contains(.sony360RealityAudio) ?? false ||
 			audioModes?.contains(.dolbyAtmos) ?? false
 	}
