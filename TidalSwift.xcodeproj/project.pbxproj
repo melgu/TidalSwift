@@ -1611,7 +1611,7 @@
 			repositoryURL = "git@github.com:spacenation/swiftui-grid.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.4;
+				minimumVersion = 1.1.0;
 			};
 		};
 		B0E9B7982532896C00CE81F6 /* XCRemoteSwiftPackageReference "swiftui-sliders" */ = {
