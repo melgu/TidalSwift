@@ -15,11 +15,11 @@ final class LoginInfo: ObservableObject {
 }
 
 struct LoginView: View {
+	@ObservedObject var loginInfo: LoginInfo
+	
 	@State var username: String = ""
 	@State var password: String = ""
 	@State var quality: AudioQuality = .hifi
-	
-	@EnvironmentObject var loginInfo: LoginInfo
 	
 	var body: some View {
 		VStack {

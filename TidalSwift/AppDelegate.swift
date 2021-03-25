@@ -288,13 +288,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		window.center()
 		window.setFrameAutosaveName("Main Window")
 		
-		window.contentView = NSHostingView(rootView:
-			ContentView()
-				.environmentObject(sc)
-				.environmentObject(viewState)
-				.environmentObject(sortingState)
-				.environmentObject(loginInfo)
-				.environmentObject(playlistEditingValues)
+		window.contentView = NSHostingView(
+			rootView: ContentView(sessionContainer: sc,
+								  loginInfo: loginInfo,
+								  playlistEditingValues: playlistEditingValues,
+								  viewState: viewState, sortingState: sortingState)
 		)
 		
 		window.makeKeyAndOrderFront(nil)

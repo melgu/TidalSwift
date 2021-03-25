@@ -1632,8 +1632,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:davbeck/ImageIOSwift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.1;
+				kind = exactVersion;
+				version = 1.1.1;
 			};
 		};
 		B0EAD6F524E4EB4D0009A5E2 /* XCRemoteSwiftPackageReference "UpdateNotification" */ = {
