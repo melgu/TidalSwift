@@ -110,9 +110,11 @@ struct TrackInfoView: View {
 							Text(player.currentQualityString())
 								.fontWeight(.light)
 								.foregroundColor(.orange)
+								.toolTip("Current Quality")
 							Text(player.maxQualityString())
 								.fontWeight(.light)
 								.foregroundColor(.secondary)
+								.toolTip("Maximum available quality")
 						}
 						.toolTip(trackToolTipString(for: track))
 						Text("\(track.artists.formArtistString()) – \(track.album.title)")
