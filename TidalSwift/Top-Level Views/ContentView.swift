@@ -21,6 +21,7 @@ struct ContentView: View {
 			.environmentObject(sessionContainer)
 			.environmentObject(viewState)
 			.environmentObject(sortingState)
+			.environmentObject(playlistEditingValues)
 			.environmentObject(sessionContainer.player.playbackInfo)
 			.environmentObject(sessionContainer.player.queueInfo)
 			.environmentObject(sessionContainer.session.helpers.downloadStatus)
