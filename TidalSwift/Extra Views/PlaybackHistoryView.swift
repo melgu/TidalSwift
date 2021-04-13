@@ -40,9 +40,7 @@ struct PlaybackHistoryView: View {
 								.fontWeight(item.id == queueInfo.history.count - 1 ? .bold : .regular)
 								.lineLimit(1)
 								.onTapGesture(count: 2) {
-									sc.player.clearQueue()
-									sc.player.add(tracks: queueInfo.history.map { $0.track }, .last)
-									sc.player.play(atIndex: item.id)
+									sc.player.add(tracks: queueInfo.history.map { $0.track }, .now, playAt: item.id)
 								}
 								.contextMenu {
 									TrackContextMenu(track: item.track, session: sc.session, player: sc.player)
