@@ -259,9 +259,14 @@ class Player {
 	}
 	
 	func add(tracks: [Track], _ when: When, playAt index: Int = 0) {
+		let unavailableCount = tracks[0..<index].filter(\.isUnavailable).count
+		let newIndex = index - unavailableCount
+		print("New Index: \(newIndex), index: \(index), \(unavailableCount)")
+		
 		let tracks = tracks.filter { !$0.isUnavailable }
 		if when == .now {
-			addNow(tracks: tracks, playAt: index)
+			addNow(tracks: tracks, playAt: newIndex)
+			play(atIndex: newIndex)
 		} else if when == .next {
 			addNext(tracks: tracks)
 		} else {

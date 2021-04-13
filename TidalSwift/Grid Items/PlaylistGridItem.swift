@@ -62,7 +62,6 @@ struct PlaylistGridItem: View {
 		.onTapGesture(count: 2) {
 			print("Second Click. \(playlist.title)")
 			player.add(playlist: playlist, .now)
-			player.play()
 		}
 		.onTapGesture(count: 1) {
 			print("First Click. \(playlist.title)")

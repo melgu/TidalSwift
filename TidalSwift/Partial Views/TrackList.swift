@@ -30,7 +30,6 @@ struct TrackList: View {
 							if wrappedTrack.track.isUnavailable { return }
 							print("\(wrappedTrack.track.id) \(wrappedTrack.track.title)")
 							player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
-							player.play(atIndex: wrappedTrack.id)
 						}
 						.contextMenu {
 							TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: playlist != nil ? wrappedTrack.id : nil, playlist: playlist, session: session, player: player)
@@ -47,7 +46,6 @@ struct TrackList: View {
 						if wrappedTrack.track.isUnavailable { return }
 						print("\(wrappedTrack.track.id) \(wrappedTrack.track.title)")
 						player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
-						player.play(atIndex: wrappedTrack.id)
 					}
 					.contextMenu {
 						TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: playlist != nil ? wrappedTrack.id : nil, playlist: playlist, session: session, player: player)
