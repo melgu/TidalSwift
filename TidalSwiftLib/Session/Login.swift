@@ -16,7 +16,7 @@ extension Session {
 			"username": config.loginCredentials.username,
 			"password": config.loginCredentials.password
 		]
-		let response = Network.post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters, authorization: authorization, xTidalToken: config.apiToken)
 		if !response.ok {
 			if response.statusCode == 401 { // Wrong Username / Password
 				displayError(title: "Wrong username or password",
@@ -42,20 +42,27 @@ extension Session {
 			return false
 		}
 		
-		sessionId = loginResponse.sessionId
+//		sessionId = loginResponse.sessionId
 		countryCode = loginResponse.countryCode
 		userId = loginResponse.userId
 		favorites = Favorites(session: self, userId: userId!)
 		return true
 	}
 	
+	public func setAuthorization(authorization: Authorization, countryCode: String, userId: Int) {
+		self.authorization = authorization
+		self.countryCode = countryCode
+		self.userId = userId
+		self.favorites = Favorites(session: self, userId: userId)
+	}
+	
 	public func checkLogin() -> Bool {
-		guard let userId = userId, sessionId != nil else {
+		guard let userId = userId, authorization != nil else {
 			return false
 		}
 		
 		let url = URL(string: "\(config.apiLocation)/users/\(userId)/subscription")!
 //		print(sessionParameters)
-		return Network.get(url: url, parameters: sessionParameters).ok
+		return Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken).ok
 	}
 }

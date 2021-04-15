@@ -18,6 +18,8 @@ public struct LoginCredentials {
 	}
 }
 
+public typealias Authorization = String
+
 public class Config {
 	public var quality: AudioQuality
 	var apiLocation: String

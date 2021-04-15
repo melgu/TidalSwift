@@ -19,7 +19,7 @@ public class PlaylistEditing {
 	
 	func etag(for playlistId: String) -> Int {
 		let url = URL(string: "\(baseUrl)/\(playlistId)")!
-		let response = Network.get(url: url, parameters: session.sessionParameters)
+		let response = Network.get(url: url, parameters: session.sessionParameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		return response.etag ?? -1
 	}
 	
@@ -33,7 +33,7 @@ public class PlaylistEditing {
 		trackIdsString = String(trackIdsString.dropLast())
 		parameters["trackIds"] = trackIdsString
 		parameters["onDupes"] = duplicate ? "ADD" : "FAIL"
-		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId))
+		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId), authorization: session.authorization, xTidalToken: session.config.apiToken)
 		return response.ok
 	}
 	
@@ -46,7 +46,7 @@ public class PlaylistEditing {
 		var parameters = session.sessionParameters
 		parameters["order"] = "INDEX"
 		parameters["orderDirection"] = "ASC"
-		let response = Network.delete(url: url, parameters: parameters, etag: etag(for: playlistId))
+		let response = Network.delete(url: url, parameters: parameters, etag: etag(for: playlistId), authorization: session.authorization, xTidalToken: session.config.apiToken)
 		return response.ok
 	}
 	
@@ -54,7 +54,7 @@ public class PlaylistEditing {
 		let url = URL(string: "\(baseUrl)/\(playlistId)/items/\(fromIndex)")!
 		var parameters = session.sessionParameters
 		parameters["toIndex"] = "\(toIndex)"
-		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId))
+		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId), authorization: session.authorization, xTidalToken: session.config.apiToken)
 		return response.ok
 	}
 	
@@ -66,7 +66,7 @@ public class PlaylistEditing {
 		var parameters = session.sessionParameters
 		parameters["title"] = "\(title)"
 		parameters["description"] = "\(description)"
-		let response = Network.post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Playlist Creation failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -88,13 +88,13 @@ public class PlaylistEditing {
 		var parameters = session.sessionParameters
 		parameters["title"] = "\(title)"
 		parameters["description"] = "\(description)"
-		let response = Network.post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		return response.ok
 	}
 	
 	public func delete(playlistId: String) -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters, etag: etag(for: playlistId))
+		let response = Network.delete(url: url, parameters: session.sessionParameters, etag: etag(for: playlistId), authorization: session.authorization, xTidalToken: session.config.apiToken)
 		return response.ok
 	}
 }

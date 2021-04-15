@@ -33,7 +33,7 @@ public class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = Network.get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Artist failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -62,7 +62,7 @@ public class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = Network.get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -91,7 +91,7 @@ public class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = Network.get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -125,7 +125,7 @@ public class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = Network.get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Favorite Videos failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -168,7 +168,7 @@ public class Favorites {
 			if let orderDirection = orderDirection {
 				parameters["orderDirection"] = "\(orderDirection.rawValue)"
 			}
-			let response = Network.get(url: url, parameters: parameters)
+			let response = Network.get(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 			
 			guard let content = response.content else {
 				displayError(title: "Favorite Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -212,7 +212,7 @@ public class Favorites {
 		let url = URL(string: "\(baseUrl)/artists")!
 		var parameters = session.sessionParameters
 		parameters["artistIds"] = "\(artistId)"
-		let response = Network.post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedArtists()
 		return response.ok
 	}
@@ -221,7 +221,7 @@ public class Favorites {
 		let url = URL(string: "\(baseUrl)/albums")!
 		var parameters = session.sessionParameters
 		parameters["albumIds"] = "\(albumId)"
-		let response = Network.post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedAlbums()
 		return response.ok
 	}
@@ -230,7 +230,7 @@ public class Favorites {
 		let url = URL(string: "\(baseUrl)/tracks")!
 		var parameters = session.sessionParameters
 		parameters["trackIds"] = "\(trackId)"
-		let response = Network.post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedTracks()
 		return response.ok
 	}
@@ -239,7 +239,7 @@ public class Favorites {
 		let url = URL(string: "\(baseUrl)/videos")!
 		var parameters = session.sessionParameters
 		parameters["videoIds"] = "\(videoId)"
-		let response = Network.post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedVideos()
 		return response.ok
 	}
@@ -248,7 +248,7 @@ public class Favorites {
 		let url = URL(string: "\(baseUrl)/playlists")!
 		var parameters = session.sessionParameters
 		parameters["uuids"] = playlistId
-		let response = Network.post(url: url, parameters: parameters)
+		let response = Network.post(url: url, parameters: parameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedPlaylists()
 		return response.ok
 	}
@@ -257,35 +257,35 @@ public class Favorites {
 	
 	@discardableResult public func removeArtist(artistId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/artists/\(artistId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedArtists()
 		return response.ok
 	}
 
 	@discardableResult public func removeAlbum(albumId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/albums/\(albumId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedAlbums()
 		return response.ok
 	}
 
 	@discardableResult public func removeTrack(trackId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/tracks/\(trackId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedTracks()
 		return response.ok
 	}
 	
 	@discardableResult public func removeVideo(videoId: Int) -> Bool {
 		let url = URL(string: "\(baseUrl)/videos/\(videoId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedVideos()
 		return response.ok
 	}
 
 	@discardableResult public func removePlaylist(playlistId: String) -> Bool {
 		let url = URL(string: "\(baseUrl)/playlists/\(playlistId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters)
+		let response = Network.delete(url: url, parameters: session.sessionParameters, authorization: session.authorization, xTidalToken: session.config.apiToken)
 		refreshCachedPlaylists()
 		return response.ok
 	}

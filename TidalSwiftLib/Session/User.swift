@@ -15,7 +15,7 @@ extension Session {
 		}
 		
 		let url = URL(string: "\(config.apiLocation)/users/\(userId)/subscription")!
-		let response = Network.get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Subscription Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -34,7 +34,7 @@ extension Session {
 	
 	public func getUser(userId: Int) -> User? {
 		let url = URL(string: "\(config.apiLocation)/users/\(userId)")!
-		let response = Network.get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "User Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -60,7 +60,7 @@ extension Session {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = Network.get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters, authorization: authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "User Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")

@@ -24,7 +24,7 @@ extension Session {
 			return false
 		}
 		
-		sessionId = persistentInformation["sessionId"]
+		authorization = persistentInformation["authorization"]
 		countryCode = persistentInformation["countryCode"]
 		userId = Int(persistentInformation["userId"]!)
 		favorites = Favorites(session: self, userId: userId!)
@@ -32,15 +32,14 @@ extension Session {
 	}
 	
 	public func saveSession() {
-		guard let sessionId = sessionId,
-			  let countryCode = countryCode,
+		guard let countryCode = countryCode,
 			  let userId = userId else {
 			displayError(title: "Couldn't save Session Information",
 						 content: "Session Information wasn't set yet. You're probably not logged in.")
 			return
 		}
 		
-		let persistentInformation: [String: String] = ["sessionId": sessionId,
+		let persistentInformation: [String: String] = ["authorization": authorization ?? "",
 													   "countryCode": countryCode,
 													   "userId": String(userId)]
 		

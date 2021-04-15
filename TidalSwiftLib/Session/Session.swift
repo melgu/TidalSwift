@@ -12,16 +12,15 @@ public class Session {
 	var config: Config
 	public var sessionConfig: Config { config }
 	
-	var sessionId: String?
+	var authorization: Authorization?
 	var countryCode: String?
 	public var userId: Int?
 	
 	var sessionParameters: [String: String] {
-		if sessionId == nil || countryCode == nil {
+		if countryCode == nil {
 			return [:]
 		} else {
-			return ["sessionId": sessionId!,
-					"countryCode": countryCode!,
+			return ["countryCode": countryCode!,
 					"limit": "999"]
 		}
 		

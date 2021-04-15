@@ -32,9 +32,15 @@ class Network {
 		return components.percentEncodedQuery ?? ""
 	}
 	
-	private class func request(method: HttpMethod, url: URL, parameters: [String: String], etag: Int? = nil) -> Response {
+	private class func request(method: HttpMethod, url: URL, parameters: [String: String], etag: Int? = nil, authorization: Authorization?, xTidalToken: String?) -> Response {
 		var request = URLRequest(url: url)
 		request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+		if let authorization = authorization {
+			request.addValue(authorization, forHTTPHeaderField: "Authorization")
+		}
+		if let xTidalToken = xTidalToken {
+			request.addValue(xTidalToken, forHTTPHeaderField: "X-Tidal-Token")
+		}
 		if let etag = etag {
 			request.setValue(#""\#(etag)""#, forHTTPHeaderField: "If-None-Match")
 		}
@@ -101,38 +107,49 @@ class Network {
 		return networkResponse
 	}
 	
-	class func get(url: URL, parameters: [String: String]) -> Response {
-		request(method: .get, url: url, parameters: parameters)
+	class func get(url: URL, parameters: [String: String],
+				   authorization: Authorization?, xTidalToken: String?) -> Response {
+		request(method: .get, url: url, parameters: parameters,
+				authorization: authorization, xTidalToken: xTidalToken)
 	}
 	
-	class func post(url: URL, parameters: [String: String], etag: Int? = nil) -> Response {
-		request(method: .post, url: url, parameters: parameters, etag: etag)
+	class func post(url: URL, parameters: [String: String], etag: Int? = nil,
+					authorization: Authorization?, xTidalToken: String?) -> Response {
+		request(method: .post, url: url, parameters: parameters, etag: etag,
+				authorization: authorization, xTidalToken: xTidalToken)
 	}
 	
-	class func delete(url: URL, parameters: [String: String], etag: Int? = nil) -> Response {
-		request(method: .delete, url: url, parameters: parameters, etag: etag)
+	class func delete(url: URL, parameters: [String: String], etag: Int? = nil, authorization: Authorization?, xTidalToken: String?) -> Response {
+		request(method: .delete, url: url, parameters: parameters, etag: etag,
+				authorization: authorization, xTidalToken: xTidalToken)
 	}
 	
 	class func asyncGet(url: URL, parameters: [String: String],
-				  completionHandler: @escaping (Response) -> Void) {
+						authorization: Authorization?, xTidalToken: String?,
+						completionHandler: @escaping (Response) -> Void) {
 		DispatchQueue.global(qos: .userInitiated).async {
-			let response = self.request(method: .get, url: url, parameters: parameters)
+			let response = self.request(method: .get, url: url, parameters: parameters,
+										authorization: authorization, xTidalToken: xTidalToken)
 			completionHandler(response)
 		}
 	}
 	
-	class func asyncPost(url: URL, parameters: [String: String], etag: Int? = nil,
-				   completionHandler: @escaping (Response) -> Void) {
+	class func asyncPost(url: URL, parameters: [String: String],
+						 etag: Int? = nil, authorization: Authorization?, xTidalToken: String?,
+						 completionHandler: @escaping (Response) -> Void) {
 		DispatchQueue.global(qos: .userInitiated).async {
-			let response = self.request(method: .post, url: url, parameters: parameters, etag: etag)
+			let response = self.request(method: .post, url: url, parameters: parameters, etag: etag,
+										authorization: authorization, xTidalToken: xTidalToken)
 			completionHandler(response)
 		}
 	}
 	
 	class func asyncDelete(url: URL, parameters: [String: String], etag: Int? = nil,
-					 completionHandler: @escaping (Response) -> Void) {
+						   authorization: Authorization?, xTidalToken: String?,
+						   completionHandler: @escaping (Response) -> Void) {
 		DispatchQueue.global(qos: .userInitiated).async {
-			let response = self.request(method: .delete, url: url, parameters: parameters, etag: etag)
+			let response = self.request(method: .delete, url: url, parameters: parameters,
+										etag: etag, authorization: authorization, xTidalToken: xTidalToken)
 			completionHandler(response)
 		}
 	}
