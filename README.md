@@ -8,9 +8,13 @@ It supports all major features of the official Tidal app, while adding additiona
 
 
 
-## <span style="color:#B00000"> Warning </span>
+## <span style="color:#B00000"> Recent changes </span>
 
-Due to a recent change in the Tidal API, TidalSwift cannot connect to the Tidal servers at this time. I am working on a solution.
+Due to a very recent change in the Tidal API, the login mechanism has changed. Before, you were asked for your username and password. Now, you need to provide an authorization key, which you can get by logging in a desktop web browser and than looking at the XHR queries in the developer view. From there, note the `authorization` header. Also look for the `countryCode` parameter in the query itself. Now visit your favorite tracks and look for the related query in the delevoper view. It will look something like this: `/v1/users/12345678/favorites/tracks`. The number in there is your user id. Use those three values to log into TidalSwift.
+
+I am working on bringing back the easy login from before.
+
+Also note, that Offline storage doesn't work correctly at this point. Files are not getting deleted as they should. Downloads are not affected.
 
 
 
