@@ -8,6 +8,12 @@ It supports all major features of the official Tidal app, while adding additiona
 
 
 
+## <span style="color:#B00000"> Warning </span>
+
+Due to a recent change in the Tidal API, TidalSwift cannot connect to the Tidal servers at this time. I am working on a solution.
+
+
+
 ## Download
 
 You can download the latest version [here](https://github.com/melgu/TidalSwift/releases).
