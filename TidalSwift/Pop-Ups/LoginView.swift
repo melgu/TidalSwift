@@ -19,6 +19,9 @@ struct LoginView: View {
 	
 	@State var username: String = ""
 	@State var password: String = ""
+	@State var authorization: Authorization = ""
+	@State var countryCode: String = ""
+	@State var userId: String = ""
 	@State var quality: AudioQuality = .hifi
 	
 	var body: some View {
@@ -27,10 +30,15 @@ struct LoginView: View {
 			Text("TidalSwift")
 				.font(.largeTitle)
 			
-			TextField("Username", text: $username)
-				.frame(width: 200)
-			SecureField("Password", text: $password, onCommit: login)
-				.frame(width: 200)
+			Group {
+//				TextField("Username", text: $username)
+//				SecureField("Password", text: $password, onCommit: login)
+				
+				SecureField("Authorization", text: $authorization)
+				TextField("Country Code", text: $countryCode)
+				SecureField("User ID", text: $userId)
+			}
+			.frame(width: 200)
 			
 			Picker(selection: $quality, label: Text("Quality")) {
 				Text("Master").tag(AudioQuality.master)
@@ -53,6 +61,7 @@ struct LoginView: View {
 	func login() {
 		print("Login \(username) : \(password)")
 		unowned let appDelegate = NSApp.delegate as? AppDelegate
-		appDelegate?.login(username: username, password: password, quality: quality)
+		guard let userId = Int(userId) else { return }
+		appDelegate?.login(username: username, password: password, authorization: authorization, countryCode: countryCode, userId: userId, quality: quality)
 	}
 }

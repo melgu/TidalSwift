@@ -24,7 +24,7 @@ public enum AudioUrlType: String {
 extension Session {
 	public func getTrack(trackId: Int) -> Track? {
 		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)")!
-		let response = Network.get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Track Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -43,7 +43,7 @@ extension Session {
 	
 	public func getTrackCredits(trackId: Int) -> [Credit]? {
 		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/credits")!
-		let response = Network.get(url: url, parameters: sessionParameters)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Track Credits Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -78,7 +78,7 @@ extension Session {
 		parameters["offset"] = "\(offset)"
 		
 		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/radio")!
-		let response = Network.get(url: url, parameters: parameters)
+		let response = Network.get(url: url, parameters: parameters, authorization: authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Track Radio (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")

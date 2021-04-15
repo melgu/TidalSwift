@@ -56,11 +56,11 @@ public class Download {
 		if let version = track.version {
 			title += " (\(version))"
 		}
-		return "\(track.trackNumber) \(title) - \(track.artists.formArtistString()).m4a"
+		return "\(track.trackNumber) \(title) - \(track.artists.formArtistString())"
 	}
 	
 	func formFileName(_ video: Video) -> String {
-		"\(video.trackNumber) \(video.title) - \(video.artists.formArtistString()).mp4"
+		"\(video.trackNumber) \(video.title) - \(video.artists.formArtistString())"
 	}
 	
 	public func download(track: Track, parentFolder: String = "") -> Bool {
@@ -71,8 +71,8 @@ public class Download {
 		}
 		let filename = formFileName(track)
 		print("Downloading: \(filename)")
-		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename)
-		guard let path = optionalPath else {
+		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: session.pathExtensionForCurrentQuality)
+		guard var path = optionalPath else {
 			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
 			downloadStatus.finishTask()
 			return false
@@ -80,11 +80,17 @@ public class Download {
 		
 		var response: Response!
 		repeat {
-			
 			response = Network.download(url, path: path, overwrite: true)
 		} while response.statusCode == 1001
 		
-		convertToALAC(path: path) // Has to be done, as Tidal sometimes serves the files in a strange QuickTime container (qt), which doesn't support metadata tags
+		if session.config.quality == .hifi || session.config.quality == .master {
+			// Has to be done, as Tidal sometimes serves the files in a strange QuickTime container (qt), which doesn't support metadata tags.
+			// Or it's just flac and therefore doesn't work.
+			convertToALAC(path: path)
+			path.deletePathExtension()
+			path.appendPathExtension("m4a")
+		}
+		
 		metadata.setMetadata(for: track, at: path)
 		print("Download Finished: \(filename)")
 		downloadStatus.finishTask()
@@ -117,7 +123,7 @@ public class Download {
 	public func download(video: Video, parentFolder: String = "") -> Bool {
 		guard let url = video.getVideoUrl(session: session) else { return false }
 		print("Downloading Video \(video.title)")
-		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: formFileName(video))
+		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: formFileName(video), pathExtension: "mp4")
 		guard let path = optionalPath else {
 			return false
 		}
@@ -166,7 +172,7 @@ public class Download {
 	}
 }
 
-func buildPath(baseLocation: DownloadLocation, parentFolder: String?, name: String) -> URL? {
+func buildPath(baseLocation: DownloadLocation, parentFolder: String?, name: String, pathExtension: String?) -> URL? {
 	
 //	if !parentFolder.isEmpty {
 //		if URL(string: parentFolder) == nil {
@@ -198,6 +204,9 @@ func buildPath(baseLocation: DownloadLocation, parentFolder: String?, name: Stri
 			path.appendPathComponent(parentFolder)
 		}
 		path.appendPathComponent(name.replacingOccurrences(of: "/", with: ":"))
+		if let pathExtension = pathExtension {
+			path.appendPathExtension(pathExtension)
+		}
 	} catch {
 		displayError(title: "Path Building Error", content: "File Error: \(error)")
 		return nil
@@ -224,13 +233,12 @@ func convertToALAC(path: URL) {
 	}
 	
 	let avAsset = AVAsset(url: tempPath)
-	let optionalEncoder = SDAVAssetExportSession(asset: avAsset)
-	guard let encoder = optionalEncoder else {
+	guard let encoder = SDAVAssetExportSession(asset: avAsset) else {
 		displayError(title: "ALAC: Couldn't create Export Session", content: "Path: \(path)")
 		return
 	}
 	encoder.outputFileType = AVFileType.m4a.rawValue
-	encoder.outputURL = path
+	encoder.outputURL = path.deletingPathExtension().appendingPathExtension("m4a")
 	encoder.audioSettings = [AVFormatIDKey: kAudioFormatAppleLossless,
 							 AVEncoderBitDepthHintKey: 16,
 							 AVSampleRateKey: 44100,

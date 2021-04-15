@@ -166,7 +166,7 @@ public class Offline {
 		if !db.tracks.contains(where: { (t, _) in t == track }) {
 			return nil
 		}
-		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id).m4a") else {
+		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: session.pathExtensionForCurrentQuality) else {
 			return nil
 		}
 		return URL(fileURLWithPath: path.path)
@@ -203,15 +203,14 @@ public class Offline {
 		var localTracksIds: [Int] = []
 		
 		do {
-			guard let path = buildPath(baseLocation: .music, parentFolder: nil, name: mainPath) else {
+			guard let path = buildPath(baseLocation: .music, parentFolder: nil, name: mainPath, pathExtension: nil) else {
 				displayError(title: "Offline: Error loading Track IDs on Disk", content: "Error while building path to: \(mainPath)")
 				return nil
 			}
 			let directoryContents = try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil, options: [])
-			
 			for url in directoryContents {
 				var name = url.lastPathComponent
-				name.removeLast(4) // Remove ".m4a"
+				name.removeLast(4) // Remove ".m4a" / ".flac"
 				if let id = Int(name) {
 					localTracksIds.append(id)
 				}
@@ -295,8 +294,8 @@ public class Offline {
 			for trackId in toRemove {
 				print("Offline: Removing \(trackId)")
 				do {
-					guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(trackId).m4a") else {
-						displayError(title: "Offline: Error during Offline Sync", content: "Error while building path to: \(mainPath)/\(trackId).m4a")
+					guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(trackId)", pathExtension: session.pathExtensionForCurrentQuality) else {
+						displayError(title: "Offline: Error during Offline Sync", content: "Error while building path to: \(mainPath)/\(trackId).\(session.pathExtensionForCurrentQuality)")
 						return
 					}
 					if FileManager.default.fileExists(atPath: path.relativePath) {
@@ -319,8 +318,8 @@ public class Offline {
 				displayError(title: "Offline: Error while loading offline track", content: "Couldn't get Audio URL")
 				return
 			}
-			guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id).m4a") else {
-				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(track.id).m4a")
+			guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: session.pathExtensionForCurrentQuality) else {
+				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(track.id).\(session.pathExtensionForCurrentQuality)")
 				return
 			}
 			var response: Response!

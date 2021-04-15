@@ -155,13 +155,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playbackHistoryViewController.close()
 	}
 	
-	func login(username: String, password: String, quality: AudioQuality) {
+	func login(username: String, password: String, authorization: Authorization, countryCode: String, userId: Int, quality: AudioQuality) {
 		let credentials = LoginCredentials(username: username, password: password)
-		let config = Config(quality: quality, loginCredentials: credentials, urlType: .offline)
+		let config = Config(quality: quality, loginCredentials: credentials, urlType: .offline, apiToken: "i4ZDjcyhed7Mu47q")
 		sc.session = Session(config: config)
 		sc.session.helpers.offline.uiRefreshFunc = { [unowned self] in self.viewState.refreshCurrentView() }
 		
-		let loginSuccessful = sc.session.login()
+		sc.session.setAuthorization(authorization: authorization, countryCode: countryCode, userId: userId)
+		let loginSuccessful = sc.session.checkLogin() // sc.session.login()
 		if loginSuccessful {
 			loginInfo.wrongLogin = false
 			loginInfo.showModal = false
@@ -294,7 +295,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 								  playlistEditingValues: playlistEditingValues,
 								  viewState: viewState, sortingState: sortingState)
 		)
-		
+		window.title = "TidalSwift"
 		window.makeKeyAndOrderFront(nil)
 		
 		updateCheck(showNoUpdatesAlert: false)
