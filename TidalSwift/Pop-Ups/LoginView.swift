@@ -17,12 +17,8 @@ final class LoginInfo: ObservableObject {
 struct LoginView: View {
 	@ObservedObject var loginInfo: LoginInfo
 	
-	@State var username: String = ""
-	@State var password: String = ""
 	@State var authorization: Authorization = ""
-	@State var countryCode: String = ""
-	@State var userId: String = ""
-	@State var quality: AudioQuality = .hifi
+	@State var offlineAudioQuality: AudioQuality = .hifi
 	
 	var body: some View {
 		VStack {
@@ -30,18 +26,14 @@ struct LoginView: View {
 			Text("TidalSwift")
 				.font(.largeTitle)
 			
-			Group {
-//				TextField("Username", text: $username)
-//				SecureField("Password", text: $password, onCommit: login)
-				
+			VStack(alignment: .leading) {
 				SecureField("Authorization", text: $authorization)
-				TextField("Country Code", text: $countryCode)
-				SecureField("User ID", text: $userId)
+				Text("In the form: Bearer ABC123…")
 			}
-			.frame(width: 200)
+			.frame(width: 300)
 			
-			Picker(selection: $quality, label: Text("Quality")) {
-				Text("Master").tag(AudioQuality.master)
+			Picker(selection: $offlineAudioQuality, label: Text("Offline Audio Quality")) {
+//				Text("Master").tag(AudioQuality.master)
 				Text("HiFi").tag(AudioQuality.hifi)
 				Text("High").tag(AudioQuality.high)
 				Text("Low").tag(AudioQuality.low)
@@ -59,9 +51,7 @@ struct LoginView: View {
 	}
 	
 	func login() {
-		print("Login \(username) : \(password)")
 		unowned let appDelegate = NSApp.delegate as? AppDelegate
-		guard let userId = Int(userId) else { return }
-		appDelegate?.login(username: username, password: password, authorization: authorization, countryCode: countryCode, userId: userId, quality: quality)
+		appDelegate?.login(authorization: authorization, offlineAudioQuality: offlineAudioQuality)
 	}
 }

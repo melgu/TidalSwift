@@ -24,7 +24,6 @@ extension Session {
 			return false
 		}
 		
-		authorization = persistentInformation["authorization"]
 		countryCode = persistentInformation["countryCode"]
 		userId = Int(persistentInformation["userId"]!)
 		favorites = Favorites(session: self, userId: userId!)
@@ -39,19 +38,17 @@ extension Session {
 			return
 		}
 		
-		let persistentInformation: [String: String] = ["authorization": authorization ?? "",
-													   "countryCode": countryCode,
+		let persistentInformation: [String: String] = ["countryCode": countryCode,
 													   "userId": String(userId)]
 		
 		UserDefaults.standard.set(persistentInformation, forKey: "Session Information")
 	}
 	
 	public func saveConfig() {
-		let persistentInformation: [String: String] = ["quality": config.quality.rawValue,
-													   "username": config.loginCredentials.username,
-													   "password": config.loginCredentials.password,
-													   "urlType": config.urlType.rawValue,
+		let persistentInformation: [String: String] = ["authorization": config.authorization,
 													   "apiToken": config.apiToken,
+													   "offlineAudioQuality": config.offlineAudioQuality.rawValue,
+													   "urlType": config.urlType.rawValue,
 													   "apiLocation": config.apiLocation,
 													   "imageLocation": config.imageLocation,
 													   "imageSize": String(config.imageSize)

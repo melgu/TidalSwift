@@ -8,43 +8,36 @@
 
 import Foundation
 
-public struct LoginCredentials {
-	var username: String
-	var password: String
-	
-	public init(username: String, password: String) {
-		self.username = username
-		self.password = password
-	}
-}
-
 public typealias Authorization = String
 
 public class Config {
-	public var quality: AudioQuality
-	var apiLocation: String
+	var authorization: Authorization
 	var apiToken: String
+	var offlineAudioQuality: AudioQuality
+	var apiLocation: String
 	var imageLocation: String
 	var imageSize: Int
-	var loginCredentials: LoginCredentials
 	public var urlType: AudioUrlType
 	
-	public init(quality: AudioQuality = .hifi,
-		 loginCredentials: LoginCredentials,
-		 urlType: AudioUrlType,
-		 apiToken: String? = nil,
-		 apiLocation: String = "https://api.tidal.com/v1",
-		 imageLocation: String = "https://resources.tidal.com/images",
-		 imageSize: Int = 1280) {
-		self.quality = quality
-		self.loginCredentials = loginCredentials
-		self.urlType = urlType
+	public init(
+		authorization: Authorization,
+		apiToken: String? = nil,
+		offlineAudioQuality: AudioQuality,
+		urlType: AudioUrlType,
+		apiLocation: String = "https://api.tidal.com/v1",
+		imageLocation: String = "https://resources.tidal.com/images",
+		imageSize: Int = 1280
+	) {
+		self.authorization = authorization
 		
 		if let token = apiToken {
 			self.apiToken = token
 		} else {
 			self.apiToken = "_DSTon1kC8pABnTw" // Direct ALAC, 1080p Videos
 		}
+		
+		self.offlineAudioQuality = offlineAudioQuality
+		self.urlType = urlType
 		
 		self.apiLocation = apiLocation.replacingOccurrences(of: " ", with: "")
 		if apiLocation.last == "/" {
@@ -57,5 +50,40 @@ public class Config {
 		}
 		
 		self.imageSize = imageSize
+	}
+}
+
+extension Config {
+	static func load() -> Config? {
+		let persistentInformationOptional: [String: String]? =
+			UserDefaults.standard.dictionary(forKey: "Config Information") as? [String: String]
+		
+		guard let persistentInformation = persistentInformationOptional else {
+			displayError(title: "Couldn't load Config", content: "Persistent Config doesn't exist")
+			return nil
+		}
+		
+		guard let authorization = persistentInformation["authorization"],
+			  let apiToken = persistentInformation["apiToken"],
+			  let offlineAudioQualityString = persistentInformation["offlineAudioQuality"],
+			  let offlineAudioQuality = AudioQuality(rawValue: offlineAudioQualityString),
+			  let urlTypeString = persistentInformation["urlType"],
+			  let urlType = AudioUrlType(rawValue: urlTypeString),
+			  let apiLocation = persistentInformation["apiLocation"],
+			  let imageLocation = persistentInformation["imageLocation"],
+			  let imageSizeString = persistentInformation["imageSize"],
+			  let imageSize = Int(imageSizeString)
+		else {
+			displayError(title: "Couldn't load Config", content: "Missing part of Persistent Config.")
+			return nil
+		}
+		
+		return Config(authorization: authorization,
+					  apiToken: apiToken,
+					  offlineAudioQuality: offlineAudioQuality,
+					  urlType: urlType,
+					  apiLocation: apiLocation,
+					  imageLocation: imageLocation,
+					  imageSize: imageSize)
 	}
 }

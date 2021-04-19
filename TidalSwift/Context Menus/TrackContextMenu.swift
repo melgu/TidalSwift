@@ -116,7 +116,7 @@ struct TrackContextMenu: View {
 					Button {
 						print("Download")
 						DispatchQueue.global(qos: .background).async {
-							_ = session.helpers.download.download(track: track)
+							_ = session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
 						}
 					} label: {
 						Text("Download")

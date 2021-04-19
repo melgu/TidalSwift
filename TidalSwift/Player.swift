@@ -28,8 +28,13 @@ class Player {
 	private var volumeCancellable: AnyCancellable?
 	private var shuffleCancellable: AnyCancellable?
 	
-	init(session: Session, autoplayAfterAddNow: Bool = true) {
+	private var currentAudioQuality: AudioQuality
+	private(set) var nextAudioQuality: AudioQuality
+	
+	init(session: Session, audioQuality: AudioQuality, autoplayAfterAddNow: Bool = true) {
 		self.session = session
+		self.currentAudioQuality = audioQuality
+		self.nextAudioQuality = audioQuality
 		self.autoplayAfterAddNow = autoplayAfterAddNow
 		
 		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: nil) { [weak self] _ in
@@ -50,6 +55,10 @@ class Player {
 		}
 		volumeCancellable?.cancel()
 		shuffleCancellable?.cancel()
+	}
+	
+	func setAudioQuality(to audioQuality: AudioQuality) {
+		nextAudioQuality = audioQuality
 	}
 	
 	func play() {
@@ -187,10 +196,10 @@ class Player {
 		}
 		
 		let url: URL
-		if let offlineUrl = session.helpers.offline.url(for: track) {
+		if let offlineUrl = session.helpers.offline.url(for: track, audioQuality: nextAudioQuality) {
 			url = offlineUrl
 		} else {
-			if let onlineUrl = track.getAudioUrl(session: session) {
+			if let onlineUrl = track.getAudioUrl(session: session, audioQuality: nextAudioQuality) {
 				url = onlineUrl
 			} else {
 				skip()
@@ -204,6 +213,8 @@ class Player {
 		let item = AVPlayerItem(url: url)
 		NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(sender:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: item)
 		avPlayer.replaceCurrentItem(with: item)
+		
+		currentAudioQuality = nextAudioQuality
 		
 		if wasPlaying {
 //			print("Was playing...")
@@ -446,7 +457,7 @@ class Player {
 			return ""
 		}
 		
-		var chosenQuality = session.sessionConfig.quality
+		var chosenQuality = currentAudioQuality
 //		print("\(chosenQuality) \(quality)")
 		
 		if chosenQuality == .master && quality != .master {

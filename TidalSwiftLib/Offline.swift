@@ -162,11 +162,11 @@ public class Offline {
 		asyncSync()
 	}
 	
-	public func url(for track: Track) -> URL? {
+	public func url(for track: Track, audioQuality: AudioQuality) -> URL? {
 		if !db.tracks.contains(where: { (t, _) in t == track }) {
 			return nil
 		}
-		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: session.pathExtensionForCurrentQuality) else {
+		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: session.pathExtension(for: audioQuality)) else {
 			return nil
 		}
 		return URL(fileURLWithPath: path.path)
@@ -294,8 +294,9 @@ public class Offline {
 			for trackId in toRemove {
 				print("Offline: Removing \(trackId)")
 				do {
-					guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(trackId)", pathExtension: session.pathExtensionForCurrentQuality) else {
-						displayError(title: "Offline: Error during Offline Sync", content: "Error while building path to: \(mainPath)/\(trackId).\(session.pathExtensionForCurrentQuality)")
+					let pathExtension = session.pathExtension(for: session.config.offlineAudioQuality)
+					guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(trackId)", pathExtension: pathExtension) else {
+						displayError(title: "Offline: Error during Offline Sync", content: "Error while building path to: \(mainPath)/\(trackId).\(pathExtension)")
 						return
 					}
 					if FileManager.default.fileExists(atPath: path.relativePath) {
@@ -314,12 +315,13 @@ public class Offline {
 		
 		for track in toAdd {
 			print("Offline: Downloading \(track.title)")
-			guard let url = track.getAudioUrl(session: session) else {
+			guard let url = track.getAudioUrl(session: session, audioQuality: session.config.offlineAudioQuality) else {
 				displayError(title: "Offline: Error while loading offline track", content: "Couldn't get Audio URL")
 				return
 			}
-			guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: session.pathExtensionForCurrentQuality) else {
-				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(track.id).\(session.pathExtensionForCurrentQuality)")
+			let pathExtension = session.pathExtension(for: session.config.offlineAudioQuality)
+			guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: pathExtension) else {
+				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(track.id).\(pathExtension)")
 				return
 			}
 			var response: Response!

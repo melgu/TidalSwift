@@ -11,7 +11,7 @@ import Foundation
 extension Session {
 	public func getFeatured() -> [FeaturedItem]? {
 		let url = URL(string: "\(config.apiLocation)/promotions")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Featured failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -30,7 +30,7 @@ extension Session {
 
 	public func getMoods() -> [Mood]? {
 		let url = URL(string: "\(config.apiLocation)/moods")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Mood Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -49,7 +49,7 @@ extension Session {
 
 	public func getMoodPlaylists(moodPath: String) -> [Playlist]? {
 		let url = URL(string: "\(config.apiLocation)/moods/\(moodPath)/playlists")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -70,7 +70,7 @@ extension Session {
 	
 	public func getGenres() -> [Genre]? { // Overview over all Genres
 		let url = URL(string: "\(config.apiLocation)/genres")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -91,7 +91,7 @@ extension Session {
 	
 	public func getGenreTracks(genrePath: String) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)/genres/\(genrePath)/tracks")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -110,7 +110,7 @@ extension Session {
 	
 	public func getGenreAlbums(genreName: String) -> [Album]? {
 		let url = URL(string: "\(config.apiLocation)/genres/\(genreName)/albums")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -129,7 +129,7 @@ extension Session {
 	
 public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
 		let url = URL(string: "\(config.apiLocation)/genres/\(genreName)/playlists")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
+	let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Genre Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")

@@ -70,8 +70,8 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		session.getTrackCredits(trackId: id)
 	}
 	
-	public func getAudioUrl(session: Session) -> URL? {
-		session.getAudioUrl(trackId: id)
+	public func getAudioUrl(session: Session, audioQuality: AudioQuality) -> URL? {
+		session.getAudioUrl(trackId: id, audioQuality: audioQuality)
 	}
 	
 	public func isOffline(session: Session) -> Bool {

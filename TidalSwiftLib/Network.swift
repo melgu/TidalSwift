@@ -61,13 +61,13 @@ class Network {
 			let urlString = request.url!.absoluteString + "?" + encodeParameters(parameters)
 			request.url = URL(string: urlString)
 		}
-//			print("=== Network Request ===")
-//			print("\(request.httpMethod!) Request with URL: \(request.url!.absoluteString)")
-//			print("Headers: \(request.allHTTPHeaderFields!)")
-//			if let httpBody = request.httpBody {
-//				print("Body: \(String(data: httpBody, encoding: String.Encoding.utf8)!)")
-//			}
-//			print("=======================")
+			print("=== Network Request ===")
+			print("\(request.httpMethod!) Request with URL: \(request.url!.absoluteString)")
+			print("Headers: \(request.allHTTPHeaderFields!)")
+			if let httpBody = request.httpBody {
+				print("Body: \(String(data: httpBody, encoding: String.Encoding.utf8)!)")
+			}
+			print("=======================")
 		
 		var networkResponse = Response(statusCode: nil, etag: nil, content: nil, ok: false)
 		
@@ -97,7 +97,7 @@ class Network {
 				etag = Int(String(etagSubString))
 			}
 			
-//			print("responseString = \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
+			print("responseString = \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
 			networkResponse = Response(statusCode: response.statusCode, etag: etag, content: data, ok: true)
 			semaphore.signal()
 		}
@@ -161,11 +161,11 @@ class Network {
 		var networkResponse = Response(statusCode: nil, ok: false)
 		
 		do {
-//						print("=== Network Download ===")
-//						print("Download URL: \(url)")
-//						print("Temp Local URL: \(dataUrl)")
-//						print("Final Local URL: \(path)")
-//						print("=======================")
+//			print("=== Network Download ===")
+//			print("Download URL: \(url)")
+//			print("Temp Local URL: \(dataUrl)")
+//			print("Final Local URL: \(path)")
+//			print("=======================")
 			
 			try FileManager.default.createDirectory(at: path.deletingLastPathComponent(), withIntermediateDirectories: true)
 			
