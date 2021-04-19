@@ -42,6 +42,9 @@ struct LoginView: View {
 			Text(loginInfo.wrongLogin ? "Wrong Login Credentials" : " ")
 				.foregroundColor(.red)
 			
+			Text("A restart of the app is required after login.")
+				.foregroundColor(.gray)
+			
 			Button(action: login) {
 				Text("Login")
 			}
