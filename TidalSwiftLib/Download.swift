@@ -71,7 +71,7 @@ public class Download {
 		}
 		let filename = formFileName(track)
 		print("Downloading: \(filename)")
-		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: session.pathExtension(for: session.config.offlineAudioQuality))
+		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: session.pathExtension(for: audioQuality))
 		guard var path = optionalPath else {
 			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
 			downloadStatus.finishTask()
@@ -83,7 +83,7 @@ public class Download {
 			response = Network.download(url, path: path, overwrite: true)
 		} while response.statusCode == 1001
 		
-		if session.config.offlineAudioQuality == .hifi || session.config.offlineAudioQuality == .master {
+		if audioQuality == .hifi || audioQuality == .master {
 			// Has to be done, as Tidal sometimes serves the files in a strange QuickTime container (qt), which doesn't support metadata tags.
 			// Or it's just flac and therefore doesn't work.
 			convertToALAC(path: path)
