@@ -13,7 +13,7 @@ extension Session {
 		var parameters = sessionParameters
 		parameters["deviceType"] = "DESKTOP"
 		let url = URL(string: "\(config.apiLocation)/pages/my_collection_my_mixes")!
-		let response = Network.get(url: url, parameters: parameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: parameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Mixes Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -41,7 +41,7 @@ extension Session {
 		parameters["token"] = "\(config.apiToken)"
 		
 		let url = URL(string: "\(config.apiLocation)/pages/mix")!
-		let response = Network.get(url: url, parameters: parameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: parameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Mix Playlist Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")

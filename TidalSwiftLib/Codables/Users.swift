@@ -9,21 +9,6 @@
 import Foundation
 import SwiftUI
 
-public struct SubscriptionType: Decodable {
-	public let type: String
-	public let offlineGracePeriod: Int
-}
-
-public struct Subscription: Decodable {
-	public let validUntil: Date
-	public let status: String
-	public let subscription: SubscriptionType
-	public let highestSoundQuality: AudioQuality
-	public let premiumAccess: Bool
-	public let canGetTrial: Bool
-	public let paymentType: String
-}
-
 public struct User: Decodable, Identifiable {
 	public let id: Int
 	public let username: String
@@ -48,4 +33,35 @@ public struct User: Decodable, Identifiable {
 		guard let picture = picture else { return nil }
 		return session.getImage(imageId: picture, resolution: resolution)
 	}
+}
+
+struct Client: Decodable {
+	let id: Int
+	let name: String
+	let authorizedForOffline: Bool
+	let authorizedForOfflineDate: Date
+}
+
+struct Sessions: Decodable {
+	let sessionId: UUID
+	let userId: Int
+	let countryCode: String
+	let channelId: Int
+	let partnerId: Int
+	let client: Client
+}
+
+public struct SubscriptionType: Decodable {
+	public let type: String
+	public let offlineGracePeriod: Int
+}
+
+public struct Subscription: Decodable {
+	public let validUntil: Date
+	public let status: String
+	public let subscription: SubscriptionType
+	public let highestSoundQuality: AudioQuality
+	public let premiumAccess: Bool
+	public let canGetTrial: Bool
+	public let paymentType: String
 }

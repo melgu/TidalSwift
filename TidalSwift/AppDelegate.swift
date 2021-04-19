@@ -70,7 +70,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	override init() {
 		let session = Session(config: nil)
-		let player = Player(session: session)
+		
+		let player: Player
+		if let audioQualityString = UserDefaults.standard.string(forKey: "audioQuality"),
+		   let audioQuality = AudioQuality(rawValue: audioQualityString) {
+			player = Player(session: session, audioQuality: audioQuality)
+		} else {
+			player = Player(session: session, audioQuality: .hifi)
+		}
+		
 		sc = SessionContainer(session: session, player: player)
 		
 		var cache = ViewCache()
@@ -155,20 +163,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playbackHistoryViewController.close()
 	}
 	
-	func login(username: String, password: String, authorization: Authorization, countryCode: String, userId: Int, quality: AudioQuality) {
-		let credentials = LoginCredentials(username: username, password: password)
-		let config = Config(quality: quality, loginCredentials: credentials, urlType: .offline, apiToken: "i4ZDjcyhed7Mu47q")
+	func login(authorization: Authorization, offlineAudioQuality: AudioQuality) {
+		let config = Config(authorization: authorization,
+							apiToken: "CzET4vdadNUFQ5JU",
+							offlineAudioQuality: offlineAudioQuality,
+							urlType: .offline) // Token: i4ZDjcyhed7Mu47q
 		sc.session = Session(config: config)
 		sc.session.helpers.offline.uiRefreshFunc = { [unowned self] in self.viewState.refreshCurrentView() }
 		
-		sc.session.setAuthorization(authorization: authorization, countryCode: countryCode, userId: userId)
-		let loginSuccessful = sc.session.checkLogin() // sc.session.login()
+		let loginSuccessful = sc.session.populateVariablesForAuthorization()
 		if loginSuccessful {
 			loginInfo.wrongLogin = false
 			loginInfo.showModal = false
 			sc.session.saveConfig()
 			sc.session.saveSession()
-			sc.player = Player(session: sc.session)
+			sc.player = Player(session: sc.session, audioQuality: offlineAudioQuality)
 			initSecondaryWindows()
 		} else {
 			loginInfo.wrongLogin = true
@@ -304,6 +313,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		// Shouldn't interfere with View State as the view doesn't replace the existing one if it's not New Releases
 		DispatchQueue.global(qos: .background).async(execute: viewState.newReleasesWI)
+		
+		audioQualityLabel(audioQuality: sc.player.nextAudioQuality)
 	}
 	
 	func applicationWillTerminate(_ aNotification: Notification) {
@@ -346,6 +357,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 											maxHistoryItems: sc.player.queueInfo.maxHistoryItems)
 		let playbackInfoData = try? JSONEncoder().encode(codablePI)
 		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
+		
+		UserDefaults.standard.set(sc.player.nextAudioQuality.rawValue, forKey: "audioQuality")
 		
 		UserDefaults.standard.synchronize()
 	}
@@ -567,8 +580,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func downloadTrack(_ sender: Any) {
 		print("Menu: downloadTrack")
 		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
-		DispatchQueue.global(qos: .background).async {
-			_ = self.sc.session.helpers.download.download(track: track)
+		DispatchQueue.global(qos: .background).async { [unowned self] in
+			_ = self.sc.session.helpers.download.download(track: track, audioQuality: sc.player.nextAudioQuality)
 		}
 	}
 	@IBAction func downloadAlbum(_ sender: Any) {
@@ -783,6 +796,42 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	func pauseAfterState(enabled: Bool) {
 		pauseAfterCurrentTrack.state = enabled ? .on : .off
+	}
+	
+	@IBOutlet weak var audioQualityLow: NSMenuItem!
+	@IBAction func audioQualityLow(_ sender: Any) {
+		sc.player.setAudioQuality(to: .low)
+		audioQualityLabel(audioQuality: .low)
+	}
+	@IBOutlet weak var audioQualityHigh: NSMenuItem!
+	@IBAction func audioQualityHigh(_ sender: Any) {
+		sc.player.setAudioQuality(to: .high)
+		audioQualityLabel(audioQuality: .high)
+	}
+	@IBOutlet weak var audioQualityHiFi: NSMenuItem!
+	@IBAction func audioQualityHiFi(_ sender: Any) {
+		sc.player.setAudioQuality(to: .hifi)
+		audioQualityLabel(audioQuality: .hifi)
+		
+	}
+	func audioQualityLabel(audioQuality: AudioQuality) {
+		switch audioQuality {
+		case .low:
+			audioQualityLow.state = .on
+			audioQualityHigh.state = .off
+			audioQualityHiFi.state = .off
+		case .high:
+			audioQualityLow.state = .off
+			audioQualityHigh.state = .on
+			audioQualityHiFi.state = .off
+		case .hifi:
+			audioQualityLow.state = .off
+			audioQualityHigh.state = .off
+			audioQualityHiFi.state = .on
+		case .master:
+			break
+		}
+		savePlaybackInfoOnNextTick = true
 	}
 	
 	@IBAction func clearQueue(_ sender: Any) {

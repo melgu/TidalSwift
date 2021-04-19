@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17147" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17147"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -302,6 +302,32 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="Y10-5D-Uc4"/>
+                                        <menuItem title="Audio Quality" id="6xj-FC-GsC" userLabel="Audio Quality">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Audio Quality" id="JjH-cO-k5z">
+                                                <items>
+                                                    <menuItem title="Low" id="vPF-Kk-mvK" userLabel="Low">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="audioQualityLow:" target="Voe-Tx-rLC" id="4GO-oB-7wW"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="High" id="I8L-hg-zeM" userLabel="High">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="audioQualityHigh:" target="Voe-Tx-rLC" id="ycZ-C9-cuJ"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="HiFi" id="OJB-4o-bYi" userLabel="HiFi">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="audioQualityHiFi:" target="Voe-Tx-rLC" id="vKU-wK-jRE"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="8Pl-Bm-taj"/>
                                         <menuItem title="Clear Queue" id="sI7-lB-3s2">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
@@ -445,6 +471,9 @@
                         <outlet property="albumAddFavorites" destination="u3O-vA-1O9" id="T6N-KI-VWN"/>
                         <outlet property="albumRemoveFavorites" destination="hRK-XZ-tco" id="0Dv-Cd-Azs"/>
                         <outlet property="albumToggleOffline" destination="mZ6-G2-eZo" id="rdR-k4-4KT"/>
+                        <outlet property="audioQualityHiFi" destination="OJB-4o-bYi" id="JOU-kR-laa"/>
+                        <outlet property="audioQualityHigh" destination="I8L-hg-zeM" id="KCN-ft-hkf"/>
+                        <outlet property="audioQualityLow" destination="vPF-Kk-mvK" id="O3k-KG-KJT"/>
                         <outlet property="goToAlbum" destination="f16-Gd-3QD" id="lqr-La-wCe"/>
                         <outlet property="goToArtist" destination="aZC-T4-e8V" id="flN-ka-6n6"/>
                         <outlet property="mute" destination="EJc-FY-8Q5" id="QuD-KR-PQq"/>

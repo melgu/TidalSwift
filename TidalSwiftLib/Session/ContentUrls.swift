@@ -9,11 +9,11 @@
 import Foundation
 
 extension Session {
-	func getAudioUrl(trackId: Int) -> URL? {
+	func getAudioUrl(trackId: Int, audioQuality: AudioQuality) -> URL? {
 		var parameters = sessionParameters
-		parameters["soundQuality"] = "\(config.quality.rawValue)"
+		parameters["soundQuality"] = "\(audioQuality.rawValue)"
 		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/\(config.urlType.rawValue)")!
-		let response = Network.get(url: url, parameters: parameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: parameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Couldn't get Audio URL (HTTP Error)", content: "Track ID: \(trackId). Status Code: \(response.statusCode ?? -1)")
@@ -38,7 +38,7 @@ extension Session {
 	func getVideoUrl(videoId: Int) -> URL? {
 //		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/offlineUrl")! // Only returns low quality video
 		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/streamUrl")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Couldn't get Video URL (HTTP Error)", content: "Video ID: \(videoId). Status Code: \(response.statusCode ?? -1)")
@@ -55,8 +55,8 @@ extension Session {
 		return videoUrlResponse?.url
 	}
 	
-	var pathExtensionForCurrentQuality: String {
-		switch config.quality {
+	func pathExtension(for audioQuality: AudioQuality) -> String {
+		switch audioQuality {
 		case .low, .high:
 			return "m4a"
 		case .hifi, .master:
