@@ -19,7 +19,7 @@ struct DeviceAuthorizationResponse: Decodable {
 
 struct TokenSuccessResponse: Decodable {
 	let accessToken: String
-	let refreshToken: String
+	var refreshToken: String? = nil // Is not included in Refresh Token response
 	let tokenType: String // "Bearer"
 	let expiresIn: Int
 	let user: User
@@ -35,7 +35,7 @@ struct TokenSuccessResponse: Decodable {
 
 struct TokenErrorResponse: Decodable {
 	let status: Int
-	let error: String
+	let error: String?
 	let subStatus: Int
 	let errorDescription: String
 	

@@ -36,7 +36,7 @@ public class Session {
 			if let config = Config.load() {
 				self.config = config
 			} else {
-				self.config = Config(authorization: "", offlineAudioQuality: .hifi, urlType: .offline)
+				self.config = Config(accessToken: "", refreshToken: nil, offlineAudioQuality: .hifi, urlType: .offline)
 			}
 		}
 		helpers = Helpers(session: self)

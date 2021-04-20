@@ -163,12 +163,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playbackHistoryViewController.close()
 	}
 	
-	func login(authorization: Authorization, offlineAudioQuality: AudioQuality) {
-		let config = Config(authorization: authorization,
-							apiToken: "CzET4vdadNUFQ5JU",
-							offlineAudioQuality: offlineAudioQuality,
-							urlType: .offline) // Token: i4ZDjcyhed7Mu47q
-		sc.session = Session(config: config)
+	func login(authorization: String, offlineAudioQuality: AudioQuality) {
 		sc.session.helpers.offline.uiRefreshFunc = { [unowned self] in self.viewState.refreshCurrentView() }
 		
 		let loginSuccessful = sc.session.populateVariablesForAuthorization()
@@ -189,7 +184,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		closeModals()
 		closeAllSecondaryWindows()
 		sc.player.clearQueue()
-		sc.session.deletePersistentInformation()
+		sc.session.logout()
 		viewState.clearEverything()
 		loginInfo.showModal = true
 	}

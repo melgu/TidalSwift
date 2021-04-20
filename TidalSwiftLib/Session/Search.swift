@@ -18,7 +18,7 @@ extension Session {
 		// Can potentially go higher using offset.
 		
 		let url = URL(string: "\(config.apiLocation)/search/")!
-		let response = Network.get(url: url, parameters: parameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Search failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")

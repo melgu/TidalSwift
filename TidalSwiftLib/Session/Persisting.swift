@@ -45,7 +45,7 @@ extension Session {
 	}
 	
 	public func saveConfig() {
-		let persistentInformation: [String: String] = ["authorization": config.authorization,
+		let persistentInformation: [String: String] = ["authorization": config.accessToken,
 													   "apiToken": config.apiToken,
 													   "offlineAudioQuality": config.offlineAudioQuality.rawValue,
 													   "urlType": config.urlType.rawValue,
