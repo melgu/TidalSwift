@@ -16,7 +16,7 @@ public enum PlaylistOrder: String {
 extension Session {
 	public func getPlaylist(playlistId: String) -> Playlist? {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Playlist Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -35,7 +35,7 @@ extension Session {
 	
 	public func getPlaylistTracks(playlistId: String) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/tracks")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Playlist Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")

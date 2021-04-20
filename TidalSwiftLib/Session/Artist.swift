@@ -13,7 +13,7 @@ public typealias ArtistOrder = PlaylistOrder
 extension Session {
 	public func getArtist(artistId: Int) -> Artist? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Artist Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -51,7 +51,7 @@ extension Session {
 		}
 		
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/albums")!
-		let response = Network.get(url: url, parameters: parameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Artist Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -74,7 +74,7 @@ extension Session {
 		parameters["offset"] = "\(offset)"
 		
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/videos")!
-		let response = Network.get(url: url, parameters: parameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 
 		guard let content = response.content else {
 			displayError(title: "Artist Videos failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -97,7 +97,7 @@ extension Session {
 		parameters["offset"] = "\(offset)"
 		
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/toptracks")!
-		let response = Network.get(url: url, parameters: parameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 
 		guard let content = response.content else {
 			displayError(title: "Artist Top Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -116,7 +116,7 @@ extension Session {
 	
 	func getArtistBio(artistId: Int, linksRemoved: Bool = true) -> ArtistBio? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/bio")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Artist Bio failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -150,7 +150,7 @@ extension Session {
 	
 	public func getArtistSimilar(artistId: Int) -> [Artist]? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/similar")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Similar Artists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -169,7 +169,7 @@ extension Session {
 	
 	public func getArtistRadio(artistId: Int) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/radio")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Artist Radio failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")

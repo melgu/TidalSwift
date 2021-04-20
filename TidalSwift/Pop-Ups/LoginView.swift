@@ -17,7 +17,7 @@ final class LoginInfo: ObservableObject {
 struct LoginView: View {
 	@ObservedObject var loginInfo: LoginInfo
 	
-	@State var authorization: Authorization = ""
+	@State var authorization: String = ""
 	@State var offlineAudioQuality: AudioQuality = .hifi
 	
 	var body: some View {

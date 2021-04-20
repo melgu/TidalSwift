@@ -18,7 +18,7 @@ public enum AlbumOrder: String {
 extension Session {
 	public func getAlbum(albumId: Int) -> Album? {
 		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Album Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -37,7 +37,7 @@ extension Session {
 	
 	public func getAlbumTracks(albumId: Int) -> [Track]? {
 		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)/tracks")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Album Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -56,7 +56,7 @@ extension Session {
 	
 	public func getAlbumCredits(albumId: Int) -> [Credit]? {
 		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)/credits")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Album Credits Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")

@@ -12,7 +12,7 @@ import Combine
 extension Session {
 	public func populateVariablesForAuthorization() -> Bool {
 		let url = URL(string: "\(config.apiLocation)/sessions")!
-		let response = Network.get(url: url, parameters: sessionParameters, authorization: config.authorization, xTidalToken: config.apiToken)
+		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
 			displayError(title: "Sessions Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
@@ -48,28 +48,32 @@ extension Session {
 	
 	enum AuthorizationError: Error {
 		case deviceAuthorizationFailed
+		case pollingFailed
+		case expiredToken
 	}
 	
 	public func startAuthorization() -> CurrentValueSubject<AuthorizationState, Never> {
 		let subject = CurrentValueSubject<AuthorizationState, Never>(.waiting)
 		
-		let url = URL(string: "https://auth.tidal.com/v1/oauth2/device_authorization")!
-		let parameters: [String: String] = ["client_id": "aR7gUaTK1ihpXOEP", "scope": "r_usr+w_usr+w_sub"]
-		Network.asyncPost(url: url, parameters: parameters, authorization: nil, xTidalToken: nil) { [weak self] response in
+		let url = URL(string: "\(config.authLocation)/device_authorization")!
+		let parameters: [String: String] = ["client_id": config.clientId,
+											"scope": "r_usr+w_usr+w_sub"]
+		
+		Network.asyncPost(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil) { [weak self] response in
 			guard let content = response.content else {
 				displayError(title: "Device Authorization Request failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
 				subject.send(.failure(AuthorizationError.deviceAuthorizationFailed))
 				return
 			}
 			
-			var optionalDeviceAuth: DeviceAuthorizationResponse?
+			var optionalResponse: DeviceAuthorizationResponse?
 			do {
-				optionalDeviceAuth = try customJSONDecoder.decode(DeviceAuthorizationResponse.self, from: content)
+				optionalResponse = try customJSONDecoder.decode(DeviceAuthorizationResponse.self, from: content)
 			} catch {
 				displayError(title: "Device Authorization Request failed (JSON Parse Error)", content: "\(error)")
 			}
 			
-			guard let deviceAuthResponse = optionalDeviceAuth else {
+			guard let deviceAuthResponse = optionalResponse else {
 				subject.send(.failure(AuthorizationError.deviceAuthorizationFailed))
 				return
 			}
@@ -77,13 +81,111 @@ extension Session {
 			let expiration = Date().addingTimeInterval(TimeInterval(deviceAuthResponse.expiresIn))
 			subject.send(.pending(loginUrl: deviceAuthResponse.verificationUriComplete, expiration: expiration))
 			
-			self?.startAuthorizationPolling(subject: subject)
+			self?.startAuthorizationPolling(deviceCode: deviceAuthResponse.deviceCode, subject: subject)
 		}
 		
 		return subject
 	}
 	
-	private func startAuthorizationPolling(subject: CurrentValueSubject<AuthorizationState, Never>) {
-		// TODO: 2 sec polling
+	private func startAuthorizationPolling(deviceCode: UUID, subject: CurrentValueSubject<AuthorizationState, Never>) {
+		let url = URL(string: "\(config.authLocation)/token")!
+		let parameters: [String: String] = ["client_id": config.clientId,
+											"client_secret": config.clientSecret,
+											"device_code": deviceCode.uuidString,
+											"grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+											"scope": "r_usr+w_usr+w_sub"]
+		
+		authorizationPoll(url: url, parameters: parameters, subject: subject)
+	}
+	
+	private func authorizationPoll(url: URL, parameters: [String: String], subject: CurrentValueSubject<AuthorizationState, Never>) {
+		Network.asyncPost(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil) { [weak self] response in
+			guard let content = response.content else {
+				displayError(title: "Authorization Polling failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+				subject.send(.failure(AuthorizationError.deviceAuthorizationFailed))
+				return
+			}
+			
+			if response.ok {
+				var optionalResponse: TokenSuccessResponse?
+				do {
+					optionalResponse = try customJSONDecoder.decode(TokenSuccessResponse.self, from: content)
+				} catch {
+					displayError(title: "Authorization Polling failed (JSON Parse Error)", content: "\(error)")
+				}
+				
+				guard let tokenResponse = optionalResponse else {
+					subject.send(.failure(AuthorizationError.pollingFailed))
+					return
+				}
+				
+				self?.config.accessToken = tokenResponse.accessToken
+				self?.config.refreshToken = tokenResponse.refreshToken
+				
+				subject.send(.success)
+				return
+			} else {
+				var optionalResponse: TokenErrorResponse?
+				do {
+					optionalResponse = try customJSONDecoder.decode(TokenErrorResponse.self, from: content)
+				} catch {
+					displayError(title: "Authorization Polling failed (JSON Parse Error)", content: "\(error)")
+				}
+				
+				guard let errorResponse = optionalResponse else {
+					subject.send(.failure(AuthorizationError.pollingFailed))
+					return
+				}
+				
+				switch errorResponse.error {
+				case "authorization_pending":
+					self?.authorizationPoll(url: url, parameters: parameters, subject: subject)
+				case "expired_token":
+					subject.send(.failure(AuthorizationError.expiredToken))
+				default:
+					subject.send(.failure(AuthorizationError.pollingFailed))
+				}
+			}
+		}
+	}
+	
+	public func refreshAccessToken() {
+		guard let refreshToken = config.refreshToken else {
+			displayError(title: "Refresh Access Token failed (Token Error)", content: "Missing Refresh Token")
+			return
+		}
+		let url = URL(string: "\(config.authLocation)/token")!
+		let parameters: [String: String] = ["client_id": config.clientId,
+											"client_secret": config.clientSecret,
+											"refresh_token": refreshToken,
+											"grant_type": "refresh_token",
+											"scope": "r_usr+w_usr+w_sub"]
+		
+		let response = Network.post(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil)
+		
+		guard let content = response.content, response.ok else {
+			displayError(title: "Refresh Access Token failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+			return
+		}
+		
+		var optionalResponse: TokenSuccessResponse?
+		do {
+			optionalResponse = try customJSONDecoder.decode(TokenSuccessResponse.self, from: content)
+		} catch {
+			displayError(title: "Refresh Access Token failed (JSON Parse Error)", content: "\(error)")
+		}
+		
+		guard let tokenResponse = optionalResponse else {
+			return
+		}
+		
+		config.accessToken = tokenResponse.accessToken
+	}
+}
+
+extension Session {
+	public func logout() {
+		deletePersistentInformation()
+		config = Config(accessToken: "", refreshToken: nil, offlineAudioQuality: .hifi, urlType: .offline)
 	}
 }
