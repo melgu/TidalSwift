@@ -36,10 +36,10 @@ class Network {
 		var request = URLRequest(url: url)
 		request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 		if let authorization = authorization {
-			request.addValue(authorization, forHTTPHeaderField: "Authorization")
+			request.setValue(authorization, forHTTPHeaderField: "Authorization")
 		}
 		if let xTidalToken = xTidalToken {
-			request.addValue(xTidalToken, forHTTPHeaderField: "X-Tidal-Token")
+			request.setValue(xTidalToken, forHTTPHeaderField: "X-Tidal-Token")
 		}
 		if let etag = etag {
 			request.setValue(#""\#(etag)""#, forHTTPHeaderField: "If-None-Match")
