@@ -25,7 +25,7 @@ extension Session {
 		
 		var playlistResponse: Playlist?
 		do {
-			playlistResponse = try customJSONDecoder().decode(Playlist.self, from: content)
+			playlistResponse = try customJSONDecoder.decode(Playlist.self, from: content)
 		} catch {
 			displayError(title: "Playlist Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -44,7 +44,7 @@ extension Session {
 		
 		var playlistTracksResponse: Tracks?
 		do {
-			playlistTracksResponse = try customJSONDecoder().decode(Tracks.self, from: content)
+			playlistTracksResponse = try customJSONDecoder.decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Playlist Tracks failed (JSON Parse Error)", content: "\(error)")
 		}

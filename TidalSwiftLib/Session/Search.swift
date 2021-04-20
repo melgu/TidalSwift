@@ -27,7 +27,7 @@ extension Session {
 		
 		var searchResponse: SearchResponse
 		do {
-			let searchResult = try customJSONDecoder().decode(SearchResult.self, from: content)
+			let searchResult = try customJSONDecoder.decode(SearchResult.self, from: content)
 			searchResponse = SearchResponse(artists: searchResult.artists.items,
 											albums: searchResult.albums.items,
 											playlists: searchResult.playlists.items,

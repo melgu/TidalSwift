@@ -42,7 +42,7 @@ public class Favorites {
 		
 		var artists: FavoriteArtists?
 		do {
-			artists = try customJSONDecoder().decode(FavoriteArtists.self, from: content)
+			artists = try customJSONDecoder.decode(FavoriteArtists.self, from: content)
 		} catch {
 			displayError(title: "Favorite Artist failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -71,7 +71,7 @@ public class Favorites {
 		
 		var albums: FavoriteAlbums?
 		do {
-			albums = try customJSONDecoder().decode(FavoriteAlbums.self, from: content)
+			albums = try customJSONDecoder.decode(FavoriteAlbums.self, from: content)
 		} catch {
 			displayError(title: "Favorite Albums failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -100,7 +100,7 @@ public class Favorites {
 		
 		var tracks: FavoriteTracks?
 		do {
-			tracks = try customJSONDecoder().decode(FavoriteTracks.self, from: content)
+			tracks = try customJSONDecoder.decode(FavoriteTracks.self, from: content)
 		} catch {
 			displayError(title: "Favorite Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -134,7 +134,7 @@ public class Favorites {
 		
 		var videos: FavoriteVideos?
 		do {
-			videos = try customJSONDecoder().decode(FavoriteVideos.self, from: content)
+			videos = try customJSONDecoder.decode(FavoriteVideos.self, from: content)
 		} catch {
 			displayError(title: "Favorite Videos failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -177,7 +177,7 @@ public class Favorites {
 			
 			var playlists: FavoritePlaylists? // TODO: JSON signature is different
 			do {
-				playlists = try customJSONDecoder().decode(FavoritePlaylists.self, from: content)
+				playlists = try customJSONDecoder.decode(FavoritePlaylists.self, from: content)
 			} catch {
 				displayError(title: "Favorite Playlists failed (JSON Parse Error)", content: "\(error)")
 			}

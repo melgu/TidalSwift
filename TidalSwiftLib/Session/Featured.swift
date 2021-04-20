@@ -20,7 +20,7 @@ extension Session {
 		
 		var featuredResponse: FeaturedItems?
 		do {
-			featuredResponse = try customJSONDecoder().decode(FeaturedItems.self, from: content)
+			featuredResponse = try customJSONDecoder.decode(FeaturedItems.self, from: content)
 		} catch {
 			displayError(title: "Featured failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -39,7 +39,7 @@ extension Session {
 		
 		var moodsResponse: [Mood]?
 		do {
-			moodsResponse = try customJSONDecoder().decode([Mood].self, from: content)
+			moodsResponse = try customJSONDecoder.decode([Mood].self, from: content)
 		} catch {
 			displayError(title: "Mood Overview failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -58,7 +58,7 @@ extension Session {
 		
 		var moodPlaylists: Playlists?
 		do {
-			moodPlaylists = try customJSONDecoder().decode(Playlists.self, from: content)
+			moodPlaylists = try customJSONDecoder.decode(Playlists.self, from: content)
 		} catch {
 			displayError(title: "Genre Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -79,7 +79,7 @@ extension Session {
 		
 		var genresResponse: [Genre]?
 		do {
-			genresResponse = try customJSONDecoder().decode([Genre].self, from: content)
+			genresResponse = try customJSONDecoder.decode([Genre].self, from: content)
 		} catch {
 			displayError(title: "Genre Overview failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -100,7 +100,7 @@ extension Session {
 		
 		var genreTracks: Tracks?
 		do {
-			genreTracks = try customJSONDecoder().decode(Tracks.self, from: content)
+			genreTracks = try customJSONDecoder.decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Genre Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -119,7 +119,7 @@ extension Session {
 		
 		var genresAlbums: Albums?
 		do {
-			genresAlbums = try customJSONDecoder().decode(Albums.self, from: content)
+			genresAlbums = try customJSONDecoder.decode(Albums.self, from: content)
 		} catch {
 			displayError(title: "Genre Albums failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -138,7 +138,7 @@ public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
 		
 		var genresPlaylists: Playlists?
 		do {
-			genresPlaylists = try customJSONDecoder().decode(Playlists.self, from: content)
+			genresPlaylists = try customJSONDecoder.decode(Playlists.self, from: content)
 		} catch {
 			displayError(title: "Genre Playlists failed (JSON Parse Error)", content: "\(error)")
 		}

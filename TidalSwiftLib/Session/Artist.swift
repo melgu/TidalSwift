@@ -22,7 +22,7 @@ extension Session {
 		
 		var artistResponse: Artist?
 		do {
-			artistResponse = try customJSONDecoder().decode(Artist.self, from: content)
+			artistResponse = try customJSONDecoder.decode(Artist.self, from: content)
 		} catch {
 			displayError(title: "Artist Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -60,7 +60,7 @@ extension Session {
 		
 		var artistAlbumsResponse: Albums?
 		do {
-			artistAlbumsResponse = try customJSONDecoder().decode(Albums.self, from: content)
+			artistAlbumsResponse = try customJSONDecoder.decode(Albums.self, from: content)
 		} catch {
 			displayError(title: "Artist Albums failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -83,7 +83,7 @@ extension Session {
 		
 		var artistVideosResponse: Videos?
 		do {
-			artistVideosResponse = try customJSONDecoder().decode(Videos.self, from: content)
+			artistVideosResponse = try customJSONDecoder.decode(Videos.self, from: content)
 		} catch {
 			displayError(title: "Artist Videos failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -106,7 +106,7 @@ extension Session {
 		
 		var artistTopTracksResponse: Tracks?
 		do {
-			artistTopTracksResponse = try customJSONDecoder().decode(Tracks.self, from: content)
+			artistTopTracksResponse = try customJSONDecoder.decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Artist Top Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -125,7 +125,7 @@ extension Session {
 		
 		var artistBio: ArtistBio?
 		do {
-			artistBio = try customJSONDecoder().decode(ArtistBio.self, from: content)
+			artistBio = try customJSONDecoder.decode(ArtistBio.self, from: content)
 		} catch {
 			displayError(title: "Artist Bio failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -159,7 +159,7 @@ extension Session {
 		
 		var similarArtistsResponse: Artists?
 		do {
-			similarArtistsResponse = try customJSONDecoder().decode(Artists.self, from: content)
+			similarArtistsResponse = try customJSONDecoder.decode(Artists.self, from: content)
 		} catch {
 			displayError(title: "Similar Artists failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -178,7 +178,7 @@ extension Session {
 		
 		var artistRadioResponse: Tracks?
 		do {
-			artistRadioResponse = try customJSONDecoder().decode(Tracks.self, from: content)
+			artistRadioResponse = try customJSONDecoder.decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Artist Radio failed (JSON Parse Error)", content: "\(error)")
 		}

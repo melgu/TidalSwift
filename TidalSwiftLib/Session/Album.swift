@@ -27,7 +27,7 @@ extension Session {
 		
 		var albumResponse: Album?
 		do {
-			albumResponse = try customJSONDecoder().decode(Album.self, from: content)
+			albumResponse = try customJSONDecoder.decode(Album.self, from: content)
 		} catch {
 			displayError(title: "Album Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -46,7 +46,7 @@ extension Session {
 		
 		var albumTracksResponse: Tracks?
 		do {
-			albumTracksResponse = try customJSONDecoder().decode(Tracks.self, from: content)
+			albumTracksResponse = try customJSONDecoder.decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Album Tracks failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -65,7 +65,7 @@ extension Session {
 		
 		var creditsResponse: [Credit]?
 		do {
-			creditsResponse = try customJSONDecoder().decode([Credit].self, from: content)
+			creditsResponse = try customJSONDecoder.decode([Credit].self, from: content)
 		} catch {
 			displayError(title: "Album Credits Info failed (JSON Parse Error)", content: "\(error)")
 		}

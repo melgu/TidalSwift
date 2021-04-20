@@ -24,7 +24,7 @@ extension Session {
 		
 		var searchResultResponse: Subscription?
 		do {
-			searchResultResponse = try customJSONDecoder().decode(Subscription.self, from: content)
+			searchResultResponse = try customJSONDecoder.decode(Subscription.self, from: content)
 		} catch {
 			displayError(title: "Subscription Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -43,7 +43,7 @@ extension Session {
 		
 		var user: User?
 		do {
-			user = try customJSONDecoder().decode(User.self, from: content)
+			user = try customJSONDecoder.decode(User.self, from: content)
 		} catch {
 			displayError(title: "User Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -69,7 +69,7 @@ extension Session {
 		
 		var userPlaylistResponse: Playlists?
 		do {
-			userPlaylistResponse = try customJSONDecoder().decode(Playlists.self, from: content)
+			userPlaylistResponse = try customJSONDecoder.decode(Playlists.self, from: content)
 		} catch {
 			displayError(title: "User Playlists failed (JSON Parse Error)", content: "\(error)")
 		}

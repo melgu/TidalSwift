@@ -75,7 +75,7 @@ public class PlaylistEditing {
 		
 		var playlistResponse: Playlist?
 		do {
-			playlistResponse = try customJSONDecoder().decode(Playlist.self, from: content)
+			playlistResponse = try customJSONDecoder.decode(Playlist.self, from: content)
 		} catch {
 			displayError(title: "Playlist Creation failed (JSON Parse Error)", content: "\(error)")
 		}
