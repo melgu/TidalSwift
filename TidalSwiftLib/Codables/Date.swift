@@ -8,11 +8,11 @@
 
 import Foundation
 
-func customJSONDecoder() -> JSONDecoder {
+var customJSONDecoder: JSONDecoder = {
 	let decoder = JSONDecoder()
 	decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601OptionalTime)
 	return decoder
-}
+}()
 
 class OptionalTimeDateFormatter: DateFormatter {
 	static let withoutTime: DateFormatter = {

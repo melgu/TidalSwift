@@ -33,7 +33,7 @@ extension Session {
 		
 		var trackResponse: Track?
 		do {
-			trackResponse = try customJSONDecoder().decode(Track.self, from: content)
+			trackResponse = try customJSONDecoder.decode(Track.self, from: content)
 		} catch {
 			displayError(title: "Track Info Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -52,7 +52,7 @@ extension Session {
 		
 		var creditsResponse: [Credit]?
 		do {
-			creditsResponse = try customJSONDecoder().decode([Credit].self, from: content)
+			creditsResponse = try customJSONDecoder.decode([Credit].self, from: content)
 		} catch {
 			displayError(title: "Track Credits Info failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -87,7 +87,7 @@ extension Session {
 		
 		var trackRadioResponse: Tracks?
 		do {
-			trackRadioResponse = try customJSONDecoder().decode(Tracks.self, from: content)
+			trackRadioResponse = try customJSONDecoder.decode(Tracks.self, from: content)
 		} catch {
 			displayError(title: "Track Radio failed (JSON Parse Error)", content: "\(error)")
 		}

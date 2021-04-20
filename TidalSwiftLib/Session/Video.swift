@@ -27,7 +27,7 @@ extension Session {
 		
 		var videoResponse: Video?
 		do {
-			videoResponse = try customJSONDecoder().decode(Video.self, from: content)
+			videoResponse = try customJSONDecoder.decode(Video.self, from: content)
 		} catch {
 			displayError(title: "Track Info Info failed (JSON Parse Error)", content: "\(error)")
 		}

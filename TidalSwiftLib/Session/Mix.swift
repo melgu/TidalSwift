@@ -22,7 +22,7 @@ extension Session {
 		
 		var mixesResponse: Mixes?
 		do {
-			mixesResponse = try customJSONDecoder().decode(Mixes.self, from: content)
+			mixesResponse = try customJSONDecoder.decode(Mixes.self, from: content)
 		} catch {
 			displayError(title: "Mixes Overview failed (JSON Parse Error)", content: "\(error)")
 		}
@@ -50,7 +50,7 @@ extension Session {
 		
 		var mixResponse: Mix?
 		do {
-			mixResponse = try customJSONDecoder().decode(Mix.self, from: content)
+			mixResponse = try customJSONDecoder.decode(Mix.self, from: content)
 		} catch {
 			displayError(title: "Mix Playlist Tracks failed (JSON Parse Error)", content: "\(error)")
 		}

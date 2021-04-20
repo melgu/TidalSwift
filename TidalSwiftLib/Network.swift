@@ -73,28 +73,38 @@ class Network {
 		
 		let semaphore = DispatchSemaphore(value: 0)
 		let task = URLSession.shared.dataTask(with: request) { data, response, error in
-			guard let data = data,
-				let response = response as? HTTPURLResponse,
-				error == nil else { // check for fundamental networking error
-//				print("error", error ?? "Unknown error")
+			guard let response = response as? HTTPURLResponse else {
+				semaphore.signal()
+				return
+			}
+			
+			networkResponse.statusCode = response.statusCode
+			
+			guard let data = data else {
+				semaphore.signal()
+				return
+			}
+			
+			networkResponse.statusCode = response.statusCode
+			
+			guard error == nil else { // check for fundamental networking error
 				semaphore.signal()
 				return
 			}
 			
 			guard (200..<299) ~= response.statusCode else {	// check for http errors
-//				print("statusCode should be 2xx, but is \(response.statusCode)")
-//				print("response = \(response)")
-				networkResponse.statusCode = response.statusCode
 				semaphore.signal()
 				return
 			}
+			
+			networkResponse.ok = true
 			
 			// Getting the Etag if it exists
 			var etag: Int?
 			if let etagString = response.allHeaderFields["Etag"] as? String {
 				var etagSubString = etagString.dropFirst()
 				etagSubString = etagSubString.dropLast()
-				etag = Int(String(etagSubString))
+				etag = Int(etagSubString)
 			}
 			
 			print("responseString = \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
