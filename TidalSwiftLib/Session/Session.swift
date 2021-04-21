@@ -9,8 +9,7 @@
 import Foundation
 
 public class Session {
-	var config: Config
-	public var sessionConfig: Config { config }
+	public var config: Config
 	
 	var countryCode: String?
 	public var userId: Int?
@@ -36,7 +35,7 @@ public class Session {
 			if let config = Config.load() {
 				self.config = config
 			} else {
-				self.config = Config(accessToken: "", refreshToken: nil, offlineAudioQuality: .hifi, urlType: .offline)
+				self.config = Config(accessToken: "", refreshToken: nil, offlineAudioQuality: .hifi, urlType: .streaming)
 			}
 		}
 		helpers = Helpers(session: self)

@@ -10,7 +10,20 @@ import Foundation
 import Combine
 
 extension Session {
-	public func populateVariablesForAuthorization() -> Bool {
+	public func setAccessToken(_ accessToken: String, refreshToken: String?) -> Bool {
+		var token = accessToken
+		if !token.hasPrefix("Bearer ") {
+			token = "Bearer " + token
+		}
+		
+		config.accessToken = token
+		if let refreshToken = refreshToken {
+			config.refreshToken = refreshToken
+		}
+		return populateVariablesForAccessToken()
+	}
+	
+	public func populateVariablesForAccessToken() -> Bool {
 		let url = URL(string: "\(config.apiLocation)/sessions")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
@@ -186,6 +199,6 @@ extension Session {
 extension Session {
 	public func logout() {
 		deletePersistentInformation()
-		config = Config(accessToken: "", refreshToken: nil, offlineAudioQuality: .hifi, urlType: .offline)
+		config = Config(accessToken: "", refreshToken: nil, offlineAudioQuality: .hifi, urlType: .streaming)
 	}
 }

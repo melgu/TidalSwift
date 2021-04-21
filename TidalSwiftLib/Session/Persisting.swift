@@ -45,14 +45,19 @@ extension Session {
 	}
 	
 	public func saveConfig() {
-		let persistentInformation: [String: String] = ["authorization": config.accessToken,
-													   "apiToken": config.apiToken,
-													   "offlineAudioQuality": config.offlineAudioQuality.rawValue,
-													   "urlType": config.urlType.rawValue,
-													   "apiLocation": config.apiLocation,
-													   "imageLocation": config.imageLocation,
-													   "imageSize": String(config.imageSize)
-													   ]
+		let persistentInformation: [String: String?] = [
+			"accessToken": config.accessToken,
+			"refreshToken": config.refreshToken,
+			"apiToken": config.apiToken,
+			"clientId": config.clientId,
+			"clientSecret": config.clientSecret,
+			"offlineAudioQuality": config.offlineAudioQuality.rawValue,
+			"urlType": config.urlType.rawValue,
+			"apiLocation": config.apiLocation,
+			"authLocation": config.authLocation,
+			"imageLocation": config.imageLocation,
+			"imageSize": String(config.imageSize)
+		]
 		
 		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
 	}
@@ -60,5 +65,49 @@ extension Session {
 	public func deletePersistentInformation() {
 		let domain = Bundle.main.bundleIdentifier!
 		UserDefaults.standard.removePersistentDomain(forName: domain)
+	}
+}
+
+extension Config {
+	static func load() -> Config? {
+		let persistentInformationOptional: [String: String]? =
+			UserDefaults.standard.dictionary(forKey: "Config Information") as? [String: String]
+		
+		guard let persistentInformation = persistentInformationOptional else {
+			displayError(title: "Couldn't load Config", content: "Persistent Config doesn't exist")
+			return nil
+		}
+		
+		guard let accessToken = persistentInformation["accessToken"],
+			  let apiToken = persistentInformation["apiToken"],
+			  let clientId = persistentInformation["clientId"],
+			  let clientSecret = persistentInformation["clientSecret"],
+			  let offlineAudioQualityString = persistentInformation["offlineAudioQuality"],
+			  let offlineAudioQuality = AudioQuality(rawValue: offlineAudioQualityString),
+			  let urlTypeString = persistentInformation["urlType"],
+			  let urlType = AudioUrlType(rawValue: urlTypeString),
+			  let apiLocation = persistentInformation["apiLocation"],
+			  let authLocation = persistentInformation["authLocation"],
+			  let imageLocation = persistentInformation["imageLocation"],
+			  let imageSizeString = persistentInformation["imageSize"],
+			  let imageSize = Int(imageSizeString)
+		else {
+			displayError(title: "Couldn't load Config", content: "Missing part of Persistent Config.")
+			return nil
+		}
+		
+		let refreshToken = persistentInformation["refreshToken"]
+		
+		return Config(accessToken: accessToken,
+					  refreshToken: refreshToken,
+					  apiToken: apiToken,
+					  clientId: clientId,
+					  clientSecret: clientSecret,
+					  offlineAudioQuality: offlineAudioQuality,
+					  urlType: urlType,
+					  apiLocation: apiLocation,
+					  authLocation: authLocation,
+					  imageLocation: imageLocation,
+					  imageSize: imageSize)
 	}
 }
