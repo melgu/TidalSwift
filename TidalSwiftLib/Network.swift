@@ -85,7 +85,7 @@ class Network {
 				return
 			}
 			
-			networkResponse.statusCode = response.statusCode
+			networkResponse.content = data
 			
 			guard error == nil else { // check for fundamental networking error
 				semaphore.signal()

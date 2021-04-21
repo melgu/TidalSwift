@@ -152,10 +152,13 @@ struct UserInfoView: View {
 				Text("Date of Birth")
 					.bold()
 				Text(DateFormatter.dateOnly.string(from: user.dateOfBirth))
-				Text("")
-				Text("Facebook User ID")
-					.bold()
-				Text(String(user.facebookUid))
+				
+				if let faceBookUid = user.facebookUid {
+					Text("")
+					Text("Facebook User ID")
+						.bold()
+					Text(String(faceBookUid))
+				}
 			}
 		}
 	}
