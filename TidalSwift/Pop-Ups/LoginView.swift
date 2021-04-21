@@ -91,10 +91,11 @@ struct LoginView: View {
 				Text("Login")
 			}
 		}
+		.padding()
 	}
 	
 	var authLogin: some View {
-		VStack(alignment: .leading) {
+		VStack {
 			SecureField("Authorization / Access Token", text: $accessToken)
 			
 			Text("In the form: Bearer ABC123…")
@@ -112,13 +113,16 @@ struct LoginView: View {
 			
 			qualityPicker
 			
-			Text(wrongLogin ? "Wrong Login Credentials" : " ")
-				.foregroundColor(.red)
+			if wrongLogin {
+				Text("Wrong Login Credentials")
+					.foregroundColor(.red)
+			}
 			
 			Button(action: setAuthorization) {
 				Text("Login")
 			}
 		}
+		.padding()
 	}
 	
 	var qualityPicker: some View {
