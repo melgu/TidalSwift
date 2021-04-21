@@ -63,6 +63,7 @@ extension Session {
 		case deviceAuthorizationFailed
 		case pollingFailed
 		case expiredToken
+		case unknown
 	}
 	
 	public func startAuthorization() -> CurrentValueSubject<AuthorizationState, Never> {
@@ -92,7 +93,9 @@ extension Session {
 			}
 			
 			let expiration = Date().addingTimeInterval(TimeInterval(deviceAuthResponse.expiresIn))
-			subject.send(.pending(loginUrl: deviceAuthResponse.verificationUriComplete, expiration: expiration))
+			let loginUrlString = "https://\(deviceAuthResponse.verificationUriComplete.absoluteString)"
+			let loginUrl = URL(string: loginUrlString)!
+			subject.send(.pending(loginUrl: loginUrl, expiration: expiration))
 			
 			self?.startAuthorizationPolling(deviceCode: deviceAuthResponse.deviceCode, subject: subject)
 		}
@@ -104,11 +107,13 @@ extension Session {
 		let url = URL(string: "\(config.authLocation)/token")!
 		let parameters: [String: String] = ["client_id": config.clientId,
 											"client_secret": config.clientSecret,
-											"device_code": deviceCode.uuidString,
+											"device_code": deviceCode.uuidString.lowercased(),
 											"grant_type": "urn:ietf:params:oauth:grant-type:device_code",
 											"scope": "r_usr+w_usr+w_sub"]
 		
-		authorizationPoll(url: url, parameters: parameters, subject: subject)
+		DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
+			self?.authorizationPoll(url: url, parameters: parameters, subject: subject)
+		}
 	}
 	
 	private func authorizationPoll(url: URL, parameters: [String: String], subject: CurrentValueSubject<AuthorizationState, Never>) {
@@ -132,10 +137,11 @@ extension Session {
 					return
 				}
 				
-				self?.config.accessToken = tokenResponse.accessToken
-				self?.config.refreshToken = tokenResponse.refreshToken
-				
-				subject.send(.success)
+				if self?.setAccessToken(tokenResponse.accessToken, refreshToken: tokenResponse.refreshToken) == true {
+					subject.send(.success)
+				} else {
+					subject.send(.failure(AuthorizationError.unknown))
+				}
 				return
 			} else {
 				var optionalResponse: TokenErrorResponse?
@@ -150,12 +156,19 @@ extension Session {
 					return
 				}
 				
+				print(errorResponse)
+				
 				switch errorResponse.error {
 				case "authorization_pending":
-					self?.authorizationPoll(url: url, parameters: parameters, subject: subject)
+					print("Auth pending")
+					DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
+						self?.authorizationPoll(url: url, parameters: parameters, subject: subject)
+					}
 				case "expired_token":
+					print("Expired token")
 					subject.send(.failure(AuthorizationError.expiredToken))
 				default:
+					print("Polling failed")
 					subject.send(.failure(AuthorizationError.pollingFailed))
 				}
 			}

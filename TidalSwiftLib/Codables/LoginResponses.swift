@@ -22,7 +22,7 @@ struct TokenSuccessResponse: Decodable {
 	var refreshToken: String? = nil // Is not included in Refresh Token response
 	let tokenType: String // "Bearer"
 	let expiresIn: Int
-	let user: User
+	let user: LoginUser
 	
 	enum CodingKeys: String, CodingKey {
 		case accessToken = "access_token"

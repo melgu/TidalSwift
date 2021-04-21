@@ -7,11 +7,11 @@
 //
 
 import SwiftUI
+import Combine
 import TidalSwiftLib
 
 final class LoginInfo: ObservableObject {
 	@Published var showModal = false
-	@Published var wrongLogin = false
 }
 
 struct LoginView: View {
@@ -20,6 +20,12 @@ struct LoginView: View {
 	
 	let session: Session
 	let player: Player
+	
+	@State var wrongLogin: Bool = false
+	@State var cancellables = Set<AnyCancellable>()
+	@State var authState: Session.AuthorizationState = .waiting
+	@State var counter = 300
+	let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 	
 	@State var accessToken: String = ""
 	@State var refreshToken: String = ""
@@ -41,20 +47,6 @@ struct LoginView: View {
 						.tabItem { Text("Authorization") }
 				}
 				.frame(minWidth: 300)
-				
-				Picker(selection: $offlineAudioQuality, label: Text("Offline Audio Quality")) {
-//					Text("Master").tag(AudioQuality.master)
-					Text("HiFi").tag(AudioQuality.hifi)
-					Text("High").tag(AudioQuality.high)
-					Text("Low").tag(AudioQuality.low)
-				}
-				
-				Text(loginInfo.wrongLogin ? "Wrong Login Credentials" : " ")
-					.foregroundColor(.red)
-				
-				Button(action: login) {
-					Text("Login")
-				}
 			}
 			.textFieldStyle(RoundedBorderTextFieldStyle())
 			.padding()
@@ -62,7 +54,43 @@ struct LoginView: View {
 	}
 	
 	var deviceLogin: some View {
-		Text("Coming soon...")
+		VStack {
+			switch authState {
+			case .waiting:
+				Text("Login mechinism, which works via the webbrowser")
+			case .pending(loginUrl: let loginUrl, expiration: _):
+				Button {
+					NSWorkspace.shared.open(loginUrl)
+				} label: {
+					Text("Open Browser")
+				}
+				
+				if counter > 0 {
+					Text("Time remaining: \(counter)")
+						.onReceive(timer, perform: { _ in
+							counter -= 1
+						})
+				} else {
+					Text("Time expired")
+				}
+			case .success:
+				EmptyView()
+			case .failure(_):
+				Text("Something went wrong")
+					.foregroundColor(.red)
+			}
+			
+			Picker(selection: $offlineAudioQuality, label: Text("Offline Audio Quality")) {
+//				Text("Master").tag(AudioQuality.master)
+				Text("HiFi").tag(AudioQuality.hifi)
+				Text("High").tag(AudioQuality.high)
+				Text("Low").tag(AudioQuality.low)
+			}
+			
+			Button(action: startAuthorization) {
+				Text("Login")
+			}
+		}
 	}
 	
 	var authLogin: some View {
@@ -81,25 +109,75 @@ struct LoginView: View {
 			Text("When choosing Offline, TidalSwift won't stop playback on official clients, but does not work with TV athorization details.")
 				.foregroundColor(.secondary)
 				.fixedSize(horizontal: false, vertical: true)
+			
+			qualityPicker
+			
+			Text(wrongLogin ? "Wrong Login Credentials" : " ")
+				.foregroundColor(.red)
+			
+			Button(action: setAuthorization) {
+				Text("Login")
+			}
 		}
 	}
 	
-	func login() {
+	var qualityPicker: some View {
+		Picker(selection: $offlineAudioQuality, label: Text("Offline Audio Quality")) {
+//			Text("Master").tag(AudioQuality.master)
+			Text("HiFi").tag(AudioQuality.hifi)
+			Text("High").tag(AudioQuality.high)
+			Text("Low").tag(AudioQuality.low)
+		}
+	}
+	
+	func startAuthorization() {
+		cancellables.removeAll()
+		
+		let subject = session.startAuthorization()
+			.receive(on: DispatchQueue.main)
+		
+		subject
+			.assign(to: \.authState, on: self)
+			.store(in: &cancellables)
+		
+		subject
+			.sink { value in
+				switch value {
+				case .waiting:
+					wrongLogin = false
+				case .pending(loginUrl: let loginUrl, expiration: _):
+					counter = 300
+					NSWorkspace.shared.open(loginUrl)
+				case .success:
+					successfulLogin(audioUrlType: .streaming)
+				case .failure(_):
+					wrongLogin = true
+				}
+			}
+			.store(in: &cancellables)
+	}
+	
+	func setAuthorization() {
 		session.config.urlType = audioUrlType
 		DispatchQueue.global().async {
 			let loginSuccessful = session.setAccessToken(accessToken, refreshToken: refreshToken)
 			DispatchQueue.main.async {
 				if loginSuccessful {
-					loginInfo.wrongLogin = false
-					loginInfo.showModal = false
-					session.saveConfig()
-					session.saveSession()
-					player.setAudioQuality(to: offlineAudioQuality)
-					viewState.push(view: TidalSwiftView(viewType: .favoriteTracks))
+					successfulLogin(audioUrlType: audioUrlType)
 				} else {
-					loginInfo.wrongLogin = true
+					wrongLogin = true
 				}
 			}
 		}
+	}
+	
+	func successfulLogin(audioUrlType: AudioUrlType) {
+		wrongLogin = false
+		loginInfo.showModal = false
+		session.config.urlType = audioUrlType
+		session.saveConfig()
+		session.saveSession()
+		player.setAudioQuality(to: offlineAudioQuality)
+		viewState.push(view: TidalSwiftView(viewType: .favoriteTracks))
 	}
 }

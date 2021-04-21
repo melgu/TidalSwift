@@ -22,7 +22,8 @@ public struct User: Decodable, Identifiable {
 	public let acceptedEULA: Bool
 	public let gender: String
 	public let dateOfBirth: Date
-	public let facebookUid: Int
+	public let facebookUid: Int?
+	public let appleUid: Int?
 	
 	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
 		guard let picture = picture else { return nil }
@@ -34,6 +35,34 @@ public struct User: Decodable, Identifiable {
 		return session.getImage(imageId: picture, resolution: resolution)
 	}
 }
+
+struct LoginUser: Decodable {
+	let userId: Int
+	let email: String?
+	let countryCode: String
+	let fullName: String?
+	let firstName: String?
+	let lastName: String?
+	let nickname: String?
+	let username: String
+	let address: String?
+	let city: String?
+	let postalcode: String?
+	let usState: String?
+	let phoneNumber: String?
+	let birthday: String?
+	let gender: String?
+	let imageId: String?
+	let channelId: Int?
+	let parentId: Int?
+	let acceptedEULA: Bool
+	let created: Int
+	let updated: Int
+	let facebookUid: Int?
+	let appleUid: Int?
+	let newUser: Bool
+}
+
 
 struct Client: Decodable {
 	let id: Int
