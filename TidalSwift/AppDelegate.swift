@@ -18,7 +18,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	var window: NSWindow!
 	let updateNotification = UpdateNotification(feedUrl: URL(string: "http://www.melvin-gundlach.de/apps/app-feeds/TidalSwift.json")!)
 	
-	var sc: SessionContainer
+	let session: Session
+	let player: Player
 	var viewState: ViewState
 	var sortingState: SortingState
 	var playlistEditingValues = PlaylistEditingValues()
@@ -69,17 +70,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	// MARK: - Functions
 	
 	override init() {
-		let session = Session(config: nil)
+		session = Session(config: nil)
 		
-		let player: Player
 		if let audioQualityString = UserDefaults.standard.string(forKey: "audioQuality"),
 		   let audioQuality = AudioQuality(rawValue: audioQualityString) {
 			player = Player(session: session, audioQuality: audioQuality)
 		} else {
 			player = Player(session: session, audioQuality: .hifi)
 		}
-		
-		sc = SessionContainer(session: session, player: player)
 		
 		var cache = ViewCache()
 		if let data = UserDefaults.standard.data(forKey: "ViewCache") {
@@ -95,15 +93,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		lyricsViewController = ResizableWindowController(rootView:
 			LyricsView()
 				.environmentObject(viewState)
-				.environmentObject(sc.player.queueInfo)
+				.environmentObject(player.queueInfo)
 		)
 		lyricsViewController.window?.title = "Lyrics"
 		
 		queueViewController = ResizableWindowController(rootView:
-			QueueView(session: sc.session, player: sc.player)
+			QueueView(session: session, player: player)
 				.environmentObject(viewState)
-				.environmentObject(sc)
-				.environmentObject(sc.player.queueInfo)
+				.environmentObject(player.queueInfo)
 				.environmentObject(playlistEditingValues)
 		)
 		queueViewController.window?.title = "Queue"
@@ -114,11 +111,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		)
 		viewHistoryViewController.window?.title = "View History"
 		
-		playbackHistoryViewController = ResizableWindowController(rootView:
-			PlaybackHistoryView()
+		playbackHistoryViewController = ResizableWindowController(
+			rootView: PlaybackHistoryView(session: session, player: player)
 				.environmentObject(viewState)
-				.environmentObject(sc)
-				.environmentObject(sc.player.queueInfo)
+				.environmentObject(player.queueInfo)
 		)
 		playbackHistoryViewController.window?.title = "Playback History"
 		
@@ -129,15 +125,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		lyricsViewController = ResizableWindowController(rootView:
 			LyricsView()
 				.environmentObject(viewState)
-				.environmentObject(sc.player.queueInfo)
+				.environmentObject(player.queueInfo)
 		)
 		lyricsViewController.window?.title = "Lyrics"
 		
 		queueViewController = ResizableWindowController(rootView:
-			QueueView(session: sc.session, player: sc.player)
+			QueueView(session: session, player: player)
 				.environmentObject(viewState)
-				.environmentObject(sc)
-				.environmentObject(sc.player.queueInfo)
+				.environmentObject(player.queueInfo)
 		)
 		queueViewController.window?.title = "Queue"
 		
@@ -147,11 +142,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		)
 		viewHistoryViewController.window?.title = "View History"
 		
-		playbackHistoryViewController = ResizableWindowController(rootView:
-			PlaybackHistoryView()
+		playbackHistoryViewController = ResizableWindowController(
+			rootView: PlaybackHistoryView(session: session, player: player)
 				.environmentObject(viewState)
-				.environmentObject(sc)
-				.environmentObject(sc.player.queueInfo)
+				.environmentObject(player.queueInfo)
 		)
 		playbackHistoryViewController.window?.title = "Playback History"
 	}
@@ -163,28 +157,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playbackHistoryViewController.close()
 	}
 	
-	func login(authorization: String, offlineAudioQuality: AudioQuality) {
-		sc.session.helpers.offline.uiRefreshFunc = { [unowned self] in self.viewState.refreshCurrentView() }
-		
-		let loginSuccessful = sc.session.populateVariablesForAuthorization()
-		if loginSuccessful {
-			loginInfo.wrongLogin = false
-			loginInfo.showModal = false
-			sc.session.saveConfig()
-			sc.session.saveSession()
-			sc.player = Player(session: sc.session, audioQuality: offlineAudioQuality)
-			initSecondaryWindows()
-		} else {
-			loginInfo.wrongLogin = true
-		}
-	}
-	
 	func logout() {
 		print("Logout")
 		closeModals()
 		closeAllSecondaryWindows()
-		sc.player.clearQueue()
-		sc.session.logout()
+		player.clearQueue()
+		session.logout()
 		viewState.clearEverything()
 		loginInfo.showModal = true
 	}
@@ -192,10 +170,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
 		
-		sc.session.helpers.offline.uiRefreshFunc = { [unowned self] in self.viewState.refreshCurrentView() }
+		session.helpers.offline.uiRefreshFunc = { [unowned self] in self.viewState.refreshCurrentView() }
 		
-		let loggedIn = sc.session.loadSession()
-//		let loggedIn = sc.session.checkLogin()
+		let loggedIn = session.loadSession()
+//		let loggedIn = session.checkLogin()
 		print("Login Succesful: \(loggedIn)")
 		
 		loginInfo.showModal = !loggedIn
@@ -205,19 +183,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			if let data = UserDefaults.standard.data(forKey: "PlaybackInfo") {
 				if let codablePI = try? JSONDecoder().decode(CodablePlaybackInfo.self, from: data) {
 					// PlaybackInfo
-					sc.player.playbackInfo.volume = codablePI.volume
-					sc.player.playbackInfo.shuffle = codablePI.shuffle
-					sc.player.playbackInfo.repeatState = codablePI.repeatState
-					sc.player.playbackInfo.pauseAfter = codablePI.pauseAfter
+					player.playbackInfo.volume = codablePI.volume
+					player.playbackInfo.shuffle = codablePI.shuffle
+					player.playbackInfo.repeatState = codablePI.repeatState
+					player.playbackInfo.pauseAfter = codablePI.pauseAfter
 					
 					// QueueInfo
-					sc.player.queueInfo.nonShuffledQueue = codablePI.nonShuffledQueue
-					sc.player.queueInfo.queue = codablePI.queue
-					sc.player.queueInfo.history = codablePI.history
-					sc.player.queueInfo.maxHistoryItems = codablePI.maxHistoryItems
+					player.queueInfo.nonShuffledQueue = codablePI.nonShuffledQueue
+					player.queueInfo.queue = codablePI.queue
+					player.queueInfo.history = codablePI.history
+					player.queueInfo.maxHistoryItems = codablePI.maxHistoryItems
 					
-					sc.player.play(atIndex: codablePI.currentIndex)
-					sc.player.pause()
+					player.play(atIndex: codablePI.currentIndex)
+					player.pause()
 					// TODO: Seeking at this point doesn't work. Why?
 //					player.seek(to: Double(codablePI.fraction))
 //					print("Wanted: \(Double(codablePI.fraction)), Actual: \(player.playbackInfo.fraction)")
@@ -294,22 +272,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		window.setFrameAutosaveName("Main Window")
 		
 		window.contentView = NSHostingView(
-			rootView: ContentView(sessionContainer: sc,
-								  loginInfo: loginInfo,
+			rootView: ContentView(loginInfo: loginInfo,
 								  playlistEditingValues: playlistEditingValues,
-								  viewState: viewState, sortingState: sortingState)
+								  viewState: viewState,
+								  sortingState: sortingState,
+								  session: session,
+								  player: player)
 		)
 		window.title = "TidalSwift"
 		window.makeKeyAndOrderFront(nil)
 		
 		updateCheck(showNoUpdatesAlert: false)
 		
-		sc.session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
+		session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
 		
 		// Shouldn't interfere with View State as the view doesn't replace the existing one if it's not New Releases
 		DispatchQueue.global(qos: .background).async(execute: viewState.newReleasesWI)
 		
-		audioQualityLabel(audioQuality: sc.player.nextAudioQuality)
+		audioQualityLabel(audioQuality: player.nextAudioQuality)
+		
+		
+		initSecondaryWindows()
 	}
 	
 	func applicationWillTerminate(_ aNotification: Notification) {
@@ -340,20 +323,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func savePlaybackState() {
-		let codablePI = CodablePlaybackInfo(fraction: sc.player.playbackInfo.fraction,
-											volume: sc.player.playbackInfo.volume,
-											shuffle: sc.player.playbackInfo.shuffle,
-											repeatState: sc.player.playbackInfo.repeatState,
-											pauseAfter: sc.player.playbackInfo.pauseAfter,
-											nonShuffledQueue: sc.player.queueInfo.nonShuffledQueue,
-											queue: sc.player.queueInfo.queue,
-											currentIndex: sc.player.queueInfo.currentIndex,
-											history: sc.player.queueInfo.history,
-											maxHistoryItems: sc.player.queueInfo.maxHistoryItems)
+		let codablePI = CodablePlaybackInfo(fraction: player.playbackInfo.fraction,
+											volume: player.playbackInfo.volume,
+											shuffle: player.playbackInfo.shuffle,
+											repeatState: player.playbackInfo.repeatState,
+											pauseAfter: player.playbackInfo.pauseAfter,
+											nonShuffledQueue: player.queueInfo.nonShuffledQueue,
+											queue: player.queueInfo.queue,
+											currentIndex: player.queueInfo.currentIndex,
+											history: player.queueInfo.history,
+											maxHistoryItems: player.queueInfo.maxHistoryItems)
 		let playbackInfoData = try? JSONEncoder().encode(codablePI)
 		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
 		
-		UserDefaults.standard.set(sc.player.nextAudioQuality.rawValue, forKey: "audioQuality")
+		UserDefaults.standard.set(player.nextAudioQuality.rawValue, forKey: "audioQuality")
 		
 		UserDefaults.standard.synchronize()
 	}
@@ -402,8 +385,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func saveState() {
-		sc.session.saveConfig()
-		sc.session.saveSession()
+		session.saveConfig()
+		session.saveSession()
 		savePlaybackState()
 		saveViewState()
 		saveViewCache()
@@ -419,23 +402,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func initCancellables() {
-		playingCancellable = sc.player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
-		shuffleCancellable = sc.player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
+		playingCancellable = player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
+		shuffleCancellable = player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
 			self.shuffleState(enabled: $0)
 			self.savePlaybackInfoOnNextTick = true
 		})
-		repeatCancellable = sc.player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self ] in
+		repeatCancellable = player.playbackInfo.$repeatState.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self ] in
 			self.repeatLabel(repeatState: $0)
 			self.savePlaybackInfoOnNextTick = true
 		})
-		pauseAfterCancellable = sc.player.playbackInfo.$pauseAfter.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
+		pauseAfterCancellable = player.playbackInfo.$pauseAfter.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
 			self.pauseAfterState(enabled: $0)
 			self.savePlaybackInfoOnNextTick = true
 		})
-		volumeCancellable = sc.player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
+		volumeCancellable = player.playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: muteState(volume:))
 		
-		queueCancellable = sc.player.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in self.savePlaybackInfoOnNextTick = true })
-		currentIndexCancellable = sc.player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
+		queueCancellable = player.queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] _ in self.savePlaybackInfoOnNextTick = true })
+		currentIndexCancellable = player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
 			self.favoriteLabel(currentIndex: $0)
 			self.savePlaybackInfoOnNextTick = true
 		})
@@ -574,9 +557,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBAction func downloadTrack(_ sender: Any) {
 		print("Menu: downloadTrack")
-		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
+		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
 		DispatchQueue.global(qos: .background).async { [unowned self] in
-			_ = self.sc.session.helpers.download.download(track: track, audioQuality: sc.player.nextAudioQuality)
+			_ = self.session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
 		}
 	}
 	@IBAction func downloadAlbum(_ sender: Any) {
@@ -610,12 +593,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var goToAlbum: NSMenuItem!
 	@IBAction func goToAlbum(_ sender: Any) {
 		print("Go to Album")
-		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
+		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
 		viewState.push(album: track.album)
 	}
 	@IBOutlet weak var goToArtist: NSMenuItem!
 	@IBAction func goToArtist(_ sender: Any) {
-		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
+		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
 		if !track.artists.isEmpty {
 			print("Go to \(track.artists[0].name)")
 			viewState.push(artist: track.artists[0])
@@ -625,41 +608,41 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var addToFavorites: NSMenuItem!
 	@IBAction func addToFavorites(_ sender: Any) {
-		sc.session.favorites?.addTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
-		sc.session.helpers.offline.asyncSyncFavoriteTracks()
-		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
+		session.favorites?.addTrack(trackId: player.queueInfo.queue[player.queueInfo.currentIndex].track.id)
+		session.helpers.offline.asyncSyncFavoriteTracks()
+		favoriteLabel(currentIndex: player.queueInfo.currentIndex)
 		viewState.refreshCurrentView()
 	}
 	@IBOutlet weak var removeFromFavorites: NSMenuItem!
 	@IBAction func removeFromFavorites(_ sender: Any) {
-		sc.session.favorites?.removeTrack(trackId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.id)
-		sc.session.helpers.offline.asyncSyncFavoriteTracks()
-		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
+		session.favorites?.removeTrack(trackId: player.queueInfo.queue[player.queueInfo.currentIndex].track.id)
+		session.helpers.offline.asyncSyncFavoriteTracks()
+		favoriteLabel(currentIndex: player.queueInfo.currentIndex)
 		viewState.refreshCurrentView()
 	}
 	
 	@IBOutlet weak var addToPlaylist: NSMenuItem!
 	@IBAction func addToPlaylist(_ sender: Any) {
-		let track = sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track
+		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
 		print("Add \(track.title) to Playlist")
 		playlistEditingValues.tracks = [track]
 		playlistEditingValues.showAddTracksModal = true
 	}
 	@IBOutlet weak var albumAddFavorites: NSMenuItem!
 	@IBAction func albumAddFavorites(_ sender: Any) {
-		sc.session.favorites?.addAlbum(albumId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.album.id)
-		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
+		session.favorites?.addAlbum(albumId: player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id)
+		favoriteLabel(currentIndex: player.queueInfo.currentIndex)
 		viewState.refreshCurrentView()
 	}
 	@IBOutlet weak var albumRemoveFavorites: NSMenuItem!
 	@IBAction func albumRemoveFavorites(_ sender: Any) {
-		sc.session.favorites?.removeAlbum(albumId: sc.player.queueInfo.queue[sc.player.queueInfo.currentIndex].track.album.id)
-		favoriteLabel(currentIndex: sc.player.queueInfo.currentIndex)
+		session.favorites?.removeAlbum(albumId: player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id)
+		favoriteLabel(currentIndex: player.queueInfo.currentIndex)
 		viewState.refreshCurrentView()
 	}
 	
 	func favoriteLabel(currentIndex: Int) {
-		if sc.player.queueInfo.queue.isEmpty {
+		if player.queueInfo.queue.isEmpty {
 			goToAlbum.isEnabled = false
 			goToArtist.isEnabled = false
 			
@@ -681,7 +664,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		addToPlaylist.isEnabled = true
 		albumAddFavorites.isEnabled = true
 		
-		let trackIsInFavorites = sc.player.queueInfo.queue[currentIndex].track.isInFavorites(session: sc.session)
+		let trackIsInFavorites = player.queueInfo.queue[currentIndex].track.isInFavorites(session: session)
 		if trackIsInFavorites ?? false {
 			addToFavorites.isHidden = true
 			removeFromFavorites.isHidden = false
@@ -690,7 +673,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			removeFromFavorites.isHidden = true
 		}
 		
-		let albumIsInFavorites = sc.player.queueInfo.queue[currentIndex].track.album.isInFavorites(session: sc.session)
+		let albumIsInFavorites = player.queueInfo.queue[currentIndex].track.album.isInFavorites(session: session)
 		if albumIsInFavorites ?? false {
 			albumAddFavorites.isHidden = true
 			albumRemoveFavorites.isHidden = false
@@ -702,7 +685,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	@IBAction func addQueueToPlaylist(_ sender: Any) {
-		let tracks = sc.player.queueInfo.queue.unwrapped()
+		let tracks = player.queueInfo.queue.unwrapped()
 		print("Add \(tracks.count) to Playlist")
 		playlistEditingValues.tracks = tracks
 		playlistEditingValues.showAddTracksModal = true
@@ -712,7 +695,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var play: NSMenuItem!
 	@IBAction func play(_ sender: Any) {
-		sc.player.togglePlay()
+		player.togglePlay()
 	}
 	func playLabel(playing: Bool) {
 		if playing {
@@ -722,24 +705,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	@IBAction func stop(_ sender: Any) {
-		sc.player.stop()
+		player.stop()
 	}
 	@IBAction func next(_ sender: Any) {
-		sc.player.next()
+		player.next()
 	}
 	@IBAction func previous(_ sender: Any) {
-		sc.player.previous()
+		player.previous()
 	}
 	
 	@IBAction func increaseVolume(_ sender: Any) {
-		sc.player.increaseVolume()
+		player.increaseVolume()
 	}
 	@IBAction func decreaseVolume(_ sender: Any) {
-		sc.player.decreaseVolume()
+		player.decreaseVolume()
 	}
 	@IBOutlet weak var mute: NSMenuItem!
 	@IBAction func mute(_ sender: Any) {
-		sc.player.toggleMute()
+		player.toggleMute()
 	}
 	func muteState(volume: Float) {
 		mute.state = volume == 0 ? .on : .off
@@ -747,26 +730,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var shuffle: NSMenuItem!
 	@IBAction func shuffle(_ sender: Any) {
-		sc.player.playbackInfo.shuffle.toggle()
+		player.playbackInfo.shuffle.toggle()
 	}
 	func shuffleState(enabled: Bool) {
 		shuffle.state = enabled ? .on : .off
 	}
 	
 	@IBAction func toggleRepeat(_ sender: Any) {
-		sc.player.playbackInfo.repeatState = sc.player.playbackInfo.repeatState.next()
+		player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
 	}
 	@IBOutlet weak var repeatOff: NSMenuItem!
 	@IBAction func repeatOff(_ sender: Any) {
-		sc.player.playbackInfo.repeatState = .off
+		player.playbackInfo.repeatState = .off
 	}
 	@IBOutlet weak var repeatAll: NSMenuItem!
 	@IBAction func repeatAll(_ sender: Any) {
-		sc.player.playbackInfo.repeatState = .all
+		player.playbackInfo.repeatState = .all
 	}
 	@IBOutlet weak var repeatSingle: NSMenuItem!
 	@IBAction func repeatSingle(_ sender: Any) {
-		sc.player.playbackInfo.repeatState = .single
+		player.playbackInfo.repeatState = .single
 	}
 	func repeatLabel(repeatState: RepeatState) {
 		switch repeatState {
@@ -787,7 +770,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var pauseAfterCurrentTrack: NSMenuItem!
 	@IBAction func pauseAfterCurrentTrack(_ sender: Any) {
-		sc.player.playbackInfo.pauseAfter.toggle()
+		player.playbackInfo.pauseAfter.toggle()
 	}
 	func pauseAfterState(enabled: Bool) {
 		pauseAfterCurrentTrack.state = enabled ? .on : .off
@@ -795,17 +778,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var audioQualityLow: NSMenuItem!
 	@IBAction func audioQualityLow(_ sender: Any) {
-		sc.player.setAudioQuality(to: .low)
+		player.setAudioQuality(to: .low)
 		audioQualityLabel(audioQuality: .low)
 	}
 	@IBOutlet weak var audioQualityHigh: NSMenuItem!
 	@IBAction func audioQualityHigh(_ sender: Any) {
-		sc.player.setAudioQuality(to: .high)
+		player.setAudioQuality(to: .high)
 		audioQualityLabel(audioQuality: .high)
 	}
 	@IBOutlet weak var audioQualityHiFi: NSMenuItem!
 	@IBAction func audioQualityHiFi(_ sender: Any) {
-		sc.player.setAudioQuality(to: .hifi)
+		player.setAudioQuality(to: .hifi)
 		audioQualityLabel(audioQuality: .hifi)
 		
 	}
@@ -830,26 +813,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	@IBAction func clearQueue(_ sender: Any) {
-		sc.player.clearQueue(leavingCurrent: true)
+		player.clearQueue(leavingCurrent: true)
 	}
 	
 	// MARK: - Account
 	
 	@IBAction func accountInfo(_ sender: Any) {
-		guard let userId = sc.session.userId else { return }
-		guard let title = sc.session.getUser(userId: userId)?.username else { return }
+		guard let userId = session.userId else { return }
+		guard let title = session.getUser(userId: userId)?.username else { return }
 		let controller = ResizableWindowController(rootView:
-			AccountInfoView(session: sc.session)
+			AccountInfoView(session: session)
 		)
 		controller.window?.title = title
 		controller.showWindow(nil)
+	}
+	@IBAction func refreshAccessToken(_ sender: Any) {
+		session.refreshAccessToken()
 	}
 	@IBAction func logout(_ sender: Any) {
 		removeAllOfflineContent(self)
 		logout()
 	}
 	@IBAction func removeAllOfflineContent(_ sender: Any) {
-		sc.session.helpers.offline.removeAll()
+		session.helpers.offline.removeAll()
 		viewState.clearEverything() // Also clears Cache
 	}
 	

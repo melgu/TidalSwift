@@ -18,7 +18,6 @@ struct AlbumGridItem: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
-	@EnvironmentObject var sc: SessionContainer
 	
 	init(album: Album, showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
 		self.album = album
@@ -62,7 +61,7 @@ struct AlbumGridItem: View {
 						}
 					}
 				}
-				if album.isOffline(session: sc.session) {
+				if album.isOffline(session: session) {
 					Image("cloud.fill-big")
 						.colorInvert()
 						.shadow(radius: SHADOWRADIUS)

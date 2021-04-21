@@ -10,8 +10,10 @@ import SwiftUI
 import TidalSwiftLib
 
 struct PlaybackHistoryView: View {
-	@EnvironmentObject var sc: SessionContainer
 	@EnvironmentObject var queueInfo: QueueInfo
+	
+	let session: Session
+	let player: Player
 	
 	var body: some View {
 		ScrollView {
@@ -40,10 +42,10 @@ struct PlaybackHistoryView: View {
 								.fontWeight(item.id == queueInfo.history.count - 1 ? .bold : .regular)
 								.lineLimit(1)
 								.onTapGesture(count: 2) {
-									sc.player.add(tracks: queueInfo.history.map { $0.track }, .now, playAt: item.id)
+									player.add(tracks: queueInfo.history.map { $0.track }, .now, playAt: item.id)
 								}
 								.contextMenu {
-									TrackContextMenu(track: item.track, session: sc.session, player: sc.player)
+									TrackContextMenu(track: item.track, session: session, player: player)
 								}
 							Spacer(minLength: 0)
 						}

@@ -379,6 +379,12 @@
                                                 <action selector="accountInfo:" target="Voe-Tx-rLC" id="oir-Cb-bFF"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Refresh Access Token" id="Yj7-c0-QZ2" userLabel="Refresh Access Token">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="refreshAccessToken:" target="Voe-Tx-rLC" id="xib-DR-y1w"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Logout" id="EVe-69-XrZ">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>

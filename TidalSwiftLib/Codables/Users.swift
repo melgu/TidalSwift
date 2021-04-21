@@ -39,7 +39,7 @@ struct Client: Decodable {
 	let id: Int
 	let name: String
 	let authorizedForOffline: Bool
-	let authorizedForOfflineDate: Date
+	let authorizedForOfflineDate: Date?
 }
 
 struct Sessions: Decodable {
