@@ -21,8 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
-		B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B016FAF423575CB200ECE565 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B016FAF323575CB200ECE565 /* LoginView.swift */; };
 		B01B09CB234ADADB007A4E15 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CA234ADADB007A4E15 /* CreditsView.swift */; };
 		B01B09CD234B15D6007A4E15 /* Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CC234B15D6007A4E15 /* Lyrics.swift */; };
@@ -34,7 +32,6 @@
 		B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F420A230DF66200587A4A /* PlaybackInfo.swift */; };
 		B0443FF42305F7250019D0D8 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
 		B0443FFD2305F7250019D0D8 /* TidalSwiftLib.h in Headers */ = {isa = PBXBuildFile; fileRef = B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B04440082305F7390019D0D8 /* MP42Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */; };
 		B04440102305F7820019D0D8 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B2A3FA22E9AF3F0005E411 /* SDAVAssetExportSession.m */; };
 		B045A66E24626F7F001C8E3F /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B045A66D24626F7F001C8E3F /* Credits.rtf */; };
 		B0536C5D23D0D3350078EC4A /* Tooltips.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0536C5C23D0D3350078EC4A /* Tooltips.swift */; };
@@ -119,6 +116,7 @@
 		B0D974CF230CC9BB00695388 /* ArtistGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D974CE230CC9BB00695388 /* ArtistGrid.swift */; };
 		B0D974D1230CC9C600695388 /* PlaylistGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D974D0230CC9C600695388 /* PlaylistGrid.swift */; };
 		B0D974D5230CD60D00695388 /* PlayerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D974D4230CD60D00695388 /* PlayerInfoView.swift */; };
+		B0DD56F426467DDA00775D9F /* SwiftTagger in Frameworks */ = {isa = PBXBuildFile; productRef = B0DD56F326467DDA00775D9F /* SwiftTagger */; };
 		B0E40E7C24265CAD00987879 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E40E7A24265C8000987879 /* Extensions.swift */; };
 		B0E40E7E2426DDC100987879 /* FavoritesConverters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E40E7D2426DDC100987879 /* FavoritesConverters.swift */; };
 		B0E8078C230615AD00E43B5D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E8078B230615AD00E43B5D /* AppDelegate.swift */; };
@@ -206,7 +204,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B010113C23063BA400DE13C8 /* MP42Foundation.framework in Embed Frameworks */,
 				B08B819C235F85C3001C35C9 /* TidalSwiftLib.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -296,7 +293,6 @@
 		B0A1E2742349C65900BBC4F0 /* ArtistBioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistBioView.swift; sourceTree = "<group>"; };
 		B0A1E2762349DB0100BBC4F0 /* ResizableWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableWindowController.swift; sourceTree = "<group>"; };
 		B0A1E2782349EDE900BBC4F0 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
-		B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MP42Foundation.framework; sourceTree = "<group>"; };
 		B0A67AA62395CB1100BD3921 /* WrappedTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedTrack.swift; sourceTree = "<group>"; };
 		B0A67AA82395D40E00BD3921 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		B0A67AAC2395DB6700BD3921 /* Pasteboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pasteboard.swift; sourceTree = "<group>"; };
@@ -387,7 +383,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B04440082305F7390019D0D8 /* MP42Foundation.framework in Frameworks */,
+				B0DD56F426467DDA00775D9F /* SwiftTagger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,7 +405,6 @@
 				B0E9B79A2532896C00CE81F6 /* Sliders in Frameworks */,
 				B0E9B78F2532891000CE81F6 /* Grid in Frameworks */,
 				B0E9B7A52532898400CE81F6 /* Introspect in Frameworks */,
-				B010113B23063BA400DE13C8 /* MP42Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -532,14 +527,6 @@
 			path = README.assets;
 			sourceTree = "<group>";
 		};
-		B0A42FEA22E972B4006421A8 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				B0A42FEB22E972DD006421A8 /* MP42Foundation.framework */,
-			);
-			path = Frameworks;
-			sourceTree = "<group>";
-		};
 		B0B2A3F522E9AF1F0005E411 /* SDAVAssetExportSession */ = {
 			isa = PBXGroup;
 			children = (
@@ -559,7 +546,6 @@
 				B0E807A0230615AF00E43B5D /* TidalSwiftTests */,
 				B0443FEC2305F7250019D0D8 /* TidalSwiftLib */,
 				B0443FF92305F7250019D0D8 /* TidalSwiftLibTests */,
-				B0A42FEA22E972B4006421A8 /* Frameworks */,
 				B0E582CF223764A500ADAE6C /* Products */,
 				B0E6AED72255AEBE00D7DA7B /* .swiftlint.yml */,
 				B0807AB724B2BB9B0055524E /* .gitignore */,
@@ -815,6 +801,9 @@
 			dependencies = (
 			);
 			name = TidalSwiftLib;
+			packageProductDependencies = (
+				B0DD56F326467DDA00775D9F /* SwiftTagger */,
+			);
 			productName = TidalSwiftLib;
 			productReference = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */;
 			productType = "com.apple.product-type.framework";
@@ -926,6 +915,7 @@
 				B0E9B7982532896C00CE81F6 /* XCRemoteSwiftPackageReference "swiftui-sliders" */,
 				B0E9B7A32532898400CE81F6 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				B0E9B7AE2532899800CE81F6 /* XCRemoteSwiftPackageReference "ImageIOSwift" */,
+				B0DD56F226467DDA00775D9F /* XCRemoteSwiftPackageReference "SwiftTagger" */,
 			);
 			productRefGroup = B0E582CF223764A500ADAE6C /* Products */;
 			projectDirPath = "";
@@ -1604,6 +1594,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B0DD56F226467DDA00775D9F /* XCRemoteSwiftPackageReference "SwiftTagger" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:NCrusher74/SwiftTagger.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.0;
+			};
+		};
 		B0E9B78D2532891000CE81F6 /* XCRemoteSwiftPackageReference "swiftui-grid" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:spacenation/swiftui-grid.git";
@@ -1647,6 +1645,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B0DD56F326467DDA00775D9F /* SwiftTagger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0DD56F226467DDA00775D9F /* XCRemoteSwiftPackageReference "SwiftTagger" */;
+			productName = SwiftTagger;
+		};
 		B0E9B78E2532891000CE81F6 /* Grid */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B0E9B78D2532891000CE81F6 /* XCRemoteSwiftPackageReference "swiftui-grid" */;
