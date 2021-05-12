@@ -11,6 +11,60 @@
         }
       },
       {
+        "package": "iTunesGenreID",
+        "repositoryURL": "https://github.com/NCrusher74/iTunesGenreID",
+        "state": {
+          "branch": null,
+          "revision": "343f34128669a5694e2745c36920570ea860b3fe",
+          "version": "1.0.4"
+        }
+      },
+      {
+        "package": "SwiftConvenienceExtensions",
+        "repositoryURL": "https://github.com/NCrusher74/SwiftConvenienceExtensions",
+        "state": {
+          "branch": null,
+          "revision": "80a5e3818917db2360f6d80786677a6465ab691a",
+          "version": "2.0.0"
+        }
+      },
+      {
+        "package": "SwiftLanguageAndLocaleCodes",
+        "repositoryURL": "https://github.com/NCrusher74/SwiftLanguageAndLocaleCodes",
+        "state": {
+          "branch": null,
+          "revision": "6f3a3fa43e96db0c2e9aecf8a4891e9ba4964b9b",
+          "version": "2.0.0"
+        }
+      },
+      {
+        "package": "SwiftTagger",
+        "repositoryURL": "git@github.com:NCrusher74/SwiftTagger.git",
+        "state": {
+          "branch": null,
+          "revision": "ad0e5eb09c62bb1f81e921f0bdd978a372389c71",
+          "version": "1.6.0"
+        }
+      },
+      {
+        "package": "SwiftTaggerID3",
+        "repositoryURL": "https://github.com/NCrusher74/SwiftTaggerID3",
+        "state": {
+          "branch": null,
+          "revision": "7f8ec33eef0c917d7f00560b16fae23eb62a6559",
+          "version": "1.7.2"
+        }
+      },
+      {
+        "package": "SwiftTaggerMP4",
+        "repositoryURL": "https://github.com/NCrusher74/SwiftTaggerMP4",
+        "state": {
+          "branch": null,
+          "revision": "ea57658b0e4329f1789d4efa16a4d005e28ed016",
+          "version": "1.7.1"
+        }
+      },
+      {
         "package": "Grid",
         "repositoryURL": "git@github.com:spacenation/swiftui-grid.git",
         "state": {

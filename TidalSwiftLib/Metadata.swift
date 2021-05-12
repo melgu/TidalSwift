@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import MP42Foundation
+import SwiftTagger
 
 class Metadata {
 	unowned let session: Session
@@ -17,115 +17,65 @@ class Metadata {
 	}
 	
 	func setMetadata(for track: Track, at path: URL) {
-		var m4aFile: MP42File
+		print("FIXME: Set Metadata") // FIXME: Set Metadata
+		
+		var m4aFile: AudioFile
 		do {
-			m4aFile = try MP42File(url: path)
+			m4aFile = try AudioFile(location: path)
 		} catch {
 			displayError(title: "Error finding M4A file", content: "Path: \(path). Error: \(error)")
 			return
 		}
 		
-		var metadata = [(String, NSCopying & NSObjectProtocol, MP42MetadataItemDataType)]()
-		
 		var title = track.title
 		if let version = track.version {
 			title += " (\(version))"
 		}
-		metadata.append((MP42MetadataKeyName,
-						 title as NSCopying & NSObjectProtocol,
-						 .string))
+		m4aFile.title = title
 		
 		if !track.artists.isEmpty {
-			metadata.append((MP42MetadataKeyArtist,
-							 track.artists.formArtistString() as NSCopying & NSObjectProtocol,
-							 .string))
+			m4aFile.artist = track.artists.formArtistString()
 		}
-
-		metadata.append((MP42MetadataKeyAlbum,
-						 track.album.title as NSCopying & NSObjectProtocol,
-						 .string))
+		
+		
+		m4aFile.album = track.album.title
 		
 		if let album = session.getAlbum(albumId: track.album.id) {
-			metadata.append((MP42MetadataKeyDiscNumber,
-							 [track.volumeNumber, album.numberOfVolumes] as NSCopying & NSObjectProtocol,
-							 .integerArray))
+			m4aFile.discNumber = .init(index: track.volumeNumber, total: album.numberOfVolumes)
 			
-			metadata.append((MP42MetadataKeyTrackNumber,
-							 [track.trackNumber, album.numberOfTracks] as NSCopying & NSObjectProtocol,
-							 .integerArray))
+			m4aFile.trackNumber = .init(index: track.trackNumber, total: album.numberOfTracks)
 			
 			if let artists = album.artists, !artists.isEmpty {
-				metadata.append((MP42MetadataKeyAlbumArtist,
-								 artists.formArtistString() as NSCopying & NSObjectProtocol,
-								 .string))
+				m4aFile.albumArtist = artists.formArtistString()
+			}
+		}
+		
+		m4aFile.releaseDateTime = track.album.releaseDate
+
+		m4aFile.copyright = track.copyright
+		
+		if let coverUrl = track.getCoverUrl(session: session, resolution: 1280) {
+			do {
+				try m4aFile.setCoverArt(imageLocation: coverUrl)
+			} catch {
+				displayError(title: "Error setting cover art", content: "Error: \(error)")
+				return
 			}
 		}
 
-		// TODO: Add Year as Release Date
-//		if let releaseDate = track.album.releaseDate {
-//			let year = ""
-//			metadata.append((MP42MetadataKeyReleaseDate,
-//							 year as NSCopying & NSObjectProtocol,
-//							 .string))
+		// TODO: Content rating
+//		if track.explicit {
+//			 m4aFile.contentRating = .
 //		}
 
-		if let copyright = track.copyright {
-			metadata.append((MP42MetadataKeyCopyright,
-							 copyright as NSCopying & NSObjectProtocol,
-							 .string))
-		}
-
-		if let cover = track.getCover(session: session, resolution: 1280) {
-			let art = MP42Image(image: cover)
-			metadata.append((MP42MetadataKeyCoverArt,
-							 art,
-							 .image))
-		}
-
-//		// TODO: Genre?
-//		if let genre = track.primaryGenreName {
-//			metadata.append((MP42MetadataKeyUserGenre,
-//							 genre as NSCopying & NSObjectProtocol,
-//							 MP42MetadataItemDataType.string))
-//		}
-
-		if track.explicit {
-			metadata.append((MP42MetadataKeyContentRating,
-							 1 as NSCopying & NSObjectProtocol,
-							 .integer
-							 ))
-		}
-
-		// Set compilation // TODO: Immer noch nicht korrekt
-		if track.album.isCompilation {
-			metadata.append((MP42MetadataKeyDiscCompilation,
-							 1 as NSCopying & NSObjectProtocol,
-							 .integer))
-		}
+		// TODO: Check if correct
+		m4aFile.compilation = track.album.isCompilation
 		
 		// iTunes Artist ID
-//		metadata.append((MP42MetadataKeyArtistID,
-//					 track.artistId as NSCopying & NSObjectProtocol,
-//					 .integer))
-		
-		// Remove previous artwork
-		for item in m4aFile.metadata.items where item.imageValue != nil {
-			m4aFile.metadata.removeItem(item)
-		}
-
-		for metadatum in metadata {
-			m4aFile.metadata.addItem(MP42MetadataItem(identifier: metadatum.0,
-													  value: metadatum.1,
-													  dataType: metadatum.2,
-													  extendedLanguageTag: nil))
-		}
-		
-		m4aFile.optimize()
+		m4aFile.artistID = track.artist?.id
 		
 		do {
-			let options = [:] as [String: Any]
-//				options[MP42DontUpdateBitrate] = true
-			try m4aFile.update(options: options)
+			try m4aFile.write(outputLocation: path)
 		} catch {
 			displayError(title: "Error writing Metadata", content: "Path: \(path). Error: \(error)")
 			return
