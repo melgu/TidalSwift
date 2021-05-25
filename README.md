@@ -8,6 +8,10 @@ It supports all major features of the official Tidal app, while adding additiona
 
 
 
+> Info: I won't be working on TidalSwift in the forseable future as I have cancelled my Tidal subscription because they replaced most of the lossless library by MQA, which is **not** lossless. If you want me to continue working on TidalSwift, you can become a sponsor on GitHub so I can pay for the subscription.
+
+
+
 ## Download
 
 You can download the latest version [here](https://github.com/melgu/TidalSwift/releases).
