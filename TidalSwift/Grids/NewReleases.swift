@@ -34,7 +34,7 @@ struct NewReleases: View {
 				}
 				Spacer(minLength: 0)
 			}
-			.padding(.horizontal)
+			.padding()
 		}
 		.onAppear {
 			cancellable = viewState.$newReleasesIncludeEps

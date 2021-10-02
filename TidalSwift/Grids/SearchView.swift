@@ -23,7 +23,7 @@ struct SearchView: View {
 	}
 	
 	var body: some View {
-		ScrollView([.vertical]) {
+		ScrollView(.vertical) {
 			VStack(alignment: .leading) {
 				HStack {
 					Text("Search")
@@ -65,6 +65,7 @@ struct SearchView: View {
 				}
 				Spacer(minLength: 0)
 			}
+			.padding(.vertical)
 		}
 	}
 }

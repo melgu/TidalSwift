@@ -67,7 +67,7 @@ struct FavoritePlaylists: View {
 				}
 				Spacer(minLength: 0)
 			}
-			.padding(.horizontal)
+			.padding()
 		}
 	}
 }
@@ -108,7 +108,7 @@ struct FavoriteAlbums: View {
 				}
 				Spacer(minLength: 0)
 			}
-			.padding(.horizontal)
+			.padding()
 		}
 	}
 }
@@ -178,6 +178,7 @@ struct FavoriteTracks: View {
 				}
 				Spacer(minLength: 0)
 			}
+			.padding(.top)
 		}
 	}
 }
@@ -219,7 +220,7 @@ struct FavoriteVideos: View {
 				}
 				Spacer(minLength: 0)
 			}
-			.padding(.horizontal)
+			.padding()
 		}
 	}
 }
@@ -259,7 +260,7 @@ struct FavoriteArtists: View {
 				}
 				Spacer(minLength: 0)
 			}
-			.padding(.horizontal)
+			.padding()
 		}
 	}
 }
