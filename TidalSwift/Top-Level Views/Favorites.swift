@@ -9,7 +9,7 @@
 import SwiftUI
 import TidalSwiftLib
 
-let PICKERWIDTH: CGFloat = 450
+let PICKERWIDTH: CGFloat = 580
 
 struct ReverseButton: View {
 	@Binding var reversed: Bool
@@ -42,6 +42,7 @@ struct FavoritePlaylists: View {
 				HStack {
 					Text("Favorite Playlists")
 						.font(.largeTitle)
+						.lineLimit(1)
 					Spacer()
 					LoadingSpinner()
 					Picker(selection: $sortingState.favoritePlaylistSorting, label: Spacer(minLength: 0)) {
@@ -85,6 +86,7 @@ struct FavoriteAlbums: View {
 				HStack {
 					Text("Favorite Albums")
 						.font(.largeTitle)
+						.lineLimit(1)
 					Spacer()
 					LoadingSpinner()
 					Picker(selection: $sortingState.favoriteAlbumSorting, label: Spacer(minLength: 0)) {
@@ -127,6 +129,7 @@ struct FavoriteTracks: View {
 					HStack {
 						Text("Favorite Tracks")
 							.font(.largeTitle)
+							.lineLimit(1)
 						Spacer()
 						LoadingSpinner()
 						if session.helpers.offline.saveFavoritesOffline {
@@ -196,6 +199,7 @@ struct FavoriteVideos: View {
 				HStack {
 					Text("Favorite Videos")
 						.font(.largeTitle)
+						.lineLimit(1)
 					Spacer()
 					LoadingSpinner()
 					Picker(selection: $sortingState.favoriteVideoSorting, label: Spacer(minLength: 0)) {
@@ -239,6 +243,7 @@ struct FavoriteArtists: View {
 					HStack {
 						Text("Favorite Artists")
 							.font(.largeTitle)
+							.lineLimit(1)
 						Spacer()
 						LoadingSpinner()
 						Picker(selection: $sortingState.favoriteArtistSorting, label: Spacer(minLength: 0)) {
