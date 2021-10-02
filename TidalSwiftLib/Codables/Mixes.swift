@@ -39,6 +39,7 @@ public enum MixType: String, Codable {
 	case header = "MIX_HEADER" // Because  of how Tidal structures its data
 	case audio = "DAILY_MIX"
 	case video = "VIDEO_DAILY_MIX"
+	case discovery = "DISCOVERY_MIX"
 }
 
 public struct MixesItem: Codable, Equatable, Identifiable {
