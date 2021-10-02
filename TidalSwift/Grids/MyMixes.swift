@@ -30,7 +30,7 @@ struct MyMixes: View {
 				}
 				Spacer(minLength: 0)
 			}
-			.padding(.horizontal)
+			.padding()
 		}
 	}
 }

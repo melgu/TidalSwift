@@ -125,23 +125,25 @@ struct DetailView: View {
 	}
 	
 	var body: some View {
-		VStack {
+		VStack(spacing: 0) {
 			PlayerInfoView(session: session, player: player)
+				.padding(.bottom)
+			Divider()
 			if let viewType = viewState.stack.last?.viewType {
-				HStack {
+				Group {
 					// Search
 					if viewType == .search {
 						SearchView(session: session, player: player)
 					}
-						
+					
 					// News
 					else if viewType == .newReleases {
 						NewReleases(session: session, player: player)
 					} else if viewType == .myMixes {
 						MyMixes(session: session, player: player)
 					}
-						
-						// Favorites
+					
+					// Favorites
 					else if viewType == .favoritePlaylists {
 						FavoritePlaylists(session: session, player: player)
 					} else if viewType == .favoriteAlbums {
@@ -161,8 +163,7 @@ struct DetailView: View {
 					} else if viewType == .offlineTracks {
 						OfflineTracksView(session: session, player: player)
 					}
-						
-						
+					
 					// Single Things
 					else if viewType == .artist {
 						ArtistView(session: session, player: player, viewState: viewState)
