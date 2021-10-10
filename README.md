@@ -4,11 +4,11 @@
 
 Tidal Music Streaming Client & Library written in Swift
 
-It supports all major features of the official Tidal app, while adding additional ones, like New Releases, Lyrics, Dark Mode, Downloads & Offline Playback – all while being only 1/10th the size of the official app.
+It supports all major features of the official Tidal app, while adding additional ones, like New Releases, Lyrics, automatic Dark Mode, Downloads & Offline Playback – all while being only 1/10th the size of the official app.
 
 
 
-> Info: I won't be working on TidalSwift in the forseable future as I have cancelled my Tidal subscription because they replaced most of the lossless library by MQA, which is **not** lossless. If you want me to continue working on TidalSwift, you can become a sponsor on GitHub so I can pay for the subscription.
+> Info: I won't be working on TidalSwift in the foreseeable future as I have cancelled my Tidal subscription because they replaced most of the lossless library by MQA, which is **not** lossless. If you want me to continue working on TidalSwift, you can become a sponsor on GitHub so I can pay for the subscription.
 
 
 
