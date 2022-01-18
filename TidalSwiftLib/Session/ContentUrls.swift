@@ -12,7 +12,7 @@ extension Session {
 	func getAudioUrl(trackId: Int, audioQuality: AudioQuality) -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(audioQuality.rawValue)"
-		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/\(config.urlType.rawValue)")!
+		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/\(config.urlType.rawValue)")!
 		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -36,8 +36,8 @@ extension Session {
 	}
 	
 	func getVideoUrl(videoId: Int) -> URL? {
-//		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/offlineUrl")! // Only returns low quality video
-		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)/streamUrl")!
+//		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/offlineUrl")! // Only returns low quality video
+		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/streamUrl")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {

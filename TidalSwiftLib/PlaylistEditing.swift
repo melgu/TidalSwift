@@ -14,7 +14,7 @@ public class PlaylistEditing {
 	
 	init(session: Session) {
 		self.session = session
-		self.baseUrl = "\(session.config.apiLocation)/playlists"
+		self.baseUrl = "\(AuthInformation.APILocation)/playlists"
 	}
 	
 	func etag(for playlistId: String) -> Int {
@@ -62,7 +62,7 @@ public class PlaylistEditing {
 		guard let userId = session.userId else {
 			return nil
 		}
-		let url = URL(string: "\(session.config.apiLocation)/users/\(userId)/playlists")!
+		let url = URL(string: "\(AuthInformation.APILocation)/users/\(userId)/playlists")!
 		var parameters = session.sessionParameters
 		parameters["title"] = "\(title)"
 		parameters["description"] = "\(description)"

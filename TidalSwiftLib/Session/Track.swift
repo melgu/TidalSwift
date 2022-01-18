@@ -23,7 +23,7 @@ public enum AudioUrlType: String {
 
 extension Session {
 	public func getTrack(trackId: Int) -> Track? {
-		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)")!
+		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -42,7 +42,7 @@ extension Session {
 	}
 	
 	public func getTrackCredits(trackId: Int) -> [Credit]? {
-		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/credits")!
+		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/credits")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -77,7 +77,7 @@ extension Session {
 		parameters["limit"] = "\(limit)"
 		parameters["offset"] = "\(offset)"
 		
-		let url = URL(string: "\(config.apiLocation)/tracks/\(trackId)/radio")!
+		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/radio")!
 		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {

@@ -17,7 +17,7 @@ extension Session {
 		// Server-side limit of 300. Doesn't go higher (also limits totalNumberOfItems to 300.
 		// Can potentially go higher using offset.
 		
-		let url = URL(string: "\(config.apiLocation)/search/")!
+		let url = URL(string: "\(AuthInformation.APILocation)/search/")!
 		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
