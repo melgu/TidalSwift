@@ -24,7 +24,7 @@ extension Session {
 	}
 	
 	public func populateVariablesForAccessToken() -> Bool {
-		let url = URL(string: "\(config.apiLocation)/sessions")!
+		let url = URL(string: "\(AuthInformation.APILocation)/sessions")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -69,8 +69,8 @@ extension Session {
 	public func startAuthorization() -> CurrentValueSubject<AuthorizationState, Never> {
 		let subject = CurrentValueSubject<AuthorizationState, Never>(.waiting)
 		
-		let url = URL(string: "\(config.authLocation)/device_authorization")!
-		let parameters: [String: String] = ["client_id": config.clientId,
+		let url = URL(string: "\(AuthInformation.AuthLocation)/device_authorization")!
+		let parameters: [String: String] = ["client_id": AuthInformation.ClientID,
 											"scope": "r_usr+w_usr+w_sub"]
 		
 		Network.asyncPost(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil) { [weak self] response in
@@ -104,9 +104,9 @@ extension Session {
 	}
 	
 	private func startAuthorizationPolling(deviceCode: UUID, subject: CurrentValueSubject<AuthorizationState, Never>) {
-		let url = URL(string: "\(config.authLocation)/token")!
-		let parameters: [String: String] = ["client_id": config.clientId,
-											"client_secret": config.clientSecret,
+		let url = URL(string: "\(AuthInformation.AuthLocation)/token")!
+		let parameters: [String: String] = ["client_id": AuthInformation.ClientID,
+											"client_secret": AuthInformation.ClientSecret,
 											"device_code": deviceCode.uuidString.lowercased(),
 											"grant_type": "urn:ietf:params:oauth:grant-type:device_code",
 											"scope": "r_usr+w_usr+w_sub"]
@@ -180,9 +180,9 @@ extension Session {
 			displayError(title: "Refresh Access Token failed (Token Error)", content: "Missing Refresh Token")
 			return
 		}
-		let url = URL(string: "\(config.authLocation)/token")!
-		let parameters: [String: String] = ["client_id": config.clientId,
-											"client_secret": config.clientSecret,
+		let url = URL(string: "\(AuthInformation.AuthLocation)/token")!
+		let parameters: [String: String] = ["client_id": AuthInformation.ClientID,
+											"client_secret": AuthInformation.ClientSecret,
 											"refresh_token": refreshToken,
 											"grant_type": "refresh_token",
 											"scope": "r_usr+w_usr+w_sub"]

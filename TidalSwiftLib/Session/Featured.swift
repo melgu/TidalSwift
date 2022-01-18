@@ -10,7 +10,7 @@ import Foundation
 
 extension Session {
 	public func getFeatured() -> [FeaturedItem]? {
-		let url = URL(string: "\(config.apiLocation)/promotions")!
+		let url = URL(string: "\(AuthInformation.APILocation)/promotions")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -29,7 +29,7 @@ extension Session {
 	}
 
 	public func getMoods() -> [Mood]? {
-		let url = URL(string: "\(config.apiLocation)/moods")!
+		let url = URL(string: "\(AuthInformation.APILocation)/moods")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -48,7 +48,7 @@ extension Session {
 	}
 
 	public func getMoodPlaylists(moodPath: String) -> [Playlist]? {
-		let url = URL(string: "\(config.apiLocation)/moods/\(moodPath)/playlists")!
+		let url = URL(string: "\(AuthInformation.APILocation)/moods/\(moodPath)/playlists")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -69,7 +69,7 @@ extension Session {
 	// TODO: There's more to moods and/or genres than playlists
 	
 	public func getGenres() -> [Genre]? { // Overview over all Genres
-		let url = URL(string: "\(config.apiLocation)/genres")!
+		let url = URL(string: "\(AuthInformation.APILocation)/genres")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -90,7 +90,7 @@ extension Session {
 	// Haven't found Artists in there yet, so only Tracks, Albums & Playlists
 	
 	public func getGenreTracks(genrePath: String) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)/genres/\(genrePath)/tracks")!
+		let url = URL(string: "\(AuthInformation.APILocation)/genres/\(genrePath)/tracks")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -109,7 +109,7 @@ extension Session {
 	}
 	
 	public func getGenreAlbums(genreName: String) -> [Album]? {
-		let url = URL(string: "\(config.apiLocation)/genres/\(genreName)/albums")!
+		let url = URL(string: "\(AuthInformation.APILocation)/genres/\(genreName)/albums")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -128,7 +128,7 @@ extension Session {
 	}
 	
 public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
-		let url = URL(string: "\(config.apiLocation)/genres/\(genreName)/playlists")!
+		let url = URL(string: "\(AuthInformation.APILocation)/genres/\(genreName)/playlists")!
 	let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {

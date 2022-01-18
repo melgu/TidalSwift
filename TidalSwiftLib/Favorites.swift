@@ -15,7 +15,7 @@ public class Favorites {
 	
 	public init(session: Session, userId: Int) {
 		self.session = session
-		self.baseUrl = "\(session.config.apiLocation)/users/\(userId)/favorites"
+		self.baseUrl = "\(AuthInformation.APILocation)/users/\(userId)/favorites"
 		self.cache = FavoritesCache(favorites: self)
 	}
 	
@@ -148,7 +148,7 @@ public class Favorites {
 		guard let userId = session.userId else {
 			return nil
 		}
-		let url = URL(string: "\(session.config.apiLocation)/users/\(userId)/playlistsAndFavoritePlaylists")!
+		let url = URL(string: "\(AuthInformation.APILocation)/users/\(userId)/playlistsAndFavoritePlaylists")!
 		
 		var tempLimit = limit
 		var tempOffset = offset

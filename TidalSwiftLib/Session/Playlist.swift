@@ -15,7 +15,7 @@ public enum PlaylistOrder: String {
 
 extension Session {
 	public func getPlaylist(playlistId: String) -> Playlist? {
-		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)")!
+		let url = URL(string: "\(AuthInformation.APILocation)/playlists/\(playlistId)")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -34,7 +34,7 @@ extension Session {
 	}
 	
 	public func getPlaylistTracks(playlistId: String) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)/playlists/\(playlistId)/tracks")!
+		let url = URL(string: "\(AuthInformation.APILocation)/playlists/\(playlistId)/tracks")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
