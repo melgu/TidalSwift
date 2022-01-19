@@ -89,9 +89,11 @@ extension Track {
 			}
 			if audioQuality == .master {
 				Image("m.square.fill")
-			} else if audioModes?.contains(.sony360RealityAudio) ?? false {
+			}
+			if audioModes?.contains(.sony360RealityAudio) ?? false {
 				Image("headphones")
-			} else if audioModes?.contains(.dolbyAtmos) ?? false {
+			}
+			if audioModes?.contains(.dolbyAtmos) ?? false {
 				Image("hifispeaker.fill")
 			}
 		}
