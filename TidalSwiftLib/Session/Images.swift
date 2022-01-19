@@ -30,7 +30,7 @@ extension Session {
 		}
 		
 		let path = imageId.replacingOccurrences(of: "-", with: "/")
-		let urlString = "\(config.imageLocation)/\(path)/\(resolution)x\(tempResolutionY).jpg"
+        let urlString = "\(AuthInformation.ImageLocation)/\(path)/\(resolution)x\(tempResolutionY).jpg"
 		return URL(string: urlString)
 	}
 	

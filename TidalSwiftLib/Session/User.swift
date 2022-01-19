@@ -14,7 +14,7 @@ extension Session {
 			return nil
 		}
 		
-		let url = URL(string: "\(config.apiLocation)/users/\(userId)/subscription")!
+		let url = URL(string: "\(AuthInformation.APILocation)/users/\(userId)/subscription")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -33,7 +33,7 @@ extension Session {
 	}
 	
 	public func getUser(userId: Int) -> User? {
-		let url = URL(string: "\(config.apiLocation)/users/\(userId)")!
+		let url = URL(string: "\(AuthInformation.APILocation)/users/\(userId)")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -52,7 +52,7 @@ extension Session {
 	}
 	
 	public func getUserPlaylists(userId: Int, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) -> [Playlist]? {
-		let url = URL(string: "\(config.apiLocation)/users/\(userId)/playlists")!
+		let url = URL(string: "\(AuthInformation.APILocation)/users/\(userId)/playlists")!
 		var parameters = sessionParameters
 		if let order = order {
 			parameters["order"] = "\(order.rawValue)"
