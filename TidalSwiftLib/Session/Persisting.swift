@@ -49,13 +49,8 @@ extension Session {
 			"accessToken": config.accessToken,
 			"refreshToken": config.refreshToken,
 			"apiToken": config.apiToken,
-			"clientId": config.clientId,
-			"clientSecret": config.clientSecret,
 			"offlineAudioQuality": config.offlineAudioQuality.rawValue,
 			"urlType": config.urlType.rawValue,
-			"apiLocation": config.apiLocation,
-			"authLocation": config.authLocation,
-			"imageLocation": config.imageLocation,
 			"imageSize": String(config.imageSize)
 		]
 		
@@ -80,15 +75,10 @@ extension Config {
 		
 		guard let accessToken = persistentInformation["accessToken"],
 			  let apiToken = persistentInformation["apiToken"],
-			  let clientId = persistentInformation["clientId"],
-			  let clientSecret = persistentInformation["clientSecret"],
 			  let offlineAudioQualityString = persistentInformation["offlineAudioQuality"],
 			  let offlineAudioQuality = AudioQuality(rawValue: offlineAudioQualityString),
 			  let urlTypeString = persistentInformation["urlType"],
 			  let urlType = AudioUrlType(rawValue: urlTypeString),
-			  let apiLocation = persistentInformation["apiLocation"],
-			  let authLocation = persistentInformation["authLocation"],
-			  let imageLocation = persistentInformation["imageLocation"],
 			  let imageSizeString = persistentInformation["imageSize"],
 			  let imageSize = Int(imageSizeString)
 		else {
@@ -101,13 +91,8 @@ extension Config {
 		return Config(accessToken: accessToken,
 					  refreshToken: refreshToken,
 					  apiToken: apiToken,
-					  clientId: clientId,
-					  clientSecret: clientSecret,
 					  offlineAudioQuality: offlineAudioQuality,
 					  urlType: urlType,
-					  apiLocation: apiLocation,
-					  authLocation: authLocation,
-					  imageLocation: imageLocation,
 					  imageSize: imageSize)
 	}
 }

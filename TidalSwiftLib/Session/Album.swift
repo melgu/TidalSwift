@@ -17,7 +17,7 @@ public enum AlbumOrder: String {
 
 extension Session {
 	public func getAlbum(albumId: Int) -> Album? {
-		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)")!
+		let url = URL(string: "\(AuthInformation.APILocation)/albums/\(albumId)")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -36,7 +36,7 @@ extension Session {
 	}
 	
 	public func getAlbumTracks(albumId: Int) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)/tracks")!
+		let url = URL(string: "\(AuthInformation.APILocation)/albums/\(albumId)/tracks")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -55,7 +55,7 @@ extension Session {
 	}
 	
 	public func getAlbumCredits(albumId: Int) -> [Credit]? {
-		let url = URL(string: "\(config.apiLocation)/albums/\(albumId)/credits")!
+		let url = URL(string: "\(AuthInformation.APILocation)/albums/\(albumId)/credits")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {

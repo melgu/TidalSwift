@@ -12,7 +12,7 @@ extension Session {
 	public func getMixes() -> [MixesItem]? {
 		var parameters = sessionParameters
 		parameters["deviceType"] = "DESKTOP"
-		let url = URL(string: "\(config.apiLocation)/pages/my_collection_my_mixes")!
+		let url = URL(string: "\(AuthInformation.APILocation)/pages/my_collection_my_mixes")!
 		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -40,7 +40,7 @@ extension Session {
 		parameters["deviceType"] = "DESKTOP"
 		parameters["token"] = "\(config.apiToken)"
 		
-		let url = URL(string: "\(config.apiLocation)/pages/mix")!
+		let url = URL(string: "\(AuthInformation.APILocation)/pages/mix")!
 		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {

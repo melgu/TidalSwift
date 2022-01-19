@@ -12,7 +12,7 @@ public typealias ArtistOrder = PlaylistOrder
 
 extension Session {
 	public func getArtist(artistId: Int) -> Artist? {
-		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)")!
+		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -50,7 +50,7 @@ extension Session {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
 		
-		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/albums")!
+		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/albums")!
 		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -73,7 +73,7 @@ extension Session {
 		parameters["limit"] = "\(limit)"
 		parameters["offset"] = "\(offset)"
 		
-		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/videos")!
+		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/videos")!
 		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 
 		guard let content = response.content else {
@@ -96,7 +96,7 @@ extension Session {
 		parameters["limit"] = "\(limit)"
 		parameters["offset"] = "\(offset)"
 		
-		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/toptracks")!
+		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/toptracks")!
 		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 
 		guard let content = response.content else {
@@ -115,7 +115,7 @@ extension Session {
 	}
 	
 	func getArtistBio(artistId: Int, linksRemoved: Bool = true) -> ArtistBio? {
-		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/bio")!
+		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/bio")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -149,7 +149,7 @@ extension Session {
 	}
 	
 	public func getArtistSimilar(artistId: Int) -> [Artist]? {
-		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/similar")!
+		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/similar")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
@@ -168,7 +168,7 @@ extension Session {
 	}
 	
 	public func getArtistRadio(artistId: Int) -> [Track]? {
-		let url = URL(string: "\(config.apiLocation)/artists/\(artistId)/radio")!
+		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/radio")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {

@@ -17,7 +17,7 @@ public enum VideoOrder: String {
 
 extension Session {
 	public func getVideo(videoId: Int) -> Video? {
-		let url = URL(string: "\(config.apiLocation)/videos/\(videoId)")!
+		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)")!
 		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		
 		guard let content = response.content else {
