@@ -57,7 +57,7 @@ struct LoadingSpinner: View {
 					.primaryIconColor()
 					.frame(width: 30, height: 30)
 					.rotationEffect(animate ? .degrees(360) : .degrees(0))
-					.animation(Animation.linear(duration: 1).repeatForever(autoreverses: false))
+					.animation(.linear(duration: 1).repeatForever(autoreverses: false), value: animate)
 					.onAppear {
 						animate.toggle()
 					}
