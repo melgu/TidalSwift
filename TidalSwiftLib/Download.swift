@@ -104,8 +104,8 @@ public class Download {
 		var errors = DownloadErrors()
 		for track in tracks {
 			group.enter()
-			dispatchQueue.async { [unowned self] in
-				let r = self.download(track: track, parentFolder: parentFolder, audioQuality: session.config.offlineAudioQuality)
+			dispatchQueue.async { [self] in
+				let r = download(track: track, parentFolder: parentFolder, audioQuality: session.config.offlineAudioQuality)
 				if !r {
 					semaphore.wait()
 					errors.affectedTracks.insert(track)

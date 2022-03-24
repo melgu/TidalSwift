@@ -304,9 +304,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func updateCheck(showNoUpdatesAlert: Bool) {
-		DispatchQueue.global(qos: .background).async { [unowned self] in
+		DispatchQueue.global(qos: .background).async { [self] in
 			if updateNotification.checkForUpdates() {
-				DispatchQueue.main.async {
+				DispatchQueue.main.async { [self] in
 					updateNotification.showNewVersionView()
 				}
 			} else if showNoUpdatesAlert {
@@ -558,7 +558,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func downloadTrack(_ sender: Any) {
 		print("Menu: downloadTrack")
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
-		DispatchQueue.global(qos: .background).async { [unowned self] in
+		DispatchQueue.global(qos: .background).async { [self] in
 			_ = self.session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
 		}
 	}
