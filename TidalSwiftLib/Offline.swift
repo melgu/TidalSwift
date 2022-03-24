@@ -335,8 +335,8 @@ public class Offline {
 				print("Offline: Finished Download of \(track.title)")
 			}
 			invalidateOfflineTrackIdsCache()
-			DispatchQueue.main.async { [unowned self] in
-				self.uiRefreshFunc()
+			DispatchQueue.main.async { [self] in
+				uiRefreshFunc()
 			}
 		}
 		
@@ -481,7 +481,7 @@ public class Offline {
 	
 	private var syncFavoriteTracksWI: DispatchWorkItem?
 	private func syncFavoriteTracksWIBuilder() -> DispatchWorkItem {
-		DispatchWorkItem { [unowned self] in self.syncFavoriteTracks() }
+		DispatchWorkItem { [unowned self] in syncFavoriteTracks() }
 	}
 	
 	public func asyncSyncFavoriteTracks() {
@@ -630,7 +630,7 @@ public class Offline {
 	
 	private var syncPlaylistsWI: DispatchWorkItem?
 	private func syncPlaylistsWIBuilder() -> DispatchWorkItem {
-		DispatchWorkItem { [unowned self] in self.syncPlaylists() }
+		DispatchWorkItem { [self] in syncPlaylists() }
 	}
 	
 	public func syncPlaylist(_ playlist: Playlist) {
