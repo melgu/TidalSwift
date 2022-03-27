@@ -21,7 +21,7 @@ struct TrackList: View {
 	let player: Player
 	
 	var body: some View {
-		if #available(OSX 11.0, *) {
+		if #available(macOS 11.0, *) {
 			LazyVStack {
 				ForEach(wrappedTracks) { wrappedTrack in
 					TrackRow(track: wrappedTrack.track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,

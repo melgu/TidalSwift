@@ -16,19 +16,19 @@ struct MixGrid: View {
 	let player: Player
 	
 	var body: some View {
-		if #available(OSX 11.0, *) {
-					LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
-						ForEach(mixes) { mix in
-							MixGridItem(mix: mix, session: session, player: player)
-						}
-					}
-				} else {
-					Grid(mixes) { mix in
-						MixGridItem(mix: mix, session: session, player: player)
-					}
-					.gridStyle(
-						ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(210), spacing: 10)
-					)
+		if #available(macOS 11.0, *) {
+			LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
+				ForEach(mixes) { mix in
+					MixGridItem(mix: mix, session: session, player: player)
 				}
+			}
+		} else {
+			Grid(mixes) { mix in
+				MixGridItem(mix: mix, session: session, player: player)
+			}
+			.gridStyle(
+				ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(210), spacing: 10)
+			)
+		}
 	}
 }

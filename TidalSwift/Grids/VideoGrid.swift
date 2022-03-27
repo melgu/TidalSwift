@@ -18,7 +18,7 @@ struct VideoGrid: View {
 	let player: Player
 	
 	var body: some View {
-		if #available(OSX 11.0, *) {
+		if #available(macOS 11.0, *) {
 			LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
 				ForEach(videos) { video in
 					VideoGridItem(video: video, showArtist: showArtists, session: session, player: player)

@@ -36,7 +36,7 @@ struct AlbumGrid: View {
 	}
 	
 	var body: some View {
-		if #available(OSX 11.0, *) {
+		if #available(macOS 11.0, *) {
 			LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
 				ForEach(albums) { album in
 					AlbumGridItem(album: album, showArtists: showArtists, showReleaseDate: showReleaseDate, session: session, player: player)

@@ -82,7 +82,7 @@ struct SearchViewArtists: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(OSX 11.0, *) {
+				if #available(macOS 11.0, *) {
 					LazyHStack(alignment: .top) {
 						ForEach(artists) { artist in
 							ArtistGridItem(artist: artist, session: session, player: player)
@@ -114,7 +114,7 @@ struct SearchViewAlbums: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(OSX 11.0, *) {
+				if #available(macOS 11.0, *) {
 					LazyHStack(alignment: .top) {
 						ForEach(albums) { album in
 							AlbumGridItem(album: album, showArtists: true, session: session, player: player)
@@ -146,7 +146,7 @@ struct SearchViewPlaylists: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(OSX 11.0, *) {
+				if #available(macOS 11.0, *) {
 					LazyHStack(alignment: .top) {
 						ForEach(playlists) { playlist in
 							PlaylistGridItem(playlist: playlist, session: session, player: player)
@@ -178,7 +178,7 @@ struct SearchViewTracks: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(OSX 11.0, *) {
+				if #available(macOS 11.0, *) {
 					LazyHStack(alignment: .top) {
 						ForEach(tracks) { track in
 							TrackGridItem(track: track, showArtist: true, session: session, player: player)
@@ -210,7 +210,7 @@ struct SearchViewVideos: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(OSX 11.0, *) {
+				if #available(macOS 11.0, *) {
 					LazyHStack(alignment: .top) {
 						ForEach(videos) { video in
 							VideoGridItem(video: video, showArtist: true, session: session, player: player)
