@@ -128,10 +128,9 @@ public class Offline {
 	public var uiRefreshFunc: () -> Void = {}
 	
 	private let db = OfflineDB()
-	public var saveFavoritesOffline: Bool = false {
-		didSet {
-			UserDefaults.standard.set(saveFavoritesOffline, forKey: "SaveFavoritesOffline")
-		}
+	public var saveFavoritesOffline: Bool {
+		get { UserDefaults.standard.bool(forKey: "SaveFavoritesOffline") }
+		set { UserDefaults.standard.set(newValue, forKey: "SaveFavoritesOffline") }
 	}
 	
 	private var dispatchQueue = DispatchQueue(label: "melgu.TidalSwift.offline", qos: .background)
@@ -155,7 +154,6 @@ public class Offline {
 			displayError(title: "Offline: Error while creating Offline management class", content: "Error: \(error)")
 		}
 		
-		saveFavoritesOffline = UserDefaults.standard.bool(forKey: "SaveFavoritesOffline")
 		asyncSync()
 	}
 	
