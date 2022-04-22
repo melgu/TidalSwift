@@ -337,8 +337,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
 		
 		UserDefaults.standard.set(player.nextAudioQuality.rawValue, forKey: "audioQuality")
-		
-		UserDefaults.standard.synchronize()
 	}
 	
 	func saveViewState() {
@@ -349,8 +347,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let viewHistoryData = try? JSONEncoder().encode(viewState.history)
 		UserDefaults.standard.set(viewHistoryData, forKey: "ViewStateHistory")
 		UserDefaults.standard.set(viewState.maxHistoryItems, forKey: "ViewStateHistoryMaxItems")
-		
-		UserDefaults.standard.synchronize()
 	}
 	
 	func saveFavoritesSortingState() {
@@ -372,16 +368,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 													  offlineTrackReversed: sortingState.offlineTrackReversed)
 		let codableSSData = try? JSONEncoder().encode(codableSS)
 		UserDefaults.standard.set(codableSSData, forKey: "SortingState")
-		
-		UserDefaults.standard.synchronize()
 	}
 	
 	func saveViewCache() {
 		// View Cache
 		let viewCacheData = try? JSONEncoder().encode(viewState.cache)
 		UserDefaults.standard.set(viewCacheData, forKey: "ViewCache")
-		
-		UserDefaults.standard.synchronize()
 	}
 	
 	func saveState() {

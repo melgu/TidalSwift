@@ -116,8 +116,6 @@ public class OfflineDB {
 		
 		let playlistTracksData = try? JSONEncoder().encode(playlistTracks)
 		UserDefaults.standard.set(playlistTracksData, forKey: "OfflineDB:PlaylistTracks")
-		
-		UserDefaults.standard.synchronize()
 	}
 }
 
@@ -133,7 +131,6 @@ public class Offline {
 	public var saveFavoritesOffline: Bool = false {
 		didSet {
 			UserDefaults.standard.set(saveFavoritesOffline, forKey: "SaveFavoritesOffline")
-			UserDefaults.standard.synchronize()
 		}
 	}
 	
