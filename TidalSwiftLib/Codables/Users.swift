@@ -23,7 +23,7 @@ public struct User: Decodable, Identifiable {
 	public let gender: String
 	public let dateOfBirth: Date
 	public let facebookUid: Int?
-	public let appleUid: Int?
+	public let appleUid: String?
 	
 	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
 		guard let picture = picture else { return nil }
@@ -59,7 +59,7 @@ struct LoginUser: Decodable {
 	let created: Int
 	let updated: Int
 	let facebookUid: Int?
-	let appleUid: Int?
+	let appleUid: String?
 	let newUser: Bool
 }
 
