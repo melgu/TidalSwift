@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import Grid
 
 struct PlaylistGrid: View {
 	let playlists: [Playlist]

@@ -9,7 +9,6 @@
 import SwiftUI
 import TidalSwiftLib
 import ImageIOSwiftUI
-import Grid
 
 struct VideoGrid: View {
 	let videos: [Video]
