@@ -9,94 +9,73 @@
 import Foundation
 import TidalSwiftLib
 
-struct LyricsObject: Decodable {
-	public let lyric: String
-	public let err: String
+private struct LyricsObject: Decodable {
+	let lyric: String
+	let error: String
+	
+	enum CodingKeys: String, CodingKey {
+		case lyric
+		case error = "err"
+	}
 }
 
 class Lyrics {
-	var lastTrack: Track?
-	var lastLyrics: String?
+	static let shared: Lyrics = .init()
 	
-	func getLyrics(for track: Track) -> String? {
-		if track == lastTrack {
-			return lastLyrics
-		}
-		
+	enum Error: Swift.Error {
+		case invalidURL
+		case missingArtist
+		case notLicensed
+		case notFound
+		case missingLyrics
+	}
+	
+	private var cache: URLCache = .init()
+	private lazy var decoder = JSONDecoder()
+	
+	private init() {}
+	
+	func lyrics(for track: Track) async throws -> String {
 		guard let artist = track.artists.first else {
-			return ""
+			throw Error.missingArtist
 		}
 		guard let artistString = artist.name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed),
 			  let trackString = track.title.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed),
 			  let url = URL(string: "http://lyric-api.herokuapp.com/api/find/\(artistString)/\(trackString)") else {
 			print("Lyrics failed (URL Error)")
-			return nil
+			throw Error.invalidURL
 		}
 		let request = URLRequest(url: url)
 		
-		var downloadedContent: Data?
-		
-		let semaphore = DispatchSemaphore(value: 0)
-		let task = URLSession.shared.dataTask(with: request) { data, response, error in
-			guard let data = data,
-				let response = response as? HTTPURLResponse,
-				error == nil else { // check for fundamental networking error
-					print("error", error ?? "Unknown error")
-					semaphore.signal()
-					return
-			}
-			
-			guard (200..<299) ~= response.statusCode else {	// check for http errors
-				print("statusCode should be 2xx, but is \(response.statusCode)")
-				print("response = \(response)")
-				semaphore.signal()
-				return
-			}
-			
-			downloadedContent = data
-			semaphore.signal()
-		}
-		task.resume()
-		_ = semaphore.wait(timeout: DispatchTime.distantFuture)
-		
-		guard let content = downloadedContent else {
-			print("Lyrics failed (HTTP Error)")
-			return nil
+		let lyricsData: Data
+		if let cachedResponse = cache.cachedResponse(for: request) {
+			lyricsData = cachedResponse.data
+		} else {
+			let (data, response) = try await URLSession.shared.data(for: request)
+			cache.storeCachedResponse(.init(response: response, data: data), for: request)
+			lyricsData = data
 		}
 		
-		var optionalLyricsResponse: LyricsObject?
-		do {
-			optionalLyricsResponse = try JSONDecoder().decode(LyricsObject.self, from: content)
-		} catch {
-			print("Lyrics failed (JSON Parse Error)")
+		let lyricsObject = try decoder.decode(LyricsObject.self, from: lyricsData)
+		
+		guard lyricsObject.error != "not found" else {
+			throw Error.notFound
 		}
 		
-		guard let lyricsResponse = optionalLyricsResponse else {
-			print("Lyrics failed (JSON Parse returns nil)")
-			return nil
+		guard lyricsObject.error != "Unfortunately, we are not licensed to display the full lyrics for this song at the moment. Hopefully we will be able to in the future. Until then... how about a random page?" else {
+			throw Error.notLicensed
 		}
 		
-		if lyricsResponse.err != "none" && lyricsResponse.err != "not found" {
-			print("Lyrics Error: \(lyricsResponse.err)")
+		guard !lyricsObject.lyric.isEmpty else {
+			throw Error.missingLyrics
 		}
 		
-		if lyricsResponse.lyric == "Unfortunately, we are not licensed to display the full lyrics for this song at the moment. Hopefully we will be able to in the future. Until then... how about a random page?" {
-			return nil
-		}
-		if lyricsResponse.lyric == "" {
-			return nil
-		}
-		
-		lastTrack = track
-		lastLyrics = String(htmlEncodedString: lyricsResponse.lyric.replacingOccurrences(of: "\n", with: "<br>"))
-		return lastLyrics
+		return String(htmlEncodedString: lyricsObject.lyric.replacingOccurrences(of: "\n", with: "<br>"))
 	}
 }
 
 extension String {
 	init(htmlEncodedString: String) {
-		self.init()
-		
 		guard let data = htmlEncodedString.data(using: .utf8) else {
 			self = htmlEncodedString
 			return
