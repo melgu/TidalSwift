@@ -9,140 +9,77 @@
 import Foundation
 
 extension Session {
-	public func getFeatured() -> [FeaturedItem]? {
+	public func featured() async -> [FeaturedItem]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/promotions")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Featured failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: FeaturedItems = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var featuredResponse: FeaturedItems?
-		do {
-			featuredResponse = try customJSONDecoder.decode(FeaturedItems.self, from: content)
-		} catch {
-			displayError(title: "Featured failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return featuredResponse?.items
 	}
 
-	public func getMoods() -> [Mood]? {
+	public func moods() async -> [Mood]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/moods")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Mood Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: [Mood] = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var moodsResponse: [Mood]?
-		do {
-			moodsResponse = try customJSONDecoder.decode([Mood].self, from: content)
-		} catch {
-			displayError(title: "Mood Overview failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return moodsResponse
 	}
 
-	public func getMoodPlaylists(moodPath: String) -> [Playlist]? {
+	public func moodPlaylists(moodPath: String) async -> [Playlist]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/moods/\(moodPath)/playlists")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Genre Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Playlists = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var moodPlaylists: Playlists?
-		do {
-			moodPlaylists = try customJSONDecoder.decode(Playlists.self, from: content)
-		} catch {
-			displayError(title: "Genre Tracks failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return moodPlaylists?.items
 	}
 	
 	// TODO: There's more to moods and/or genres than playlists
 	
-	public func getGenres() -> [Genre]? { // Overview over all Genres
+	public func genres() async -> [Genre]? { // Overview over all Genres
 		let url = URL(string: "\(AuthInformation.APILocation)/genres")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Genre Overview failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: [Genre] = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var genresResponse: [Genre]?
-		do {
-			genresResponse = try customJSONDecoder.decode([Genre].self, from: content)
-		} catch {
-			displayError(title: "Genre Overview failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return genresResponse
 	}
 	
 	// Haven't found Artists in there yet, so only Tracks, Albums & Playlists
 	
-	public func getGenreTracks(genrePath: String) -> [Track]? {
+	public func genreTracks(genrePath: String) async -> [Track]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/genres/\(genrePath)/tracks")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Genre Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Tracks = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var genreTracks: Tracks?
-		do {
-			genreTracks = try customJSONDecoder.decode(Tracks.self, from: content)
-		} catch {
-			displayError(title: "Genre Tracks failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return genreTracks?.items
 	}
 	
-	public func getGenreAlbums(genreName: String) -> [Album]? {
+	public func genreAlbums(genreName: String) async -> [Album]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/genres/\(genreName)/albums")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Genre Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Albums = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var genresAlbums: Albums?
-		do {
-			genresAlbums = try customJSONDecoder.decode(Albums.self, from: content)
-		} catch {
-			displayError(title: "Genre Albums failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return genresAlbums?.items
 	}
 	
-public 	func getGenrePlaylists(genreName: String) -> [Playlist]? {
+	public func genrePlaylists(genreName: String) async -> [Playlist]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/genres/\(genreName)/playlists")!
-	let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Genre Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Playlists = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var genresPlaylists: Playlists?
-		do {
-			genresPlaylists = try customJSONDecoder.decode(Playlists.self, from: content)
-		} catch {
-			displayError(title: "Genre Playlists failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return genresPlaylists?.items
 	}
 }

@@ -53,34 +53,34 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 		artist?.name == "Various Artists"
 	}
 	
-	public func isInFavorites(session: Session) -> Bool? {
-		session.favorites?.doFavoritesContainAlbum(albumId: id)
+	public func isInFavorites(session: Session) async -> Bool? {
+		await session.favorites?.doFavoritesContainAlbum(albumId: id)
 	}
 	
 	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
 		guard let cover = cover else { return nil }
-		return session.getImageUrl(imageId: cover, resolution: resolution)
+		return session.imageUrl(imageId: cover, resolution: resolution)
 	}
 	
 	public func getCover(session: Session, resolution: Int) -> NSImage? {
 		guard let cover = cover else { return nil }
-		return session.getImage(imageId: cover, resolution: resolution)
+		return session.image(imageId: cover, resolution: resolution)
 	}
 	
-	public func isOffline(session: Session) -> Bool {
-		session.helpers.offline.isAlbumOffline(album: self)
+	public func isOffline(session: Session) async -> Bool {
+		await session.helpers.offline.isAlbumOffline(album: self)
 	}
 	
-	public func addOffline(session: Session) {
-		session.helpers.offline.add(album: self)
+	public func addOffline(session: Session) async {
+		await session.helpers.offline.add(album: self)
 	}
 	
-	public func removeOffline(session: Session) {
-		session.helpers.offline.remove(album: self)
+	public func removeOffline(session: Session) async {
+		await session.helpers.offline.remove(album: self)
 	}
 	
-	public func getCredits(session: Session) -> [Credit]? {
-		session.getAlbumCredits(albumId: id)
+	public func credits(session: Session) async -> [Credit]? {
+		await session.albumCredits(albumId: id)
 	}
 	
 	public static func == (lhs: Album, rhs: Album) -> Bool {

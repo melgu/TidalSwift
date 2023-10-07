@@ -17,13 +17,17 @@ public class PlaylistEditing {
 		self.baseUrl = "\(AuthInformation.APILocation)/playlists"
 	}
 	
-	func etag(for playlistId: String) -> Int {
+	func etag(for playlistId: String) async -> Int {
 		let url = URL(string: "\(baseUrl)/\(playlistId)")!
-		let response = Network.get(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		return response.etag ?? -1
+		do {
+			let response = try await Network.get(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return response.etag ?? -1
+		} catch {
+			return -1
+		}
 	}
 	
-	public func addTracks(_ trackIds: [Int], to playlistId: String, duplicate: Bool) -> Bool {
+	public func addTracks(_ trackIds: [Int], to playlistId: String, duplicate: Bool) async -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)/items")!
 		var parameters = session.sessionParameters
 		var trackIdsString = ""
@@ -33,32 +37,44 @@ public class PlaylistEditing {
 		trackIdsString = String(trackIdsString.dropLast())
 		parameters["trackIds"] = trackIdsString
 		parameters["onDupes"] = duplicate ? "ADD" : "FAIL"
-		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId), accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		return response.ok
+		do {
+			_ = try await Network.post(url: url, parameters: parameters, etag: etag(for: playlistId), accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return true
+		} catch {
+			return false
+		}
 	}
 	
-	public func addTrack(_ trackId: Int, to playlistId: String, duplicate: Bool) -> Bool {
-		addTracks([trackId], to: playlistId, duplicate: duplicate)
+	public func addTrack(_ trackId: Int, to playlistId: String, duplicate: Bool) async -> Bool {
+		await addTracks([trackId], to: playlistId, duplicate: duplicate)
 	}
 	
-	public func removeItem(atIndex index: Int, from playlistId: String) -> Bool {
+	public func removeItem(atIndex index: Int, from playlistId: String) async -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)/items/\(index)")!
 		var parameters = session.sessionParameters
 		parameters["order"] = "INDEX"
 		parameters["orderDirection"] = "ASC"
-		let response = Network.delete(url: url, parameters: parameters, etag: etag(for: playlistId), accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		return response.ok
+		do {
+			_ = try await Network.delete(url: url, parameters: parameters, etag: etag(for: playlistId), accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return true
+		} catch {
+			return false
+		}
 	}
 	
-	public func moveItem(fromIndex: Int, toIndex: Int, in playlistId: String) -> Bool {
+	public func moveItem(fromIndex: Int, toIndex: Int, in playlistId: String) async -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)/items/\(fromIndex)")!
 		var parameters = session.sessionParameters
 		parameters["toIndex"] = "\(toIndex)"
-		let response = Network.post(url: url, parameters: parameters, etag: etag(for: playlistId), accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		return response.ok
+		do {
+			_ = try await Network.post(url: url, parameters: parameters, etag: etag(for: playlistId), accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return true
+		} catch {
+			return false
+		}
 	}
 	
-	public func create(title: String, description: String) -> Playlist? {
+	public func create(title: String, description: String) async -> Playlist? {
 		guard let userId = session.userId else {
 			return nil
 		}
@@ -66,35 +82,34 @@ public class PlaylistEditing {
 		var parameters = session.sessionParameters
 		parameters["title"] = "\(title)"
 		parameters["description"] = "\(description)"
-		let response = Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Playlist Creation failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Playlist = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var playlistResponse: Playlist?
-		do {
-			playlistResponse = try customJSONDecoder.decode(Playlist.self, from: content)
-		} catch {
-			displayError(title: "Playlist Creation failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return playlistResponse
 	}
 	
-	public func edit(playlistId: String, title: String, description: String) -> Bool {
+	public func edit(playlistId: String, title: String, description: String) async -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)")!
 		var parameters = session.sessionParameters
 		parameters["title"] = "\(title)"
 		parameters["description"] = "\(description)"
-		let response = Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		return response.ok
+		do {
+			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return true
+		} catch {
+			return false
+		}
 	}
 	
-	public func delete(playlistId: String) -> Bool {
+	public func delete(playlistId: String) async -> Bool {
 		let url = URL(string: "\(baseUrl)/\(playlistId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters, etag: etag(for: playlistId), accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		return response.ok
+		do {
+			_ = try await Network.delete(url: url, parameters: session.sessionParameters, etag: etag(for: playlistId), accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return true
+		} catch {
+			return false
+		}
 	}
 }

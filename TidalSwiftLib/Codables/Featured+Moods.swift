@@ -23,12 +23,12 @@ public struct Genre: Decodable, Identifiable { // Also Mood
 	let hasVideos: Bool
 	let image: String
 	
-	public func getImageUrl(session: Session, resolution: Int) -> URL? {
-		session.getImageUrl(imageId: image, resolution: resolution)
+	public func imageUrl(session: Session, resolution: Int) -> URL? {
+		session.imageUrl(imageId: image, resolution: resolution)
 	}
 	
-	public func getImage(session: Session, resolution: Int) -> NSImage? {
-		session.getImage(imageId: image, resolution: resolution)
+	public func image(session: Session, resolution: Int) -> NSImage? {
+		session.image(imageId: image, resolution: resolution)
 	}
 }
 
@@ -64,11 +64,11 @@ public struct FeaturedItem: Decodable {
 	let featured: Bool
 	let openExternal: Bool
 	
-	public func getImageUrl(session: Session, resolution: Int, resolutionY: Int) -> URL? {
-		session.getImageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
+	public func imageUrl(session: Session, resolution: Int, resolutionY: Int) -> URL? {
+		session.imageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 	}
 	
-	public func getImage(session: Session, resolution: Int, resolutionY: Int) -> NSImage? {
-		session.getImage(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
+	public func image(session: Session, resolution: Int, resolutionY: Int) -> NSImage? {
+		session.image(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 	}
 }

@@ -16,60 +16,33 @@ public enum AlbumOrder: String {
 }
 
 extension Session {
-	public func getAlbum(albumId: Int) -> Album? {
+	public func album(albumId: Int) async -> Album? {
 		let url = URL(string: "\(AuthInformation.APILocation)/albums/\(albumId)")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Album Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Album = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var albumResponse: Album?
-		do {
-			albumResponse = try customJSONDecoder.decode(Album.self, from: content)
-		} catch {
-			displayError(title: "Album Info failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return albumResponse
 	}
 	
-	public func getAlbumTracks(albumId: Int) -> [Track]? {
+	public func albumTracks(albumId: Int) async -> [Track]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/albums/\(albumId)/tracks")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Album Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Tracks = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var albumTracksResponse: Tracks?
-		do {
-			albumTracksResponse = try customJSONDecoder.decode(Tracks.self, from: content)
-		} catch {
-			displayError(title: "Album Tracks failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return albumTracksResponse?.items
 	}
 	
-	public func getAlbumCredits(albumId: Int) -> [Credit]? {
+	public func albumCredits(albumId: Int) async -> [Credit]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/albums/\(albumId)/credits")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Album Credits Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: [Credit] = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var creditsResponse: [Credit]?
-		do {
-			creditsResponse = try customJSONDecoder.decode([Credit].self, from: content)
-		} catch {
-			displayError(title: "Album Credits Info failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return creditsResponse
 	}
 }

@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 extension Session {
-	public func getImageUrl(imageId: String, resolution: Int, resolutionY: Int? = nil) -> URL? {
+	public func imageUrl(imageId: String, resolution: Int, resolutionY: Int? = nil) -> URL? {
 		// Known Sizes (allowed resolutions)
 		// Albums: 80, 160, 320, 640, 1280
 		// Artists: 160, 320, 480, 750
@@ -34,8 +34,9 @@ extension Session {
 		return URL(string: urlString)
 	}
 	
-	public func getImage(imageId: String, resolution: Int, resolutionY: Int? = nil) -> NSImage? {
-		let urlOrNil = getImageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
+	@available(*, deprecated, message: "Use AsyncImage or a URLSession download task instead")
+	public func image(imageId: String, resolution: Int, resolutionY: Int? = nil) -> NSImage? {
+		let urlOrNil = imageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 		guard let url = urlOrNil else {
 			return nil
 		}

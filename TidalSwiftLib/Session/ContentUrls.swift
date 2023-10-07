@@ -9,50 +9,34 @@
 import Foundation
 
 extension Session {
-	func getAudioUrl(trackId: Int, audioQuality: AudioQuality) -> URL? {
+	func audioUrl(trackId: Int, audioQuality: AudioQuality) async -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(audioQuality.rawValue)"
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/\(config.urlType.rawValue)")!
-		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Couldn't get Audio URL (HTTP Error)", content: "Track ID: \(trackId). Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: AudioUrl = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			
+//			print("""
+//			Track ID: \(response.trackId),
+//			Quality: \(response.soundQuality.rawValue),
+//			Codec: \(response.codec)
+//			""")
+			
+			return response.url
+		} catch {
 			return nil
 		}
-		
-		var audioUrlResponse: AudioUrl?
-		do {
-			audioUrlResponse = try JSONDecoder().decode(AudioUrl.self, from: content)
-		} catch {
-			displayError(title: "Couldn't get Audio URL (JSON Parse Error)", content: "\(error)")
-		}
-//		print("""
-//		Track ID: \(mediaUrlResponse?.trackId ?? -1),
-//		Quality: \(mediaUrlResponse?.soundQuality.rawValue ?? ""),
-//		Codec: \(mediaUrlResponse?.codec ?? "")
-//		""")
-		
-		return audioUrlResponse?.url
 	}
 	
-	func getVideoUrl(videoId: Int) -> URL? {
+	func videoUrl(videoId: Int) async -> URL? {
 //		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/offlineUrl")! // Only returns low quality video
 		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/streamUrl")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Couldn't get Video URL (HTTP Error)", content: "Video ID: \(videoId). Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: VideoUrl = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.url
+		} catch {
 			return nil
 		}
-		
-		var videoUrlResponse: VideoUrl?
-		do {
-			videoUrlResponse = try JSONDecoder().decode(VideoUrl.self, from: content)
-		} catch {
-			displayError(title: "Couldn't get Video URL (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return videoUrlResponse?.url
 	}
 	
 	func pathExtension(for audioQuality: AudioQuality) -> String {

@@ -14,41 +14,23 @@ public enum PlaylistOrder: String {
 }
 
 extension Session {
-	public func getPlaylist(playlistId: String) -> Playlist? {
+	public func playlist(playlistId: String) async -> Playlist? {
 		let url = URL(string: "\(AuthInformation.APILocation)/playlists/\(playlistId)")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Playlist Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Playlist = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var playlistResponse: Playlist?
-		do {
-			playlistResponse = try customJSONDecoder.decode(Playlist.self, from: content)
-		} catch {
-			displayError(title: "Playlist Info failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return playlistResponse
 	}
 	
-	public func getPlaylistTracks(playlistId: String) -> [Track]? {
+	public func playlistTracks(playlistId: String) async -> [Track]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/playlists/\(playlistId)/tracks")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Playlist Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Tracks = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var playlistTracksResponse: Tracks?
-		do {
-			playlistTracksResponse = try customJSONDecoder.decode(Tracks.self, from: content)
-		} catch {
-			displayError(title: "Playlist Tracks failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return playlistTracksResponse?.items
 	}
 }

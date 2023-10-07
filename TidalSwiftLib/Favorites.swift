@@ -21,8 +21,7 @@ public class Favorites {
 	
 	// Return
 	
-	public func artists(limit: Int = 999, offset: Int = 0, order: ArtistOrder? = nil,
-				 orderDirection: OrderDirection? = nil) -> [FavoriteArtist]? {
+	public func artists(limit: Int = 999, offset: Int = 0, order: ArtistOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteArtist]? {
 		let url = URL(string: "\(baseUrl)/artists")!
 		var parameters = session.sessionParameters
 		parameters["limit"] = "\(limit)"
@@ -33,25 +32,15 @@ public class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Favorite Artist failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: FavoriteArtists = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var artists: FavoriteArtists?
-		do {
-			artists = try customJSONDecoder.decode(FavoriteArtists.self, from: content)
-		} catch {
-			displayError(title: "Favorite Artist failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return artists?.items
 	}
 
-	public func albums(limit: Int = 999, offset: Int = 0, order: AlbumOrder? = nil,
-				orderDirection: OrderDirection? = nil) -> [FavoriteAlbum]? {
+	public func albums(limit: Int = 999, offset: Int = 0, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteAlbum]? {
 		let url = URL(string: "\(baseUrl)/albums")!
 		var parameters = session.sessionParameters
 		parameters["limit"] = "\(limit)"
@@ -62,25 +51,15 @@ public class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Favorite Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: FavoriteAlbums = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var albums: FavoriteAlbums?
-		do {
-			albums = try customJSONDecoder.decode(FavoriteAlbums.self, from: content)
-		} catch {
-			displayError(title: "Favorite Albums failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return albums?.items
 	}
 
-	public func tracks(limit: Int = 999, offset: Int = 0, order: TrackOrder? = nil,
-				orderDirection: OrderDirection? = nil) -> [FavoriteTrack]? {
+	public func tracks(limit: Int = 999, offset: Int = 0, order: TrackOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteTrack]? {
 		let url = URL(string: "\(baseUrl)/tracks")!
 		var parameters = session.sessionParameters
 		parameters["limit"] = "\(limit)"
@@ -91,25 +70,15 @@ public class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Favorite Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: FavoriteTracks = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var tracks: FavoriteTracks?
-		do {
-			tracks = try customJSONDecoder.decode(FavoriteTracks.self, from: content)
-		} catch {
-			displayError(title: "Favorite Tracks failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return tracks?.items
 	}
 	
-	public func videos(limit: Int = 100, offset: Int = 0, order: VideoOrder? = nil,
-				orderDirection: OrderDirection? = nil) -> [FavoriteVideo]? {
+	public func videos(limit: Int = 100, offset: Int = 0, order: VideoOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteVideo]? {
 		guard limit <= 100 else {
 			displayError(title: "Favorite Videos failed (Limit too high)", content: "The limit has to be 100 or below.")
 			return nil
@@ -125,26 +94,16 @@ public class Favorites {
 		if let orderDirection = orderDirection {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
-		let response = Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Favorite Videos failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: FavoriteVideos = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var videos: FavoriteVideos?
-		do {
-			videos = try customJSONDecoder.decode(FavoriteVideos.self, from: content)
-		} catch {
-			displayError(title: "Favorite Videos failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return videos?.items
 	}
 	
-	// Includes User Playlists
-	public func playlists(limit: Int = 999, offset: Int = 0, order: PlaylistOrder? = nil,
-				   orderDirection: OrderDirection? = nil) -> [FavoritePlaylist]? {
+	/// - Note: Includes User Playlists
+	public func playlists(limit: Int = 999, offset: Int = 0, order: PlaylistOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoritePlaylist]? {
 		guard let userId = session.userId else {
 			return nil
 		}
@@ -168,132 +127,163 @@ public class Favorites {
 			if let orderDirection = orderDirection {
 				parameters["orderDirection"] = "\(orderDirection.rawValue)"
 			}
-			let response = Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-			
-			guard let content = response.content else {
-				displayError(title: "Favorite Playlists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
-				return nil
-			}
-			
-			var playlists: FavoritePlaylists? // TODO: JSON signature is different
 			do {
-				playlists = try customJSONDecoder.decode(FavoritePlaylists.self, from: content)
+				let response: FavoritePlaylists = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+				// TODO: JSON signature is different
+				
+				tempPlaylists += response.items
+				
+				if response.totalNumberOfItems - tempOffset < tempLimit {
+					return tempPlaylists
+				}
+				
+				tempLimit -= 50
+				tempOffset += 50
 			} catch {
-				displayError(title: "Favorite Playlists failed (JSON Parse Error)", content: "\(error)")
-			}
-			
-			guard let definitePlaylists = playlists else {
 				return nil
 			}
-			tempPlaylists += definitePlaylists.items
-			if definitePlaylists.totalNumberOfItems - tempOffset < tempLimit {
-				return tempPlaylists
-			}
-			
-			tempLimit -= 50
-			tempOffset += 50
 		}
 		
 		return tempPlaylists
 	}
 
-	public func userPlaylists() -> [Playlist]? {
+	public func userPlaylists() async -> [Playlist]? {
 		guard let userId = session.userId else {
 			displayError(title: "User Playlists failed", content: "User ID not set yet.")
 			return nil
 		}
 		
-		return session.getUserPlaylists(userId: userId)
+		return await session.userPlaylists(userId: userId)
 	}
 	
 	// Add
 	
-	@discardableResult public func addArtist(artistId: Int) -> Bool {
+	@discardableResult public func addArtist(artistId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/artists")!
 		var parameters = session.sessionParameters
 		parameters["artistIds"] = "\(artistId)"
-		let response = Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedArtists()
-		return response.ok
+		do {
+			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedArtists()
+			return true
+		} catch {
+			return false
+		}
 	}
 
-	@discardableResult public func addAlbum(albumId: Int) -> Bool {
+	@discardableResult public func addAlbum(albumId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/albums")!
 		var parameters = session.sessionParameters
 		parameters["albumIds"] = "\(albumId)"
-		let response = Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedAlbums()
-		return response.ok
+		do {
+			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedAlbums()
+			return true
+		} catch {
+			return false
+		}
 	}
 
-	@discardableResult public func addTrack(trackId: Int) -> Bool {
+	@discardableResult public func addTrack(trackId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/tracks")!
 		var parameters = session.sessionParameters
 		parameters["trackIds"] = "\(trackId)"
-		let response = Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedTracks()
-		return response.ok
+		do {
+			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedTracks()
+			return true
+		} catch {
+			return false
+		}
 	}
 	
-	@discardableResult public func addVideo(videoId: Int) -> Bool {
+	@discardableResult public func addVideo(videoId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/videos")!
 		var parameters = session.sessionParameters
 		parameters["videoIds"] = "\(videoId)"
-		let response = Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedVideos()
-		return response.ok
+		do {
+			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedVideos()
+			return true
+		} catch {
+			return false
+		}
 	}
 
-	@discardableResult public func addPlaylist(playlistId: String) -> Bool {
+	@discardableResult public func addPlaylist(playlistId: String) async -> Bool {
 		let url = URL(string: "\(baseUrl)/playlists")!
 		var parameters = session.sessionParameters
 		parameters["uuids"] = playlistId
-		let response = Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedPlaylists()
-		return response.ok
+		do {
+			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedPlaylists()
+			return true
+		} catch {
+			return false
+		}
 	}
 	
 	// Delete
 	
-	@discardableResult public func removeArtist(artistId: Int) -> Bool {
+	@discardableResult public func removeArtist(artistId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/artists/\(artistId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedArtists()
-		return response.ok
+		do {
+			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedArtists()
+			return true
+		} catch {
+			return false
+		}
 	}
 
-	@discardableResult public func removeAlbum(albumId: Int) -> Bool {
+	@discardableResult public func removeAlbum(albumId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/albums/\(albumId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedAlbums()
-		return response.ok
+		do {
+			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedAlbums()
+			return true
+		} catch {
+			return false
+		}
 	}
 
-	@discardableResult public func removeTrack(trackId: Int) -> Bool {
+	@discardableResult public func removeTrack(trackId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/tracks/\(trackId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedTracks()
-		return response.ok
+		do {
+			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedTracks()
+			return true
+		} catch {
+			return false
+		}
 	}
 	
-	@discardableResult public func removeVideo(videoId: Int) -> Bool {
+	@discardableResult public func removeVideo(videoId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/videos/\(videoId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedVideos()
-		return response.ok
+		do {
+			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedVideos()
+			return true
+		} catch {
+			return false
+		}
 	}
 
-	@discardableResult public func removePlaylist(playlistId: String) -> Bool {
+	@discardableResult public func removePlaylist(playlistId: String) async -> Bool {
 		let url = URL(string: "\(baseUrl)/playlists/\(playlistId)")!
-		let response = Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
-		refreshCachedPlaylists()
-		return response.ok
+		do {
+			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			await refreshCachedPlaylists()
+			return true
+		} catch {
+			return false
+		}
 	}
 	
 	// Check
 	
-	public func doFavoritesContainArtist(artistId: Int) -> Bool? {
-		guard let artists = cache.artists else {
+	public func doFavoritesContainArtist(artistId: Int) async -> Bool? {
+		guard let artists = await cache.artists else {
 			return nil
 		}
 		for artist in artists where artist.item.id == artistId {
@@ -302,8 +292,8 @@ public class Favorites {
 		return false
 	}
 	
-	public func doFavoritesContainAlbum(albumId: Int) -> Bool? {
-		guard let albums = cache.albums else {
+	public func doFavoritesContainAlbum(albumId: Int) async -> Bool? {
+		guard let albums = await cache.albums else {
 			return nil
 		}
 		for album in albums where album.item.id == albumId {
@@ -312,8 +302,8 @@ public class Favorites {
 		return false
 	}
 	
-	public func doFavoritesContainTrack(trackId: Int) -> Bool? {
-		guard let tracks = cache.tracks else {
+	public func doFavoritesContainTrack(trackId: Int) async -> Bool? {
+		guard let tracks = await cache.tracks else {
 			return nil
 		}
 		for track in tracks where track.item.id == trackId {
@@ -322,8 +312,8 @@ public class Favorites {
 		return false
 	}
 	
-	public func doFavoritesContainVideo(videoId: Int) -> Bool? {
-		guard let videos = cache.videos else {
+	public func doFavoritesContainVideo(videoId: Int) async -> Bool? {
+		guard let videos = await cache.videos else {
 			return nil
 		}
 		for video in videos where video.item.id == videoId {
@@ -332,8 +322,8 @@ public class Favorites {
 		return false
 	}
 	
-	public func doFavoritesContainPlaylist(playlistId: String) -> Bool? {
-		guard let playlists = cache.playlists else {
+	public func doFavoritesContainPlaylist(playlistId: String) async -> Bool? {
+		guard let playlists = await cache.playlists else {
 			return nil
 		}
 		for playlist in playlists where playlist.playlist.id == playlistId {
@@ -344,24 +334,24 @@ public class Favorites {
 	
 	// Refresh Caches
 	
-	private func refreshCachedArtists() {
-		cache.artists = artists()
+	private func refreshCachedArtists() async {
+		cache.set(await artists())
 	}
 	
-	private func refreshCachedAlbums() {
-		cache.albums = albums()
+	private func refreshCachedAlbums() async {
+		cache.set(await albums())
 	}
 	
-	private func refreshCachedTracks() {
-		cache.tracks = tracks()
+	private func refreshCachedTracks() async {
+		cache.set(await tracks())
 	}
 	
-	private func refreshCachedVideos() {
-		cache.videos = videos()
+	private func refreshCachedVideos() async {
+		cache.set(await videos())
 	}
 	
-	private func refreshCachedPlaylists() {
-		cache.playlists = playlists()
+	private func refreshCachedPlaylists() async {
+		cache.set(await playlists())
 	}
 }
 
@@ -377,75 +367,75 @@ class FavoritesCache {
 	private var _artists: [FavoriteArtist]?
 	private var lastCheckedArtists = Date(timeIntervalSince1970: 0)
 	var artists: [FavoriteArtist]? {
-		get {
+		get async {
 			if Date().timeIntervalSince(lastCheckedArtists) > timeoutInSeconds {
-				self.artists = favorites.artists()
+				self._artists = await favorites.artists()
 			}
 			return _artists
 		}
-		set {
-			_artists = newValue
-			lastCheckedArtists = Date()
-		}
+	}
+	func set(_ newValue: [FavoriteArtist]?) {
+		_artists = newValue
+		lastCheckedArtists = .now
 	}
 	
 	private var _albums: [FavoriteAlbum]?
 	private var lastCheckedAlbums = Date(timeIntervalSince1970: 0)
 	var albums: [FavoriteAlbum]? {
-		get {
+		get async {
 			if Date().timeIntervalSince(lastCheckedAlbums) > timeoutInSeconds {
-				self.albums = favorites.albums()
+				self._albums = await favorites.albums()
 			}
 			return _albums
 		}
-		set {
-			_albums = newValue
-			lastCheckedAlbums = Date()
-		}
+	}
+	func set(_ newValue: [FavoriteAlbum]?) {
+		_albums = newValue
+		lastCheckedAlbums = .now
 	}
 	
 	private var _tracks: [FavoriteTrack]?
 	private var lastCheckedTracks = Date(timeIntervalSince1970: 0)
 	var tracks: [FavoriteTrack]? {
-		get {
+		get async {
 			if Date().timeIntervalSince(lastCheckedTracks) > timeoutInSeconds {
-				self.tracks = favorites.tracks()
+				self._tracks = await favorites.tracks()
 			}
 			return _tracks
 		}
-		set {
-			_tracks = newValue
-			lastCheckedTracks = Date()
-		}
+	}
+	func set(_ newValue: [FavoriteTrack]?) {
+		_tracks = newValue
+		lastCheckedTracks = .now
 	}
 	
 	private var _videos: [FavoriteVideo]?
 	private var lastCheckedVideos = Date(timeIntervalSince1970: 0)
 	var videos: [FavoriteVideo]? {
-		get {
+		get async {
 			if Date().timeIntervalSince(lastCheckedVideos) > timeoutInSeconds {
-				self.videos = favorites.videos()
+				self._videos = await favorites.videos()
 			}
 			return _videos
 		}
-		set {
-			_videos = newValue
-			lastCheckedVideos = Date()
-		}
+	}
+	func set(_ newValue: [FavoriteVideo]?) {
+		_videos = newValue
+		lastCheckedVideos = .now
 	}
 	
 	private var _playlists: [FavoritePlaylist]?
 	private var lastCheckedPlaylists = Date(timeIntervalSince1970: 0)
 	var playlists: [FavoritePlaylist]? {
-		get {
+		get async {
 			if Date().timeIntervalSince(lastCheckedPlaylists) > timeoutInSeconds {
-				self.playlists = favorites.playlists()
+				self._playlists = await favorites.playlists()
 			}
 			return _playlists
 		}
-		set {
-			_playlists = newValue
-			lastCheckedPlaylists = Date()
-		}
+	}
+	func set(_ newValue: [FavoritePlaylist]?) {
+		_playlists = newValue
+		lastCheckedPlaylists = .now
 	}
 }

@@ -22,42 +22,24 @@ public enum AudioUrlType: String {
 }
 
 extension Session {
-	public func getTrack(trackId: Int) -> Track? {
+	public func track(trackId: Int) async -> Track? {
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Track Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Track = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var trackResponse: Track?
-		do {
-			trackResponse = try customJSONDecoder.decode(Track.self, from: content)
-		} catch {
-			displayError(title: "Track Info Info failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return trackResponse
 	}
 	
-	public func getTrackCredits(trackId: Int) -> [Credit]? {
+	public func trackCredits(trackId: Int) async -> [Credit]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/credits")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Track Credits Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: [Credit] = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var creditsResponse: [Credit]?
-		do {
-			creditsResponse = try customJSONDecoder.decode([Credit].self, from: content)
-		} catch {
-			displayError(title: "Track Credits Info failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return creditsResponse
 	}
 	
 	// Delete inexistent or unaccessable Tracks from list
@@ -72,26 +54,17 @@ extension Session {
 		return result
 	}
 	
-	public func getTrackRadio(trackId: Int, limit: Int = 100, offset: Int = 0) -> [Track]? {
+	public func trackRadio(trackId: Int, limit: Int = 100, offset: Int = 0) async -> [Track]? {
 		var parameters = sessionParameters
 		parameters["limit"] = "\(limit)"
 		parameters["offset"] = "\(offset)"
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/radio")!
-		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Track Radio (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Tracks = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var trackRadioResponse: Tracks?
-		do {
-			trackRadioResponse = try customJSONDecoder.decode(Tracks.self, from: content)
-		} catch {
-			displayError(title: "Track Radio failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return trackRadioResponse?.items
 	}
 }
