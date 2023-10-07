@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import Introspect
 
 struct TopDetailView: View {
     let session: Session
@@ -74,12 +73,6 @@ struct TopView: View {
 //					Text("Videos").tag(ViewType.favoriteVideos) // Add when Video downloading works
 				}
 			}.listStyle(SidebarListStyle())
-			.introspectScrollView { scrollView in
-				if becomeFirstResponder {
-					scrollView.becomeFirstResponder()
-					becomeFirstResponder = false
-				}
-			}
 		}
 	}
 }
