@@ -63,10 +63,11 @@ public class Download {
 		"\(video.trackNumber) \(video.title) - \(video.artists.formArtistString())"
 	}
 	
-	public func download(track: Track, parentFolder: String = "", audioQuality: AudioQuality) -> Bool {
+	public func download(track: Track, parentFolder: String = "", audioQuality: AudioQuality) async -> Bool {
 		downloadStatus.startTask()
-		guard let url = track.getAudioUrl(session: session, audioQuality: audioQuality) else {
-			downloadStatus.finishTask()
+		defer { downloadStatus.finishTask() }
+		
+		guard let url = await track.audioUrl(session: session, audioQuality: audioQuality) else {
 			return false
 		}
 		let filename = formFileName(track)
@@ -74,14 +75,15 @@ public class Download {
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: session.pathExtension(for: audioQuality))
 		guard var path = optionalPath else {
 			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
-			downloadStatus.finishTask()
 			return false
 		}
 		
-		var response: Response!
-		repeat {
-			response = Network.download(url, path: path, overwrite: true)
-		} while response.statusCode == 1001
+		do {
+			try await Network.download(url, path: path, overwrite: true)
+		} catch {
+			displayError(title: "Error while downloading track", content: "Download failed for track \(track.title). Error: \(error)")
+			return false
+		}
 		
 		if audioQuality == .hifi || audioQuality == .master {
 			// Has to be done, as Tidal sometimes serves the files in a strange QuickTime container (qt), which doesn't support metadata tags.
@@ -91,83 +93,78 @@ public class Download {
 			path.appendPathExtension("m4a")
 		}
 		
-		metadata.setMetadata(for: track, at: path)
+		await metadata.setMetadata(for: track, at: path)
 		print("Download Finished: \(filename)")
-		downloadStatus.finishTask()
-		return response.ok
+		return true
 	}
 	
-	public func download(tracks: [Track], parentFolder: String = "") -> DownloadErrors {
+	public func download(tracks: [Track], parentFolder: String = "") async -> DownloadErrors {
 		downloadStatus.startTask()
-		let group = DispatchGroup()
-		let semaphore = DispatchSemaphore(value: 1)
+		defer { downloadStatus.finishTask() }
+		
 		var errors = DownloadErrors()
 		for track in tracks {
-			group.enter()
-			dispatchQueue.async { [self] in
-				let r = download(track: track, parentFolder: parentFolder, audioQuality: session.config.offlineAudioQuality)
-				if !r {
-					semaphore.wait()
-					errors.affectedTracks.insert(track)
-					semaphore.signal()
-				}
-				group.leave()
+			let success = await download(track: track, parentFolder: parentFolder, audioQuality: session.config.offlineAudioQuality)
+			if !success {
+				errors.affectedTracks.insert(track)
 			}
 		}
-		group.wait()
 		print("Track Download Done!")
-		downloadStatus.finishTask()
 		return errors
 	}
 	
-	public func download(video: Video, parentFolder: String = "") -> Bool {
-		guard let url = video.getVideoUrl(session: session) else { return false }
+	public func download(video: Video, parentFolder: String = "") async -> Bool {
+		guard let url = await video.videoUrl(session: session) else { return false }
 		print("Downloading Video \(video.title)")
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: formFileName(video), pathExtension: "mp4")
 		guard let path = optionalPath else {
 			return false
 		}
-		let response = Network.download(url, path: path, overwrite: true)
+		do {
+			try await Network.download(url, path: path, overwrite: true)
+			return true
+		} catch {
+			return false
+		}
 //		metadataHandler.setMetadata(for: video, at: path)
 		// TODO: Metadata for Videos
-		return response.ok
 	}
 	
-	public func download(album: Album, parentFolder: String = "") -> DownloadErrors {
+	public func download(album: Album, parentFolder: String = "") async -> DownloadErrors {
 		downloadStatus.startTask()
-		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
-			downloadStatus.finishTask()
+		defer { downloadStatus.finishTask() }
+		
+		guard let tracks = await session.albumTracks(albumId: album.id) else {
 			return DownloadErrors(affectedAlbums: [album])
 		}
 		let artistString = album.artists != nil ? "\(album.artists!.formArtistString()) - " : ""
-		let r = download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artistString)\(album.title.replacingOccurrences(of: "/", with: ":"))")
-		downloadStatus.finishTask()
-		return r
+		return await download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artistString)\(album.title.replacingOccurrences(of: "/", with: ":"))")
 	}
 	
-	public func downloadAllAlbums(from artist: Artist, parentFolder: String = "") -> DownloadErrors {
+	public func downloadAllAlbums(from artist: Artist, parentFolder: String = "") async -> DownloadErrors {
 		downloadStatus.startTask()
-		guard let albums = session.getArtistAlbums(artistId: artist.id) else {
-			downloadStatus.finishTask()
+		defer { downloadStatus.finishTask() }
+		
+		guard let albums = await session.artistAlbums(artistId: artist.id) else {
 			return DownloadErrors(affectedArtists: [artist])
 		}
 		var error = DownloadErrors()
 		for album in albums {
-			let r = download(album: album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)")
+			let r = await download(album: album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)")
 			error.affectedAlbums.formUnion(r.affectedAlbums)
 			error.affectedTracks.formUnion(r.affectedTracks)
 		}
-		downloadStatus.finishTask()
 		return error
 	}
 	
-	public func download(playlist: Playlist, parentFolder: String = "") -> DownloadErrors {
+	public func download(playlist: Playlist, parentFolder: String = "") async -> DownloadErrors {
 		downloadStatus.startTask()
-		guard let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) else {
+		defer { downloadStatus.finishTask() }
+		
+		guard let tracks = await session.playlistTracks(playlistId: playlist.uuid) else {
 			return DownloadErrors(affectedPlaylists: [playlist])
 		}
-		let errors = download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
-		downloadStatus.finishTask()
+		let errors = await download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
 		return errors
 	}
 }

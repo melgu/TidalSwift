@@ -6,43 +6,78 @@
 //  Copyright © 2019 Melvin Gundlach. All rights reserved.
 //
 
-import Foundation
+import SwiftUI
 
 // MARK: DB
 
-public class OfflineDB {
-	let semaphore = DispatchSemaphore(value: 1)
-	
+public actor OfflineDB {
 	// [Track: ByHowManyNeeded]
-	var tracks: [Track: Int] = [:] {
+	private(set) var tracks: [Track: Int] = [:] {
 		didSet {
 			save()
 		}
 	}
-	var favoriteTracks: [Track] = [] { // Used for Favorites
+	func incrementCounter(for track: Track) {
+		tracks[track, default: 0] += 1
+	}
+	func decrementCounter(for track: Track) {
+		guard let counter = tracks[track] else { return }
+		if counter - 1 <= 0 {
+			tracks[track] = nil
+		} else {
+			tracks[track, default: 0] -= 1
+		}
+	}
+	
+	private(set) var favoriteTracks: [Track] = [] { // Used for Favorites
 		didSet {
 			save()
 		}
 	}
+	func setFavoriteTracks(to tracks: [Track]) {
+		favoriteTracks = tracks
+	}
+	
 	var albums: [Album] = [] {
 		didSet {
 			save()
 		}
 	}
+	func add(_ album: Album) {
+		albums.append(album)
+	}
+	func remove(_ album: Album) {
+		albums.removeAll(where: { $0 == album })
+	}
+	
 	var albumTracks: [Album: [Track]] = [:] {
 		didSet {
 			save()
 		}
 	}
+	func setTracks(for album: Album, to tracks: [Track]?) {
+		albumTracks[album] = tracks
+	}
+	
 	var playlists: [Playlist] = [] {
 		didSet {
 			save()
 		}
 	}
+	func add(_ playlist: Playlist) {
+		playlists.append(playlist)
+	}
+	func remove(_ playlist: Playlist) {
+		playlists.removeAll(where: { $0 == playlist })
+	}
+	
 	var playlistTracks: [Playlist: [Track]] = [:] {
 		didSet {
 			save()
 		}
+	}
+	func setTracks(for playlist: Playlist, to tracks: [Track]?) {
+		playlistTracks[playlist] = tracks
 	}
 	
 	init() {
@@ -121,19 +156,15 @@ public class OfflineDB {
 
 // MARK: - Offline
 
-public class Offline {
+public actor Offline {
 	private unowned let session: Session
 	private let downloadStatus: DownloadStatus
 	private let mainPath = "TidalSwift Offline Library"
 	public var uiRefreshFunc: () -> Void = {}
 	
-	private let db = OfflineDB()
-	public var saveFavoritesOffline: Bool {
-		get { UserDefaults.standard.bool(forKey: "SaveFavoritesOffline") }
-		set { UserDefaults.standard.set(newValue, forKey: "SaveFavoritesOffline") }
-	}
+	@AppStorage("SaveFavoritesOffline") public var saveFavoritesOffline = false
 	
-	private var dispatchQueue = DispatchQueue(label: "melgu.TidalSwift.offline", qos: .background)
+	private let db = OfflineDB()
 	
 	public init(session: Session, downloadStatus: DownloadStatus) {
 		self.session = session
@@ -154,11 +185,11 @@ public class Offline {
 			displayError(title: "Offline: Error while creating Offline management class", content: "Error: \(error)")
 		}
 		
-		asyncSync()
+		Task { await asyncSync() }
 	}
 	
-	public func url(for track: Track, audioQuality: AudioQuality) -> URL? {
-		if !db.tracks.contains(where: { (t, _) in t == track }) {
+	public func url(for track: Track, audioQuality: AudioQuality) async -> URL? {
+		if await !db.tracks.contains(where: { (t, _) in t == track }) {
 			return nil
 		}
 		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: session.pathExtension(for: audioQuality)) else {
@@ -168,29 +199,29 @@ public class Offline {
 	}
 	
 	// The following always show the goal state (planned), i.e., after all downloads have finished
-	public func numberOfOfflineTracks() -> Int {
-		db.tracks.count
+	public func numberOfOfflineTracks() async -> Int {
+		await db.tracks.count
 	}
-	public func allOfflineTracks() -> [Track] {
-		db.tracks.map { (track, _) in track }
-	}
-	
-	public func numberOfOfflineAlbums() -> Int {
-		db.albums.count
-	}
-	public func allOfflineAlbums() -> [Album] {
-		db.albums
+	public func allOfflineTracks() async -> [Track] {
+		await db.tracks.map { (track, _) in track }
 	}
 	
-	public func numberOfOfflinePlaylists() -> Int {
-		db.playlists.count
+	public func numberOfOfflineAlbums() async -> Int {
+		await db.albums.count
 	}
-	public func allOfflinePlaylists() -> [Playlist] {
-		db.playlists
+	public func allOfflineAlbums() async -> [Album] {
+		await db.albums
 	}
 	
-	public func isTrackMarkedForOffline(track: Track) -> Bool {
-		db.tracks[track] != nil
+	public func numberOfOfflinePlaylists() async -> Int {
+		await db.playlists.count
+	}
+	public func allOfflinePlaylists() async -> [Playlist] {
+		await db.playlists
+	}
+	
+	public func isTrackMarkedForOffline(track: Track) async -> Bool {
+		await db.tracks[track] != nil
 	}
 	
 	// Actual state
@@ -220,21 +251,16 @@ public class Offline {
 	
 	private var offlineTrackIdsCache: [Int]?
 	private var offlineTrackIdsCacheIntact = false
-	private var offlineTrackIdsCacheSemaphore = DispatchSemaphore(value: 1)
 	private func invalidateOfflineTrackIdsCache() {
-		offlineTrackIdsCacheSemaphore.wait()
 		offlineTrackIdsCacheIntact = false
-		offlineTrackIdsCacheSemaphore.signal()
 	}
 	
 	public func offlineTrackIds() -> [Int]? {
-		offlineTrackIdsCacheSemaphore.wait()
 		if !offlineTrackIdsCacheIntact {
 			offlineTrackIdsCache = loadOfflineTrackIds()
 			offlineTrackIdsCacheIntact = true
 		}
 		let ids = offlineTrackIdsCache
-		offlineTrackIdsCacheSemaphore.signal()
 		return ids
 	}
 	
@@ -244,31 +270,30 @@ public class Offline {
 	
 	// MARK: - Sync
 	
-	private let syncSemaphore = DispatchSemaphore(value: 1)
 	private var syncRunning = false
 	private var syncAgain = false
 	
-	private func sync() {
+	private func sync() async {
 		// Preparations (e.g. setting syncRunning) happen in asyncSync func beforehand
 		
 		print("Offline: --- Starting Sync ---")
+		syncRunning = true
+		
 		downloadStatus.startTask()
+		defer { downloadStatus.finishTask() }
 		
 		// Load Local Track IDs
-		let dbTracks: [Track] = db.tracks.map { $0.key }
+		let dbTracks: [Track] = await db.tracks.map { $0.key }
 		guard let localTracksIds: [Int] = offlineTrackIds() else {
 			displayError(title: "Offline: Sync Error", content: "Couldn't load Tracks from Disk")
-			syncSemaphore.wait()
 			syncAgain = false
 			syncRunning = false
-			syncSemaphore.signal()
 			return
 		}
 		print("Offline: DB IDs: \(dbTracks.map { $0.id })")
 		print("Offline: Track IDs: \(localTracksIds)")
 		
 		// Diff
-		db.semaphore.wait()
 		var toRemove: [Int] = []
 		for trackId in localTracksIds {
 			if !dbTracks.contains(where: { $0.id == trackId }) {
@@ -282,7 +307,6 @@ public class Offline {
 				toAdd.append(track)
 			}
 		}
-		db.semaphore.signal()
 		
 		// Do
 		if !toRemove.isEmpty {
@@ -310,7 +334,7 @@ public class Offline {
 		
 		for track in toAdd {
 			print("Offline: Downloading \(track.title)")
-			guard let url = track.getAudioUrl(session: session, audioQuality: session.config.offlineAudioQuality) else {
+			guard let url = await track.audioUrl(session: session, audioQuality: session.config.offlineAudioQuality) else {
 				displayError(title: "Offline: Error while loading offline track", content: "Couldn't get Audio URL")
 				return
 			}
@@ -319,118 +343,84 @@ public class Offline {
 				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(track.id).\(pathExtension)")
 				return
 			}
-			var response: Response!
-			repeat {
-				response = Network.download(url, path: path)
-			} while response.statusCode == 1001
-			
-			if !response.ok {
-				displayError(title: "Offline: Error while loading offline track", content: "Track: \(track.title). Status Code: \(response.statusCode ?? -1)")
-			} else {
+			do {
+				try await Network.download(url, path: path)
 				print("Offline: Finished Download of \(track.title)")
-			}
-			invalidateOfflineTrackIdsCache()
-			DispatchQueue.main.async { [self] in
+				invalidateOfflineTrackIdsCache()
 				uiRefreshFunc()
+			} catch {
+				displayError(title: "Offline: Error while loading offline track", content: "Network error: \(error)")
 			}
 		}
 		
 		// Outro
-		syncSemaphore.wait()
 		if syncAgain {
 			syncAgain = false
-			syncSemaphore.signal()
-			downloadStatus.finishTask()
 			print("Offline: Something changed. Restarting Sync")
-			sync()
+			await sync()
 		} else {
 			syncRunning = false
-			syncSemaphore.signal()
-			downloadStatus.finishTask()
 			print("Offline: --- Finished Sync ---")
 		}
 	}
 	
-	private var syncWI: DispatchWorkItem?
-	private func syncWIBuilder() -> DispatchWorkItem {
-		DispatchWorkItem { [weak self] in self?.sync() }
-	}
+	private var syncTask: Task<Void, Never>?
 	
 	private func asyncSync() {
-		syncSemaphore.wait()
 		if syncRunning {
 			syncAgain = true // If Sync is requested while running, do another one afterwards
-			syncSemaphore.signal()
 			return
 		}
-		syncRunning = true
-		syncSemaphore.signal()
 		
-		syncWI = syncWIBuilder()
-		dispatchQueue.async(execute: syncWI!)
+		syncTask = Task { await sync() }
 	}
 	
 	// MARK: - Multiple Tracks
 	
-	private func add(tracks: [Track]) {
-		db.semaphore.wait()
+	private func add(tracks: [Track]) async {
 		for track in tracks {
 			if track.streamReady {
-				if let c = db.tracks[track] {
-					db.tracks[track] = c + 1
-				} else {
-					db.tracks[track] = 1
-				}
+				await db.incrementCounter(for: track)
 			} else {
 				print("Offline: Add. \(track.title) not streamReady, so not added.")
 			}
 		}
-		db.semaphore.signal()
 	}
 	
-	private func remove(tracks: [Track]) {
-		db.semaphore.wait()
+	private func remove(tracks: [Track]) async {
 		for track in tracks {
-			if var c = db.tracks[track] {
-				c -= 1
-				if c <= 0 {
-					db.tracks[track] = nil
-				} else {
-					db.tracks[track] = c
-				}
-			}
+			await db.decrementCounter(for: track)
 		}
-		db.semaphore.signal()
 	}
 	
 	public func removeAll() {
-		print("Offline: Removing all \(db.tracks.count) tracks in \(db.albums.count) albums & \(db.playlists.count) playlists")
+		Task {
+			print("Offline: Removing all \(await db.tracks.count) tracks in \(await db.albums.count) albums & \(await db.playlists.count) playlists")
+		}
 		
-		syncWI?.cancel()
-		syncFavoriteTracksWI?.cancel()
-		syncPlaylistsWI?.cancel()
+		syncTask?.cancel()
+		syncFavoriteTracksTask?.cancel()
+		syncPlaylistsTask?.cancel()
 		
-		db.semaphore.wait()
 		saveFavoritesOffline = false
-		db.clear()
-		db.semaphore.signal()
-		
-		asyncSync()
+		Task {
+			await db.clear()
+			asyncSync()
+		}
 	}
 	
 	// MARK: - Favorite Tracks
 	
-	private var favTracksSemaphore = DispatchSemaphore(value: 1)
 	private var favTracksSyncRunning = false
 	private var favTracksSyncAgain = false
 	
-	private func syncFavoriteTracks() {
+	private func syncFavoriteTracks() async {
 		// Preparations (e.g. setting favTracksSyncRunning) happen in asyncSyncFavoriteTracks func beforehand
 		
 		// Prepare
 		var tracks: [Track] = []
 		if saveFavoritesOffline {
-			if let favTracks = session.favorites?.tracks() {
+			if let favTracks = await session.favorites?.tracks() {
 				tracks = favTracks.map { $0.item }
 			} else {
 				displayError(title: "Offline: Error while synchronizing Favorite Tracks", content: "")
@@ -439,143 +429,122 @@ public class Offline {
 		}
 		
 		// Diff
-		db.semaphore.wait()
 		var toAdd: [Track] = []
 		for track in tracks {
-			if track.streamReady && !db.favoriteTracks.contains(track) {
+			let isFavorite = await db.favoriteTracks.contains(track)
+			if track.streamReady && !isFavorite {
 				toAdd.append(track)
 			}
 		}
 		
 		var toRemove: [Track] = []
-		for track in db.favoriteTracks {
+		for track in await db.favoriteTracks {
 			if !tracks.contains(track) {
 				toRemove.append(track)
 			}
 		}
-		db.semaphore.signal()
 		
 		// Do
-		add(tracks: toAdd)
-		remove(tracks: toRemove)
-		db.favoriteTracks = tracks
+		await add(tracks: toAdd)
+		await remove(tracks: toRemove)
+		await db.setFavoriteTracks(to: tracks)
 		print("Offline: Favorite Tracks synchronized")
 		
 		// Outro
-		favTracksSemaphore.wait()
 		if favTracksSyncAgain {
 			favTracksSyncAgain = false
-			favTracksSemaphore.signal()
-			syncFavoriteTracks()
+			await syncFavoriteTracks()
 		} else {
 			favTracksSyncRunning = false
-			favTracksSemaphore.signal()
 			asyncSync()
 		}
 	}
 	
-	private var syncFavoriteTracksWI: DispatchWorkItem?
-	private func syncFavoriteTracksWIBuilder() -> DispatchWorkItem {
-		DispatchWorkItem { [unowned self] in syncFavoriteTracks() }
-	}
+	private var syncFavoriteTracksTask: Task<Void, Never>?
 	
 	public func asyncSyncFavoriteTracks() {
-		favTracksSemaphore.wait()
 		if favTracksSyncRunning {
 			favTracksSyncAgain = true // If Sync is requested while running, do another one afterwards
-			favTracksSemaphore.signal()
 			return
 		}
 		favTracksSyncRunning = true
-		favTracksSemaphore.signal()
 		
-		syncFavoriteTracksWI = syncFavoriteTracksWIBuilder()
-		dispatchQueue.async(execute: syncFavoriteTracksWI!)
+		syncFavoriteTracksTask = Task { await syncFavoriteTracks() }
 	}
 	
 	// MARK: - Album
 	
-	public func isAlbumOffline(album: Album) -> Bool {
-		db.albums.contains(album)
+	public func isAlbumOffline(album: Album) async -> Bool {
+		await db.albums.contains(album)
 	}
 	
-	public func getTracks(for album: Album) -> [Track]? {
-		db.albumTracks[album]
+	public func getTracks(for album: Album) async -> [Track]? {
+		await db.albumTracks[album]
 	}
 	
 	// Probably no need to do async, as it's only a single quick call to the Tidal API
-	public func add(album: Album) {
-		if db.albums.contains(album) {
+	public func add(album: Album) async {
+		if await db.albums.contains(album) {
 			print("Offline: Album \(album.title) is offline already. This suggests a bug.")
 			return
 		}
-		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
+		guard let tracks = await session.albumTracks(albumId: album.id) else {
 			return
 		}
-		db.semaphore.wait()
-		db.albums.append(album)
-		db.albumTracks[album] = tracks
-		db.semaphore.signal()
-		add(tracks: tracks)
+		await db.add(album)
+		await db.setTracks(for: album, to: tracks)
+		await add(tracks: tracks)
 		asyncSync()
 	}
 	
-	public func remove(album: Album) {
-		guard let tracks = session.getAlbumTracks(albumId: album.id) else {
+	public func remove(album: Album) async {
+		guard let tracks = await session.albumTracks(albumId: album.id) else {
 			return
 		}
-		remove(tracks: tracks)
-		db.semaphore.wait()
-		db.albums.removeAll(where: { $0 == album })
-		db.albumTracks[album] = nil
-		db.semaphore.signal()
+		await remove(tracks: tracks)
+		await db.remove(album)
+		await db.setTracks(for: album, to: nil)
 		asyncSync()
 	}
 	
 	// MARK: - Playlist
 	
-	private var playlistSemaphore = DispatchSemaphore(value: 1)
 	private var playlistsToSync: [Playlist] = []
 	private var playlistSyncRunning = false
 	
-	public func isPlaylistOffline(playlist: Playlist) -> Bool {
-		db.playlists.contains(playlist)
+	public func isPlaylistOffline(playlist: Playlist) async -> Bool {
+		await db.playlists.contains(playlist)
 	}
 	
-	public func getTracks(for playlist: Playlist) -> [Track]? {
-		db.playlistTracks[playlist]
+	public func getTracks(for playlist: Playlist) async -> [Track]? {
+		await db.playlistTracks[playlist]
 	}
 	
-	private func syncPlaylists() {
+	private func syncPlaylists() async {
 		// Preparations (e.g. setting playlistSyncRunning) happen in syncPlaylist func beforehand
 		
 		print("Offline: --- Sync Playlist ---")
 		
 		// Prepare
-		playlistSemaphore.wait()
 		if playlistsToSync.isEmpty {
 			print("Offline: No more Playlists to sync.")
 			print("Offline: --- Sync Playlists finished ---")
-			playlistSemaphore.signal()
 			return
 		}
 		let playlist = playlistsToSync[0]
 		playlistsToSync.remove(at: 0)
-		playlistSemaphore.signal()
 		
 		print("Offline: Sync Playlist: \(playlist.title)")
 		
 		var tracks: [Track] = []
-		db.semaphore.wait() // --- DB Semaphore wait
-		let dbTracks: [Track] = db.playlistTracks[playlist] ?? []
-		let syncThisPlaylist: Bool = db.playlists.contains(playlist)
+		let dbTracks: [Track] = await db.playlistTracks[playlist] ?? []
+		let syncThisPlaylist = await db.playlists.contains(playlist)
 		
 		if syncThisPlaylist {
-			if let playlistTracks = session.getPlaylistTracks(playlistId: playlist.id) {
+			if let playlistTracks = await session.playlistTracks(playlistId: playlist.id) {
 				tracks = playlistTracks
 			} else {
 				displayError(title: "Offline: Error while synchronizing Playlist Tracks", content: "Couldn't load playlist tracks from Tidal API.")
-				db.semaphore.signal() // --- DB Semaphore signal
 				return
 			}
 		} else {
@@ -600,66 +569,48 @@ public class Offline {
 		print("Offline: Playlist dbTracks: \(dbTracks.map { $0.id })")
 		print("Offline: Playlist toAdd: \(toAdd.map { $0.id })")
 		print("Offline: Playlist toRemove: \(toRemove.map { $0.id })")
-		db.semaphore.signal() // --- DB Semaphore signal
 		
 		// Do
-		add(tracks: toAdd)
-		remove(tracks: toRemove)
-		db.semaphore.wait()
-		db.playlistTracks[playlist] = tracks
-		db.semaphore.signal()
+		await add(tracks: toAdd)
+		await remove(tracks: toRemove)
+		await db.setTracks(for: playlist, to: tracks)
 		
 		// Outro
-		playlistSemaphore.wait()
 		if !playlistsToSync.isEmpty {
-			playlistSemaphore.signal()
 			print("Offline: Another Playlist to Sync")
-			syncPlaylists()
+			await syncPlaylists()
 		} else {
 			playlistSyncRunning = false
-			playlistSemaphore.signal()
 			print("Offline: --- Sync Playlists finished ---")
 			asyncSync()
 		}
 	}
 	
-	private var syncPlaylistsWI: DispatchWorkItem?
-	private func syncPlaylistsWIBuilder() -> DispatchWorkItem {
-		DispatchWorkItem { [self] in syncPlaylists() }
-	}
+	private var syncPlaylistsTask: Task<Void, Never>?
 	
 	public func syncPlaylist(_ playlist: Playlist) {
-		playlistSemaphore.wait()
 		if !playlistsToSync.contains(playlist) {
 			playlistsToSync.append(playlist)
 		}
 		if !playlistSyncRunning {
-			syncPlaylistsWI = syncPlaylistsWIBuilder()
 			playlistSyncRunning = true
-			playlistSemaphore.signal()
-			dispatchQueue.async(execute: syncPlaylistsWI!)
-		} else {
-			playlistSemaphore.signal()
+			syncPlaylistsTask = Task { await syncPlaylists() }
 		}
 	}
 	
-	public func add(playlist: Playlist) {
-		db.semaphore.wait()
-		db.playlists.append(playlist)
-		db.semaphore.signal()
+	public func add(playlist: Playlist) async {
+		await db.add(playlist)
 		syncPlaylist(playlist)
 	}
 	
-	public func remove(playlist: Playlist) {
-		db.semaphore.wait()
-		db.playlists.removeAll(where: { $0 == playlist })
-		db.semaphore.signal()
+	public func remove(playlist: Playlist) async {
+		await db.remove(playlist)
 		syncPlaylist(playlist)
 	}
 	
 	// Useful at startup to check for changes in all Offline Playlists
-	public func syncAllOfflinePlaylistsAndFavoriteTracks() {
-		for playlist in db.playlists {
+	public func syncAllOfflinePlaylistsAndFavoriteTracks() async {
+		for playlist in await db.playlists {
 			syncPlaylist(playlist)
 		}
 		asyncSyncFavoriteTracks()

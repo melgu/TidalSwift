@@ -11,23 +11,14 @@ import Foundation
 public typealias ArtistOrder = PlaylistOrder
 
 extension Session {
-	public func getArtist(artistId: Int) -> Artist? {
+	public func artist(artistId: Int) async -> Artist? {
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Artist Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Artist = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var artistResponse: Artist?
-		do {
-			artistResponse = try customJSONDecoder.decode(Artist.self, from: content)
-		} catch {
-			displayError(title: "Artist Info failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return artistResponse
 	}
 	
 	public enum ArtistAlbumFilter: String {
@@ -35,8 +26,7 @@ extension Session {
 		case appearances = "COMPILATIONS" // No idea, why Tidal has wrong names
 	}
 	
-	public func getArtistAlbums(artistId: Int, filter: ArtistAlbumFilter? = nil, order: AlbumOrder? = nil,
-						 orderDirection: OrderDirection? = nil, limit: Int = 999, offset: Int = 0) -> [Album]? {
+	public func artistAlbums(artistId: Int, filter: ArtistAlbumFilter? = nil, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil, limit: Int = 999, offset: Int = 0) async -> [Album]? {
 		var parameters = sessionParameters
 		parameters["limit"] = "\(limit)"
 		parameters["offset"] = "\(offset)"
@@ -51,138 +41,80 @@ extension Session {
 		}
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/albums")!
-		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Artist Albums failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Albums = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var artistAlbumsResponse: Albums?
-		do {
-			artistAlbumsResponse = try customJSONDecoder.decode(Albums.self, from: content)
-		} catch {
-			displayError(title: "Artist Albums failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return artistAlbumsResponse?.items
 	}
 	
-	public func getArtistVideos(artistId: Int, limit: Int = 999, offset: Int = 0) -> [Video]? {
+	public func artistVideos(artistId: Int, limit: Int = 999, offset: Int = 0) async -> [Video]? {
 		var parameters = sessionParameters
 		parameters["limit"] = "\(limit)"
 		parameters["offset"] = "\(offset)"
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/videos")!
-		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-
-		guard let content = response.content else {
-			displayError(title: "Artist Videos failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Videos = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var artistVideosResponse: Videos?
-		do {
-			artistVideosResponse = try customJSONDecoder.decode(Videos.self, from: content)
-		} catch {
-			displayError(title: "Artist Videos failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return artistVideosResponse?.items
 	}
 	
-	public func getArtistTopTracks(artistId: Int, limit: Int = 999, offset: Int = 0) -> [Track]? {
+	public func artistTopTracks(artistId: Int, limit: Int = 999, offset: Int = 0) async -> [Track]? {
 		var parameters = sessionParameters
 		parameters["limit"] = "\(limit)"
 		parameters["offset"] = "\(offset)"
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/toptracks")!
-		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-
-		guard let content = response.content else {
-			displayError(title: "Artist Top Tracks failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Tracks = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var artistTopTracksResponse: Tracks?
-		do {
-			artistTopTracksResponse = try customJSONDecoder.decode(Tracks.self, from: content)
-		} catch {
-			displayError(title: "Artist Top Tracks failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return artistTopTracksResponse?.items
 	}
 	
-	func getArtistBio(artistId: Int, linksRemoved: Bool = true) -> ArtistBio? {
+	func artistBio(artistId: Int, linksRemoved: Bool = true) async -> ArtistBio? {
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/bio")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Artist Bio failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
-			return nil
-		}
-		
-		var artistBio: ArtistBio?
 		do {
-			artistBio = try customJSONDecoder.decode(ArtistBio.self, from: content)
+			let response: ArtistBio = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			
+			// <br/> to \n
+			let regex = #/<br/><br/>|<br/>/#
+			var alteredText = response.text.replacing(regex, with: "\n\n")
+			
+			if linksRemoved {
+				let regex = #/(\[wimpLink.+?\])|(\[\/wimpLink\])/#
+				let range = NSMakeRange(0, alteredText.count)
+				alteredText.replace(regex, with: "")
+			}
+			
+			return ArtistBio(source: response.source, lastUpdated: response.lastUpdated, text: alteredText)
 		} catch {
-			displayError(title: "Artist Bio failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		guard let ab = artistBio else {
 			return nil
 		}
-		
-		// <br/> to \n
-		let regex = try! NSRegularExpression(pattern: #"<br/><br/>|<br/>"#)
-		let range = NSMakeRange(0, ab.text.count)
-		var alteredText = regex.stringByReplacingMatches(in: ab.text, options: [], range: range, withTemplate: "\n\n")
-		
-		if linksRemoved {
-			let regex = try! NSRegularExpression(pattern: #"(\[wimpLink.+?\])|(\[\/wimpLink\])"#)
-			let range = NSMakeRange(0, alteredText.count)
-			alteredText = regex.stringByReplacingMatches(in: alteredText, options: [], range: range, withTemplate: "")
-		}
-		
-		return ArtistBio(source: ab.source, lastUpdated: ab.lastUpdated, text: alteredText)
 	}
 	
-	public func getArtistSimilar(artistId: Int) -> [Artist]? {
+	public func artistSimilar(artistId: Int) async -> [Artist]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/similar")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Similar Artists failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Artists = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var similarArtistsResponse: Artists?
-		do {
-			similarArtistsResponse = try customJSONDecoder.decode(Artists.self, from: content)
-		} catch {
-			displayError(title: "Similar Artists failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return similarArtistsResponse?.items
 	}
 	
-	public func getArtistRadio(artistId: Int) -> [Track]? {
+	public func artistRadio(artistId: Int) async -> [Track]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/radio")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Artist Radio failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Tracks = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response.items
+		} catch {
 			return nil
 		}
-		
-		var artistRadioResponse: Tracks?
-		do {
-			artistRadioResponse = try customJSONDecoder.decode(Tracks.self, from: content)
-		} catch {
-			displayError(title: "Artist Radio failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return artistRadioResponse?.items
 	}
 }

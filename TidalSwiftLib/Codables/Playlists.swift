@@ -43,88 +43,88 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 	public let popularity: Int
 	public let squareImage: String?
 	
-	public func isInFavorites(session: Session) -> Bool? {
-		session.favorites?.doFavoritesContainPlaylist(playlistId: uuid)
+	public func isInFavorites(session: Session) async -> Bool? {
+		await session.favorites?.doFavoritesContainPlaylist(playlistId: uuid)
 	}
 	
-	public func getImageUrl(session: Session, resolution: Int, resolutionY: Int? = nil) -> URL? {
+	public func imageUrl(session: Session, resolution: Int, resolutionY: Int? = nil) -> URL? {
 		if squareImage == nil && image == nil {
 			return nil
 		}
 		
 		if let resolutionY = resolutionY {
-			return session.getImageUrl(imageId: squareImage ?? image!, resolution: resolution, resolutionY: resolutionY)
+			return session.imageUrl(imageId: squareImage ?? image!, resolution: resolution, resolutionY: resolutionY)
 		}
 		
 		if let squareImage = squareImage {
-			return session.getImageUrl(imageId: squareImage, resolution: resolution)
+			return session.imageUrl(imageId: squareImage, resolution: resolution)
 		} else {
-			return session.getImageUrl(imageId: image!, resolution: 480, resolutionY: 320)
+			return session.imageUrl(imageId: image!, resolution: 480, resolutionY: 320)
 		}
 	}
 	
-	public func getImage(session: Session, resolution: Int, resolutionY: Int? = nil) -> NSImage? {
+	public func image(session: Session, resolution: Int, resolutionY: Int? = nil) -> NSImage? {
 		if squareImage == nil && image == nil {
 			return nil
 		}
 		
 		if let resolutionY = resolutionY {
-			return session.getImage(imageId: squareImage ?? image!, resolution: resolution, resolutionY: resolutionY)
+			return session.image(imageId: squareImage ?? image!, resolution: resolution, resolutionY: resolutionY)
 		}
 		
 		if let squareImage = squareImage {
-			return session.getImage(imageId: squareImage, resolution: resolution)
+			return session.image(imageId: squareImage, resolution: resolution)
 		} else {
-			return session.getImage(imageId: image!, resolution: 480, resolutionY: 320)
+			return session.image(imageId: image!, resolution: 480, resolutionY: 320)
 		}
 	}
 	
 	// Offline
 	
-	public func isOffline(session: Session) -> Bool {
-		session.helpers.offline.isPlaylistOffline(playlist: self)
+	public func isOffline(session: Session) async -> Bool {
+		await session.helpers.offline.isPlaylistOffline(playlist: self)
 	}
 	
-	public func addOffline(session: Session) {
-		session.helpers.offline.add(playlist: self)
+	public func addOffline(session: Session) async {
+		await session.helpers.offline.add(playlist: self)
 	}
 	
-	public func removeOffline(session: Session) {
-		session.helpers.offline.remove(playlist: self)
+	public func removeOffline(session: Session) async {
+		await session.helpers.offline.remove(playlist: self)
 	}
 	
 	// Playlist Editing
 	
-	public func addTracks(_ tracks: [Track], duplicate: Bool, session: Session) -> Bool {
-		return session.playlistEditing.addTracks(tracks.map(\.id), to: uuid, duplicate: duplicate)
+	public func addTracks(_ tracks: [Track], duplicate: Bool, session: Session) async -> Bool {
+		return await session.playlistEditing.addTracks(tracks.map(\.id), to: uuid, duplicate: duplicate)
 	}
 	
-	public func addTrack(_ track: Track, duplicate: Bool, session: Session) -> Bool {
-		return session.playlistEditing.addTrack(track.id, to: uuid, duplicate: duplicate)
+	public func addTrack(_ track: Track, duplicate: Bool, session: Session) async -> Bool {
+		return await session.playlistEditing.addTrack(track.id, to: uuid, duplicate: duplicate)
 	}
 	
-	public func removeItem(atIndex index: Int, session: Session) -> Bool {
-		return session.playlistEditing.removeItem(atIndex: index, from: uuid)
+	public func removeItem(atIndex index: Int, session: Session) async -> Bool {
+		return await session.playlistEditing.removeItem(atIndex: index, from: uuid)
 	}
 	
-	public func addVideos(_ videos: [Video], duplicate: Bool, session: Session) -> Bool {
-		return session.playlistEditing.addTracks(videos.map(\.id), to: uuid, duplicate: duplicate)
+	public func addVideos(_ videos: [Video], duplicate: Bool, session: Session) async -> Bool {
+		return await session.playlistEditing.addTracks(videos.map(\.id), to: uuid, duplicate: duplicate)
 	}
 	
-	public func addVideo(_ video: Video, duplicate: Bool, session: Session) -> Bool {
-		return session.playlistEditing.addTrack(video.id, to: uuid, duplicate: duplicate)
+	public func addVideo(_ video: Video, duplicate: Bool, session: Session) async -> Bool {
+		return await session.playlistEditing.addTrack(video.id, to: uuid, duplicate: duplicate)
 	}
 	
-	public func moveItem(fromIndex: Int, toIndex: Int, session: Session) -> Bool {
-		return session.playlistEditing.moveItem(fromIndex: fromIndex, toIndex: toIndex, in: uuid)
+	public func moveItem(fromIndex: Int, toIndex: Int, session: Session) async -> Bool {
+		return await session.playlistEditing.moveItem(fromIndex: fromIndex, toIndex: toIndex, in: uuid)
 	}
 	
-	public func edit(title: String, description: String, session: Session) -> Bool {
-		return session.playlistEditing.edit(playlistId: uuid, title: title, description: description)
+	public func edit(title: String, description: String, session: Session) async -> Bool {
+		return await session.playlistEditing.edit(playlistId: uuid, title: title, description: description)
 	}
 	
-	public func delete(session: Session) -> Bool {
-		return session.playlistEditing.delete(playlistId: uuid)
+	public func delete(session: Session) async -> Bool {
+		return await session.playlistEditing.delete(playlistId: uuid)
 	}
 	
 	public static func == (lhs: Playlist, rhs: Playlist) -> Bool {
@@ -143,18 +143,18 @@ public struct PlaylistCreator: Codable {
 	public let picture: String?
 	public let popularity: Int?
 	
-	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
+	public func pictureUrl(session: Session, resolution: Int) -> URL? {
 		guard let picture = picture else {
 			return nil
 		}
-		return session.getImageUrl(imageId: picture, resolution: resolution)
+		return session.imageUrl(imageId: picture, resolution: resolution)
 	}
 	
-	public func getPicture(session: Session, resolution: Int) -> NSImage? {
+	public func picture(session: Session, resolution: Int) -> NSImage? {
 		guard let picture = picture else {
 			return nil
 		}
-		return session.getImage(imageId: picture, resolution: resolution)
+		return session.image(imageId: picture, resolution: resolution)
 	}
 }
 

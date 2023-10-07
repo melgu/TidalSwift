@@ -16,7 +16,7 @@ class Metadata {
 		self.session = session
 	}
 	
-	func setMetadata(for track: Track, at path: URL) {
+	func setMetadata(for track: Track, at path: URL) async {
 		print("FIXME: Set Metadata") // FIXME: Set Metadata
 		
 		var m4aFile: AudioFile
@@ -40,7 +40,7 @@ class Metadata {
 		
 		m4aFile.album = track.album.title
 		
-		if let album = session.getAlbum(albumId: track.album.id) {
+		if let album = await session.album(albumId: track.album.id) {
 			m4aFile.discNumber = .init(index: track.volumeNumber, total: album.numberOfVolumes)
 			
 			m4aFile.trackNumber = .init(index: track.trackNumber, total: album.numberOfTracks)

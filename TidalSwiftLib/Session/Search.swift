@@ -9,7 +9,7 @@
 import Foundation
 
 extension Session {
-	public func search(for term: String, limit: Int = 50, offset: Int = 0) -> SearchResponse? {
+	public func search(for term: String, limit: Int = 50, offset: Int = 0) async -> SearchResponse? {
 		var parameters = sessionParameters
 		parameters["query"] = term
 		parameters["limit"] = String(limit)
@@ -18,27 +18,19 @@ extension Session {
 		// Can potentially go higher using offset.
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/search/")!
-		let response = Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Search failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
-			return nil
-		}
-		
-		var searchResponse: SearchResponse
 		do {
-			let searchResult = try customJSONDecoder.decode(SearchResult.self, from: content)
-			searchResponse = SearchResponse(artists: searchResult.artists.items,
-											albums: searchResult.albums.items,
-											playlists: searchResult.playlists.items,
-											tracks: searchResult.tracks.items,
-											videos: searchResult.videos.items,
-											topHit: searchResult.topHit)
+			let response: SearchResult = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			
+			return SearchResponse(
+				artists: response.artists.items,
+				albums: response.albums.items,
+				playlists: response.playlists.items,
+				tracks: response.tracks.items,
+				videos: response.videos.items,
+				topHit: response.topHit
+			)
 		} catch {
-			displayError(title: "Search failed (JSON Parse Error)", content: "\(error)")
 			return nil
 		}
-		
-		return searchResponse
 	}
 }

@@ -25,14 +25,14 @@ public struct User: Decodable, Identifiable {
 	public let facebookUid: Int?
 	public let appleUid: String?
 	
-	public func getPictureUrl(session: Session, resolution: Int) -> URL? {
+	public func pictureUrl(session: Session, resolution: Int) -> URL? {
 		guard let picture = picture else { return nil }
-		return session.getImageUrl(imageId: picture, resolution: resolution)
+		return session.imageUrl(imageId: picture, resolution: resolution)
 	}
 	
-	public func getPicture(session: Session, resolution: Int) -> NSImage? {
+	public func picture(session: Session, resolution: Int) -> NSImage? {
 		guard let picture = picture else { return nil }
-		return session.getImage(imageId: picture, resolution: resolution)
+		return session.image(imageId: picture, resolution: resolution)
 	}
 }
 
