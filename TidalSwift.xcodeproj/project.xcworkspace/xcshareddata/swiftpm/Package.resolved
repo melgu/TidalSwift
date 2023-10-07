@@ -64,15 +64,6 @@
       }
     },
     {
-      "identity" : "swiftui-grid",
-      "kind" : "remoteSourceControl",
-      "location" : "git@github.com:spacenation/swiftui-grid.git",
-      "state" : {
-        "revision" : "623f995c6ee0e5a5ed0e104d142daeae67b0ec92",
-        "version" : "1.1.0"
-      }
-    },
-    {
       "identity" : "swiftui-introspect",
       "kind" : "remoteSourceControl",
       "location" : "git@github.com:siteline/SwiftUI-Introspect.git",
