@@ -1,106 +1,104 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "ImageIOSwift",
-        "repositoryURL": "git@github.com:davbeck/ImageIOSwift.git",
-        "state": {
-          "branch": null,
-          "revision": "87f5d032f77c13f0b43a8c719b628ea537a7ac8e",
-          "version": "1.1.1"
-        }
-      },
-      {
-        "package": "iTunesGenreID",
-        "repositoryURL": "https://github.com/NCrusher74/iTunesGenreID",
-        "state": {
-          "branch": null,
-          "revision": "343f34128669a5694e2745c36920570ea860b3fe",
-          "version": "1.0.4"
-        }
-      },
-      {
-        "package": "SwiftConvenienceExtensions",
-        "repositoryURL": "https://github.com/NCrusher74/SwiftConvenienceExtensions",
-        "state": {
-          "branch": null,
-          "revision": "80a5e3818917db2360f6d80786677a6465ab691a",
-          "version": "2.0.0"
-        }
-      },
-      {
-        "package": "SwiftLanguageAndLocaleCodes",
-        "repositoryURL": "https://github.com/NCrusher74/SwiftLanguageAndLocaleCodes",
-        "state": {
-          "branch": null,
-          "revision": "6f3a3fa43e96db0c2e9aecf8a4891e9ba4964b9b",
-          "version": "2.0.0"
-        }
-      },
-      {
-        "package": "SwiftTagger",
-        "repositoryURL": "git@github.com:NCrusher74/SwiftTagger.git",
-        "state": {
-          "branch": null,
-          "revision": "ad0e5eb09c62bb1f81e921f0bdd978a372389c71",
-          "version": "1.6.0"
-        }
-      },
-      {
-        "package": "SwiftTaggerID3",
-        "repositoryURL": "https://github.com/NCrusher74/SwiftTaggerID3",
-        "state": {
-          "branch": null,
-          "revision": "7f8ec33eef0c917d7f00560b16fae23eb62a6559",
-          "version": "1.7.2"
-        }
-      },
-      {
-        "package": "SwiftTaggerMP4",
-        "repositoryURL": "https://github.com/NCrusher74/SwiftTaggerMP4",
-        "state": {
-          "branch": null,
-          "revision": "ea57658b0e4329f1789d4efa16a4d005e28ed016",
-          "version": "1.7.1"
-        }
-      },
-      {
-        "package": "Grid",
-        "repositoryURL": "git@github.com:spacenation/swiftui-grid.git",
-        "state": {
-          "branch": null,
-          "revision": "623f995c6ee0e5a5ed0e104d142daeae67b0ec92",
-          "version": "1.1.0"
-        }
-      },
-      {
-        "package": "Introspect",
-        "repositoryURL": "git@github.com:siteline/SwiftUI-Introspect.git",
-        "state": {
-          "branch": null,
-          "revision": "2e09be8af614401bc9f87d40093ec19ce56ccaf2",
-          "version": "0.1.3"
-        }
-      },
-      {
-        "package": "Sliders",
-        "repositoryURL": "git@github.com:spacenation/swiftui-sliders.git",
-        "state": {
-          "branch": "master",
-          "revision": "518bed3bfc7bd522f3c49404a0d1efb98fa1bf2c",
-          "version": null
-        }
-      },
-      {
-        "package": "UpdateNotification",
-        "repositoryURL": "git@github.com:melgu/UpdateNotification.git",
-        "state": {
-          "branch": "main",
-          "revision": "428e201fe13bd5fd16b03e6bfaa6b97cf5f6114d",
-          "version": null
-        }
+  "pins" : [
+    {
+      "identity" : "imageioswift",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:davbeck/ImageIOSwift.git",
+      "state" : {
+        "revision" : "87f5d032f77c13f0b43a8c719b628ea537a7ac8e",
+        "version" : "1.1.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "itunesgenreid",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NCrusher74/iTunesGenreID",
+      "state" : {
+        "revision" : "343f34128669a5694e2745c36920570ea860b3fe",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "swiftconvenienceextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NCrusher74/SwiftConvenienceExtensions",
+      "state" : {
+        "revision" : "80a5e3818917db2360f6d80786677a6465ab691a",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "swiftlanguageandlocalecodes",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NCrusher74/SwiftLanguageAndLocaleCodes",
+      "state" : {
+        "revision" : "6f3a3fa43e96db0c2e9aecf8a4891e9ba4964b9b",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "swifttagger",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:NCrusher74/SwiftTagger.git",
+      "state" : {
+        "revision" : "ad0e5eb09c62bb1f81e921f0bdd978a372389c71",
+        "version" : "1.6.0"
+      }
+    },
+    {
+      "identity" : "swifttaggerid3",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NCrusher74/SwiftTaggerID3",
+      "state" : {
+        "revision" : "7f8ec33eef0c917d7f00560b16fae23eb62a6559",
+        "version" : "1.7.2"
+      }
+    },
+    {
+      "identity" : "swifttaggermp4",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NCrusher74/SwiftTaggerMP4",
+      "state" : {
+        "revision" : "ea57658b0e4329f1789d4efa16a4d005e28ed016",
+        "version" : "1.7.1"
+      }
+    },
+    {
+      "identity" : "swiftui-grid",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:spacenation/swiftui-grid.git",
+      "state" : {
+        "revision" : "623f995c6ee0e5a5ed0e104d142daeae67b0ec92",
+        "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "swiftui-introspect",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:siteline/SwiftUI-Introspect.git",
+      "state" : {
+        "revision" : "2e09be8af614401bc9f87d40093ec19ce56ccaf2",
+        "version" : "0.1.3"
+      }
+    },
+    {
+      "identity" : "swiftui-sliders",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:spacenation/swiftui-sliders.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "518bed3bfc7bd522f3c49404a0d1efb98fa1bf2c"
+      }
+    },
+    {
+      "identity" : "updatenotification",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:melgu/UpdateNotification.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "428e201fe13bd5fd16b03e6bfaa6b97cf5f6114d"
+      }
+    }
+  ],
+  "version" : 2
 }
