@@ -32,43 +32,8 @@ extension Color {
 // MARK: - SF Symbols: Colorizing Images
 
 extension View {
-	func primaryIconColor() -> some View {
-		self.modifier(PrimaryIconColor())
-	}
 	func secondaryIconColor() -> some View {
-		self.modifier(SecondaryIconColor())
-	}
-}
-
-struct PrimaryIconColor: ViewModifier {
-	@Environment(\.colorScheme) var colorScheme: ColorScheme
-	
-	func body(content: Content) -> some View {
-		Group {
-			if colorScheme == .light {
-				content
-			} else {
-				content
-					.colorInvert()
-			}
-		}
-	}
-}
-
-struct SecondaryIconColor: ViewModifier {
-	@Environment(\.colorScheme) var colorScheme: ColorScheme
-	
-	func body(content: Content) -> some View {
-		Group {
-			if colorScheme == .light {
-				content
-					.opacity(0.5)
-			} else {
-				content
-					.colorInvert()
-					.opacity(0.5)
-			}
-		}
+		self.opacity(0.5)
 	}
 }
 

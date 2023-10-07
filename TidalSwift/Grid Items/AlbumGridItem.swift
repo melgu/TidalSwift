@@ -62,8 +62,10 @@ struct AlbumGridItem: View {
 					}
 				}
 				if album.isOffline(session: session) {
-					Image("cloud.fill-big")
-						.colorInvert()
+					Image(systemName: "cloud.fill")
+						.resizable()
+						.scaledToFit()
+						.frame(width: 30)
 						.shadow(radius: SHADOWRADIUS)
 						.padding(5)
 				}
@@ -136,14 +138,14 @@ extension Album {
 	var attributeHStack: some View {
 		HStack {
 			if explicit ?? false {
-				Image("e.square")
+				Image(systemName: "e.square")
 			}
 			if audioQuality == .master {
-				Image("m.square.fill")
+				Image(systemName: "m.square.fill")
 			} else if audioModes?.contains(.sony360RealityAudio) ?? false {
-				Image("headphones")
+				Image(systemName: "headphones")
 			} else if audioModes?.contains(.dolbyAtmos) ?? false {
-				Image("hifispeaker.fill")
+				Image(systemName: "hifispeaker.fill")
 			} else {
 				Text("")
 			}

@@ -89,7 +89,7 @@ struct TrackRow: View {
 					HStack {
 						if !queueInfo.queue.isEmpty &&
 							queueInfo.queue[queueInfo.currentIndex].track == track {
-							Image("play.fill")
+							Image(systemName: "play.fill")
 								.secondaryIconColor()
 						}
 						if showCover {
@@ -148,11 +148,10 @@ struct TrackRow: View {
 					Text(secondsToHoursMinutesSecondsString(seconds: track.duration))
 					Spacer()
 					if track.isOffline(session: session) {
-						Image("cloud.fill")
+						Image(systemName: "cloud.fill")
 							.secondaryIconColor()
 					}
-					Image("c.circle")
-						.primaryIconColor()
+					Image(systemName: "c.circle")
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:
 								CreditsView(session: session, track: track)
@@ -162,8 +161,7 @@ struct TrackRow: View {
 							controller.showWindow(nil)
 						}
 					if track.isInFavorites(session: session) ?? false {
-						Image("heart.fill")
-							.primaryIconColor()
+						Image(systemName: "heart.fill")
 							.onTapGesture {
 								print("Remove from Favorites")
 								session.favorites?.removeTrack(trackId: track.id)
@@ -171,8 +169,7 @@ struct TrackRow: View {
 								viewState.refreshCurrentView()
 							}
 					} else {
-						Image("heart")
-							.primaryIconColor()
+						Image(systemName: "heart")
 							.onTapGesture {
 								print("Add to Favorites")
 								session.favorites?.addTrack(trackId: track.id)

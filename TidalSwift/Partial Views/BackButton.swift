@@ -18,8 +18,7 @@ struct BackButton: View {
 					print("Back")
 					viewState.pop()
 				} label: {
-					Image("chevron.left")
-						.primaryIconColor()
+					Image(systemName: "chevron.left")
 				}
 				Spacer(minLength: 0)
 				LoadingSpinner()

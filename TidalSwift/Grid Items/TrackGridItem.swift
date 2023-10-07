@@ -85,16 +85,16 @@ extension Track {
 	var attributeHStack: some View {
 		HStack {
 			if explicit {
-				Image("e.square")
+				Image(systemName: "e.square")
 			}
 			if audioQuality == .master {
-				Image("m.square.fill")
+				Image(systemName: "m.square.fill")
 			}
 			if audioModes?.contains(.sony360RealityAudio) ?? false {
-				Image("headphones")
+				Image(systemName: "headphones")
 			}
 			if audioModes?.contains(.dolbyAtmos) ?? false {
-				Image("hifispeaker.fill")
+				Image(systemName: "hifispeaker.fill")
 			}
 		}
 		.secondaryIconColor()
