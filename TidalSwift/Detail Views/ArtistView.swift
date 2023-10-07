@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct ArtistView: View {
 	let session: Session
@@ -80,11 +79,11 @@ struct ArtistView: View {
 		HStack {
 			if let pictureUrlSmall = artist.getPictureUrl(session: session, resolution: 320),
 			   let pictureUrlBig = artist.getPictureUrl(session: session, resolution: 750) {
-				URLImageSourceView(
-					pictureUrlSmall,
-					isAnimationEnabled: true,
-					label: Text(artist.name)
-				)
+				AsyncImage(url: pictureUrlSmall) { image in
+					image.resizable().scaledToFit()
+				} placeholder: {
+					Rectangle()
+				}
 				.frame(width: 100, height: 100)
 				.cornerRadius(CORNERRADIUS)
 				.shadow(radius: SHADOWRADIUS, y: SHADOWY)
@@ -97,6 +96,7 @@ struct ArtistView: View {
 					controller.window?.title = artist.name
 					controller.showWindow(nil)
 				}
+				.accessibilityHidden(true)
 			}
 			
 			VStack(alignment: .leading) {

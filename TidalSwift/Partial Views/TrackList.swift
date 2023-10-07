@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct TrackList: View {
 	let wrappedTracks: [WrappedTrack]
@@ -95,13 +94,14 @@ struct TrackRow: View {
 						}
 						if showCover {
 							if let coverUrl = track.getCoverUrl(session: session, resolution: 80) {
-								URLImageSourceView(
-									coverUrl,
-									isAnimationEnabled: true,
-									label: Text(track.title)
-								)
+								AsyncImage(url: coverUrl) { image in
+									image.resizable().scaledToFit()
+								} placeholder: {
+									Rectangle()
+								}
 								.frame(width: 30, height: 30)
 								.cornerRadius(CORNERRADIUS)
+								.accessibilityHidden(true)
 							} else {
 								Rectangle()
 									.foregroundColor(.black)

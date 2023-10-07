@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct PlaylistView: View {
 	let session: Session
@@ -30,11 +29,11 @@ struct PlaylistView: View {
 					   let imageUrlBig = playlist.getImageUrl(session: session, resolution: 750) {
 						ZStack(alignment: .bottomTrailing) {
 							HStack {
-								URLImageSourceView(
-									imageUrlSmall,
-									isAnimationEnabled: true,
-									label: Text(playlist.title)
-								)
+								AsyncImage(url: imageUrlSmall) { image in
+									image.resizable().scaledToFit()
+								} placeholder: {
+									Rectangle()
+								}
 								.aspectRatio(contentMode: .fill)
 								.frame(width: 100, height: 100)
 								.contentShape(Rectangle())
@@ -50,6 +49,7 @@ struct PlaylistView: View {
 									controller.window?.title = playlist.title
 									controller.showWindow(nil)
 								}
+								.accessibilityHidden(true)
 								
 								VStack(alignment: .leading) {
 									HStack {

@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct AlbumView: View {
 	let session: Session
@@ -28,23 +27,24 @@ struct AlbumView: View {
 					   let coverUrlBig = album.getCoverUrl(session: session, resolution: 1280) {
 						ZStack(alignment: .bottomTrailing) {
 							HStack {
-								URLImageSourceView(
-									coverUrlSmall,
-									isAnimationEnabled: true,
-									label: Text(album.title)
-								)
-									.frame(width: 100, height: 100)
-									.cornerRadius(CORNERRADIUS)
-									.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-									.toolTip("Show cover in new window")
-									.onTapGesture {
-										let controller = ImageWindowController(
-											imageUrl: coverUrlBig,
-											title: album.title
-										)
-										controller.window?.title = album.title
-										controller.showWindow(nil)
-									}
+								AsyncImage(url: coverUrlSmall) { image in
+									image.resizable().scaledToFit()
+								} placeholder: {
+									Rectangle()
+								}
+								.frame(width: 100, height: 100)
+								.cornerRadius(CORNERRADIUS)
+								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+								.toolTip("Show cover in new window")
+								.onTapGesture {
+									let controller = ImageWindowController(
+										imageUrl: coverUrlBig,
+										title: album.title
+									)
+									controller.window?.title = album.title
+									controller.showWindow(nil)
+								}
+								.accessibilityHidden(true)
 								
 								VStack(alignment: .leading) {
 									HStack {
