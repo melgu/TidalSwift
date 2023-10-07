@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct AccountInfoView: View {
 	@State var session: Session
@@ -27,14 +26,15 @@ struct AccountInfoView: View {
 							Text("User")
 								.font(.title)
 							if let pictureUrl = user.getPictureUrl(session: session, resolution: 210) {
-								URLImageSourceView(
-									pictureUrl,
-									isAnimationEnabled: true,
-									label: Text(user.username)
-								)
+								AsyncImage(url: pictureUrl) { image in
+									image.resizable().scaledToFit()
+								} placeholder: {
+									Rectangle()
+								}
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+								.accessibilityHidden(true)
 							}
 							UserInfoView(user: user, session: session)
 							Spacer(minLength: 0)

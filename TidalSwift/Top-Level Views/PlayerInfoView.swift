@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 import Sliders
 
 struct PlayerInfoView: View {
@@ -73,11 +72,11 @@ struct TrackInfoView: View {
 				HStack {
 					if let coverUrlSmall = track.getCoverUrl(session: session, resolution: 320),
 					   let coverUrlBig = track.getCoverUrl(session: session, resolution: 1280) {
-						URLImageSourceView(
-							coverUrlSmall,
-							isAnimationEnabled: true,
-							label: Text(track.album.title)
-						)
+						AsyncImage(url: coverUrlSmall) { image in
+							image.resizable().scaledToFit()
+						} placeholder: {
+							Rectangle()
+						}
 						.frame(width: 30, height: 30)
 						.cornerRadius(CORNERRADIUS)
 						.toolTip("Show cover in new window")
@@ -91,6 +90,7 @@ struct TrackInfoView: View {
 							controller.window?.title = title
 							controller.showWindow(nil)
 						}
+						.accessibilityHidden(true)
 					} else {
 						Rectangle()
 							.foregroundColor(.black)

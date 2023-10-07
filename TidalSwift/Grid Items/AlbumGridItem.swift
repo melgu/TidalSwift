@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct AlbumGridItem: View {
 	let album: Album
@@ -31,15 +30,16 @@ struct AlbumGridItem: View {
 		VStack {
 			ZStack(alignment: .bottomTrailing) {
 				if let albumUrl = album.getCoverUrl(session: session, resolution: 320) {
-					URLImageSourceView(
-						albumUrl,
-						isAnimationEnabled: true,
-						label: Text(album.title)
-					)
-						.aspectRatio(contentMode: .fill)
-						.frame(width: 160, height: 160)
-						.cornerRadius(CORNERRADIUS)
-						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+					AsyncImage(url: albumUrl) { image in
+						image.resizable().scaledToFit()
+					} placeholder: {
+						Rectangle()
+					}
+					.aspectRatio(contentMode: .fill)
+					.frame(width: 160, height: 160)
+					.cornerRadius(CORNERRADIUS)
+					.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+					.accessibilityHidden(true)
 				} else {
 					ZStack {
 						Rectangle()

@@ -1,15 +1,6 @@
 {
   "pins" : [
     {
-      "identity" : "imageioswift",
-      "kind" : "remoteSourceControl",
-      "location" : "git@github.com:davbeck/ImageIOSwift.git",
-      "state" : {
-        "revision" : "87f5d032f77c13f0b43a8c719b628ea537a7ac8e",
-        "version" : "1.1.1"
-      }
-    },
-    {
       "identity" : "itunesgenreid",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/NCrusher74/iTunesGenreID",

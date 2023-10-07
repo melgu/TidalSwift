@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct VideoGridItem: View {
 	let video: Video
@@ -21,15 +20,16 @@ struct VideoGridItem: View {
 	var body: some View {
 		VStack {
 			if let imageUrl = video.getImageUrl(session: session, resolution: 320) {
-				URLImageSourceView(
-					imageUrl,
-					isAnimationEnabled: false,
-					label: Text(video.title)
-				)
-					.aspectRatio(contentMode: .fit)
-					.frame(width: 160, height: 160)
-					.cornerRadius(CORNERRADIUS)
-					.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+				AsyncImage(url: imageUrl) { image in
+					image.resizable().scaledToFit()
+				} placeholder: {
+					Rectangle()
+				}
+				.aspectRatio(contentMode: .fit)
+				.frame(width: 160, height: 160)
+				.cornerRadius(CORNERRADIUS)
+				.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+				.accessibilityHidden(true)
 			} else {
 				ZStack {
 					Rectangle()

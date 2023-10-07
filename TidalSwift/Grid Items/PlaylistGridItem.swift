@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct PlaylistGridItem: View {
 	let playlist: Playlist
@@ -21,17 +20,18 @@ struct PlaylistGridItem: View {
 		VStack {
 			ZStack(alignment: .bottomTrailing) {
 				if let imageUrl = playlist.getImageUrl(session: session, resolution: 320) {
-					URLImageSourceView(
-						imageUrl,
-						isAnimationEnabled: true,
-						label: Text(playlist.title)
-					)
-						.aspectRatio(contentMode: .fill)
-						.frame(width: 160, height: 160)
-						.contentShape(Rectangle())
-						.clipped()
-						.cornerRadius(CORNERRADIUS)
-						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+					AsyncImage(url: imageUrl) { image in
+						image.resizable().scaledToFit()
+					} placeholder: {
+						Rectangle()
+					}
+					.aspectRatio(contentMode: .fill)
+					.frame(width: 160, height: 160)
+					.contentShape(Rectangle())
+					.clipped()
+					.cornerRadius(CORNERRADIUS)
+					.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+					.accessibilityHidden(true)
 				} else {
 					ZStack {
 						Rectangle()

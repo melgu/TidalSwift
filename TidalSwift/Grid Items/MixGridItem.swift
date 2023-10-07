@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct MixGridItem: View {
 	let mix: MixesItem
@@ -23,6 +22,7 @@ struct MixGridItem: View {
 				.frame(width: 160, height: 160)
 				.cornerRadius(CORNERRADIUS)
 				.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+				.accessibilityHidden(true)
 			
 			Text(mix.title)
 				.frame(width: 160)
@@ -80,80 +80,80 @@ struct MixImage: View {
 						HStack {
 							// 4
 							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							
 							// 0 1
 							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							
 							// 2 3 4
 							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							
 							// 0 1
 							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
@@ -167,78 +167,78 @@ struct MixImage: View {
 							
 							// 2 3 4
 							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(.trailing, metrics.size.width * 0.01)
 							}
 							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							
 							// 0 1
 							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							
 							// 2 3 4
 							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}
 							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								URLImageSourceView(
-									imageUrl,
-									isAnimationEnabled: true,
-									label: Text(mix.title)
-								)
+								AsyncImage(url: imageUrl, content: { image in
+									image.resizable().scaledToFit()
+								}, placeholder: {
+									Rectangle()
+								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)
 							}

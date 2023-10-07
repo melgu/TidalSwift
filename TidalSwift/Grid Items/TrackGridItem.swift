@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import ImageIOSwiftUI
 
 struct TrackGridItem: View {
 	let track: Track
@@ -19,14 +18,15 @@ struct TrackGridItem: View {
 	var body: some View {
 		VStack {
 			if let coverUrl = track.album.getCoverUrl(session: session, resolution: 320) {
-				URLImageSourceView(
-					coverUrl,
-					isAnimationEnabled: true,
-					label: Text(track.title)
-				)
-					.aspectRatio(contentMode: .fit)
-					.frame(width: 160, height: 160)
-					.cornerRadius(CORNERRADIUS)
+				AsyncImage(url: coverUrl) { image in
+					image.resizable().scaledToFit()
+				} placeholder: {
+					Rectangle()
+				}
+				.aspectRatio(contentMode: .fit)
+				.frame(width: 160, height: 160)
+				.cornerRadius(CORNERRADIUS)
+				.accessibilityHidden(true)
 			} else {
 				ZStack {
 					Rectangle()

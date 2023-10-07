@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import ImageIOSwiftUI
 
 class ImageWindowController: NSWindowController {
 	convenience init(imageUrl: URL, title: String) {
@@ -25,10 +24,10 @@ struct ImageWindowView: View {
 	let title: String
 	
 	var body: some View {
-		URLImageSourceView(
-			imageUrl,
-			isAnimationEnabled: true,
-			label: Text(title)
-		)
+		AsyncImage(url: imageUrl) { image in
+			image.resizable().scaledToFit()
+		} placeholder: {
+			Rectangle()
+		}
 	}
 }
