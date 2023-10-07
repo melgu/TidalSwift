@@ -61,14 +61,16 @@ struct ArtistView: View {
 		ZStack {
 			// TODO: Bring ScroolView back in?
 			if let artist = artist {
-				VStack(alignment: .leading) {
+				VStack(alignment: .leading, spacing: 0) {
 					headerSection(artist, viewState: viewState)
+						.padding(.bottom)
 					topTrackSection()
 					Divider()
+						.padding(.bottom)
 					bottomSection(artist)
 				}
 				.padding(.top, 50) // Has to be 50 instead of 40 like the others to look the same
-			}  else {
+			} else {
 				Text("Couldn't load Artist")
 			}
 			BackButton()
@@ -155,28 +157,30 @@ struct ArtistView: View {
 	}
 	
 	func bottomSection(_ artist: Artist) -> some View {
-		VStack {
-			HStack {
-				Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {
-					Text("Albums (\(albums.count))").tag(BottomSectionType.albums)
-					Text("EPs & Singles (\(epsAndSingles.count))").tag(BottomSectionType.epsAndSingles)
-					Text("Appearances (\(appearances.count))").tag(BottomSectionType.appearances)
-					Text("Videos (\(videos.count))").tag(BottomSectionType.videos)
-				}
-				.pickerStyle(SegmentedPickerStyle())
+		VStack(spacing: 0) {
+			Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {
+				Text("Albums (\(albums.count))").tag(BottomSectionType.albums)
+				Text("EPs & Singles (\(epsAndSingles.count))").tag(BottomSectionType.epsAndSingles)
+				Text("Appearances (\(appearances.count))").tag(BottomSectionType.appearances)
+				Text("Videos (\(videos.count))").tag(BottomSectionType.videos)
 			}
+			.pickerStyle(SegmentedPickerStyle())
+			.layoutPriority(-1)
+			
 			ScrollView {
-				if bottomSectionType == .albums {
-					AlbumGrid(albums: albums, showArtists: false, showReleaseDate: true, session: session, player: player)
-				} else if bottomSectionType == .epsAndSingles {
-					AlbumGrid(albums: epsAndSingles, showArtists: false, showReleaseDate: true, session: session, player: player)
-				} else if bottomSectionType == .appearances {
-					AlbumGrid(albums: appearances, showArtists: false, showReleaseDate: true, session: session, player: player)
-				} else if bottomSectionType == .videos {
-					VideoGrid(videos: videos, showArtists: false, session: session, player: player)
+				VStack {
+					if bottomSectionType == .albums {
+						AlbumGrid(albums: albums, showArtists: false, showReleaseDate: true, session: session, player: player)
+					} else if bottomSectionType == .epsAndSingles {
+						AlbumGrid(albums: epsAndSingles, showArtists: false, showReleaseDate: true, session: session, player: player)
+					} else if bottomSectionType == .appearances {
+						AlbumGrid(albums: appearances, showArtists: false, showReleaseDate: true, session: session, player: player)
+					} else if bottomSectionType == .videos {
+						VideoGrid(videos: videos, showArtists: false, session: session, player: player)
+					}
 				}
+				.padding(.top)
 			}
-			Spacer(minLength: 0)
 		}
 		.padding(.horizontal)
 	}
