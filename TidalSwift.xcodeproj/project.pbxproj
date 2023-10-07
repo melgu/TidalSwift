@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		B016FAF423575CB200ECE565 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B016FAF323575CB200ECE565 /* LoginView.swift */; };
+		B01AFBD62AD11347006B2AF4 /* Array+Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01AFBD52AD11347006B2AF4 /* Array+Element.swift */; };
 		B01B09CB234ADADB007A4E15 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CA234ADADB007A4E15 /* CreditsView.swift */; };
 		B01B09CD234B15D6007A4E15 /* Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CC234B15D6007A4E15 /* Lyrics.swift */; };
 		B01B09CF234B1C7B007A4E15 /* LyricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B09CE234B1C7B007A4E15 /* LyricsView.swift */; };
@@ -209,6 +210,7 @@
 
 /* Begin PBXFileReference section */
 		B016FAF323575CB200ECE565 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		B01AFBD52AD11347006B2AF4 /* Array+Element.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Element.swift"; sourceTree = "<group>"; };
 		B01B09CA234ADADB007A4E15 /* CreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsView.swift; sourceTree = "<group>"; };
 		B01B09CC234B15D6007A4E15 /* Lyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lyrics.swift; sourceTree = "<group>"; };
 		B01B09CE234B1C7B007A4E15 /* LyricsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsView.swift; sourceTree = "<group>"; };
@@ -676,6 +678,7 @@
 				B0A1E2782349EDE900BBC4F0 /* Color.swift */,
 				B0536C5C23D0D3350078EC4A /* Tooltips.swift */,
 				B0E8B8AB24D5C9540093A706 /* NSImage.swift */,
+				B01AFBD52AD11347006B2AF4 /* Array+Element.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1103,6 +1106,7 @@
 				B0D974CF230CC9BB00695388 /* ArtistGrid.swift in Sources */,
 				B0D62EA424E49D4D00F5AD4D /* TouchBarView.swift in Sources */,
 				B02382472348543E00BC2B0C /* NewReleases.swift in Sources */,
+				B01AFBD62AD11347006B2AF4 /* Array+Element.swift in Sources */,
 				B0D974D1230CC9C600695388 /* PlaylistGrid.swift in Sources */,
 				B0E8B8A524D5C70F0093A706 /* MixPlaylistView.swift in Sources */,
 				B086420923826C1A005402D1 /* PlaybackHistoryView.swift in Sources */,

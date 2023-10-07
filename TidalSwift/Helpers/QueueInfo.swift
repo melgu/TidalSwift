@@ -17,6 +17,10 @@ final class QueueInfo: ObservableObject {
 	@Published var history: [WrappedTrack] = []
 	var maxHistoryItems: Int = 100
 	
+	var currentItem: WrappedTrack? {
+		queue.element(at: currentIndex)
+	}
+	
 	func assignQueueIndices() {
 		// Crashes if nonShuffledQueue is shorter than Queue
 		for i in 0..<queue.count {

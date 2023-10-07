@@ -7,28 +7,18 @@
 //
 
 import SwiftUI
-import Combine
 import TidalSwiftLib
 
 struct LyricsView: View {
-	let lyricsHandler = Lyrics()
-	
 	@EnvironmentObject var queueInfo: QueueInfo
-	
-	@State var currentIndexCancellable: AnyCancellable?
-	@State var queueCancellable: AnyCancellable?
 	
 	@State var workItem: DispatchWorkItem?
 	@State var loadingState: LoadingState = .loading
 	
 	@State var lyrics: String?
-	@State var lastTrack: Track?
+	
 	var track: Track? {
-		if !queueInfo.queue.isEmpty {
-			return queueInfo.queue[queueInfo.currentIndex].track
-		} else {
-			return nil
-		}
+		queueInfo.currentItem?.track
 	}
 	
 	var body: some View {
@@ -72,51 +62,23 @@ struct LyricsView: View {
 			}
 			.padding()
 		}
-		.onAppear {
-			currentIndexCancellable = queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink(receiveValue: { _ in fetchLyrics() })
-			queueCancellable = queueInfo.$queue.receive(on: DispatchQueue.main).sink(receiveValue: { _ in fetchLyrics() })
-			fetchLyrics()
+		.task(id: queueInfo.queue) {
+			await fetchLyrics()
 		}
-		.onDisappear {
-			workItem?.cancel()
-			currentIndexCancellable?.cancel()
-			queueCancellable?.cancel()
+		.task(id: queueInfo.currentIndex) {
+			await fetchLyrics()
 		}
 	}
 	
-	func fetchLyrics() {
-//		print("Lyrics Fetch for \(track?.title ?? "nil")")
-		if track == lastTrack {
-//			print("Lyrics: Same as lastTrack")
+	private func fetchLyrics() async {
+		guard let track else {
+			loadingState = .error
 			return
 		}
-		lastTrack = track
-		workItem?.cancel()
-		loadingState = .loading
-		workItem = createWorkItem()
-		if let workItem = workItem {
-			DispatchQueue.global(qos: .userInitiated).async(execute: workItem)
-		}
-		
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		DispatchWorkItem {
-			guard let track = track else {
-				DispatchQueue.main.async {
-					loadingState = .error
-				}
-				return
-			}
-			let t = lyricsHandler.getLyrics(for: track)
-			DispatchQueue.main.async {
-				if t != nil {
-					lyrics = t
-					loadingState = .successful
-				} else {
-					loadingState = .error
-				}
-			}
+		do {
+			lyrics = try await Lyrics.shared.lyrics(for: track)
+		} catch {
+			loadingState = .error
 		}
 	}
 }
