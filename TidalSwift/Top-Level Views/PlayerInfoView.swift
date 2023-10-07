@@ -36,15 +36,13 @@ struct PlayerInfoView: View {
 					VolumeControl(player: player)
 					Spacer()
 					DownloadIndicator()
-					Image("quote.bubble")
-						.primaryIconColor()
+					Image(systemName: "quote.bubble")
 						.toolTip("Lyrics")
 						.onTapGesture {
 							unowned let appDelegate = NSApp.delegate as? AppDelegate
 							appDelegate?.lyrics(self)
 						}
-					Image("list.dash")
-						.primaryIconColor()
+					Image(systemName: "list.dash")
 						.toolTip("Queue")
 						.onTapGesture {
 							unowned let appDelegate = NSApp.delegate as? AppDelegate
@@ -54,7 +52,6 @@ struct PlayerInfoView: View {
 			}
 			.frame(height: 30)
 			.padding([.top, .horizontal])
-//			Divider()
 		}
 	}
 }
@@ -146,15 +143,14 @@ struct PlaybackControls: View {
 	@EnvironmentObject var playbackInfo: PlaybackInfo
 	
 	var body: some View {
-		VStack {
+		VStack(spacing: 8) {
 			HStack {
 				Spacer()
 				Group {
 					if playbackInfo.shuffle {
 						Image(nsImage: NSImage(named: "shuffle")!.tint(color: .controlAccentColor))
 					} else {
-						Image("shuffle")
-							.primaryIconColor()
+						Image(systemName: "shuffle")
 							.onTapGesture {
 								playbackInfo.shuffle.toggle()
 							}
@@ -164,26 +160,22 @@ struct PlaybackControls: View {
 				.onTapGesture {
 					playbackInfo.shuffle.toggle()
 				}
-				Image("backward.fill")
-					.primaryIconColor()
+				Image(systemName: "backward.fill")
 					.onTapGesture {
 						player.previous()
 					}
 				if playbackInfo.playing {
-					Image("pause.fill")
-						.primaryIconColor()
+					Image(systemName: "pause.fill")
 						.onTapGesture {
 							player.pause()
 						}
 				} else {
-					Image("play.fill")
-						.primaryIconColor()
+					Image(systemName: "play.fill")
 						.onTapGesture {
 							player.play()
 						}
 				}
-				Image("forward.fill")
-					.primaryIconColor()
+				Image(systemName: "forward.fill")
 					.onTapGesture {
 						player.next()
 					}
@@ -193,8 +185,7 @@ struct PlaybackControls: View {
 					} else if playbackInfo.repeatState == .all {
 						Image(nsImage: NSImage(named: "repeat")!.tint(color: .controlAccentColor))
 					} else {
-						Image("repeat")
-							.primaryIconColor()
+						Image(systemName: "repeat")
 					}
 				}
 				.toolTip("Repeat")
@@ -247,7 +238,7 @@ struct VolumeControl: View {
 	
 	var body: some View {
 		HStack {
-			speakerSymbol()
+			speakerSymbol
 				.frame(width: 20, alignment: .leading)
 				.onTapGesture {
 					player.toggleMute()
@@ -271,20 +262,16 @@ struct VolumeControl: View {
 		}
 	}
 	
-	func speakerSymbol() -> some View {
-		Group {
-			Group { () -> Image in
-				if playbackInfo.volume > 0.66 {
-					return Image("speaker.3.fill")
-				} else if playbackInfo.volume > 0.33 {
-					return Image("speaker.2.fill")
-				} else if playbackInfo.volume > 0 {
-					return Image("speaker.1.fill")
-				} else {
-					return Image("speaker.fill") // or 􀊣
-				}
-			}
-			.primaryIconColor()
+	@ViewBuilder
+	var speakerSymbol: some View {
+		if playbackInfo.volume > 0.66 {
+			Image(systemName: "speaker.3.fill")
+		} else if playbackInfo.volume > 0.33 {
+			Image(systemName: "speaker.2.fill")
+		} else if playbackInfo.volume > 0 {
+			Image(systemName: "speaker.1.fill")
+		} else {
+			Image(systemName: "speaker.fill") // or 􀊣
 		}
 	}
 }

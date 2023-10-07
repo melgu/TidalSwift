@@ -47,8 +47,10 @@ struct PlaylistGridItem: View {
 					}
 				}
 				if playlist.isOffline(session: session) {
-					Image("cloud.fill-big")
-						.colorInvert()
+					Image(systemName: "cloud.fill")
+						.resizable()
+						.scaledToFit()
+						.frame(width: 30)
 						.shadow(radius: SHADOWRADIUS)
 						.padding(5)
 				}

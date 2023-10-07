@@ -57,22 +57,19 @@ struct PlaylistView: View {
 											.font(.title)
 											.lineLimit(2)
 										if playlist.isInFavorites(session: session) ?? true {
-											Image("heart.fill")
-												.primaryIconColor()
+											Image(systemName: "heart.fill")
 												.onTapGesture {
 													print("Remove from Favorites")
 													session.favorites?.removePlaylist(playlistId: playlist.uuid)
 												}
 										} else {
-											Image("heart")
-												.primaryIconColor()
+											Image(systemName: "heart")
 												.onTapGesture {
 													print("Add to Favorites")
 													session.favorites?.addPlaylist(playlistId: playlist.uuid)
 												}
 										}
-										Image("square.and.arrow.up")
-											.primaryIconColor()
+										Image(systemName: "square.and.arrow.up")
 											.onTapGesture {
 												Pasteboard.copy(string: playlist.url.absoluteString)
 											}
@@ -95,16 +92,20 @@ struct PlaylistView: View {
 								}
 							}
 							if playlist.isOffline(session: session) {
-								Image("cloud.fill-big")
-									.primaryIconColor()
+								Image(systemName: "cloud.fill")
+									.resizable()
+									.scaledToFit()
+									.frame(width: 30)
 									.onTapGesture {
 										print("Remove from Offline")
 										playlist.removeOffline(session: session)
 										viewState.refreshCurrentView()
 									}
 							} else {
-								Image("cloud-big")
-									.primaryIconColor()
+								Image(systemName: "cloud")
+									.resizable()
+									.scaledToFit()
+									.frame(width: 30)
 									.onTapGesture {
 										print("Add to Offline")
 										DispatchQueue.global(qos: .background).async {

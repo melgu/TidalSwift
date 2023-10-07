@@ -20,10 +20,10 @@ struct ReverseButton: View {
 		} label: {
 			if reversed {
 				Text("∨")
-//				Image("arrow.down")
+//				Image(systemName: "arrow.down")
 			} else {
 				Text("∧")
-//				Image("arrow.up")
+//				Image(systemName: "arrow.up")
 			}
 		}
 	}
@@ -133,8 +133,10 @@ struct FavoriteTracks: View {
 						Spacer()
 						LoadingSpinner()
 						if session.helpers.offline.saveFavoritesOffline {
-							Image("cloud.fill-big")
-								.primaryIconColor()
+							Image(systemName: "cloud.fill")
+								.resizable()
+								.scaledToFit()
+								.frame(width: 30)
 								.onTapGesture {
 									print("Remove from Offline")
 									session.helpers.offline.saveFavoritesOffline = false
@@ -142,8 +144,10 @@ struct FavoriteTracks: View {
 									viewState.refreshCurrentView()
 								}
 						} else {
-							Image("cloud-big")
-								.primaryIconColor()
+							Image(systemName: "cloud")
+								.resizable()
+								.scaledToFit()
+								.frame(width: 30)
 								.onTapGesture {
 									print("Add to Offline")
 									session.helpers.offline.saveFavoritesOffline = true

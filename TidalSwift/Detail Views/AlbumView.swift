@@ -56,8 +56,7 @@ struct AlbumView: View {
 											album.attributeHStack
 												.padding(.leading, -5)
 										}
-										Image("c.circle")
-											.primaryIconColor()
+										Image(systemName: "c.circle")
 											.toolTip("Credits")
 											.onTapGesture {
 												let controller = ResizableWindowController(rootView:
@@ -68,16 +67,14 @@ struct AlbumView: View {
 												controller.showWindow(nil)
 											}
 										if album.isInFavorites(session: session) ?? true {
-											Image("heart.fill")
-												.primaryIconColor()
+											Image(systemName: "heart.fill")
 												.onTapGesture {
 													print("Remove from Favorites")
 													session.favorites?.removeAlbum(albumId: album.id)
 													viewState.refreshCurrentView()
 												}
 										} else {
-											Image("heart")
-												.primaryIconColor()
+											Image(systemName: "heart")
 												.onTapGesture {
 													print("Add to Favorites")
 													session.favorites?.addAlbum(albumId: album.id)
@@ -85,8 +82,7 @@ struct AlbumView: View {
 												}
 										}
 										if let url = album.url {
-											Image("square.and.arrow.up")
-												.primaryIconColor()
+											Image(systemName: "square.and.arrow.up")
 												.toolTip("Copy URL")
 												.onTapGesture {
 													Pasteboard.copy(string: url.absoluteString)
@@ -113,8 +109,9 @@ struct AlbumView: View {
 							}
 							Group {
 								if album.isOffline(session: session) {
-									Image("cloud.fill-big")
-										.primaryIconColor()
+									Image(systemName: "cloud.fill")
+										.resizable()
+										.scaledToFit()
 										.onTapGesture {
 											print("Remove from Offline")
 											cloudPressed = false
@@ -123,11 +120,14 @@ struct AlbumView: View {
 										}
 								} else {
 									if cloudPressed {
-										Image("cloud.fill-big")
+										Image(systemName: "cloud.fill")
+											.resizable()
+											.scaledToFit()
 											.secondaryIconColor()
 									} else {
-										Image("cloud-big")
-											.primaryIconColor()
+										Image(systemName: "cloud")
+											.resizable()
+											.scaledToFit()
 											.onTapGesture {
 												print("Add to Offline")
 												cloudPressed = true
@@ -137,6 +137,7 @@ struct AlbumView: View {
 									}
 								}
 							}
+							.frame(width: 30)
 						}
 						.frame(height: 100)
 						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))

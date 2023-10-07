@@ -28,7 +28,6 @@
 		B02382472348543E00BC2B0C /* NewReleases.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02382462348543E00BC2B0C /* NewReleases.swift */; };
 		B039D69F2317480C00E6784F /* ImageWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B039D69E2317480C00E6784F /* ImageWindowController.swift */; };
 		B03B9ADE23A1FC2E00679A1A /* Offline.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03B9ADD23A1FC2E00679A1A /* Offline.swift */; };
-		B03B9AFA23A48AE200679A1A /* SF Symbols.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B03B9AF923A48AE200679A1A /* SF Symbols.xcassets */; };
 		B03F420B230DF66200587A4A /* PlaybackInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F420A230DF66200587A4A /* PlaybackInfo.swift */; };
 		B0443FF42305F7250019D0D8 /* TidalSwiftLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */; };
 		B0443FFD2305F7250019D0D8 /* TidalSwiftLib.h in Headers */ = {isa = PBXBuildFile; fileRef = B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -217,7 +216,6 @@
 		B027C675286DBA0A00FBC757 /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes; sourceTree = "<group>"; };
 		B039D69E2317480C00E6784F /* ImageWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWindowController.swift; sourceTree = "<group>"; };
 		B03B9ADD23A1FC2E00679A1A /* Offline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Offline.swift; sourceTree = "<group>"; };
-		B03B9AF923A48AE200679A1A /* SF Symbols.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "SF Symbols.xcassets"; sourceTree = "<group>"; };
 		B03F420A230DF66200587A4A /* PlaybackInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackInfo.swift; sourceTree = "<group>"; };
 		B0443FEB2305F7250019D0D8 /* TidalSwiftLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TidalSwiftLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0443FED2305F7250019D0D8 /* TidalSwiftLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TidalSwiftLib.h; sourceTree = "<group>"; };
@@ -577,7 +575,6 @@
 				B0A85FFA230DDB28000C4C4E /* Player.swift */,
 				B0E8B8A924D5C8F40093A706 /* Constants.swift */,
 				B0E8078F230615AE00E43B5D /* Assets.xcassets */,
-				B03B9AF923A48AE200679A1A /* SF Symbols.xcassets */,
 				B0E80794230615AE00E43B5D /* Main.storyboard */,
 				B0E80797230615AE00E43B5D /* Info.plist */,
 				B045A66D24626F7F001C8E3F /* Credits.rtf */,
@@ -941,7 +938,6 @@
 				B045A66E24626F7F001C8E3F /* Credits.rtf in Resources */,
 				B0E80796230615AE00E43B5D /* Main.storyboard in Resources */,
 				B0E80793230615AE00E43B5D /* Preview Assets.xcassets in Resources */,
-				B03B9AFA23A48AE200679A1A /* SF Symbols.xcassets in Resources */,
 				B0E80790230615AE00E43B5D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

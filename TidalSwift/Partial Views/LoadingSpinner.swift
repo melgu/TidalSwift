@@ -53,23 +53,25 @@ struct LoadingSpinner: View {
 	var body: some View {
 		Group {
 			if loadingState == .loading {
-				Image("arrow.2.circlepath-big")
-					.primaryIconColor()
-					.frame(width: 30, height: 30)
+				Image(systemName: "arrow.2.circlepath")
+					.resizable()
+					.scaledToFit()
 					.rotationEffect(animate ? .degrees(360) : .degrees(0))
 					.animation(.linear(duration: 1).repeatForever(autoreverses: false), value: animate)
 					.onAppear {
 						animate.toggle()
 					}
 			} else if loadingState == .error {
-				Image("wifi.exclamationmark-big")
-					.primaryIconColor()
+				Image(systemName: "wifi.exclamationmark")
+					.resizable()
+					.scaledToFit()
 					.toolTip("Your connection appears to be offline")
 					.onTapGesture {
 						viewState.refreshCurrentView()
 					}
 			}
 		}
+		.frame(width: 30, height: 30)
 	}
 }
 
