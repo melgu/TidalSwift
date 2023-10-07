@@ -82,21 +82,12 @@ struct SearchViewArtists: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(macOS 11.0, *) {
-					LazyHStack(alignment: .top) {
-						ForEach(artists) { artist in
-							ArtistGridItem(artist: artist, session: session, player: player)
-						}
+				LazyHStack(alignment: .top) {
+					ForEach(artists) { artist in
+						ArtistGridItem(artist: artist, session: session, player: player)
 					}
-					.padding(10)
-				} else {
-					HStack(alignment: .top) {
-						ForEach(artists) { artist in
-							ArtistGridItem(artist: artist, session: session, player: player)
-						}
-					}
-					.padding(10)
 				}
+				.padding(10)
 			}
 		}
 	}
@@ -114,21 +105,12 @@ struct SearchViewAlbums: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(macOS 11.0, *) {
-					LazyHStack(alignment: .top) {
-						ForEach(albums) { album in
-							AlbumGridItem(album: album, showArtists: true, session: session, player: player)
-						}
+				LazyHStack(alignment: .top) {
+					ForEach(albums) { album in
+						AlbumGridItem(album: album, showArtists: true, session: session, player: player)
 					}
-					.padding(10)
-				} else {
-					HStack(alignment: .top) {
-						ForEach(albums) { album in
-							AlbumGridItem(album: album, showArtists: true, session: session, player: player)
-						}
-					}
-					.padding(10)
 				}
+				.padding(10)
 			}
 		}
 	}
@@ -146,21 +128,12 @@ struct SearchViewPlaylists: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(macOS 11.0, *) {
-					LazyHStack(alignment: .top) {
-						ForEach(playlists) { playlist in
-							PlaylistGridItem(playlist: playlist, session: session, player: player)
-						}
+				LazyHStack(alignment: .top) {
+					ForEach(playlists) { playlist in
+						PlaylistGridItem(playlist: playlist, session: session, player: player)
 					}
-					.padding(10)
-				} else {
-					HStack(alignment: .top) {
-						ForEach(playlists) { playlist in
-							PlaylistGridItem(playlist: playlist, session: session, player: player)
-						}
-					}
-					.padding(10)
 				}
+				.padding(10)
 			}
 		}
 	}
@@ -178,21 +151,12 @@ struct SearchViewTracks: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(macOS 11.0, *) {
-					LazyHStack(alignment: .top) {
-						ForEach(tracks) { track in
-							TrackGridItem(track: track, showArtist: true, session: session, player: player)
-						}
+				LazyHStack(alignment: .top) {
+					ForEach(tracks) { track in
+						TrackGridItem(track: track, showArtist: true, session: session, player: player)
 					}
-					.padding(10)
-				} else {
-					HStack(alignment: .top) {
-						ForEach(tracks) { track in
-							TrackGridItem(track: track, showArtist: true, session: session, player: player)
-						}
-					}
-					.padding(10)
 				}
+				.padding(10)
 			}
 		}
 	}
@@ -210,21 +174,12 @@ struct SearchViewVideos: View {
 				.padding(.horizontal)
 			
 			ScrollView(.horizontal) {
-				if #available(macOS 11.0, *) {
-					LazyHStack(alignment: .top) {
-						ForEach(videos) { video in
-							VideoGridItem(video: video, showArtist: true, session: session, player: player)
-						}
+				LazyHStack(alignment: .top) {
+					ForEach(videos) { video in
+						VideoGridItem(video: video, showArtist: true, session: session, player: player)
 					}
-					.padding(10)
-				} else {
-					HStack(alignment: .top) {
-						ForEach(videos) { video in
-							VideoGridItem(video: video, showArtist: true, session: session, player: player)
-						}
-					}
-					.padding(10)
 				}
+				.padding(10)
 			}
 		}
 	}

@@ -16,19 +16,10 @@ struct ArtistGrid: View {
 	let player: Player
 	
 	var body: some View {
-		if #available(macOS 11.0, *) {
-			LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
-				ForEach(artists) { artist in
-					ArtistGridItem(artist: artist, session: session, player: player)
-				}
-			}
-		} else {
-			Grid(artists) { artist in
+		LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
+			ForEach(artists) { artist in
 				ArtistGridItem(artist: artist, session: session, player: player)
 			}
-			.gridStyle(
-				ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(200), spacing: 10)
-			)
 		}
 	}
 }

@@ -18,19 +18,10 @@ struct VideoGrid: View {
 	let player: Player
 	
 	var body: some View {
-		if #available(macOS 11.0, *) {
-			LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
-				ForEach(videos) { video in
-					VideoGridItem(video: video, showArtist: showArtists, session: session, player: player)
-				}
-			}
-		} else {
-			Grid(videos) { video in
+		LazyVGrid(columns: [GridItem(.adaptive(minimum: 170))]) {
+			ForEach(videos) { video in
 				VideoGridItem(video: video, showArtist: showArtists, session: session, player: player)
 			}
-			.gridStyle(
-				ModularGridStyle(.vertical, columns: .min(170), rows: .fixed(210), spacing: 10)
-			)
 		}
 	}
 }
