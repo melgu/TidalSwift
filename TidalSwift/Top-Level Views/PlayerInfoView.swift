@@ -25,8 +25,8 @@ struct PlayerInfoView: View {
 					TrackInfoView(player: player, session: session)
 						.frame(width: metrics.size.width / 2 - 100)
 						.contextMenu {
-							if !queueInfo.queue.isEmpty,
-							   let track = queueInfo.queue[queueInfo.currentIndex].track {
+							if !queueInfo.queue.isEmpty {
+								let track = queueInfo.queue[queueInfo.currentIndex].track
 								TrackContextMenu(track: track, session: session, player: player)
 							}
 						}
@@ -68,8 +68,8 @@ struct TrackInfoView: View {
 	
 	var body: some View {
 		HStack {
-			if !player.queueInfo.queue.isEmpty,
-			   let track = queueInfo.queue[queueInfo.currentIndex].track {
+			if !player.queueInfo.queue.isEmpty {
+				let track = queueInfo.queue[queueInfo.currentIndex].track
 				HStack {
 					if let coverUrlSmall = track.getCoverUrl(session: session, resolution: 320),
 					   let coverUrlBig = track.getCoverUrl(session: session, resolution: 1280) {
