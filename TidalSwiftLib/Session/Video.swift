@@ -16,22 +16,13 @@ public enum VideoOrder: String {
 }
 
 extension Session {
-	public func getVideo(videoId: Int) -> Video? {
+	public func video(videoId: Int) async -> Video? {
 		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)")!
-		let response = Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-		
-		guard let content = response.content else {
-			displayError(title: "Track Info failed (HTTP Error)", content: "Status Code: \(response.statusCode ?? -1)")
+		do {
+			let response: Video = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			return response
+		} catch {
 			return nil
 		}
-		
-		var videoResponse: Video?
-		do {
-			videoResponse = try customJSONDecoder.decode(Video.self, from: content)
-		} catch {
-			displayError(title: "Track Info Info failed (JSON Parse Error)", content: "\(error)")
-		}
-		
-		return videoResponse
 	}
 }

@@ -54,8 +54,8 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	public let index: Int?
 	public let itemUuid: UUID?
 	
-	public func isInFavorites(session: Session) -> Bool? {
-		session.favorites?.doFavoritesContainTrack(trackId: id)
+	public func isInFavorites(session: Session) async -> Bool? {
+		await session.favorites?.doFavoritesContainTrack(trackId: id)
 	}
 	
 	public func getCoverUrl(session: Session, resolution: Int) -> URL? {
@@ -66,20 +66,20 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		album.getCover(session: session, resolution: resolution)
 	}
 	
-	public func getCredits(session: Session) -> [Credit]? {
-		session.getTrackCredits(trackId: id)
+	public func getCredits(session: Session) async -> [Credit]? {
+		await session.trackCredits(trackId: id)
 	}
 	
-	public func getAudioUrl(session: Session, audioQuality: AudioQuality) -> URL? {
-		session.getAudioUrl(trackId: id, audioQuality: audioQuality)
+	public func audioUrl(session: Session, audioQuality: AudioQuality) async -> URL? {
+		await session.audioUrl(trackId: id, audioQuality: audioQuality)
 	}
 	
-	public func isOffline(session: Session) -> Bool {
-		session.helpers.offline.isTrackOffline(track: self)
+	public func isOffline(session: Session) async -> Bool {
+		await session.helpers.offline.isTrackOffline(track: self)
 	}
 	
-	public func radio(session: Session) -> [Track]? {
-		session.getTrackRadio(trackId: id)
+	public func radio(session: Session) async -> [Track]? {
+		await session.trackRadio(trackId: id)
 	}
 	
 	public static func == (lhs: Track, rhs: Track) -> Bool {

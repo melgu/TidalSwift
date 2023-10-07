@@ -75,11 +75,11 @@ public struct MixesGraphicImage: Codable {
 	public let type: MixesGraphicImageType
 	
 	public func getImageUrl(session: Session, resolution: Int) -> URL? {
-		session.getImageUrl(imageId: id, resolution: resolution)
+		session.imageUrl(imageId: id, resolution: resolution)
 	}
 	
 	public func getImage(session: Session, resolution: Int) -> NSImage? {
-		session.getImage(imageId: id, resolution: resolution)
+		session.image(imageId: id, resolution: resolution)
 	}
 }
 
