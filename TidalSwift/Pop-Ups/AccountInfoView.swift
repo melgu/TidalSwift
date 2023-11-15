@@ -25,7 +25,7 @@ struct AccountInfoView: View {
 						VStack {
 							Text("User")
 								.font(.title)
-							if let pictureUrl = user.getPictureUrl(session: session, resolution: 210) {
+							if let pictureUrl = user.pictureUrl(session: session, resolution: 210) {
 								AsyncImage(url: pictureUrl) { image in
 									image.resizable().scaledToFit()
 								} placeholder: {

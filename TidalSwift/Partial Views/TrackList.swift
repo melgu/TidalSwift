@@ -164,17 +164,21 @@ struct TrackRow: View {
 						Image(systemName: "heart.fill")
 							.onTapGesture {
 								print("Remove from Favorites")
-								session.favorites?.removeTrack(trackId: track.id)
-								session.helpers.offline.asyncSyncFavoriteTracks()
-								viewState.refreshCurrentView()
+								Task {
+									await session.favorites?.removeTrack(trackId: track.id)
+									await session.helpers.offline.asyncSyncFavoriteTracks()
+									viewState.refreshCurrentView()
+								}
 							}
 					} else {
 						Image(systemName: "heart")
 							.onTapGesture {
 								print("Add to Favorites")
-								session.favorites?.addTrack(trackId: track.id)
-								session.helpers.offline.asyncSyncFavoriteTracks()
-								viewState.refreshCurrentView()
+								Task {
+									await session.favorites?.addTrack(trackId: track.id)
+									await session.helpers.offline.asyncSyncFavoriteTracks()
+									viewState.refreshCurrentView()
+								}
 							}
 					}
 				}
