@@ -45,11 +45,13 @@ struct EditPlaylistView: View {
 					}
 					Button {
 						print("Rename \(playlist.title)")
-						let success = playlist.edit(title: playlistTitle, description: playlistDescription, session: self.session)
-						if success {
-							playlist.removeOffline(session: session)
-							playlistEditingValues.showEditModal = false
-							viewState.refreshCurrentView()
+						Task {
+							let success = await playlist.edit(title: playlistTitle, description: playlistDescription, session: session)
+							if success {
+								await playlist.removeOffline(session: session)
+								playlistEditingValues.showEditModal = false
+								viewState.refreshCurrentView()
+							}
 						}
 					} label: {
 						Text("Rename")

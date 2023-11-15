@@ -19,7 +19,7 @@ struct VideoGridItem: View {
 	
 	var body: some View {
 		VStack {
-			if let imageUrl = video.getImageUrl(session: session, resolution: 320) {
+			if let imageUrl = video.imageUrl(session: session, resolution: 320) {
 				AsyncImage(url: imageUrl) { image in
 					image.resizable().scaledToFit()
 				} placeholder: {
@@ -66,14 +66,14 @@ struct VideoGridItem: View {
 		.toolTip("\(video.title) – \(video.artists.formArtistString())")
 		.onTapGesture(count: 2) {
 			print("Play Video: \(video.title)")
-			guard let url = video.getVideoUrl(session: session) else {
-				return
+			Task {
+				guard let url = await video.videoUrl(session: session) else { return }
+				print(url)
+				player.pause()
+				let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
+				controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
+				controller.showWindow(nil)
 			}
-			print(url)
-			player.pause()
-			let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
-			controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
-			controller.showWindow(nil)
 		}
 		.contextMenu {
 			VideoContextMenu(video: video, session: session, player: player)

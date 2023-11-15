@@ -19,7 +19,7 @@ struct PlaylistContextMenu: View {
 	
 	var body: some View {
 		Group {
-//			Group{
+			Group{
 				Button {
 					player.add(playlist: playlist, .now)
 				} label: {
@@ -35,7 +35,7 @@ struct PlaylistContextMenu: View {
 				} label: {
 					Text("Add Last")
 				}
-//			}
+			}
 			Divider()
 			Group {
 				if playlist.creator.id == session.userId { // My playlist
