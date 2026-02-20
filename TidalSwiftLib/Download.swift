@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SDAVAssetExportSession
+import AVFoundation
 
 public final class DownloadStatus: ObservableObject {
 	@Published public var downloadingTasks: Int = 0
@@ -83,14 +83,6 @@ public class Download {
 		} catch {
 			displayError(title: "Error while downloading track", content: "Download failed for track \(track.title). Error: \(error)")
 			return false
-		}
-		
-		if audioQuality == .hifi || audioQuality == .master {
-			// Has to be done, as Tidal sometimes serves the files in a strange QuickTime container (qt), which doesn't support metadata tags.
-			// Or it's just flac and therefore doesn't work.
-			convertToALAC(path: path)
-			path.deletePathExtension()
-			path.appendPathExtension("m4a")
 		}
 		
 		await metadata.setMetadata(for: track, at: path)
@@ -209,47 +201,4 @@ func buildPath(baseLocation: DownloadLocation, parentFolder: String?, name: Stri
 		return nil
 	}
 	return path
-}
-
-func convertToALAC(path: URL) {
-	let tempPathString = path.deletingPathExtension().relativeString + "-temp." + path.pathExtension
-	let optionalTempPath = URL(string: tempPathString)
-	
-	guard let tempPath = optionalTempPath else {
-		displayError(title: "ALAC: Error creating path for temporary file", content: "Path: \(tempPathString)")
-		return
-	}
-	
-	do {
-		if FileManager.default.fileExists(atPath: tempPath.relativeString) {
-			try FileManager.default.removeItem(at: tempPath)
-		}
-		try FileManager.default.moveItem(at: path, to: tempPath)
-	} catch {
-		displayError(title: "ALAC: Error creating temporary file", content: "Error: \(error)")
-	}
-	
-	let avAsset = AVAsset(url: tempPath)
-	guard let encoder = SDAVAssetExportSession(asset: avAsset) else {
-		displayError(title: "ALAC: Couldn't create Export Session", content: "Path: \(path)")
-		return
-	}
-	encoder.outputFileType = AVFileType.m4a.rawValue
-	encoder.outputURL = path.deletingPathExtension().appendingPathExtension("m4a")
-	encoder.audioSettings = [AVFormatIDKey: kAudioFormatAppleLossless,
-							 AVEncoderBitDepthHintKey: 16,
-							 AVSampleRateKey: 44100,
-							 AVNumberOfChannelsKey: 2]
-	
-	let semaphore = DispatchSemaphore(value: 0)
-	encoder.exportAsynchronously {
-		semaphore.signal()
-	}
-	_ = semaphore.wait(timeout: DispatchTime.distantFuture)
-	
-	do {
-		try FileManager.default.removeItem(at: tempPath)
-	} catch {
-		displayError(title: "ALAC: Error deleting temporary file after conversion", content: "Error: \(error)")
-	}
 }
