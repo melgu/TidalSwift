@@ -50,7 +50,7 @@ struct LoginUser: Decodable {
 	let postalcode: String?
 	let usState: String?
 	let phoneNumber: String?
-	let birthday: String?
+//	let birthday: String? // FIXME: Appears to have been changed to a number
 	let gender: String?
 	let imageId: String?
 	let channelId: Int?
