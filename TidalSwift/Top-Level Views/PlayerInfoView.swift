@@ -16,6 +16,7 @@ struct PlayerInfoView: View {
 	
 	
 	@EnvironmentObject var queueInfo: QueueInfo
+	@EnvironmentObject var appModel: TidalSwiftAppModel
 	
 	var body: some View {
 		VStack {
@@ -36,18 +37,16 @@ struct PlayerInfoView: View {
 					VolumeControl(player: player)
 					Spacer()
 					DownloadIndicator()
-					Image(systemName: "quote.bubble")
-						.toolTip("Lyrics")
-						.onTapGesture {
-							unowned let appDelegate = NSApp.delegate as? AppDelegate
-							appDelegate?.lyrics(self)
-						}
-					Image(systemName: "list.dash")
-						.toolTip("Queue")
-						.onTapGesture {
-							unowned let appDelegate = NSApp.delegate as? AppDelegate
-							appDelegate?.queue(self)
-						}
+						Image(systemName: "quote.bubble")
+							.toolTip("Lyrics")
+							.onTapGesture {
+								appModel.showLyricsWindow()
+							}
+						Image(systemName: "list.dash")
+							.toolTip("Queue")
+							.onTapGesture {
+								appModel.showQueueWindow()
+							}
 				}
 			}
 			.frame(height: 30)
