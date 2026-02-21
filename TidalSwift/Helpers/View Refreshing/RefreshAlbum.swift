@@ -20,7 +20,7 @@ extension ViewState {
 			return
 		}
 		
-		view.tracks = cache.albumTracks[album.id] ?? session.helpers.offline.getTracks(for: album)
+		view.tracks = cache.albumTracks[album.id]
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
@@ -29,37 +29,39 @@ extension ViewState {
 	
 	var albumWI: DispatchWorkItem {
 		DispatchWorkItem { [self] in
-			guard var view = stack.last else {
-				return
-			}
-			
-			guard let album = stack.last?.album else {
-				view.loadingState = .error
-				replaceCurrentView(with: view)
-				return
-			}
-			
-			if album.releaseDate == nil {
-				print("Album incomplete. Loading complete album: \(album.title)")
-				if let tAlbum = session.getAlbum(albumId: album.id) {
-					view.album = tAlbum
-				} else {
+			Task {
+				guard var view = stack.last else {
+					return
+				}
+				
+				guard let album = stack.last?.album else {
 					view.loadingState = .error
 					replaceCurrentView(with: view)
 					return
 				}
+				
+				if album.releaseDate == nil {
+					print("Album incomplete. Loading complete album: \(album.title)")
+					if let tAlbum = await session.album(albumId: album.id) {
+						view.album = tAlbum
+					} else {
+						view.loadingState = .error
+						replaceCurrentView(with: view)
+						return
+					}
+				}
+				
+				view.tracks = await session.albumTracks(albumId: album.id)
+				
+				if view.tracks != nil {
+					view.loadingState = .successful
+					cache.albumTracks[album.id] = view.tracks
+				} else {
+					view.loadingState = .error
+					view.tracks = await session.helpers.offline.getTracks(for: album)
+				}
+				replaceCurrentView(with: view)
 			}
-			
-			view.tracks = session.getAlbumTracks(albumId: album.id)
-			
-			if view.tracks != nil {
-				view.loadingState = .successful
-				cache.albumTracks[album.id] = view.tracks
-			} else {
-				view.loadingState = .error
-				view.tracks = session.helpers.offline.getTracks(for: album)
-			}
-			replaceCurrentView(with: view)
 		}
 	}
 }

@@ -19,42 +19,52 @@ struct MixContextMenu: View {
 	var body: some View {
 		Group {
 			Button {
-				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-					player.add(tracks: tracks, .now)
+				Task {
+					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
+						player.add(tracks: tracks, .now)
+					}
 				}
 			} label: {
 				Text("Add Now")
 			}
 			Button {
-				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-					player.add(tracks: tracks, .next)
+				Task {
+					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
+						player.add(tracks: tracks, .next)
+					}
 				}
 			} label: {
 				Text("Add Next")
 			}
 			Button {
-				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-					player.add(tracks: tracks, .last)
+				Task {
+					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
+						player.add(tracks: tracks, .last)
+					}
 				}
 			} label: {
 				Text("Add Last")
 			}
 			Divider()
 			Button {
-				print("Add \(mix.title) to Playlist")
-				if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-					playlistEditingValues.tracks = tracks
-					playlistEditingValues.showAddTracksModal = true
+				Task {
+					print("Add \(mix.title) to Playlist")
+					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
+						await MainActor.run {
+							playlistEditingValues.tracks = tracks
+							playlistEditingValues.showAddTracksModal = true
+						}
+					}
 				}
 			} label: {
 				Text("Add to Playlist …")
 			}
 			Divider()
 			Button {
-				print("Download")
-				DispatchQueue.global(qos: .background).async {
-					if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
-						_ = session.helpers.download.download(tracks: tracks, parentFolder: mix.title)
+				Task {
+					print("Download")
+					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
+						_ = await session.helpers.download.download(tracks: tracks, parentFolder: mix.title)
 					}
 				}
 			} label: {

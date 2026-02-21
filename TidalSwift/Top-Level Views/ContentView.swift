@@ -45,10 +45,10 @@ struct ContentView: View {
 				TouchBarView(player: player, playbackInfo: player.playbackInfo)
 			}
 			.onAppear {
-				DispatchQueue.global().async {
-					let success = session.populateVariablesForAccessToken()
+				Task {
+					let success = await session.populateVariablesForAccessToken()
 					if !success {
-						DispatchQueue.main.async {
+						await MainActor.run {
 							loginInfo.showModal = true
 						}
 					}

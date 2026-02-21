@@ -18,6 +18,7 @@ struct EditPlaylistView: View {
 	@State var playlistTitle: String = ""
 	@State var playlistDescription: String = ""
 	@State var showEmptyNameWarning: Bool = false
+	@State private var isOffline: Bool = false
 	
 	var body: some View {
 		VStack {
@@ -31,7 +32,7 @@ struct EditPlaylistView: View {
 					.onAppear {
 						playlistDescription = playlist.description ?? ""
 					}
-				if playlist.isOffline(session: session) {
+				if isOffline {
 					Text("This playlist is saved offline, but won't anymore if renamed. You have to to add it to Offline items again manually, if you so desire.")
 						.foregroundColor(.secondary)
 				}
@@ -49,13 +50,18 @@ struct EditPlaylistView: View {
 							let success = await playlist.edit(title: playlistTitle, description: playlistDescription, session: session)
 							if success {
 								await playlist.removeOffline(session: session)
-								playlistEditingValues.showEditModal = false
-								viewState.refreshCurrentView()
+								await MainActor.run {
+									playlistEditingValues.showEditModal = false
+									viewState.refreshCurrentView()
+								}
 							}
 						}
 					} label: {
 						Text("Rename")
 					}
+				}
+				.task(id: playlist.uuid) {
+					isOffline = await playlist.isOffline(session: session)
 				}
 			} else {
 				Text("Missing Playlist")

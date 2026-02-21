@@ -16,20 +16,23 @@ struct VideoContextMenu: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@State private var isFavorite: Bool? = nil
 	
 	var body: some View {
 		Group {
 			if video.streamReady {
 				Button {
-					print("Play Video: \(video.title)")
-					guard let url = video.getVideoUrl(session: session) else {
-						return
+					Task {
+						print("Play Video: \(video.title)")
+						guard let url = await video.videoUrl(session: session) else {
+							return
+						}
+						print(url)
+						player.pause()
+						let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
+						controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
+						controller.showWindow(nil)
 					}
-					print(url)
-					player.pause()
-					let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
-					controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
-					controller.showWindow(nil)
 				} label: {
 					Text("Play")
 				}
@@ -51,18 +54,30 @@ struct VideoContextMenu: View {
 				Divider()
 			}
 			Group {
-				if video.isInFavorites(session: session) ?? true {
+				if isFavorite ?? true {
 					Button {
-						print("Remove from Favorites")
-						session.favorites?.removeVideo(videoId: video.id)
-						viewState.refreshCurrentView()
+						Task {
+							print("Remove from Favorites")
+							if await session.favorites?.removeVideo(videoId: video.id) == true {
+								await MainActor.run {
+									isFavorite = false
+									viewState.refreshCurrentView()
+								}
+							}
+						}
 					} label: {
 						Text("Remove from Favorites")
 					}
 				} else {
 					Button {
-						print("Add to Favorites")
-						session.favorites?.addVideo(videoId: video.id)
+						Task {
+							print("Add to Favorites")
+							if await session.favorites?.addVideo(videoId: video.id) == true {
+								await MainActor.run {
+									isFavorite = true
+								}
+							}
+						}
 					} label: {
 						Text("Add to Favorites")
 					}
@@ -76,7 +91,7 @@ struct VideoContextMenu: View {
 				}
 				if video.streamReady {
 					Divider()
-					if let imagegUrl = video.getImageUrl(session: session, resolution: 1280) {
+					if let imagegUrl = video.imageUrl(session: session, resolution: 1280) {
 						Button {
 							print("Preview Image")
 							let controller = ImageWindowController(
@@ -91,6 +106,9 @@ struct VideoContextMenu: View {
 					}
 				}
 			}
+		}
+		.task(id: video.id) {
+			isFavorite = await video.isInFavorites(session: session)
 		}
 	}
 }

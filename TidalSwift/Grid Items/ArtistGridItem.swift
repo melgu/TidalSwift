@@ -18,7 +18,7 @@ struct ArtistGridItem: View {
 	
 	var body: some View {
 		VStack {
-			if let pictureUrl = artist.getPictureUrl(session: session, resolution: 320) {
+			if let pictureUrl = artist.pictureUrl(session: session, resolution: 320) {
 				AsyncImage(url: pictureUrl) { image in
 					image.resizable().scaledToFit()
 				} placeholder: {

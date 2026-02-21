@@ -18,6 +18,7 @@ struct TrackContextMenu: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@State private var isFavorite: Bool? = nil
 	
 	init(track: Track, indexInPlaylist: Int? = nil, playlist: Playlist? = nil, session: Session, player: Player) {
 		self.track = track
@@ -71,25 +72,37 @@ struct TrackContextMenu: View {
 			}
 			Divider()
 			Group {
-					if track.isInFavorites(session: session) ?? false {
-						Button {
+				if isFavorite ?? false {
+					Button {
+						Task {
 							print("Remove from Favorites")
-							session.favorites?.removeTrack(trackId: track.id)
-							session.helpers.offline.asyncSyncFavoriteTracks()
-							viewState.refreshCurrentView()
-						} label: {
-							Text("Remove from Favorites")
+							if await session.favorites?.removeTrack(trackId: track.id) == true {
+								await session.helpers.offline.asyncSyncFavoriteTracks()
+								await MainActor.run {
+									isFavorite = false
+									viewState.refreshCurrentView()
+								}
+							}
 						}
-					} else {
-						Button {
-							print("Add to Favorites")
-							session.favorites?.addTrack(trackId: track.id)
-							session.helpers.offline.asyncSyncFavoriteTracks()
-							viewState.refreshCurrentView()
-						} label: {
-							Text("Add to Favorites")
-						}
+					} label: {
+						Text("Remove from Favorites")
 					}
+				} else {
+					Button {
+						Task {
+							print("Add to Favorites")
+							if await session.favorites?.addTrack(trackId: track.id) == true {
+								await session.helpers.offline.asyncSyncFavoriteTracks()
+								await MainActor.run {
+									isFavorite = true
+									viewState.refreshCurrentView()
+								}
+							}
+						}
+					} label: {
+						Text("Add to Favorites")
+					}
+				}
 				if track.streamReady {
 					Button {
 						print("Add \(track.title) to Playlist")
@@ -113,18 +126,20 @@ struct TrackContextMenu: View {
 				Divider()
 				if track.streamReady {
 					Button {
-						print("Download")
-						DispatchQueue.global(qos: .background).async {
-							_ = session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
+						Task {
+							print("Download")
+							_ = await session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
 						}
 					} label: {
 						Text("Download")
 					}
 					Divider()
 					Button {
-						print("Radio")
-						if let radioTracks = track.radio(session: session) {
-							player.add(tracks: radioTracks, .now)
+						Task {
+							print("Radio")
+							if let radioTracks = await track.radio(session: session) {
+								player.add(tracks: radioTracks, .now)
+							}
 						}
 					} label: {
 						Text("Radio")
@@ -162,6 +177,9 @@ struct TrackContextMenu: View {
 					}
 				}
 			}
+		}
+		.task(id: track.id) {
+			isFavorite = await track.isInFavorites(session: session)
 		}
 	}
 }

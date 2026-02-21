@@ -17,6 +17,7 @@ struct AlbumGridItem: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	@State private var isOffline: Bool = false
 	
 	init(album: Album, showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
 		self.album = album
@@ -61,7 +62,7 @@ struct AlbumGridItem: View {
 						}
 					}
 				}
-				if album.isOffline(session: session) {
+				if isOffline {
 					Image(systemName: "cloud.fill")
 						.resizable()
 						.scaledToFit()
@@ -122,6 +123,9 @@ struct AlbumGridItem: View {
 		}
 		.contextMenu {
 			AlbumContextMenu(album: album, session: session, player: player)
+		}
+		.task(id: album.id) {
+			isOffline = await album.isOffline(session: session)
 		}
 	}
 	

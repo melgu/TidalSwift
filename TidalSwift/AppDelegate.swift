@@ -12,7 +12,7 @@ import Combine
 import TidalSwiftLib
 import UpdateNotification
 
-@NSApplicationMain
+@NSApplicationMain @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	var window: NSWindow!
@@ -284,7 +284,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 		updateCheck(showNoUpdatesAlert: false)
 		
-		session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
+		Task {
+			await session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
+		}
 		
 		// Shouldn't interfere with View State as the view doesn't replace the existing one if it's not New Releases
 		DispatchQueue.global(qos: .background).async(execute: viewState.newReleasesWI)
@@ -322,6 +324,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	
+	@MainActor
 	func savePlaybackState() {
 		let codablePI = CodablePlaybackInfo(fraction: player.playbackInfo.fraction,
 											volume: player.playbackInfo.volume,
@@ -376,6 +379,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		UserDefaults.standard.set(viewCacheData, forKey: "ViewCache")
 	}
 	
+	@MainActor
 	func saveState() {
 		session.saveConfig()
 		session.saveSession()
@@ -393,6 +397,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playlistEditingValues.showEditModal = false
 	}
 	
+	@MainActor
 	func initCancellables() {
 		playingCancellable = player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
 		shuffleCancellable = player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
@@ -550,8 +555,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func downloadTrack(_ sender: Any) {
 		print("Menu: downloadTrack")
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
-		DispatchQueue.global(qos: .background).async { [self] in
-			_ = self.session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
+		Task { [self] in
+			_ = await session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
 		}
 	}
 	@IBAction func downloadAlbum(_ sender: Any) {
@@ -600,17 +605,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBOutlet weak var addToFavorites: NSMenuItem!
 	@IBAction func addToFavorites(_ sender: Any) {
-		session.favorites?.addTrack(trackId: player.queueInfo.queue[player.queueInfo.currentIndex].track.id)
-		session.helpers.offline.asyncSyncFavoriteTracks()
-		favoriteLabel(currentIndex: player.queueInfo.currentIndex)
-		viewState.refreshCurrentView()
+		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].track.id
+		Task {
+			if await session.favorites?.addTrack(trackId: trackId) == true {
+				await session.helpers.offline.asyncSyncFavoriteTracks()
+				await MainActor.run {
+					favoriteLabel(currentIndex: player.queueInfo.currentIndex)
+					viewState.refreshCurrentView()
+				}
+			}
+		}
 	}
 	@IBOutlet weak var removeFromFavorites: NSMenuItem!
 	@IBAction func removeFromFavorites(_ sender: Any) {
-		session.favorites?.removeTrack(trackId: player.queueInfo.queue[player.queueInfo.currentIndex].track.id)
-		session.helpers.offline.asyncSyncFavoriteTracks()
-		favoriteLabel(currentIndex: player.queueInfo.currentIndex)
-		viewState.refreshCurrentView()
+		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].track.id
+		Task {
+			if await session.favorites?.removeTrack(trackId: trackId) == true {
+				await session.helpers.offline.asyncSyncFavoriteTracks()
+				await MainActor.run {
+					favoriteLabel(currentIndex: player.queueInfo.currentIndex)
+					viewState.refreshCurrentView()
+				}
+			}
+		}
 	}
 	
 	@IBOutlet weak var addToPlaylist: NSMenuItem!
@@ -622,15 +639,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 	@IBOutlet weak var albumAddFavorites: NSMenuItem!
 	@IBAction func albumAddFavorites(_ sender: Any) {
-		session.favorites?.addAlbum(albumId: player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id)
-		favoriteLabel(currentIndex: player.queueInfo.currentIndex)
-		viewState.refreshCurrentView()
+		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id
+		Task {
+			if await session.favorites?.addAlbum(albumId: albumId) == true {
+				await MainActor.run {
+					favoriteLabel(currentIndex: player.queueInfo.currentIndex)
+					viewState.refreshCurrentView()
+				}
+			}
+		}
 	}
 	@IBOutlet weak var albumRemoveFavorites: NSMenuItem!
 	@IBAction func albumRemoveFavorites(_ sender: Any) {
-		session.favorites?.removeAlbum(albumId: player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id)
-		favoriteLabel(currentIndex: player.queueInfo.currentIndex)
-		viewState.refreshCurrentView()
+		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id
+		Task {
+			if await session.favorites?.removeAlbum(albumId: albumId) == true {
+				await MainActor.run {
+					favoriteLabel(currentIndex: player.queueInfo.currentIndex)
+					viewState.refreshCurrentView()
+				}
+			}
+		}
 	}
 	
 	func favoriteLabel(currentIndex: Int) {
@@ -656,23 +685,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		addToPlaylist.isEnabled = true
 		albumAddFavorites.isEnabled = true
 		
-		let trackIsInFavorites = player.queueInfo.queue[currentIndex].track.isInFavorites(session: session)
-		if trackIsInFavorites ?? false {
-			addToFavorites.isHidden = true
-			removeFromFavorites.isHidden = false
-		} else {
-			addToFavorites.isHidden = false
-			removeFromFavorites.isHidden = true
-		}
-		
-		let albumIsInFavorites = player.queueInfo.queue[currentIndex].track.album.isInFavorites(session: session)
-		if albumIsInFavorites ?? false {
-			albumAddFavorites.isHidden = true
-			albumRemoveFavorites.isHidden = false
-		} else {
-			albumAddFavorites.isHidden = false
-			albumRemoveFavorites.isHidden = true
-			albumAddFavorites.isEnabled = true
+		Task {
+			let trackIsInFavorites = await player.queueInfo.queue[currentIndex].track.isInFavorites(session: session) ?? false
+			let albumIsInFavorites = await player.queueInfo.queue[currentIndex].track.album.isInFavorites(session: session) ?? false
+			await MainActor.run {
+				if trackIsInFavorites {
+					addToFavorites.isHidden = true
+					removeFromFavorites.isHidden = false
+				} else {
+					addToFavorites.isHidden = false
+					removeFromFavorites.isHidden = true
+				}
+				
+				if albumIsInFavorites {
+					albumAddFavorites.isHidden = true
+					albumRemoveFavorites.isHidden = false
+				} else {
+					albumAddFavorites.isHidden = false
+					albumRemoveFavorites.isHidden = true
+					albumAddFavorites.isEnabled = true
+				}
+			}
 		}
 	}
 	
@@ -812,23 +845,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	@IBAction func accountInfo(_ sender: Any) {
 		guard let userId = session.userId else { return }
-		guard let title = session.getUser(userId: userId)?.username else { return }
-		let controller = ResizableWindowController(rootView:
-			AccountInfoView(session: session)
-		)
-		controller.window?.title = title
-		controller.showWindow(nil)
+		Task {
+			guard let user = await session.user(userId: userId) else { return }
+			await MainActor.run {
+				let controller = ResizableWindowController(rootView:
+					AccountInfoView(session: session)
+				)
+				controller.window?.title = user.username
+				controller.showWindow(nil)
+			}
+		}
 	}
 	@IBAction func refreshAccessToken(_ sender: Any) {
-		session.refreshAccessToken()
+		Task {
+			await session.refreshAccessToken()
+		}
 	}
 	@IBAction func logout(_ sender: Any) {
 		removeAllOfflineContent(self)
 		logout()
 	}
 	@IBAction func removeAllOfflineContent(_ sender: Any) {
-		session.helpers.offline.removeAll()
-		viewState.clearEverything() // Also clears Cache
+		Task {
+			await session.helpers.offline.removeAll()
+			await MainActor.run {
+				viewState.clearEverything() // Also clears Cache
+			}
+		}
 	}
 	
 	// MARK: - Window

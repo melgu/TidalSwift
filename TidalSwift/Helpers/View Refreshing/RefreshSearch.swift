@@ -38,19 +38,21 @@ extension ViewState {
 	
 	func searchWI(searchTerm: String) -> DispatchWorkItem {
 		DispatchWorkItem { [self] in
-			let t = session.search(for: searchTerm)
-			
-			var view = TidalSwiftView(viewType: .search)
-			if t != nil {
-				view.searchResponse = t
-				view.loadingState = .successful
-				cache.searchResponses[searchTerm] = t
-			} else {
-				view.searchResponse = cache.searchResponses[searchTerm]
-				view.loadingState = .error
+			Task {
+				let t = await session.search(for: searchTerm)
+				
+				var view = TidalSwiftView(viewType: .search)
+				if t != nil {
+					view.searchResponse = t
+					view.loadingState = .successful
+					cache.searchResponses[searchTerm] = t
+				} else {
+					view.searchResponse = cache.searchResponses[searchTerm]
+					view.loadingState = .error
+				}
+				
+				replaceCurrentView(with: view)
 			}
-			
-			replaceCurrentView(with: view)
 		}
 	}
 }

@@ -29,6 +29,7 @@ struct ArtistView: View {
 	}
 	
 	@State var bottomSectionType: BottomSectionType = .albums
+	@State private var isFavorite: Bool? = nil
 	
 	init(session: Session, player: Player, viewState: ViewState) {
 		self.session = session
@@ -75,12 +76,16 @@ struct ArtistView: View {
 			}
 			BackButton()
 		}
+		.task(id: artist?.id) {
+			guard let artist else { return }
+			isFavorite = await artist.isInFavorites(session: session)
+		}
 	}
 	
 	func headerSection(_ artist: Artist, viewState: ViewState) -> some View {
 		HStack {
-			if let pictureUrlSmall = artist.getPictureUrl(session: session, resolution: 320),
-			   let pictureUrlBig = artist.getPictureUrl(session: session, resolution: 750) {
+		if let pictureUrlSmall = artist.pictureUrl(session: session, resolution: 320),
+		   let pictureUrlBig = artist.pictureUrl(session: session, resolution: 750) {
 				AsyncImage(url: pictureUrlSmall) { image in
 					image.resizable().scaledToFit()
 				} placeholder: {
@@ -116,21 +121,33 @@ struct ArtistView: View {
 							controller.window?.title = "Bio – \(artist.name)"
 							controller.showWindow(nil)
 						}
-					if artist.isInFavorites(session: session) ?? true {
-						Image(systemName: "heart.fill")
-							.onTapGesture {
+				if isFavorite ?? true {
+					Image(systemName: "heart.fill")
+						.onTapGesture {
+							Task {
 								print("Remove from Favorites")
-								session.favorites?.removeArtist(artistId: artist.id)
-								viewState.refreshCurrentView()
+								if await session.favorites?.removeArtist(artistId: artist.id) == true {
+									await MainActor.run {
+										isFavorite = false
+										viewState.refreshCurrentView()
+									}
+								}
 							}
-					} else {
-						Image(systemName: "heart")
-							.onTapGesture {
+						}
+				} else {
+					Image(systemName: "heart")
+						.onTapGesture {
+							Task {
 								print("Add to Favorites")
-								session.favorites?.addArtist(artistId: artist.id)
-								viewState.refreshCurrentView()
+								if await session.favorites?.addArtist(artistId: artist.id) == true {
+									await MainActor.run {
+										isFavorite = true
+										viewState.refreshCurrentView()
+									}
+								}
 							}
-					}
+						}
+				}
 					if let url = artist.url {
 						Image(systemName: "square.and.arrow.up")
 							.toolTip("Copy URL")

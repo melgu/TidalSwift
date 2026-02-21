@@ -16,6 +16,8 @@ struct AlbumContextMenu: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@State private var isFavorite: Bool? = nil
+	@State private var isOffline: Bool = false
 	
 	var body: some View {
 		Group {
@@ -55,55 +57,81 @@ struct AlbumContextMenu: View {
 				Divider()
 			}
 			Group {
-				if album.isInFavorites(session: session) ?? false {
+				if isFavorite ?? false {
 					Button {
-						print("Remove from Favorites")
-						session.favorites?.removeAlbum(albumId: album.id)
-						viewState.refreshCurrentView()
+						Task {
+							print("Remove from Favorites")
+							if await session.favorites?.removeAlbum(albumId: album.id) == true {
+								await MainActor.run {
+									isFavorite = false
+									viewState.refreshCurrentView()
+								}
+							}
+						}
 					} label: {
 						Text("Remove from Favorites")
 					}
 				} else {
 					Button {
-						print("Add to Favorites")
-						session.favorites?.addAlbum(albumId: album.id)
+						Task {
+							print("Add to Favorites")
+							if await session.favorites?.addAlbum(albumId: album.id) == true {
+								await MainActor.run {
+									isFavorite = true
+								}
+							}
+						}
 					} label: {
 						Text("Add to Favorites")
 					}
 				}
 				if album.streamReady ?? false {
 					Button {
-						print("Add \(album.title) to Playlist")
-						if let tracks = session.getAlbumTracks(albumId: album.id) {
-							playlistEditingValues.tracks = tracks
-							playlistEditingValues.showAddTracksModal = true
+						Task {
+							print("Add \(album.title) to Playlist")
+							if let tracks = await session.albumTracks(albumId: album.id) {
+								await MainActor.run {
+									playlistEditingValues.tracks = tracks
+									playlistEditingValues.showAddTracksModal = true
+								}
+							}
 						}
 					} label: {
 						Text("Add to Playlist …")
 					}
 					Divider()
 					Group {
-						if album.isOffline(session: session) {
+						if isOffline {
 							Button {
-								print("Remove from Offline")
-								album.removeOffline(session: session)
-								viewState.refreshCurrentView()
+								Task {
+									print("Remove from Offline")
+									await album.removeOffline(session: session)
+									await MainActor.run {
+										isOffline = false
+										viewState.refreshCurrentView()
+									}
+								}
 							} label: {
 								Text("Remove from Offline")
 							}
 						} else {
 							Button {
-								print("Add to Offline")
-								album.addOffline(session: session)
+								Task {
+									print("Add to Offline")
+									await album.addOffline(session: session)
+									await MainActor.run {
+										isOffline = true
+									}
+								}
 							} label: {
 								Text("Add to Offline")
 							}
 						}
 						
 						Button {
-							print("Download")
-							DispatchQueue.global(qos: .background).async {
-								_ = session.helpers.download.download(album: album)
+							Task {
+								print("Download")
+								_ = await session.helpers.download.download(album: album)
 							}
 						} label: {
 							Text("Download")
@@ -144,6 +172,10 @@ struct AlbumContextMenu: View {
 					}
 				}
 			}
+		}
+		.task(id: album.id) {
+			isFavorite = await album.isInFavorites(session: session)
+			isOffline = await album.isOffline(session: session)
 		}
 	}
 }

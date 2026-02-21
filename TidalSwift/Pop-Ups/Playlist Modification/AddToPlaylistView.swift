@@ -11,7 +11,9 @@ import TidalSwiftLib
 
 struct AddToPlaylistView: View {
 	let session: Session
-	let playlists: [Playlist]?
+	
+	@State private var playlists: [Playlist]? = nil
+	@State private var isLoadingPlaylists = false
 	
 	@ObservedObject var playlistEditingValues: PlaylistEditingValues
 	@ObservedObject var viewState: ViewState
@@ -23,7 +25,6 @@ struct AddToPlaylistView: View {
 	
 	init(session: Session, playlistEditingValues: PlaylistEditingValues, viewState: ViewState) {
 		self.session = session
-		self.playlists = session.favorites?.userPlaylists()
 		self.playlistEditingValues = playlistEditingValues
 		self.viewState = viewState
 	}
@@ -63,31 +64,45 @@ struct AddToPlaylistView: View {
 						Text("Cancel")
 					}
 					Button {
-						print("Add to \(selectedPlaylist)")
-						guard !playlistEditingValues.tracks.isEmpty else {
-							print("Tried to add zero tracks to a playlist")
-							return
-						}
-						if selectedPlaylist == "_newPlaylist" {
-							guard !newPlaylistName.isEmpty else {
-								print("Playlist name can't be empty")
-								showEmptyNameWarning = true
+						Task {
+							print("Add to \(selectedPlaylist)")
+							guard !playlistEditingValues.tracks.isEmpty else {
+								print("Tried to add zero tracks to a playlist")
 								return
 							}
-							guard let playlist = session.playlistEditing.create(title: newPlaylistName, description: newPlaylistDescription) else {
-								print("Error creating Playlist")
-								return
+							var playlistId = selectedPlaylist
+							if playlistId == "_newPlaylist" {
+								guard !newPlaylistName.isEmpty else {
+									print("Playlist name can't be empty")
+									await MainActor.run {
+										showEmptyNameWarning = true
+									}
+									return
+								}
+								guard let playlist = await session.playlistEditing.create(title: newPlaylistName, description: newPlaylistDescription) else {
+									print("Error creating Playlist")
+									return
+								}
+								playlistId = playlist.uuid
+								await MainActor.run {
+									selectedPlaylist = playlistId
+								}
 							}
-							selectedPlaylist = playlist.uuid
-						}
-						let ids = playlistEditingValues.tracks.map { $0.id }
-						let success = session.playlistEditing.addTracks(ids, to: selectedPlaylist, duplicate: false)
-						if success {
-							if let playlist = session.getPlaylist(playlistId: selectedPlaylist) {
-								session.helpers.offline.syncPlaylist(playlist)
-								viewState.refreshCurrentView()
+							let ids = playlistEditingValues.tracks.map { $0.id }
+							let success = await session.playlistEditing.addTracks(ids, to: playlistId, duplicate: false)
+							if success {
+								if let playlist = await session.playlist(playlistId: playlistId) {
+									await session.helpers.offline.syncPlaylist(playlist)
+									await MainActor.run {
+										viewState.refreshCurrentView()
+										playlistEditingValues.showAddTracksModal = false
+									}
+								} else {
+									await MainActor.run {
+										playlistEditingValues.showAddTracksModal = false
+									}
+								}
 							}
-							playlistEditingValues.showAddTracksModal = false
 						}
 					} label: {
 						Text("Add")
@@ -97,5 +112,19 @@ struct AddToPlaylistView: View {
 			}
 			.padding()
 		}
+		.task {
+			await loadPlaylistsIfNeeded()
+		}
+	}
+	
+	@MainActor
+	private func loadPlaylistsIfNeeded() async {
+		guard playlists == nil, !isLoadingPlaylists else { return }
+		isLoadingPlaylists = true
+		playlists = await session.favorites?.userPlaylists()
+		if selectedPlaylist.isEmpty {
+			selectedPlaylist = playlists?.first?.uuid ?? ""
+		}
+		isLoadingPlaylists = false
 	}
 }

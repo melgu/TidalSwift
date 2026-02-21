@@ -15,6 +15,7 @@ struct ArtistContextMenu: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	@State private var isFavorite: Bool? = nil
 	
 	var body: some View {
 		Group {
@@ -35,18 +36,30 @@ struct ArtistContextMenu: View {
 			}
 			Divider()
 			Group {
-				if artist.isInFavorites(session: session) ?? true {
+				if isFavorite ?? true {
 					Button {
-						print("Remove from Favorites")
-						session.favorites?.removeArtist(artistId: artist.id)
-						viewState.refreshCurrentView()
+						Task {
+							print("Remove from Favorites")
+							if await session.favorites?.removeArtist(artistId: artist.id) == true {
+								await MainActor.run {
+									isFavorite = false
+									viewState.refreshCurrentView()
+								}
+							}
+						}
 					} label: {
 						Text("Remove from Favorites")
 					}
 				} else {
 					Button {
-						print("Add to Favorites")
-						session.favorites?.addArtist(artistId: artist.id)
+						Task {
+							print("Add to Favorites")
+							if await session.favorites?.addArtist(artistId: artist.id) == true {
+								await MainActor.run {
+									isFavorite = true
+								}
+							}
+						}
 					} label: {
 						Text("Add to Favorites")
 					}
@@ -59,9 +72,9 @@ struct ArtistContextMenu: View {
 				Text("Offline")
 			}
 			Button {
-				print("Download all Albums of \(artist.name)")
-				DispatchQueue.global(qos: .background).async {
-					_ = session.helpers.download.downloadAllAlbums(from: artist)
+				Task {
+					print("Download all Albums of \(artist.name)")
+					_ = await session.helpers.download.downloadAllAlbums(from: artist)
 				}
 			} label: {
 				Text("Download all Albums")
@@ -69,14 +82,16 @@ struct ArtistContextMenu: View {
 			Divider()
 			Group {
 				Button {
-					print("Radio")
-					if let radioTracks = artist.radio(session: session) {
-						player.add(tracks: radioTracks, .now)
+					Task {
+						print("Radio")
+						if let radioTracks = await artist.radio(session: session) {
+							player.add(tracks: radioTracks, .now)
+						}
 					}
 				} label: {
 					Text("Radio")
 				}
-				if let pictureUrl = artist.getPictureUrl(session: session, resolution: 750) {
+				if let pictureUrl = artist.pictureUrl(session: session, resolution: 750) {
 					Button {
 						print("Picture")
 						let controller = ImageWindowController(
@@ -109,6 +124,9 @@ struct ArtistContextMenu: View {
 					}
 				}
 			}
+		}
+		.task(id: artist.id) {
+			isFavorite = await artist.isInFavorites(session: session)
 		}
 	}
 }

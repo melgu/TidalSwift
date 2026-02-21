@@ -23,11 +23,13 @@ struct TopDetailView: View {
 	var body: some View {
 		let selectionBinding = Binding<ViewType?>(
 			get: { viewState.stack.last?.viewType },
-			set: {
-//				print("Selection View: \($0?.rawValue ?? "nil")")
-				viewState.clearStack()
-				if let viewType = $0 {
-					viewState.push(view: TidalSwiftView(viewType: viewType))
+			set: { newValue in
+				Task {
+	//				print("Selection View: \(newValue?.rawValue ?? "nil")")
+					viewState.clearStack()
+					if let viewType = newValue {
+						viewState.push(view: TidalSwiftView(viewType: viewType))
+					}
 				}
 			})
 		return NavigationView {
@@ -88,7 +90,7 @@ struct SearchField: View {
 		TextField("Search", text: $searchTerm, onCommit: {
 			print("Search Commit: \(searchTerm)")
 			viewState.searchTerm = searchTerm
-			if !searchTerm.isEmpty && searchTerm != viewState.lastSearchTerm {
+			if !searchTerm.isEmpty /*&& searchTerm != viewState.lastSearchTerm*/ {
 				selection = .search
 			}
 		})

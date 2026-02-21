@@ -16,6 +16,8 @@ struct PlaylistContextMenu: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@State private var isFavorite: Bool? = nil
+	@State private var isOffline: Bool = false
 	
 	var body: some View {
 		Group {
@@ -54,27 +56,43 @@ struct PlaylistContextMenu: View {
 						Text("Delete Playlist …")
 					}
 				} else {
-					if playlist.isInFavorites(session: session) ?? false {
+					if isFavorite ?? false {
 						Button {
-							print("Remove from Favorites")
-							session.favorites?.removePlaylist(playlistId: playlist.uuid)
+							Task {
+								print("Remove from Favorites")
+								if await session.favorites?.removePlaylist(playlistId: playlist.uuid) == true {
+									await MainActor.run {
+										isFavorite = false
+									}
+								}
+							}
 						} label: {
 							Text("Remove from Favorites")
 						}
 					} else {
 						Button {
-							print("Add to Favorites")
-							session.favorites?.addPlaylist(playlistId: playlist.uuid)
+							Task {
+								print("Add to Favorites")
+								if await session.favorites?.addPlaylist(playlistId: playlist.uuid) == true {
+									await MainActor.run {
+										isFavorite = true
+									}
+								}
+							}
 						} label: {
 							Text("Add to Favorites")
 						}
 					}
 				}
 				Button {
-					print("Add \(playlist.title) to Playlist")
-					if let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) {
-						playlistEditingValues.tracks = tracks
-						playlistEditingValues.showAddTracksModal = true
+					Task {
+						print("Add \(playlist.title) to Playlist")
+						if let tracks = await session.playlistTracks(playlistId: playlist.uuid) {
+							await MainActor.run {
+								playlistEditingValues.tracks = tracks
+								playlistEditingValues.showAddTracksModal = true
+							}
+						}
 					}
 				} label: {
 					Text("Add to Playlist …")
@@ -82,20 +100,26 @@ struct PlaylistContextMenu: View {
 			}
 			Divider()
 			Group {
-				if playlist.isOffline(session: session) {
+				if isOffline {
 					Button {
-						print("Remove from Offline")
-						playlist.removeOffline(session: session)
-						viewState.refreshCurrentView()
+						Task {
+							print("Remove from Offline")
+							await playlist.removeOffline(session: session)
+							await MainActor.run {
+								isOffline = false
+								viewState.refreshCurrentView()
+							}
+						}
 					} label: {
 						Text("Remove from Offline")
 					}
 				} else {
 					Button {
-						print("Add to Offline")
-						DispatchQueue.global(qos: .background).async {
-							playlist.addOffline(session: session)
-							DispatchQueue.main.async {
+						Task {
+							print("Add to Offline")
+							await playlist.addOffline(session: session)
+							await MainActor.run {
+								isOffline = true
 								viewState.refreshCurrentView()
 							}
 						}
@@ -105,9 +129,9 @@ struct PlaylistContextMenu: View {
 				}
 				
 				Button {
-					print("Download")
-					DispatchQueue.global(qos: .background).async {
-						_ = session.helpers.download.download(playlist: playlist)
+					Task {
+						print("Download")
+						_ = await session.helpers.download.download(playlist: playlist)
 					}
 				} label: {
 					Text("Download")
@@ -115,7 +139,7 @@ struct PlaylistContextMenu: View {
 			}
 			Divider()
 			Group {
-				if let imageUrl = playlist.getImageUrl(session: session, resolution: 750) {
+				if let imageUrl = playlist.imageUrl(session: session, resolution: 750) {
 					Button {
 						print("Image")
 						let controller = ImageWindowController(
@@ -135,6 +159,10 @@ struct PlaylistContextMenu: View {
 					Text("Copy URL")
 				}
 			}
+		}
+		.task(id: playlist.uuid) {
+			isFavorite = await playlist.isInFavorites(session: session)
+			isOffline = await playlist.isOffline(session: session)
 		}
 	}
 }

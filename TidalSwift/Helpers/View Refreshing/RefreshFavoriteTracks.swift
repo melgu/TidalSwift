@@ -21,28 +21,30 @@ extension ViewState {
 	
 	var favoriteTracksWI: DispatchWorkItem {
 		DispatchWorkItem { [self] in
-			var view = TidalSwiftView(viewType: .favoriteTracks)
-			guard let favorites = session.favorites else {
-				view.tracks = cache.favoriteTracks
-				view.loadingState = .error
+			Task {
+				var view = TidalSwiftView(viewType: .favoriteTracks)
+				guard let favorites = session.favorites else {
+					view.tracks = cache.favoriteTracks
+					view.loadingState = .error
+					replaceCurrentView(with: view)
+					return
+				}
+				guard let favT = await favorites.tracks(order: .dateAdded, orderDirection: .descending) else {
+					view.tracks = cache.favoriteTracks
+					view.loadingState = .error
+					replaceCurrentView(with: view)
+					return
+				}
+				
+				let t = favT.unwrapped()
+				
+				view.tracks = t
+				view.loadingState = .successful
+				cache.favoriteTracks = t
+				
+				await session.helpers.offline.asyncSyncFavoriteTracks()
 				replaceCurrentView(with: view)
-				return
 			}
-			guard let favT = favorites.tracks(order: .dateAdded, orderDirection: .descending) else {
-				view.tracks = cache.favoriteTracks
-				view.loadingState = .error
-				replaceCurrentView(with: view)
-				return
-			}
-			
-			let t = favT.unwrapped()
-			
-			view.tracks = t
-			view.loadingState = .successful
-			cache.favoriteTracks = t
-			
-			session.helpers.offline.asyncSyncFavoriteTracks()
-			replaceCurrentView(with: view)
 		}
 	}
 }

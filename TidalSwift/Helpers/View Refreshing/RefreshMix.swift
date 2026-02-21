@@ -29,26 +29,28 @@ extension ViewState {
 	
 	var mixWI: DispatchWorkItem {
 		DispatchWorkItem { [self] in
-			guard var view = stack.last else {
-				return
-			}
-			
-			var t: [Track]?
-			if let mix = view.mix {
-				t = session.getMixPlaylistTracks(mixId: mix.id)
-				
-				if t != nil {
-					view.tracks = t
-					view.loadingState = .successful
-					cache.mixTracks[mix.id] = t
-				} else {
-					if let mixId = view.mix?.id {
-						view.tracks = cache.mixTracks[mixId]
-					}
-					view.loadingState = .error
+			Task {
+				guard var view = stack.last else {
+					return
 				}
 				
-				replaceCurrentView(with: view)
+				var t: [Track]?
+				if let mix = view.mix {
+					t = await session.mixPlaylistTracks(mixId: mix.id)
+					
+					if t != nil {
+						view.tracks = t
+						view.loadingState = .successful
+						cache.mixTracks[mix.id] = t
+					} else {
+						if let mixId = view.mix?.id {
+							view.tracks = cache.mixTracks[mixId]
+						}
+						view.loadingState = .error
+					}
+					
+					replaceCurrentView(with: view)
+				}
 			}
 		}
 	}

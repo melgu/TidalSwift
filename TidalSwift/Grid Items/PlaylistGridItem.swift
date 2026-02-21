@@ -15,11 +15,12 @@ struct PlaylistGridItem: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	@State private var isOffline: Bool = false
 	
 	var body: some View {
 		VStack {
 			ZStack(alignment: .bottomTrailing) {
-				if let imageUrl = playlist.getImageUrl(session: session, resolution: 320) {
+				if let imageUrl = playlist.imageUrl(session: session, resolution: 320) {
 					AsyncImage(url: imageUrl) { image in
 						image.resizable().scaledToFit()
 					} placeholder: {
@@ -46,7 +47,7 @@ struct PlaylistGridItem: View {
 							.frame(width: 160)
 					}
 				}
-				if playlist.isOffline(session: session) {
+				if isOffline {
 					Image(systemName: "cloud.fill")
 						.resizable()
 						.scaledToFit()
@@ -71,6 +72,9 @@ struct PlaylistGridItem: View {
 		}
 		.contextMenu {
 			PlaylistContextMenu(playlist: playlist, session: session, player: player)
+		}
+		.task(id: playlist.uuid) {
+			isOffline = await playlist.isOffline(session: session)
 		}
 	}
 }

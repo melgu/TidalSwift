@@ -16,6 +16,8 @@ struct AlbumView: View {
 	@EnvironmentObject var viewState: ViewState
 	
 	@State var cloudPressed: Bool = false
+	@State private var isFavorite: Bool? = nil
+	@State private var isOffline: Bool = false
 	
 	var body: some View {
 		ZStack {
@@ -66,21 +68,33 @@ struct AlbumView: View {
 												controller.window?.title = "Credits – \(album.title)"
 												controller.showWindow(nil)
 											}
-										if album.isInFavorites(session: session) ?? true {
-											Image(systemName: "heart.fill")
-												.onTapGesture {
-													print("Remove from Favorites")
-													session.favorites?.removeAlbum(albumId: album.id)
-													viewState.refreshCurrentView()
-												}
-										} else {
-											Image(systemName: "heart")
-												.onTapGesture {
-													print("Add to Favorites")
-													session.favorites?.addAlbum(albumId: album.id)
-													viewState.refreshCurrentView()
-												}
+						if isFavorite ?? true {
+							Image(systemName: "heart.fill")
+								.onTapGesture {
+									Task {
+										print("Remove from Favorites")
+										if await session.favorites?.removeAlbum(albumId: album.id) == true {
+											await MainActor.run {
+												isFavorite = false
+												viewState.refreshCurrentView()
+											}
 										}
+									}
+								}
+						} else {
+							Image(systemName: "heart")
+								.onTapGesture {
+									Task {
+										print("Add to Favorites")
+										if await session.favorites?.addAlbum(albumId: album.id) == true {
+											await MainActor.run {
+												isFavorite = true
+												viewState.refreshCurrentView()
+											}
+										}
+									}
+								}
+						}
 										if let url = album.url {
 											Image(systemName: "square.and.arrow.up")
 												.toolTip("Copy URL")
@@ -108,34 +122,46 @@ struct AlbumView: View {
 								}
 							}
 							Group {
-								if album.isOffline(session: session) {
-									Image(systemName: "cloud.fill")
-										.resizable()
-										.scaledToFit()
-										.onTapGesture {
-											print("Remove from Offline")
-											cloudPressed = false
-											album.removeOffline(session: session)
-											viewState.refreshCurrentView()
-										}
-								} else {
-									if cloudPressed {
+					if isOffline {
+						Image(systemName: "cloud.fill")
+							.resizable()
+							.scaledToFit()
+							.onTapGesture {
+								Task {
+									print("Remove from Offline")
+									await album.removeOffline(session: session)
+									await MainActor.run {
+										cloudPressed = false
+										isOffline = false
+										viewState.refreshCurrentView()
+									}
+								}
+							}
+					} else {
+						if cloudPressed {
 										Image(systemName: "cloud.fill")
 											.resizable()
 											.scaledToFit()
 											.secondaryIconColor()
 									} else {
-										Image(systemName: "cloud")
-											.resizable()
-											.scaledToFit()
-											.onTapGesture {
-												print("Add to Offline")
-												cloudPressed = true
-												album.addOffline(session: session)
-												viewState.refreshCurrentView()
-											}
+							Image(systemName: "cloud")
+								.resizable()
+								.scaledToFit()
+								.onTapGesture {
+									Task {
+										print("Add to Offline")
+										await MainActor.run {
+											cloudPressed = true
+										}
+										await album.addOffline(session: session)
+										await MainActor.run {
+											isOffline = true
+											viewState.refreshCurrentView()
+										}
 									}
 								}
+						}
+					}
 							}
 							.frame(width: 30)
 						}
@@ -154,6 +180,11 @@ struct AlbumView: View {
 				.padding(.top, 40)
 			}
 			BackButton()
+		}
+		.task(id: viewState.stack.last?.album?.id) {
+			guard let album = viewState.stack.last?.album else { return }
+			isFavorite = await album.isInFavorites(session: session)
+			isOffline = await album.isOffline(session: session)
 		}
 	}
 }

@@ -10,7 +10,7 @@ import SwiftUI
 import TidalSwiftLib
 
 struct AccountInfoView: View {
-	@State var session: Session
+	let session: Session
 	@State var user: User?
 	@State var subscription: Subscription?
 	
@@ -70,23 +70,23 @@ struct AccountInfoView: View {
 	
 	func createWorkItem() -> DispatchWorkItem {
 		DispatchWorkItem {
-			var tUser: User?
-			var tSubscription: Subscription?
-			
-			if let userId = session.userId {
-				tUser = session.getUser(userId: userId)
-			}
-			tSubscription = session.getSubscriptionInfo()
-			
-			if tUser != nil && tSubscription != nil {
-				DispatchQueue.main.async {
-					user = tUser
-					subscription = tSubscription
-					loadingState = .successful
+			Task {
+				var tUser: User?
+				let tSubscription: Subscription?
+				
+				if let userId = session.userId {
+					tUser = await session.user(userId: userId)
 				}
-			} else {
-				DispatchQueue.main.async {
-					loadingState = .error
+				tSubscription = await session.subscriptionInfo()
+				
+				await MainActor.run {
+					if tUser != nil && tSubscription != nil {
+						user = tUser
+						subscription = tSubscription
+						loadingState = .successful
+					} else {
+						loadingState = .error
+					}
 				}
 			}
 		}

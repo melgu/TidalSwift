@@ -163,9 +163,9 @@ struct LoginView: View {
 	
 	func setAuthorization() {
 		session.config.urlType = audioUrlType
-		DispatchQueue.global().async {
-			let loginSuccessful = session.setAccessToken(accessToken, refreshToken: refreshToken)
-			DispatchQueue.main.async {
+		Task {
+			let loginSuccessful = await session.setAccessToken(accessToken, refreshToken: refreshToken)
+			await MainActor.run {
 				if loginSuccessful {
 					successfulLogin(audioUrlType: audioUrlType)
 				} else {

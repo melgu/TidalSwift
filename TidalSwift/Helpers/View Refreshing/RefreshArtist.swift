@@ -33,42 +33,44 @@ extension ViewState {
 	
 	var artistWI: DispatchWorkItem {
 		DispatchWorkItem { [self] in
-			guard var view = stack.last else {
-				return
-			}
-			
-			guard let artist = stack.last?.artist else {
-				view.loadingState = .error
-				replaceCurrentView(with: view)
-				return
-			}
-			
-			if artist.url == nil {
-				print("Album incomplete. Loading complete Artist: \(artist.name)")
-				if let tArtist = session.getArtist(artistId: artist.id) {
-					view.artist = tArtist
-				} else {
+			Task {
+				guard var view = stack.last else {
+					return
+				}
+				
+				guard let artist = stack.last?.artist else {
 					view.loadingState = .error
 					replaceCurrentView(with: view)
 					return
 				}
+				
+				if artist.url == nil {
+					print("Album incomplete. Loading complete Artist: \(artist.name)")
+					if let tArtist = await session.artist(artistId: artist.id) {
+						view.artist = tArtist
+					} else {
+						view.loadingState = .error
+						replaceCurrentView(with: view)
+						return
+					}
+				}
+				
+				view.tracks = await session.artistTopTracks(artistId: artist.id, limit: 30, offset: 0)
+				view.albums = await session.artistAlbums(artistId: artist.id)
+				view.albumsEpsAndSingles = await session.artistAlbums(artistId: artist.id, filter: .epsAndSingles)
+				view.albumsAppearances = await session.artistAlbums(artistId: artist.id, filter: .appearances)
+				view.videos = await session.artistVideos(artistId: artist.id)
+				
+				if view.tracks != nil && view.albums != nil && view.videos != nil {
+					view.loadingState = .successful
+					cache.artistTopTracks[artist.id] = view.tracks
+					cache.artistAlbums[artist.id] = view.albums
+					cache.artistVideos[artist.id] = view.videos
+				} else {
+					view.loadingState = .error
+				}
+				replaceCurrentView(with: view)
 			}
-			
-			view.tracks = session.getArtistTopTracks(artistId: artist.id, limit: 30, offset: 0)
-			view.albums = session.getArtistAlbums(artistId: artist.id)
-			view.albumsEpsAndSingles = session.getArtistAlbums(artistId: artist.id, filter: .epsAndSingles)
-			view.albumsAppearances = session.getArtistAlbums(artistId: artist.id, filter: .appearances)
-			view.videos = session.getArtistVideos(artistId: artist.id)
-			
-			if view.tracks != nil && view.albums != nil && view.videos != nil {
-				view.loadingState = .successful
-				cache.artistTopTracks[artist.id] = view.tracks
-				cache.artistAlbums[artist.id] = view.albums
-				cache.artistVideos[artist.id] = view.videos
-			} else {
-				view.loadingState = .error
-			}
-			replaceCurrentView(with: view)
 		}
 	}
 }

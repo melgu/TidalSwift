@@ -64,16 +64,15 @@ struct ArtistBioView: View {
 	
 	func createWorkItem() -> DispatchWorkItem {
 		DispatchWorkItem {
-			let t = artist.bio(session: session)
-			
-			if t != nil {
-				DispatchQueue.main.async {
-					bio = t
-					loadingState = .successful
-				}
-			} else {
-				DispatchQueue.main.async {
-					loadingState = .error
+			Task {
+				let t = await artist.bio(session: session)
+				await MainActor.run {
+					if let t {
+						bio = t
+						loadingState = .successful
+					} else {
+						loadingState = .error
+					}
 				}
 			}
 		}

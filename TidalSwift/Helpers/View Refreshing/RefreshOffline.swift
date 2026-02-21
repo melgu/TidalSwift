@@ -14,29 +14,32 @@ extension ViewState {
 		guard var view = stack.last else {
 			return
 		}
-		
-		view.playlists = session.helpers.offline.allOfflinePlaylists()
-		view.loadingState = .successful
-		replaceCurrentView(with: view)
+		Task {
+			view.playlists = await session.helpers.offline.allOfflinePlaylists()
+			view.loadingState = .successful
+			replaceCurrentView(with: view)
+		}
 	}
 	
 	func offlineAlbums() {
 		guard var view = stack.last else {
 			return
 		}
-		
-		view.albums = session.helpers.offline.allOfflineAlbums()
-		view.loadingState = .successful
-		replaceCurrentView(with: view)
+		Task {
+			view.albums = await session.helpers.offline.allOfflineAlbums()
+			view.loadingState = .successful
+			replaceCurrentView(with: view)
+		}
 	}
 	
 	func offlineTracks() {
 		guard var view = stack.last else {
 			return
 		}
-		
-		view.tracks = session.helpers.offline.allOfflineTracks()
-		view.loadingState = .successful
-		replaceCurrentView(with: view)
+		Task {
+			view.tracks = await session.helpers.offline.allOfflineTracks()
+			view.loadingState = .successful
+			replaceCurrentView(with: view)
+		}
 	}
 }

@@ -33,12 +33,14 @@ struct MixGridItem: View {
 				.frame(width: 160)
 		}
 		.padding(5)
-		.onTapGesture(count: 2) {
-			print("Second Click. \(mix.title)")
-			if let tracks = session.getMixPlaylistTracks(mixId: mix.id) {
+	.onTapGesture(count: 2) {
+		print("Second Click. \(mix.title)")
+		Task {
+			if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
 				player.add(tracks: tracks, .now)
 			}
 		}
+	}
 		.onTapGesture(count: 1) {
 			print("First Click. \(mix.title)")
 			viewState.push(mix: mix)

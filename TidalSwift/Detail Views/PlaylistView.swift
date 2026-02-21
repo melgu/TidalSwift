@@ -14,6 +14,8 @@ struct PlaylistView: View {
 	let player: Player
 	
 	@EnvironmentObject var viewState: ViewState
+	@State private var isFavorite: Bool? = nil
+	@State private var isOffline: Bool = false
 	
 	var isUserPlaylist: Bool {
 		viewState.stack.last?.playlist?.creator.id == session.userId
@@ -25,8 +27,8 @@ struct PlaylistView: View {
 				VStack(alignment: .leading) {
 					if let tracks = viewState.stack.last?.tracks,
 					   let playlist = viewState.stack.last?.playlist,
-					   let imageUrlSmall = playlist.getImageUrl(session: session, resolution: 320),
-					   let imageUrlBig = playlist.getImageUrl(session: session, resolution: 750) {
+			   let imageUrlSmall = playlist.imageUrl(session: session, resolution: 320),
+			   let imageUrlBig = playlist.imageUrl(session: session, resolution: 750) {
 						ZStack(alignment: .bottomTrailing) {
 							HStack {
 								AsyncImage(url: imageUrlSmall) { image in
@@ -56,19 +58,33 @@ struct PlaylistView: View {
 										Text(playlist.title)
 											.font(.title)
 											.lineLimit(2)
-										if playlist.isInFavorites(session: session) ?? true {
-											Image(systemName: "heart.fill")
-												.onTapGesture {
-													print("Remove from Favorites")
-													session.favorites?.removePlaylist(playlistId: playlist.uuid)
-												}
-										} else {
-											Image(systemName: "heart")
-												.onTapGesture {
-													print("Add to Favorites")
-													session.favorites?.addPlaylist(playlistId: playlist.uuid)
-												}
+					if isFavorite ?? true {
+						Image(systemName: "heart.fill")
+							.onTapGesture {
+								Task {
+									print("Remove from Favorites")
+									if await session.favorites?.removePlaylist(playlistId: playlist.uuid) == true {
+										await MainActor.run {
+											isFavorite = false
+											viewState.refreshCurrentView()
 										}
+									}
+								}
+							}
+					} else {
+						Image(systemName: "heart")
+							.onTapGesture {
+								Task {
+									print("Add to Favorites")
+									if await session.favorites?.addPlaylist(playlistId: playlist.uuid) == true {
+										await MainActor.run {
+											isFavorite = true
+											viewState.refreshCurrentView()
+										}
+									}
+								}
+							}
+					}
 										Image(systemName: "square.and.arrow.up")
 											.onTapGesture {
 												Pasteboard.copy(string: playlist.url.absoluteString)
@@ -91,31 +107,37 @@ struct PlaylistView: View {
 									Spacer()
 								}
 							}
-							if playlist.isOffline(session: session) {
-								Image(systemName: "cloud.fill")
-									.resizable()
-									.scaledToFit()
-									.frame(width: 30)
-									.onTapGesture {
-										print("Remove from Offline")
-										playlist.removeOffline(session: session)
+					if isOffline {
+						Image(systemName: "cloud.fill")
+							.resizable()
+							.scaledToFit()
+							.frame(width: 30)
+							.onTapGesture {
+								Task {
+									print("Remove from Offline")
+									await playlist.removeOffline(session: session)
+									await MainActor.run {
+										isOffline = false
 										viewState.refreshCurrentView()
 									}
-							} else {
-								Image(systemName: "cloud")
-									.resizable()
-									.scaledToFit()
-									.frame(width: 30)
-									.onTapGesture {
-										print("Add to Offline")
-										DispatchQueue.global(qos: .background).async {
-											playlist.addOffline(session: session)
-											DispatchQueue.main.async {
-												viewState.refreshCurrentView()
-											}
-										}
-									}
+								}
 							}
+					} else {
+						Image(systemName: "cloud")
+							.resizable()
+							.scaledToFit()
+							.frame(width: 30)
+							.onTapGesture {
+								Task {
+									print("Add to Offline")
+									await playlist.addOffline(session: session)
+									await MainActor.run {
+										isOffline = true
+										viewState.refreshCurrentView()
+									}
+								}
+							}
+					}
 						}
 						.frame(height: 100)
 						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
@@ -134,6 +156,11 @@ struct PlaylistView: View {
 				.padding(.top, 40)
 			}
 			BackButton()
+		}
+		.task(id: viewState.stack.last?.playlist?.uuid) {
+			guard let playlist = viewState.stack.last?.playlist else { return }
+			isFavorite = await playlist.isInFavorites(session: session)
+			isOffline = await playlist.isOffline(session: session)
 		}
 	}
 }

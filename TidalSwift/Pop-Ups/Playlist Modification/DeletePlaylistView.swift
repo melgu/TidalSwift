@@ -28,12 +28,16 @@ struct DeletePlaylistView: View {
 						Text("Cancel")
 					}
 					Button {
-						print("Delete \(playlist.title)")
-						let success = playlist.delete(session: session)
-						if success {
-							playlist.removeOffline(session: session)
-							playlistEditingValues.showDeleteModal = false
-							viewState.refreshCurrentView()
+						Task {
+							print("Delete \(playlist.title)")
+							let success = await playlist.delete(session: session)
+							if success {
+								await playlist.removeOffline(session: session)
+								await MainActor.run {
+									playlistEditingValues.showDeleteModal = false
+									viewState.refreshCurrentView()
+								}
+							}
 						}
 					} label: {
 						Text("Delete")

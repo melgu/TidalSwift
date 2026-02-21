@@ -28,13 +28,17 @@ struct RemoveFromPlaylistView: View {
 						Text("Cancel")
 					}
 					Button {
-						let i = playlistEditingValues.indexToRemove!
-						print("Delete Index \(i) from \(playlist.title)")
-						let success = playlist.removeItem(atIndex: i, session: session)
-						if success {
-							session.helpers.offline.syncPlaylist(playlist)
-							viewState.refreshCurrentView()
-							playlistEditingValues.showRemoveTracksModal = false
+						Task {
+							let i = playlistEditingValues.indexToRemove!
+							print("Delete Index \(i) from \(playlist.title)")
+							let success = await playlist.removeItem(atIndex: i, session: session)
+							if success {
+								await session.helpers.offline.syncPlaylist(playlist)
+								await MainActor.run {
+									viewState.refreshCurrentView()
+									playlistEditingValues.showRemoveTracksModal = false
+								}
+							}
 						}
 					} label: {
 						Text("Delete")

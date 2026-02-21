@@ -55,21 +55,21 @@ struct CreditsView: View {
 	
 	func createWorkItem() -> DispatchWorkItem {
 		DispatchWorkItem {
-			var t: [Credit]?
-			if let track = track {
-				t = track.getCredits(session: session)
-			} else if let album = album {
-				t = album.getCredits(session: session)
-			}
-			
-			if t != nil {
-				DispatchQueue.main.async {
-					credits = t
-					loadingState = .successful
+			Task {
+				var t: [Credit]?
+				if let track = track {
+					t = await track.getCredits(session: session)
+				} else if let album = album {
+					t = await album.credits(session: session)
 				}
-			} else {
-				DispatchQueue.main.async {
-					loadingState = .error
+				
+				await MainActor.run {
+					if let t {
+						credits = t
+						loadingState = .successful
+					} else {
+						loadingState = .error
+					}
 				}
 			}
 		}

@@ -21,19 +21,21 @@ extension ViewState {
 	
 	var myMixesWI: DispatchWorkItem {
 		DispatchWorkItem { [self] in
-			let t = session.getMixes()
-			
-			var view = TidalSwiftView(viewType: .myMixes)
-			if t != nil {
-				view.mixes = t
-				view.loadingState = .successful
-				cache.mixes = t
-			} else {
-				view.mixes = cache.mixes
-				view.loadingState = .error
+			Task {
+				let t = await session.mixes()
+				
+				var view = TidalSwiftView(viewType: .myMixes)
+				if t != nil {
+					view.mixes = t
+					view.loadingState = .successful
+					cache.mixes = t
+				} else {
+					view.mixes = cache.mixes
+					view.loadingState = .error
+				}
+				
+				replaceCurrentView(with: view)
 			}
-			
-			replaceCurrentView(with: view)
 		}
 	}
 }

@@ -20,7 +20,7 @@ extension ViewState {
 			return
 		}
 		
-		view.tracks = cache.playlistTracks[playlist.id] ?? session.helpers.offline.getTracks(for: playlist)
+		view.tracks = cache.playlistTracks[playlist.id]
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
@@ -29,28 +29,30 @@ extension ViewState {
 	
 	var playlistWI: DispatchWorkItem {
 		DispatchWorkItem { [self] in
-			guard var view = stack.last else {
-				return
-			}
-			
-			guard let playlist = stack.last?.playlist else {
-				view.loadingState = .error
+			Task {
+				guard var view = stack.last else {
+					return
+				}
+				
+				guard let playlist = stack.last?.playlist else {
+					view.loadingState = .error
+					replaceCurrentView(with: view)
+					return
+				}
+				
+				view.tracks = await session.playlistTracks(playlistId: playlist.id)
+				
+				if view.tracks != nil {
+					view.loadingState = .successful
+					cache.playlistTracks[playlist.id] = view.tracks
+					await session.helpers.offline.syncPlaylist(playlist)
+				} else {
+					view.loadingState = .error
+					view.tracks = await session.helpers.offline.getTracks(for: playlist)
+				}
+				
 				replaceCurrentView(with: view)
-				return
 			}
-			
-			view.tracks = session.getPlaylistTracks(playlistId: playlist.id)
-			
-			if view.tracks != nil {
-				view.loadingState = .successful
-				cache.playlistTracks[playlist.id] = view.tracks
-				session.helpers.offline.syncPlaylist(playlist)
-			} else {
-				view.loadingState = .error
-				view.tracks = session.helpers.offline.getTracks(for: playlist)
-			}
-			
-			replaceCurrentView(with: view)
 		}
 	}
 }

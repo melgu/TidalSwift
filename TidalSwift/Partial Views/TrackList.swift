@@ -53,6 +53,8 @@ struct TrackRow: View {
 	
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var queueInfo: QueueInfo
+	@State private var isOffline: Bool = false
+	@State private var isFavorite: Bool? = nil
 	
 	init(track: Track, showCover: Bool = false, showArtist: Bool, showAlbum: Bool,
 		 trackNumber: Int? = nil, session: Session) {
@@ -147,7 +149,7 @@ struct TrackRow: View {
 				Group {
 					Text(secondsToHoursMinutesSecondsString(seconds: track.duration))
 					Spacer()
-					if track.isOffline(session: session) {
+					if isOffline {
 						Image(systemName: "cloud.fill")
 							.secondaryIconColor()
 					}
@@ -160,31 +162,43 @@ struct TrackRow: View {
 							controller.window?.title = "Credits – \(track.title)"
 							controller.showWindow(nil)
 						}
-					if track.isInFavorites(session: session) ?? false {
-						Image(systemName: "heart.fill")
-							.onTapGesture {
-								print("Remove from Favorites")
-								Task {
-									await session.favorites?.removeTrack(trackId: track.id)
+				if isFavorite ?? false {
+					Image(systemName: "heart.fill")
+						.onTapGesture {
+							print("Remove from Favorites")
+							Task {
+								if await session.favorites?.removeTrack(trackId: track.id) == true {
 									await session.helpers.offline.asyncSyncFavoriteTracks()
-									viewState.refreshCurrentView()
+									await MainActor.run {
+										isFavorite = false
+										viewState.refreshCurrentView()
+									}
 								}
 							}
-					} else {
-						Image(systemName: "heart")
-							.onTapGesture {
-								print("Add to Favorites")
-								Task {
-									await session.favorites?.addTrack(trackId: track.id)
+						}
+				} else {
+					Image(systemName: "heart")
+						.onTapGesture {
+							print("Add to Favorites")
+							Task {
+								if await session.favorites?.addTrack(trackId: track.id) == true {
 									await session.helpers.offline.asyncSyncFavoriteTracks()
-									viewState.refreshCurrentView()
+									await MainActor.run {
+										isFavorite = true
+										viewState.refreshCurrentView()
+									}
 								}
 							}
-					}
+						}
+				}
 				}
 			}
-			.foregroundColor(track.isUnavailable ? .secondary : .primary)
+		.foregroundColor(track.isUnavailable ? .secondary : .primary)
+		.task(id: track.id) {
+			isOffline = await track.isOffline(session: session)
+			isFavorite = await track.isInFavorites(session: session)
 		}
+	}
 		.lineLimit(1)
 		.frame(height: showCover ? 30 : 16) // Values tested "by hand"
 	}

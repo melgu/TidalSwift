@@ -12,6 +12,7 @@ import Combine
 import AVFoundation
 import TidalSwiftLib
 
+@MainActor
 class Player {
 	let session: Session
 	var autoplayAfterAddNow: Bool
@@ -177,6 +178,12 @@ class Player {
 	}
 	
 	private func avSetItem(from track: Track) {
+		Task {
+			await avSetItemAsync(from: track)
+		}
+	}
+	
+	private func avSetItemAsync(from track: Track) async {
 //		print("avSetItem(): \(track.title)")
 		let wasPlaying = playbackInfo.playing
 		pause()
@@ -196,10 +203,10 @@ class Player {
 		}
 		
 		let url: URL
-		if let offlineUrl = session.helpers.offline.url(for: track, audioQuality: nextAudioQuality) {
+		if let offlineUrl = await session.helpers.offline.url(for: track, audioQuality: nextAudioQuality) {
 			url = offlineUrl
 		} else {
-			if let onlineUrl = track.getAudioUrl(session: session, audioQuality: nextAudioQuality) {
+			if let onlineUrl = await track.audioUrl(session: session, audioQuality: nextAudioQuality) {
 				url = onlineUrl
 			} else {
 				skip()
@@ -234,8 +241,12 @@ class Player {
 	}
 	
 	func add(playlist: Playlist, _ when: When) {
-		if let tracks = session.getPlaylistTracks(playlistId: playlist.uuid) ?? session.helpers.offline.getTracks(for: playlist) {
-			add(tracks: tracks, when)
+		Task {
+			let apiTracks = await session.playlistTracks(playlistId: playlist.uuid)
+			let offlineTracks = await session.helpers.offline.getTracks(for: playlist)
+			if let tracks = apiTracks ?? offlineTracks {
+				add(tracks: tracks, when)
+			}
 		}
 	}
 	
@@ -246,16 +257,22 @@ class Player {
 	}
 	
 	func add(album: Album, _ when: When) {
-		if let tracks = session.getAlbumTracks(albumId: album.id) ?? session.helpers.offline.getTracks(for: album) {
-			add(tracks: tracks, when)
-		} else if when == .now {
-			clearQueue()
+		Task {
+			let apiTracks = await session.albumTracks(albumId: album.id)
+			let offlineTracks = await session.helpers.offline.getTracks(for: album)
+			if let tracks = apiTracks ?? offlineTracks {
+				add(tracks: tracks, when)
+			} else if when == .now {
+				clearQueue()
+			}
 		}
 	}
 	
 	func add(artist: Artist, _ when: When) {
-		if let tracks = session.getArtistTopTracks(artistId: artist.id) {
-			add(tracks: tracks, when)
+		Task {
+			if let tracks = await session.artistTopTracks(artistId: artist.id) {
+				add(tracks: tracks, when)
+			}
 		}
 	}
 	
