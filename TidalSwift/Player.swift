@@ -12,7 +12,6 @@ import Combine
 import AVFoundation
 import TidalSwiftLib
 
-@MainActor
 class Player {
 	let session: Session
 	var autoplayAfterAddNow: Bool

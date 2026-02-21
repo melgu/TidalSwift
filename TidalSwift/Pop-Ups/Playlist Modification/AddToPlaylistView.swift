@@ -117,7 +117,6 @@ struct AddToPlaylistView: View {
 		}
 	}
 	
-	@MainActor
 	private func loadPlaylistsIfNeeded() async {
 		guard playlists == nil, !isLoadingPlaylists else { return }
 		isLoadingPlaylists = true

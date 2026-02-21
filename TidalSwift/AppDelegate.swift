@@ -12,7 +12,7 @@ import Combine
 import TidalSwiftLib
 import UpdateNotification
 
-@NSApplicationMain @MainActor
+@NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	var window: NSWindow!
@@ -324,7 +324,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	
-	@MainActor
 	func savePlaybackState() {
 		let codablePI = CodablePlaybackInfo(fraction: player.playbackInfo.fraction,
 											volume: player.playbackInfo.volume,
@@ -379,7 +378,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		UserDefaults.standard.set(viewCacheData, forKey: "ViewCache")
 	}
 	
-	@MainActor
 	func saveState() {
 		session.saveConfig()
 		session.saveSession()
@@ -397,7 +395,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		playlistEditingValues.showEditModal = false
 	}
 	
-	@MainActor
 	func initCancellables() {
 		playingCancellable = player.playbackInfo.$playing.receive(on: DispatchQueue.main).sink(receiveValue: playLabel(playing:))
 		shuffleCancellable = player.playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: { [unowned self] in
