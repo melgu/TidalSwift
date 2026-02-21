@@ -28,14 +28,19 @@ extension Session {
 		}
 	}
 	
-	// FIXME: Currently uses the old API which returns HTTP-Calls inside the M3U manifest
-	// This breaks video playback in conjunction with sandboxing
 	func videoUrl(videoId: Int) async -> URL? {
-//		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/offlineUrl")! // Only returns low quality video
-		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/streamUrl")!
+		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/playbackinfo")!
+		var parameters = sessionParameters
+		parameters["videoquality"] = "HIGH"
+		parameters["playbackmode"] = "STREAM"
+		parameters["assetpresentation"] = "FULL"
 		do {
-			let response: VideoUrl = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-			return response.url.upgradedToHTTPS
+			let response: VideoPlaybackInfo = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			guard let decodedManifestData = Data(base64Encoded: response.manifest) else { return nil }
+			let manifest = try JSONDecoder().decode(VideoManifest.self, from: decodedManifestData)
+			guard let streamUrlString = manifest.urls.first else { return nil }
+			guard let streamUrl = URL(string: streamUrlString) else { return nil }
+			return streamUrl
 		} catch {
 			return nil
 		}

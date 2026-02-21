@@ -68,9 +68,13 @@ public struct Video: Codable, Equatable, Identifiable, Hashable {
 	}
 }
 
-struct VideoUrl: Decodable {
-	let url: URL
-	let videoQuality: String
+struct VideoPlaybackInfo: Decodable {
+	let manifest: String
+}
+
+struct VideoManifest: Decodable {
+	let mimeType: String
+	let urls: [String]
 }
 
 public enum VideoSorting: Int, Codable {
