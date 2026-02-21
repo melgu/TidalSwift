@@ -47,8 +47,6 @@ All state objects use `@Published` and are injected as `@EnvironmentObject` into
   Build the macOS app from CLI.
 - `xcodebuild -project TidalSwift.xcodeproj -scheme TidalSwiftLib -configuration Debug build`
   Build the framework target.
-- `swiftlint --config .swiftlint.yml`
-  Run lint checks using repository rules.
 
 There is no automated test suite. If `xcodebuild` fails due to local simulator/cache issues, build directly in Xcode and capture the exact error in the PR.
 
@@ -57,7 +55,7 @@ There is no automated test suite. If `xcodebuild` fails due to local simulator/c
 Use Swift defaults with tabs/indentation matching existing files.
 Types use `UpperCamelCase`; functions/properties use `lowerCamelCase`; file names match the primary type/feature (`ArtistView.swift`, `SearchResults.swift`).
 Prefer `async/await` over callback-style APIs for new async work (the codebase was recently migrated from callbacks).
-Run SwiftLint before opening a PR; follow `.swiftlint.yml` (some strict rules are intentionally disabled; opt-in rules like `empty_count` and `implicit_return` are enabled).
+Indentation using tabs.
 
 ## Commit & Pull Request Guidelines
 
