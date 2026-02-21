@@ -1,5 +1,5 @@
 {
-  "originHash" : "8c6b70031651288149d7b4801f4ebbd51548233ebed1563000ca16fdc884c712",
+  "originHash" : "dd551ac4b91ef2d556bfbf03866abaf524c4f9becf714f13384d12ee9de26452",
   "pins" : [
     {
       "identity" : "itunesgenreid",
@@ -53,24 +53,6 @@
       "state" : {
         "revision" : "8f3fb71937d842bc5b1245d2aca202a48ac5f0f9",
         "version" : "1.7.6"
-      }
-    },
-    {
-      "identity" : "swiftui-sliders",
-      "kind" : "remoteSourceControl",
-      "location" : "git@github.com:spacenation/swiftui-sliders.git",
-      "state" : {
-        "revision" : "d5a7d856655d5c91f891c2b69d982c30fd5c7bdf",
-        "version" : "2.1.0"
-      }
-    },
-    {
-      "identity" : "updatenotification",
-      "kind" : "remoteSourceControl",
-      "location" : "git@github.com:melgu/UpdateNotification.git",
-      "state" : {
-        "revision" : "aa6092d2ddcbc14a4149fad3856c3b50b805a430",
-        "version" : "1.2.0"
       }
     }
   ],

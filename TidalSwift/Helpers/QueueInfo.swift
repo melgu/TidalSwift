@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 import TidalSwiftLib
 
 final class QueueInfo: ObservableObject {

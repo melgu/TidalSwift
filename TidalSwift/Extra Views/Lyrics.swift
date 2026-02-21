@@ -6,7 +6,7 @@
 //  Copyright © 2019 Melvin Gundlach. All rights reserved.
 //
 
-import Foundation
+import SwiftUI
 import TidalSwiftLib
 
 private struct LyricsObject: Decodable {

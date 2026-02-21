@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 import TidalSwiftLib
 
 final class PlaylistEditingValues: ObservableObject {
