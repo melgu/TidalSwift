@@ -54,7 +54,7 @@ extension Network {
 		case .post:
 			request.httpMethod = "POST"
 			// If POST or DELETE, parameters are part of the body
-			request.httpBody = encodeParameters(parameters).data(using: String.Encoding.utf8)
+			request.httpBody = encodeParameters(parameters).data(using: .utf8)
 		case .delete:
 			request.httpMethod = "DELETE"
 			// If GET or DELETE, parameters are part of the URL
@@ -65,7 +65,7 @@ extension Network {
 		print("\(request.httpMethod!) Request with URL: \(request.url!.absoluteString)")
 		print("Headers: \(request.allHTTPHeaderFields!)")
 		if let httpBody = request.httpBody {
-			print("Body: \(String(data: httpBody, encoding: String.Encoding.utf8)!)")
+			print("Body: \(String(data: httpBody, encoding: .utf8)!)")
 		}
 		print("=======================")
 		
