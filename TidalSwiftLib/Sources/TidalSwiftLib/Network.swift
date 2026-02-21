@@ -79,7 +79,11 @@ extension Network {
 			etag = Int(etagSubString)
 		}
 		
-		print("responseString = \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
+		if let responseString = String(data: data, encoding: .utf8) {
+			print("Response: \(responseString)")
+		} else {
+			print("Response is not UTF8")
+		}
 		
 		return Response(data: data, etag: etag)
 	}
