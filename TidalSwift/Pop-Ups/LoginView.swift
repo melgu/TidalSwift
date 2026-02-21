@@ -107,7 +107,7 @@ struct LoginView: View {
 				Text("Offline").tag(AudioUrlType.offline)
 				Text("Streaming").tag(AudioUrlType.streaming)
 			})
-			Text("When choosing Offline, TidalSwift won't stop playback on official clients, but does not work with TV athorization details.")
+			Text("When choosing Offline, TidalSwift won't stop playback on official clients, but does not work with TV authorization details.")
 				.foregroundColor(.secondary)
 				.fixedSize(horizontal: false, vertical: true)
 			
