@@ -85,7 +85,7 @@ public class Download {
 			return false
 		}
 		
-		await metadata.setMetadata(for: track, at: path)
+//		await metadata.setMetadata(for: track, at: path)
 		print("Download Finished: \(filename)")
 		return true
 	}

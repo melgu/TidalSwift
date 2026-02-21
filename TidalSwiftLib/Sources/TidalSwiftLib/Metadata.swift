@@ -16,6 +16,7 @@ class Metadata {
 		self.session = session
 	}
 	
+	// Only works for M4A & MP3
 	func setMetadata(for track: Track, at path: URL) async {
 		print("FIXME: Set Metadata") // FIXME: Set Metadata
 		

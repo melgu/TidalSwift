@@ -22,18 +22,20 @@ extension Session {
 //			Codec: \(response.codec)
 //			""")
 			
-			return response.url
+			return response.url.upgradedToHTTPS
 		} catch {
 			return nil
 		}
 	}
 	
+	// FIXME: Currently uses the old API which returns HTTP-Calls inside the M3U manifest
+	// This breaks video playback in conjunction with sandboxing
 	func videoUrl(videoId: Int) async -> URL? {
 //		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/offlineUrl")! // Only returns low quality video
 		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/streamUrl")!
 		do {
 			let response: VideoUrl = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-			return response.url
+			return response.url.upgradedToHTTPS
 		} catch {
 			return nil
 		}
@@ -46,5 +48,14 @@ extension Session {
 		case .hifi, .master:
 			return "flac"
 		}
+	}
+}
+
+private extension URL {
+	var upgradedToHTTPS: URL {
+		guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else { return self }
+		guard components.scheme?.lowercased() == "http" else { return self }
+		components.scheme = "https"
+		return components.url ?? self
 	}
 }
