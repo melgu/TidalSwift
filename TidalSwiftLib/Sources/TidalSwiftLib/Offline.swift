@@ -160,6 +160,7 @@ public actor Offline {
 	private unowned let session: Session
 	private let downloadStatus: DownloadStatus
 	private let mainPath = "TidalSwift Offline Library"
+	@MainActor
 	public var uiRefreshFunc: () -> Void = {}
 	
 	@AppStorage("SaveFavoritesOffline") public var saveFavoritesOffline = false
@@ -329,7 +330,7 @@ public actor Offline {
 				}
 			}
 			invalidateOfflineTrackIdsCache()
-			uiRefreshFunc()
+			await uiRefreshFunc()
 		}
 		
 		for track in toAdd {
@@ -347,7 +348,7 @@ public actor Offline {
 				try await Network.download(url, path: path)
 				print("Offline: Finished Download of \(track.title)")
 				invalidateOfflineTrackIdsCache()
-				uiRefreshFunc()
+				await uiRefreshFunc()
 			} catch {
 				displayError(title: "Offline: Error while loading offline track", content: "Network error: \(error)")
 			}
@@ -462,7 +463,7 @@ public actor Offline {
 	
 	private var syncFavoriteTracksTask: Task<Void, Never>?
 	
-	public func asyncSyncFavoriteTracks() {
+	private func _asyncSyncFavoriteTracks() {
 		if favTracksSyncRunning {
 			favTracksSyncAgain = true // If Sync is requested while running, do another one afterwards
 			return
@@ -470,6 +471,11 @@ public actor Offline {
 		favTracksSyncRunning = true
 		
 		syncFavoriteTracksTask = Task { await syncFavoriteTracks() }
+	}
+	
+	@MainActor
+	public func asyncSyncFavoriteTracks() {
+		Task { await _asyncSyncFavoriteTracks() }
 	}
 	
 	// MARK: - Album
@@ -613,6 +619,6 @@ public actor Offline {
 		for playlist in await db.playlists {
 			syncPlaylist(playlist)
 		}
-		asyncSyncFavoriteTracks()
+		_asyncSyncFavoriteTracks()
 	}
 }

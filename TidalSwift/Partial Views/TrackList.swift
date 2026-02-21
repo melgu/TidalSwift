@@ -168,11 +168,9 @@ struct TrackRow: View {
 							print("Remove from Favorites")
 							Task {
 								if await session.favorites?.removeTrack(trackId: track.id) == true {
-									await session.helpers.offline.asyncSyncFavoriteTracks()
-									await MainActor.run {
-										isFavorite = false
-										viewState.refreshCurrentView()
-									}
+									session.helpers.offline.asyncSyncFavoriteTracks()
+									isFavorite = false
+									viewState.refreshCurrentView()
 								}
 							}
 						}
@@ -182,11 +180,9 @@ struct TrackRow: View {
 							print("Add to Favorites")
 							Task {
 								if await session.favorites?.addTrack(trackId: track.id) == true {
-									await session.helpers.offline.asyncSyncFavoriteTracks()
-									await MainActor.run {
-										isFavorite = true
-										viewState.refreshCurrentView()
-									}
+									session.helpers.offline.asyncSyncFavoriteTracks()
+									isFavorite = true
+									viewState.refreshCurrentView()
 								}
 							}
 						}

@@ -77,7 +77,7 @@ struct TrackContextMenu: View {
 						Task {
 							print("Remove from Favorites")
 							if await session.favorites?.removeTrack(trackId: track.id) == true {
-								await session.helpers.offline.asyncSyncFavoriteTracks()
+								session.helpers.offline.asyncSyncFavoriteTracks()
 								await MainActor.run {
 									isFavorite = false
 									viewState.refreshCurrentView()
@@ -92,7 +92,7 @@ struct TrackContextMenu: View {
 						Task {
 							print("Add to Favorites")
 							if await session.favorites?.addTrack(trackId: track.id) == true {
-								await session.helpers.offline.asyncSyncFavoriteTracks()
+								session.helpers.offline.asyncSyncFavoriteTracks()
 								await MainActor.run {
 									isFavorite = true
 									viewState.refreshCurrentView()

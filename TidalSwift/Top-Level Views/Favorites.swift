@@ -122,6 +122,8 @@ struct FavoriteTracks: View {
 	@EnvironmentObject var viewState: ViewState
 	@EnvironmentObject var sortingState: SortingState
 	
+	@AppStorage("SaveFavoritesOffline") public var saveFavoritesOffline = false
+	
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
@@ -132,14 +134,14 @@ struct FavoriteTracks: View {
 							.lineLimit(1)
 						Spacer()
 						LoadingSpinner()
-						if session.helpers.offline.saveFavoritesOffline {
+						if saveFavoritesOffline {
 							Image(systemName: "cloud.fill")
 								.resizable()
 								.scaledToFit()
 								.frame(width: 30)
 								.onTapGesture {
 									print("Remove from Offline")
-									session.helpers.offline.saveFavoritesOffline = false
+									saveFavoritesOffline = false
 									session.helpers.offline.asyncSyncFavoriteTracks()
 									viewState.refreshCurrentView()
 								}
@@ -150,7 +152,7 @@ struct FavoriteTracks: View {
 								.frame(width: 30)
 								.onTapGesture {
 									print("Add to Offline")
-									session.helpers.offline.saveFavoritesOffline = true
+									saveFavoritesOffline = true
 									session.helpers.offline.asyncSyncFavoriteTracks()
 									viewState.refreshCurrentView()
 								}

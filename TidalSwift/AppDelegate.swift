@@ -605,11 +605,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].track.id
 		Task {
 			if await session.favorites?.addTrack(trackId: trackId) == true {
-				await session.helpers.offline.asyncSyncFavoriteTracks()
-				await MainActor.run {
-					favoriteLabel(currentIndex: player.queueInfo.currentIndex)
-					viewState.refreshCurrentView()
-				}
+				session.helpers.offline.asyncSyncFavoriteTracks()
+				favoriteLabel(currentIndex: player.queueInfo.currentIndex)
+				viewState.refreshCurrentView()
 			}
 		}
 	}
@@ -618,11 +616,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].track.id
 		Task {
 			if await session.favorites?.removeTrack(trackId: trackId) == true {
-				await session.helpers.offline.asyncSyncFavoriteTracks()
-				await MainActor.run {
-					favoriteLabel(currentIndex: player.queueInfo.currentIndex)
-					viewState.refreshCurrentView()
-				}
+				session.helpers.offline.asyncSyncFavoriteTracks()
+				favoriteLabel(currentIndex: player.queueInfo.currentIndex)
+				viewState.refreshCurrentView()
 			}
 		}
 	}
