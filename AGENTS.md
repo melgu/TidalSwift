@@ -41,6 +41,8 @@ All state objects use `@Published` and are injected as `@EnvironmentObject` into
 
 ## Build, Test, and Development Commands
 
+Use Xcode's MCP if possible.
+
 - `open TidalSwift.xcodeproj`
   Open the project in Xcode.
 - `xcodebuild -project TidalSwift.xcodeproj -scheme TidalSwift -configuration Debug build`
