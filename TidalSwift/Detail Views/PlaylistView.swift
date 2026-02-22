@@ -42,7 +42,8 @@ struct PlaylistView: View {
 								.clipped()
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-								.toolTip("Show image in new window")
+								.help("Show image in new window")
+								#if canImport(AppKit)
 								.onTapGesture {
 									let controller = ImageWindowController(
 										imageUrl: imageUrlBig,
@@ -51,6 +52,7 @@ struct PlaylistView: View {
 									controller.window?.title = playlist.title
 									controller.showWindow(nil)
 								}
+								#endif
 								.accessibilityHidden(true)
 								
 								VStack(alignment: .leading) {

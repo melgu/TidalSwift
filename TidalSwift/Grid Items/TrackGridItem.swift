@@ -61,7 +61,7 @@ struct TrackGridItem: View {
 			}
 		}
 		.padding(5)
-		.toolTip(toolTipString)
+		.help(toolTipString)
 		.onTapGesture(count: 2) {
 			print("\(track.title)")
 			player.add(track: track, .now)

@@ -9,6 +9,7 @@
 import SwiftUI
 import AVKit
 
+#if canImport(AppKit)
 class VideoPlayerController: NSWindowController {
 	convenience init(videoUrl: URL, volume: Float, width: CGFloat = 1280, height: CGFloat = 720) {
 		let player = AVPlayer(url: videoUrl)
@@ -27,3 +28,4 @@ class VideoPlayerController: NSWindowController {
 		self.init(window: window)
 	}
 }
+#endif

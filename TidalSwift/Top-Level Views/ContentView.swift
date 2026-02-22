@@ -41,9 +41,11 @@ struct ContentView: View {
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showEditModal) {
 				EditPlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)
 			})
+			#if canImport(AppKit)
 			.touchBar {
 				TouchBarView(player: player, playbackInfo: player.playbackInfo)
 			}
+			#endif
 			.task {
 				await session.refreshAccessTokenIfNeeded()
 				let success = await session.populateVariablesForAccessToken()

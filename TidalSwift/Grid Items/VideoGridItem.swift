@@ -63,7 +63,8 @@ struct VideoGridItem: View {
 			}
 		}
 		.padding(5)
-		.toolTip("\(video.title) – \(video.artists.formArtistString())")
+		.help("\(video.title) – \(video.artists.formArtistString())")
+		#if canImport(AppKit)
 		.onTapGesture(count: 2) {
 			print("Play Video: \(video.title)")
 			Task {
@@ -75,6 +76,7 @@ struct VideoGridItem: View {
 				controller.showWindow(nil)
 			}
 		}
+		#endif
 		.contextMenu {
 			VideoContextMenu(video: video, session: session, player: player)
 		}

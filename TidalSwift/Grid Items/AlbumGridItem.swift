@@ -110,7 +110,7 @@ struct AlbumGridItem: View {
 			}
 		}
 		.padding(5)
-		.toolTip(toolTipString)
+		.help(toolTipString)
 		.onTapGesture(count: 2) {
 			print("Second Click. \(album.title)")
 			player.add(album: album, .now)

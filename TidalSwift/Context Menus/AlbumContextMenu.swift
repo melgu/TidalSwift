@@ -138,6 +138,7 @@ struct AlbumContextMenu: View {
 						}
 					}
 					Divider()
+					#if canImport(AppKit)
 					if let coverUrl = album.getCoverUrl(session: session, resolution: 1280) {
 						Button {
 							print("Cover")
@@ -162,6 +163,7 @@ struct AlbumContextMenu: View {
 					} label: {
 						Text("Credits")
 					}
+					#endif
 					if let url = album.url {
 						Button {
 							print("Share")

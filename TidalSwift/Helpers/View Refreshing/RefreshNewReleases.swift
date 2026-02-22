@@ -19,6 +19,7 @@ extension ViewState {
 		workItem = newReleasesWI
 	}
 	
+	// TODO: Proper rework with structured concurrency
 	var newReleasesWI: DispatchWorkItem {
 		DispatchWorkItem { [self] in
 			Task {

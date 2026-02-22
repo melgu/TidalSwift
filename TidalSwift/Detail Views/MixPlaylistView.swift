@@ -25,11 +25,13 @@ struct MixPlaylistView: View {
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
+								#if canImport(AppKit)
 								.onTapGesture {
 									let controller = ResizableWindowController(rootView: MixImage(mix: mix, highResolutionImages: true, session: session), width: 640, height: 640)
 									controller.window?.title = mix.title
 									controller.showWindow(nil)
 								}
+								#endif
 							
 							VStack(alignment: .leading) {
 								Text(mix.title)

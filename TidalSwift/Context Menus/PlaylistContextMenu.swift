@@ -139,6 +139,7 @@ struct PlaylistContextMenu: View {
 			}
 			Divider()
 			Group {
+				#if canImport(AppKit)
 				if let imageUrl = playlist.imageUrl(session: session, resolution: 750) {
 					Button {
 						print("Image")
@@ -152,6 +153,7 @@ struct PlaylistContextMenu: View {
 						Text("Image")
 					}
 				}
+				#endif
 				Button {
 					print("Share Playlist")
 					Pasteboard.copy(string: playlist.url.absoluteString)

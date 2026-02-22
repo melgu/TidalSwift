@@ -144,6 +144,7 @@ struct TrackContextMenu: View {
 					} label: {
 						Text("Radio")
 					}
+					#if canImport(AppKit)
 					if let coverUrl = track.album.getCoverUrl(session: session, resolution: 1280) {
 						Button {
 							print("Cover")
@@ -169,6 +170,7 @@ struct TrackContextMenu: View {
 					} label: {
 						Text("Credits")
 					}
+					#endif
 					Button {
 						print("Share Track")
 						Pasteboard.copy(string: track.url.absoluteString)

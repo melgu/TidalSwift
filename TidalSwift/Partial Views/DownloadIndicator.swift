@@ -27,7 +27,7 @@ struct DownloadIndicator: View {
 								animationState.toggle()
 							}
 					}
-					.toolTip("Downloads currently running")
+					.help("Downloads currently running")
 					.onDisappear {
 						timerCancellable?.cancel()
 					}

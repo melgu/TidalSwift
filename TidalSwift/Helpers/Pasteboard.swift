@@ -7,13 +7,17 @@
 //
 
 import Foundation
-import Cocoa
+import SwiftUI
 import TidalSwiftLib
 
 class Pasteboard {
 	static func copy(string: String) {
+		#if canImport(AppKit)
 		let pb = NSPasteboard.init(name: NSPasteboard.Name.general)
 		pb.declareTypes([.string], owner: nil)
 		pb.setString(string, forType: .string)
+		#else
+		UIPasteboard.general.string = string
+		#endif
 	}
 }

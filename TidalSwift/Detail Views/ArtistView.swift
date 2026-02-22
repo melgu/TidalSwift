@@ -94,7 +94,8 @@ struct ArtistView: View {
 				.frame(width: 100, height: 100)
 				.cornerRadius(CORNERRADIUS)
 				.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-				.toolTip("Show image in new window")
+				.help("Show image in new window")
+				#if canImport(AppKit)
 				.onTapGesture {
 					let controller = ImageWindowController(
 						imageUrl: pictureUrlBig,
@@ -103,6 +104,7 @@ struct ArtistView: View {
 					controller.window?.title = artist.name
 					controller.showWindow(nil)
 				}
+				#endif
 				.accessibilityHidden(true)
 			}
 			
@@ -111,8 +113,9 @@ struct ArtistView: View {
 					Text(artist.name)
 						.font(.title)
 						.lineLimit(2)
+					#if canImport(AppKit)
 					Image(systemName: "info.circle")
-						.toolTip("Artist Bio")
+						.help("Artist Bio")
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:
 								ArtistBioView(session: session, artist: artist)
@@ -121,6 +124,7 @@ struct ArtistView: View {
 							controller.window?.title = "Bio – \(artist.name)"
 							controller.showWindow(nil)
 						}
+					#endif
 				if isFavorite ?? true {
 					Image(systemName: "heart.fill")
 						.onTapGesture {
@@ -150,7 +154,7 @@ struct ArtistView: View {
 				}
 					if let url = artist.url {
 						Image(systemName: "square.and.arrow.up")
-							.toolTip("Copy URL")
+							.help("Copy URL")
 							.onTapGesture {
 								Pasteboard.copy(string: url.absoluteString)
 							}

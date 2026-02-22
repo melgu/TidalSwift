@@ -70,6 +70,7 @@ struct MixContextMenu: View {
 			} label: {
 				Text("Download")
 			}
+			#if canImport(AppKit)
 			Divider()
 			Button {
 				print("Image")
@@ -79,6 +80,7 @@ struct MixContextMenu: View {
 			} label: {
 				Text("Image")
 			}
+			#endif
 		}
 	}
 }

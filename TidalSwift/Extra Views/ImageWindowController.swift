@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+#if canImport(AppKit)
 class ImageWindowController: NSWindowController {
 	convenience init(imageUrl: URL, title: String) {
 		let hostingController = NSHostingController(rootView: ImageWindowView(imageUrl: imageUrl, title: title)
@@ -18,6 +19,7 @@ class ImageWindowController: NSWindowController {
 		self.init(window: window)
 	}
 }
+#endif
 
 struct ImageWindowView: View {
 	let imageUrl: URL

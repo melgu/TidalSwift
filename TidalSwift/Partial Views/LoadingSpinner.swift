@@ -65,7 +65,7 @@ struct LoadingSpinner: View {
 				Image(systemName: "wifi.exclamationmark")
 					.resizable()
 					.scaledToFit()
-					.toolTip("Your connection appears to be offline")
+					.help("Your connection appears to be offline")
 					.onTapGesture {
 						viewState.refreshCurrentView()
 					}

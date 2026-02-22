@@ -37,7 +37,8 @@ struct AlbumView: View {
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-								.toolTip("Show cover in new window")
+								.help("Show cover in new window")
+								#if canImport(AppKit)
 								.onTapGesture {
 									let controller = ImageWindowController(
 										imageUrl: coverUrlBig,
@@ -46,6 +47,7 @@ struct AlbumView: View {
 									controller.window?.title = album.title
 									controller.showWindow(nil)
 								}
+								#endif
 								.accessibilityHidden(true)
 								
 								VStack(alignment: .leading) {
@@ -53,13 +55,14 @@ struct AlbumView: View {
 										Text(album.title)
 											.font(.title)
 											.lineLimit(1)
-											.toolTip(album.title)
+											.help(album.title)
 										if album.hasAttributes {
 											album.attributeHStack
 												.padding(.leading, -5)
 										}
+										#if canImport(AppKit)
 										Image(systemName: "c.circle")
-											.toolTip("Credits")
+											.help("Credits")
 											.onTapGesture {
 												let controller = ResizableWindowController(rootView:
 													CreditsView(session: session, album: album)
@@ -68,6 +71,7 @@ struct AlbumView: View {
 												controller.window?.title = "Credits – \(album.title)"
 												controller.showWindow(nil)
 											}
+										#endif
 						if isFavorite ?? true {
 							Image(systemName: "heart.fill")
 								.onTapGesture {
@@ -97,7 +101,7 @@ struct AlbumView: View {
 						}
 										if let url = album.url {
 											Image(systemName: "square.and.arrow.up")
-												.toolTip("Copy URL")
+												.help("Copy URL")
 												.onTapGesture {
 													Pasteboard.copy(string: url.absoluteString)
 												}

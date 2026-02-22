@@ -47,7 +47,11 @@ struct AddToPlaylistView: View {
 							}
 						}.tag("_newPlaylist")
 					}
+					#if canImport(AppKit)
 					.pickerStyle(RadioGroupPickerStyle())
+					#else
+					.pickerStyle(.automatic)
+					#endif
 				}
 				
 				Text(showEmptyNameWarning ? "Playlist name can't be empty" : "")

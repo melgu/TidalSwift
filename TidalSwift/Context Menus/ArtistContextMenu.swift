@@ -91,6 +91,7 @@ struct ArtistContextMenu: View {
 				} label: {
 					Text("Radio")
 				}
+				#if canImport(AppKit)
 				if let pictureUrl = artist.pictureUrl(session: session, resolution: 750) {
 					Button {
 						print("Picture")
@@ -115,6 +116,7 @@ struct ArtistContextMenu: View {
 				} label: {
 					Text("Bio")
 				}
+				#endif
 				if let url = artist.url {
 					Button {
 						print("Share Artist")

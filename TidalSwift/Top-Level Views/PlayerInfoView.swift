@@ -37,16 +37,18 @@ struct PlayerInfoView: View {
 					VolumeControl(player: player)
 					Spacer()
 					DownloadIndicator()
-						Image(systemName: "quote.bubble")
-							.toolTip("Lyrics")
-							.onTapGesture {
-								appModel.showLyricsWindow()
-							}
-						Image(systemName: "list.dash")
-							.toolTip("Queue")
-							.onTapGesture {
-								appModel.showQueueWindow()
-							}
+					#if canImport(AppKit)
+					Image(systemName: "quote.bubble")
+						.help("Lyrics")
+						.onTapGesture {
+							appModel.showLyricsWindow()
+						}
+					Image(systemName: "list.dash")
+						.help("Queue")
+						.onTapGesture {
+							appModel.showQueueWindow()
+						}
+					#endif
 				}
 			}
 			.frame(height: 30)
@@ -75,7 +77,8 @@ struct TrackInfoView: View {
 						}
 						.frame(width: 30, height: 30)
 						.cornerRadius(CORNERRADIUS)
-						.toolTip("Show cover in new window")
+						.help("Show cover in new window")
+						#if canImport(AppKit)
 						.onTapGesture {
 							print("Big Cover")
 							let title = "\(track.title) – \(track.album.title)"
@@ -86,6 +89,7 @@ struct TrackInfoView: View {
 							controller.window?.title = title
 							controller.showWindow(nil)
 						}
+						#endif
 						.accessibilityHidden(true)
 					} else {
 						Rectangle()
@@ -106,16 +110,16 @@ struct TrackInfoView: View {
 							Text(player.currentQualityString())
 								.fontWeight(.light)
 								.foregroundColor(.orange)
-								.toolTip("Current Quality")
+								.help("Current Quality")
 							Text(player.maxQualityString())
 								.fontWeight(.light)
 								.foregroundColor(.secondary)
-								.toolTip("Maximum available quality")
+								.help("Maximum available quality")
 						}
-						.toolTip(trackToolTipString(for: track))
+						.help(trackToolTipString(for: track))
 						Text("\(track.artists.formArtistString()) – \(track.album.title)")
 							.foregroundColor(.secondary)
-							.toolTip("\(track.artists.formArtistString()) – \(track.album.title)")
+							.help("\(track.artists.formArtistString()) – \(track.album.title)")
 					}
 					Spacer()
 						.layoutPriority(-1)
@@ -147,7 +151,12 @@ struct PlaybackControls: View {
 				Spacer()
 				Group {
 					if playbackInfo.shuffle {
-						Image(nsImage: NSImage(named: "shuffle")!.tint(color: .controlAccentColor))
+						Image(systemName: "shuffle")
+							#if canImport(AppKit)
+							.tint(.controlAccentColor)
+							#else
+							.tint(.secondary)
+							#endif
 					} else {
 						Image(systemName: "shuffle")
 							.onTapGesture {
@@ -155,7 +164,7 @@ struct PlaybackControls: View {
 							}
 					}
 				}
-				.toolTip("Shuffle")
+				.help("Shuffle")
 				.onTapGesture {
 					playbackInfo.shuffle.toggle()
 				}
@@ -180,14 +189,24 @@ struct PlaybackControls: View {
 					}
 				Group {
 					if playbackInfo.repeatState == .single {
-						Image(nsImage: NSImage(named: "repeat1")!.tint(color: .controlAccentColor))
+						Image(systemName: "repeat1")
+							#if canImport(AppKit)
+							.tint(.controlAccentColor)
+							#else
+							.tint(.secondary)
+							#endif
 					} else if playbackInfo.repeatState == .all {
-						Image(nsImage: NSImage(named: "repeat")!.tint(color: .controlAccentColor))
+						Image(systemName: "repeat")
+							#if canImport(AppKit)
+							.tint(.controlAccentColor)
+							#else
+							.tint(.secondary)
+							#endif
 					} else {
 						Image(systemName: "repeat")
 					}
 				}
-				.toolTip("Repeat")
+				.help("Repeat")
 				.onTapGesture {
 					player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
 					print("Repeat: \(player.playbackInfo.repeatState)")
@@ -221,7 +240,7 @@ struct ProgressBar: View {
 			.background(Color.playbackProgressBarBackground(for: colorScheme))
 			.frame(height: 5)
 			.cornerRadius(3)
-			.toolTip((playbackInfo.playbackTimeInfo)),
+			.help((playbackInfo.playbackTimeInfo)),
 			thumb: EmptyView(),
 			thumbSize: .zero,
 			options: .interactiveTrack)

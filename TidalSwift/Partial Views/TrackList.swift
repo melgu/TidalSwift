@@ -128,14 +128,14 @@ struct TrackRow: View {
 						Spacer(minLength: 5)
 					}
 					.frame(width: metrics.size.width * widthFactorTrack)
-					.toolTip(trackToolTipString)
+					.help(trackToolTipString)
 					if showArtist {
 						HStack {
 							Text(track.artists.formArtistString())
 							Spacer(minLength: 5)
 						}
 						.frame(width: metrics.size.width * widthFactorArtist)
-						.toolTip(track.artists.formArtistString())
+						.help(track.artists.formArtistString())
 					}
 					if showAlbum {
 						HStack {
@@ -143,7 +143,7 @@ struct TrackRow: View {
 							Spacer(minLength: 5)
 						}
 						.frame(width: metrics.size.width * widthFactorAlbum)
-						.toolTip(track.album.title)
+						.help(track.album.title)
 					}
 				}
 				Group {
@@ -153,6 +153,7 @@ struct TrackRow: View {
 						Image(systemName: "cloud.fill")
 							.secondaryIconColor()
 					}
+					#if canImport(AppKit)
 					Image(systemName: "c.circle")
 						.onTapGesture {
 							let controller = ResizableWindowController(rootView:
@@ -162,6 +163,7 @@ struct TrackRow: View {
 							controller.window?.title = "Credits – \(track.title)"
 							controller.showWindow(nil)
 						}
+					#endif
 				if isFavorite ?? false {
 					Image(systemName: "heart.fill")
 						.onTapGesture {

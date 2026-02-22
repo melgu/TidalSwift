@@ -21,6 +21,8 @@ struct LoginView: View {
 	let session: Session
 	let player: Player
 	
+	@Environment(\.openURL) private var openURL
+	
 	@State var wrongLogin: Bool = false
 	@State var cancellables = Set<AnyCancellable>()
 	@State var authState: Session.AuthorizationState = .waiting
@@ -60,7 +62,7 @@ struct LoginView: View {
 				Text("Login mechinism, which works via the webbrowser")
 			case .pending(loginUrl: let loginUrl, expiration: _):
 				Button {
-					NSWorkspace.shared.open(loginUrl)
+					openURL(loginUrl)
 				} label: {
 					Text("Open Browser")
 				}
@@ -142,7 +144,7 @@ struct LoginView: View {
 					wrongLogin = false
 				case .pending(loginUrl: let loginUrl, expiration: _):
 					counter = 300
-					NSWorkspace.shared.open(loginUrl)
+					openURL(loginUrl)
 				case .success:
 					successfulLogin(audioUrlType: .streaming)
 				case .failure(_):

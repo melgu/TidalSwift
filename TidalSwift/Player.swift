@@ -6,8 +6,7 @@
 //  Copyright © 2019 Melvin Gundlach. All rights reserved.
 //
 
-import Cocoa
-import Foundation
+import SwiftUI
 import Combine
 import AVFoundation
 import TidalSwiftLib

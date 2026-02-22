@@ -22,9 +22,9 @@
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		B0C6B9CD2F4AA39400C2BF60 /* Exceptions for "TidalSwift" folder in "TidalSwift" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			platformFiltersByRelativePath = {
-				Info.plist = (macos, );
-			};
+			membershipExceptions = (
+				Info.plist,
+			);
 			target = B07C89A52F49F7B800078B50 /* TidalSwift */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */

@@ -22,6 +22,7 @@ struct VideoContextMenu: View {
 		Group {
 			if video.streamReady {
 				Button {
+					#if canImport(AppKit)
 					Task {
 						print("Play Video: \(video.title)")
 						guard let url = await video.videoUrl(session: session) else {
@@ -33,6 +34,9 @@ struct VideoContextMenu: View {
 						controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
 						controller.showWindow(nil)
 					}
+					#else
+					print("Coming soon")
+					#endif
 				} label: {
 					Text("Play")
 				}
@@ -89,6 +93,7 @@ struct VideoContextMenu: View {
 						Text("Add to Playlist …")
 					}
 				}
+				#if canImport(AppKit)
 				if video.streamReady {
 					Divider()
 					if let imagegUrl = video.imageUrl(session: session, resolution: 1280) {
@@ -105,6 +110,7 @@ struct VideoContextMenu: View {
 						}
 					}
 				}
+				#endif
 			}
 		}
 		.task(id: video.id) {

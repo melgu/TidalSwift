@@ -6,7 +6,6 @@
 //  Copyright © 2019 Melvin Gundlach. All rights reserved.
 //
 
-import Cocoa
 import SwiftUI
 import Combine
 import TidalSwiftLib
@@ -31,10 +30,12 @@ struct TidalSwiftApp: App {
 			.onAppear {
 				appModel.startupIfNeeded()
 			}
+			#if canImport(AppKit)
 			.onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
 				appModel.prepareForTermination()
 			}
-			.onChange(of: scenePhase) { newValue in
+			#endif
+			.onChange(of: scenePhase) { _, newValue in
 				if newValue != .active {
 					appModel.saveState()
 				}
@@ -58,12 +59,14 @@ final class TidalSwiftAppModel: ObservableObject {
 
 	private var didStart = false
 	private var isTerminating = false
-
+	
+	#if canImport(AppKit)
 	private var lyricsViewController: NSWindowController?
 	private var queueViewController: NSWindowController?
 	private var viewHistoryViewController: NSWindowController?
 	private var playbackHistoryViewController: NSWindowController?
 	private var windowCloseObserver: NSObjectProtocol?
+	#endif
 
 	// MARK: Cancellables
 	var timerCancellable: AnyCancellable?
@@ -150,11 +153,14 @@ final class TidalSwiftAppModel: ObservableObject {
 
 		initCancellables()
 		viewState.refreshCurrentView()
-		initSecondaryWindows()
 		refreshFavoriteState()
+		
+		#if canImport(AppKit)
+		initSecondaryWindows()
 		registerCloseLastWindowBehavior()
-
+		
 		updateCheck(showNoUpdatesAlert: false)
+		#endif
 
 		Task {
 			await session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
@@ -162,7 +168,8 @@ final class TidalSwiftAppModel: ObservableObject {
 
 		DispatchQueue.global(qos: .background).async(execute: viewState.newReleasesWI)
 	}
-
+	
+	#if canImport(AppKit)
 	func prepareForTermination() {
 		guard !isTerminating else { return }
 		isTerminating = true
@@ -174,7 +181,7 @@ final class TidalSwiftAppModel: ObservableObject {
 		closeModals()
 		saveState()
 	}
-
+	
 	func quit() {
 		prepareForTermination()
 		NSApp.terminate(nil)
@@ -249,6 +256,7 @@ final class TidalSwiftAppModel: ObservableObject {
 	func showViewHistoryWindow() {
 		viewHistoryViewController?.showWindow(nil)
 	}
+	#endif
 
 	// MARK: Persisting
 
@@ -493,23 +501,28 @@ final class TidalSwiftAppModel: ObservableObject {
 	}
 
 	// MARK: Menu Actions
-
+	
+	#if canImport(AppKit)
 	func checkForUpdates() {
 		updateCheck(showNoUpdatesAlert: true)
 	}
-
+	#endif
+	
 	func showChangelog() {
+		#if canImport(AppKit)
 		updateNotification.showChangelogWindow()
+		#else
+		print("Not implemented")
+		#endif
 	}
 
+	#if canImport(AppKit)
 	func updateCheck(showNoUpdatesAlert: Bool) {
-		DispatchQueue.global(qos: .background).async { [self] in
-			if updateNotification.checkForUpdates() {
-				DispatchQueue.main.async { [self] in
+		Task {
+			do {
+				if try await updateNotification.checkForUpdates() {
 					updateNotification.showNewVersionView()
-				}
-			} else if showNoUpdatesAlert {
-				DispatchQueue.main.async {
+				} else if showNoUpdatesAlert {
 					let alert = NSAlert()
 					alert.messageText = "No updates available"
 					alert.informativeText = "You are already on the latest version"
@@ -517,12 +530,15 @@ final class TidalSwiftAppModel: ObservableObject {
 					alert.addButton(withTitle: "OK")
 					alert.runModal()
 				}
+			} catch {
+				print("Checking for updates failed: \(error)")
 			}
 		}
 	}
+	#endif
 
 	func find() {
-		print("Find")
+		print("Find. Coming soon.")
 	}
 
 	func downloadTrack() {
@@ -666,19 +682,21 @@ final class TidalSwiftAppModel: ObservableObject {
 	func clearQueue() {
 		player.clearQueue(leavingCurrent: true)
 	}
-
+	
 	func accountInfo() {
+		#if canImport(AppKit)
 		guard let userId = session.userId else { return }
 		Task {
 			guard let user = await session.user(userId: userId) else { return }
-			await MainActor.run {
-				let controller = ResizableWindowController(rootView:
-					AccountInfoView(session: session)
-				)
-				controller.window?.title = user.username
-				controller.showWindow(nil)
-			}
+			let controller = ResizableWindowController(rootView:
+				AccountInfoView(session: session)
+			)
+			controller.window?.title = user.username
+			controller.showWindow(nil)
 		}
+		#else
+		print("Coming soon")
+		#endif
 	}
 
 	func refreshAccessToken() {
@@ -692,7 +710,9 @@ final class TidalSwiftAppModel: ObservableObject {
 			await session.helpers.offline.removeAll()
 			await MainActor.run {
 				closeModals()
+				#if canImport(AppKit)
 				closeAllSecondaryWindows()
+				#endif
 				player.clearQueue()
 				session.logout()
 				viewState.clearEverything()
@@ -723,10 +743,8 @@ final class TidalSwiftAppModel: ObservableObject {
 		Task {
 			let trackFavorite = await track.isInFavorites(session: session) ?? false
 			let albumFavorite = await track.album.isInFavorites(session: session) ?? false
-			await MainActor.run {
-				self.trackIsFavorite = trackFavorite
-				self.albumIsFavorite = albumFavorite
-			}
+			self.trackIsFavorite = trackFavorite
+			self.albumIsFavorite = albumFavorite
 		}
 	}
 }
@@ -735,6 +753,7 @@ struct TidalSwiftCommands: Commands {
 	@ObservedObject var appModel: TidalSwiftAppModel
 
 	var body: some Commands {
+		#if canImport(AppKit)
 		CommandGroup(after: .appInfo) {
 			Button("Check for Updates") {
 				appModel.checkForUpdates()
@@ -743,13 +762,14 @@ struct TidalSwiftCommands: Commands {
 				appModel.showChangelog()
 			}
 		}
-
+		
 		CommandGroup(replacing: .appTermination) {
 			Button("Quit TidalSwift") {
 				appModel.quit()
 			}
 			.keyboardShortcut("q")
 		}
+		#endif
 
 		CommandMenu("Track") {
 			Button("Go to Album") {
@@ -868,7 +888,8 @@ struct TidalSwiftCommands: Commands {
 				appModel.removeAllOfflineContent()
 			}
 		}
-
+		
+		#if canImport(AppKit)
 		CommandGroup(after: .windowArrangement) {
 			Divider()
 			Button("Lyrics") {
@@ -884,6 +905,7 @@ struct TidalSwiftCommands: Commands {
 				appModel.showViewHistoryWindow()
 			}
 		}
+		#endif
 
 		CommandMenu("Edit") {
 			Button("Find") {

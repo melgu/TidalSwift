@@ -61,7 +61,7 @@ struct PlaylistGridItem: View {
 				.frame(width: 160)
 		}
 		.padding(5)
-		.toolTip(playlist.title)
+		.help(playlist.title)
 		.onTapGesture(count: 2) {
 			print("Second Click. \(playlist.title)")
 			player.add(playlist: playlist, .now)

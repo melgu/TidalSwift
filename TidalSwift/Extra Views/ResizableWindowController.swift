@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+#if canImport(AppKit)
 class ResizableWindowController<RootView: View>: NSWindowController {
 	convenience init(rootView: RootView, width: Int = 420, height: Int = 640) {
 		let hostingController = NSHostingController(rootView: rootView)
@@ -18,3 +19,4 @@ class ResizableWindowController<RootView: View>: NSWindowController {
 		self.init(window: window)
 	}
 }
+#endif
