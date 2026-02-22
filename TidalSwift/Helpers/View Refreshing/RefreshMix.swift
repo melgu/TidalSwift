@@ -24,34 +24,35 @@ extension ViewState {
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
-		workItem = mixWI
+		refreshTask?.cancel()
+		refreshTask = Task { [self] in
+			await refreshMix()
+		}
 	}
 	
-	var mixWI: DispatchWorkItem {
-		DispatchWorkItem { [self] in
-			Task {
-				guard var view = stack.last else {
-					return
-				}
-				
-				var t: [Track]?
-				if let mix = view.mix {
-					t = await session.mixPlaylistTracks(mixId: mix.id)
-					
-					if t != nil {
-						view.tracks = t
-						view.loadingState = .successful
-						cache.mixTracks[mix.id] = t
-					} else {
-						if let mixId = view.mix?.id {
-							view.tracks = cache.mixTracks[mixId]
-						}
-						view.loadingState = .error
-					}
-					
-					replaceCurrentView(with: view)
-				}
-			}
+	private func refreshMix() async {
+		guard var view = stack.last else {
+			return
 		}
+		
+		guard let mix = view.mix else {
+			return
+		}
+		
+		let tracks = await session.mixPlaylistTracks(mixId: mix.id)
+		
+		guard !Task.isCancelled else { return }
+		if tracks != nil {
+			view.tracks = tracks
+			view.loadingState = .successful
+			cache.mixTracks[mix.id] = tracks
+		} else {
+			if let mixId = view.mix?.id {
+				view.tracks = cache.mixTracks[mixId]
+			}
+			view.loadingState = .error
+		}
+		
+		replaceCurrentView(with: view)
 	}
 }

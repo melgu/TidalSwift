@@ -24,35 +24,37 @@ extension ViewState {
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
-		workItem = playlistWI
+		refreshTask?.cancel()
+		refreshTask = Task { [self] in
+			await refreshPlaylist()
+		}
 	}
 	
-	var playlistWI: DispatchWorkItem {
-		DispatchWorkItem { [self] in
-			Task {
-				guard var view = stack.last else {
-					return
-				}
-				
-				guard let playlist = stack.last?.playlist else {
-					view.loadingState = .error
-					replaceCurrentView(with: view)
-					return
-				}
-				
-				view.tracks = await session.playlistTracks(playlistId: playlist.id)
-				
-				if view.tracks != nil {
-					view.loadingState = .successful
-					cache.playlistTracks[playlist.id] = view.tracks
-					session.helpers.offline.syncPlaylist(playlist)
-				} else {
-					view.loadingState = .error
-					view.tracks = await session.helpers.offline.getTracks(for: playlist)
-				}
-				
-				replaceCurrentView(with: view)
-			}
+	private func refreshPlaylist() async {
+		guard var view = stack.last else {
+			return
 		}
+		
+		guard let playlist = stack.last?.playlist else {
+			guard !Task.isCancelled else { return }
+			view.loadingState = .error
+			replaceCurrentView(with: view)
+			return
+		}
+		
+		view.tracks = await session.playlistTracks(playlistId: playlist.id)
+		
+		if view.tracks != nil {
+			guard !Task.isCancelled else { return }
+			view.loadingState = .successful
+			cache.playlistTracks[playlist.id] = view.tracks
+			session.helpers.offline.syncPlaylist(playlist)
+		} else {
+			view.loadingState = .error
+			view.tracks = await session.helpers.offline.getTracks(for: playlist)
+		}
+		
+		guard !Task.isCancelled else { return }
+		replaceCurrentView(with: view)
 	}
 }

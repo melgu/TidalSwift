@@ -16,35 +16,37 @@ extension ViewState {
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
-		workItem = favoriteTracksWI
+		refreshTask?.cancel()
+		refreshTask = Task { [self] in
+			await refreshFavoriteTracks()
+		}
 	}
 	
-	var favoriteTracksWI: DispatchWorkItem {
-		DispatchWorkItem { [self] in
-			Task {
-				var view = TidalSwiftView(viewType: .favoriteTracks)
-				guard let favorites = session.favorites else {
-					view.tracks = cache.favoriteTracks
-					view.loadingState = .error
-					replaceCurrentView(with: view)
-					return
-				}
-				guard let favT = await favorites.tracks(order: .dateAdded, orderDirection: .descending) else {
-					view.tracks = cache.favoriteTracks
-					view.loadingState = .error
-					replaceCurrentView(with: view)
-					return
-				}
-				
-				let t = favT.unwrapped()
-				
-				view.tracks = t
-				view.loadingState = .successful
-				cache.favoriteTracks = t
-				
-				session.helpers.offline.asyncSyncFavoriteTracks()
-				replaceCurrentView(with: view)
-			}
+	private func refreshFavoriteTracks() async {
+		var view = TidalSwiftView(viewType: .favoriteTracks)
+		guard let favorites = session.favorites else {
+			guard !Task.isCancelled else { return }
+			view.tracks = cache.favoriteTracks
+			view.loadingState = .error
+			replaceCurrentView(with: view)
+			return
 		}
+		guard let favT = await favorites.tracks(order: .dateAdded, orderDirection: .descending) else {
+			guard !Task.isCancelled else { return }
+			view.tracks = cache.favoriteTracks
+			view.loadingState = .error
+			replaceCurrentView(with: view)
+			return
+		}
+		
+		guard !Task.isCancelled else { return }
+		let tracks = favT.unwrapped()
+		
+		view.tracks = tracks
+		view.loadingState = .successful
+		cache.favoriteTracks = tracks
+		
+		session.helpers.offline.asyncSyncFavoriteTracks()
+		replaceCurrentView(with: view)
 	}
 }

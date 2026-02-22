@@ -16,26 +16,26 @@ extension ViewState {
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
-		workItem = myMixesWI
+		refreshTask?.cancel()
+		refreshTask = Task { [self] in
+			await refreshMyMixes()
+		}
 	}
 	
-	var myMixesWI: DispatchWorkItem {
-		DispatchWorkItem { [self] in
-			Task {
-				let t = await session.mixes()
-				
-				var view = TidalSwiftView(viewType: .myMixes)
-				if t != nil {
-					view.mixes = t
-					view.loadingState = .successful
-					cache.mixes = t
-				} else {
-					view.mixes = cache.mixes
-					view.loadingState = .error
-				}
-				
-				replaceCurrentView(with: view)
-			}
+	private func refreshMyMixes() async {
+		let mixes = await session.mixes()
+		
+		guard !Task.isCancelled else { return }
+		var view = TidalSwiftView(viewType: .myMixes)
+		if mixes != nil {
+			view.mixes = mixes
+			view.loadingState = .successful
+			cache.mixes = mixes
+		} else {
+			view.mixes = cache.mixes
+			view.loadingState = .error
 		}
+		
+		replaceCurrentView(with: view)
 	}
 }

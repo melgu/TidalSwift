@@ -94,7 +94,7 @@ final class ViewState: ObservableObject {
 	@Published var history: [TidalSwiftView] = []
 	var maxHistoryItems: Int = 100
 	
-	var workItem: DispatchWorkItem?
+	var refreshTask: Task<Void, Never>?
 	var lastSearchTerm: String = ""
 	
 	init(session: Session, cache: ViewCache) {
@@ -103,7 +103,7 @@ final class ViewState: ObservableObject {
 	}
 	
 	func push(view: TidalSwiftView) {
-		workItem?.cancel() // Cancel background operation, so no newer View is replaced, if switching views before background operation finishes.
+		refreshTask?.cancel()
 		stack.append(view)
 		if view.viewType != .search {
 			addToHistory(view)

@@ -24,44 +24,49 @@ extension ViewState {
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
-		workItem = albumWI
+		refreshTask?.cancel()
+		refreshTask = Task { [self] in
+			await refreshAlbum()
+		}
 	}
 	
-	var albumWI: DispatchWorkItem {
-		DispatchWorkItem { [self] in
-			Task {
-				guard var view = stack.last else {
-					return
-				}
-				
-				guard let album = stack.last?.album else {
-					view.loadingState = .error
-					replaceCurrentView(with: view)
-					return
-				}
-				
-				if album.releaseDate == nil {
-					print("Album incomplete. Loading complete album: \(album.title)")
-					if let tAlbum = await session.album(albumId: album.id) {
-						view.album = tAlbum
-					} else {
-						view.loadingState = .error
-						replaceCurrentView(with: view)
-						return
-					}
-				}
-				
-				view.tracks = await session.albumTracks(albumId: album.id)
-				
-				if view.tracks != nil {
-					view.loadingState = .successful
-					cache.albumTracks[album.id] = view.tracks
-				} else {
-					view.loadingState = .error
-					view.tracks = await session.helpers.offline.getTracks(for: album)
-				}
+	private func refreshAlbum() async {
+		guard var view = stack.last else {
+			return
+		}
+		
+		guard let album = stack.last?.album else {
+			guard !Task.isCancelled else { return }
+			view.loadingState = .error
+			replaceCurrentView(with: view)
+			return
+		}
+		
+		if album.releaseDate == nil {
+			print("Album incomplete. Loading complete album: \(album.title)")
+			if let tAlbum = await session.album(albumId: album.id) {
+				guard !Task.isCancelled else { return }
+				view.album = tAlbum
+			} else {
+				guard !Task.isCancelled else { return }
+				view.loadingState = .error
 				replaceCurrentView(with: view)
+				return
 			}
 		}
+		
+		view.tracks = await session.albumTracks(albumId: album.id)
+		
+		if view.tracks != nil {
+			guard !Task.isCancelled else { return }
+			view.loadingState = .successful
+			cache.albumTracks[album.id] = view.tracks
+		} else {
+			view.loadingState = .error
+			view.tracks = await session.helpers.offline.getTracks(for: album)
+		}
+		
+		guard !Task.isCancelled else { return }
+		replaceCurrentView(with: view)
 	}
 }

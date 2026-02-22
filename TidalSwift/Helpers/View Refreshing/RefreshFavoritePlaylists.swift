@@ -16,34 +16,36 @@ extension ViewState {
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
-		workItem = favoritePlaylistsWI
+		refreshTask?.cancel()
+		refreshTask = Task { [self] in
+			await refreshFavoritePlaylists()
+		}
 	}
 	
-	var favoritePlaylistsWI: DispatchWorkItem {
-		DispatchWorkItem { [self] in
-			Task {
-				var view = TidalSwiftView(viewType: .favoritePlaylists)
-				guard let favorites = session.favorites else {
-					view.playlists = cache.favoritePlaylists
-					view.loadingState = .error
-					replaceCurrentView(with: view)
-					return
-				}
-				guard let favP = await favorites.playlists(order: .dateAdded, orderDirection: .descending) else {
-					view.playlists = cache.favoritePlaylists
-					view.loadingState = .error
-					replaceCurrentView(with: view)
-					return
-				}
-				
-				let t = favP.unwrapped()
-				
-				view.playlists = t
-				view.loadingState = .successful
-				cache.favoritePlaylists = t
-				
-				replaceCurrentView(with: view)
-			}
+	private func refreshFavoritePlaylists() async {
+		var view = TidalSwiftView(viewType: .favoritePlaylists)
+		guard let favorites = session.favorites else {
+			guard !Task.isCancelled else { return }
+			view.playlists = cache.favoritePlaylists
+			view.loadingState = .error
+			replaceCurrentView(with: view)
+			return
 		}
+		guard let favP = await favorites.playlists(order: .dateAdded, orderDirection: .descending) else {
+			guard !Task.isCancelled else { return }
+			view.playlists = cache.favoritePlaylists
+			view.loadingState = .error
+			replaceCurrentView(with: view)
+			return
+		}
+		
+		guard !Task.isCancelled else { return }
+		let playlists = favP.unwrapped()
+		
+		view.playlists = playlists
+		view.loadingState = .successful
+		cache.favoritePlaylists = playlists
+		
+		replaceCurrentView(with: view)
 	}
 }

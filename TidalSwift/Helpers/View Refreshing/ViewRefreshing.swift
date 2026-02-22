@@ -11,6 +11,9 @@ import TidalSwiftLib
 
 extension ViewState {
 	func refreshCurrentView() {
+		refreshTask?.cancel()
+		refreshTask = nil
+		
 		switch stack.last?.viewType {
 		case .search:
 			search()
@@ -50,10 +53,6 @@ extension ViewState {
 		case nil:
 			doNothing()
 		}
-		
-		if let workItem = workItem {
-			DispatchQueue.global(qos: .userInitiated).async(execute: workItem)
-		}
 	}
 	
 	// Only replaces if actually different
@@ -86,6 +85,7 @@ extension ViewState {
 	
 	func doNothing() {
 		print("ViewState doNothing(): \(stack.last?.viewType.rawValue ?? "nil")")
-		workItem = nil
+		refreshTask?.cancel()
+		refreshTask = nil
 	}
 }

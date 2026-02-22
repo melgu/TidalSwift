@@ -161,12 +161,14 @@ final class TidalSwiftAppModel: ObservableObject {
 		
 		updateCheck(showNoUpdatesAlert: false)
 		#endif
-
+		
 		Task {
 			await session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
 		}
-
-		DispatchQueue.global(qos: .background).async(execute: viewState.newReleasesWI)
+		
+		Task {
+			await viewState.refreshNewReleases()
+		}
 	}
 	
 	#if canImport(AppKit)

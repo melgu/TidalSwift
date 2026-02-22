@@ -19,7 +19,11 @@ extension ViewState {
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
-		workItem = searchWI(searchTerm: searchTerm)
+		let term = searchTerm
+		refreshTask?.cancel()
+		refreshTask = Task { [self] in
+			await refreshSearch(searchTerm: term)
+		}
 	}
 	
 	func doSearch(term: String) {
@@ -30,29 +34,25 @@ extension ViewState {
 			return
 		}
 		lastSearchTerm = searchTerm
-		workItem?.cancel()
+		refreshTask?.cancel()
 		
 		search()
-		DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
 	}
 	
-	func searchWI(searchTerm: String) -> DispatchWorkItem {
-		DispatchWorkItem { [self] in
-			Task {
-				let t = await session.search(for: searchTerm)
-				
-				var view = TidalSwiftView(viewType: .search)
-				if t != nil {
-					view.searchResponse = t
-					view.loadingState = .successful
-					cache.searchResponses[searchTerm] = t
-				} else {
-					view.searchResponse = cache.searchResponses[searchTerm]
-					view.loadingState = .error
-				}
-				
-				replaceCurrentView(with: view)
-			}
+	private func refreshSearch(searchTerm: String) async {
+		let response = await session.search(for: searchTerm)
+		
+		guard !Task.isCancelled else { return }
+		var view = TidalSwiftView(viewType: .search)
+		if response != nil {
+			view.searchResponse = response
+			view.loadingState = .successful
+			cache.searchResponses[searchTerm] = response
+		} else {
+			view.searchResponse = cache.searchResponses[searchTerm]
+			view.loadingState = .error
 		}
+		
+		replaceCurrentView(with: view)
 	}
 }
