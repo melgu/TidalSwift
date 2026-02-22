@@ -10,7 +10,7 @@ import SwiftUI
 
 // MARK: DB
 
-public actor OfflineDB {
+public final class OfflineDB {
 	// [Track: ByHowManyNeeded]
 	private(set) var tracks: [Track: Int] = [:] {
 		didSet {
@@ -156,7 +156,7 @@ public actor OfflineDB {
 
 // MARK: - Offline
 
-public actor Offline {
+public final class Offline {
 	private unowned let session: Session
 	private let downloadStatus: DownloadStatus
 	private let mainPath = "TidalSwift Offline Library"

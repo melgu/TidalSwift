@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -24,8 +24,16 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "TidalSwiftLib",
-			dependencies: ["SwiftTagger"]
-        ),
+			dependencies: ["SwiftTagger"],
+			swiftSettings: [
+				.defaultIsolation(MainActor.self),
+				.enableUpcomingFeature("DisableOutwardActorInference"),
+				.enableUpcomingFeature("GlobalActorIsolatedTypesUsability"),
+				.enableUpcomingFeature("InferIsolatedConformances"),
+				.enableUpcomingFeature("InferSendableFromCaptures"),
+				.enableUpcomingFeature("NonisolatedNonsendingByDefault")
+			]
+		),
 
     ]
 )

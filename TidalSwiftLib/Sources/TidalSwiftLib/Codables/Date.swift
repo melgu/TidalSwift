@@ -16,7 +16,7 @@ extension JSONDecoder {
 	}()
 }
 
-class OptionalTimeDateFormatter: DateFormatter {
+nonisolated class OptionalTimeDateFormatter: DateFormatter {
 	static let withoutTime: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.calendar = Calendar(identifier: .iso8601)
