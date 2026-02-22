@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Combine
+@preconcurrency import Combine
 import AVFoundation
 import TidalSwiftLib
 
@@ -37,9 +37,11 @@ class Player {
 		self.autoplayAfterAddNow = autoplayAfterAddNow
 		
 		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: nil) { [weak self] _ in
-			if let s = self {
-				s.playbackInfo.fraction = CGFloat(s.fraction())
-				s.playbackInfo.playbackTimeInfo = s.playbackTimeInfo()
+			if let self {
+				Task { @MainActor in
+					self.playbackInfo.fraction = CGFloat(self.fraction())
+					self.playbackInfo.playbackTimeInfo = self.playbackTimeInfo()
+				}
 			}
 		}
 		
@@ -47,6 +49,7 @@ class Player {
 		shuffleCancellable = playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffle(enabled:))
 	}
 	
+	@MainActor
 	deinit {
 		if let token = timeObserverToken {
 			avPlayer.removeTimeObserver(token)

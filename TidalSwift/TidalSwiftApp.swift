@@ -458,21 +458,15 @@ final class TidalSwiftAppModel: ObservableObject {
 				guard let self else { return }
 				if self.savePlaybackInfoOnNextTick {
 					self.savePlaybackInfoOnNextTick = false
-					DispatchQueue.global(qos: .background).async {
-						self.savePlaybackState()
-					}
+					self.savePlaybackState()
 				}
 				if self.saveViewStateOnNextTick {
 					self.saveViewStateOnNextTick = false
-					DispatchQueue.global(qos: .background).async {
-						self.saveViewState()
-					}
+					self.saveViewState()
 				}
 				if self.saveSortingStateOnNextTick {
 					self.saveSortingStateOnNextTick = false
-					DispatchQueue.global(qos: .background).async {
-						self.saveFavoritesSortingState()
-					}
+					self.saveFavoritesSortingState()
 				}
 			}
 	}
@@ -704,31 +698,25 @@ final class TidalSwiftAppModel: ObservableObject {
 			await session.refreshAccessToken()
 		}
 	}
-
+	
 	func logout() {
-		Task {
-			await session.helpers.offline.removeAll()
-			await MainActor.run {
-				closeModals()
-				#if canImport(AppKit)
-				closeAllSecondaryWindows()
-				#endif
-				player.clearQueue()
-				session.logout()
-				viewState.clearEverything()
-				loginInfo.showModal = true
-				trackIsFavorite = false
-				albumIsFavorite = false
-			}
-		}
+		session.helpers.offline.removeAll()
+		closeModals()
+		#if canImport(AppKit)
+		closeAllSecondaryWindows()
+		#endif
+		player.clearQueue()
+		session.logout()
+		viewState.clearEverything()
+		loginInfo.showModal = true
+		trackIsFavorite = false
+		albumIsFavorite = false
 	}
 
 	func removeAllOfflineContent() {
 		Task {
-			await session.helpers.offline.removeAll()
-			await MainActor.run {
-				viewState.clearEverything()
-			}
+			session.helpers.offline.removeAll()
+			viewState.clearEverything()
 		}
 	}
 

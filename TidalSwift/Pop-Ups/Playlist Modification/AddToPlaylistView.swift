@@ -96,7 +96,7 @@ struct AddToPlaylistView: View {
 							let success = await session.playlistEditing.addTracks(ids, to: playlistId, duplicate: false)
 							if success {
 								if let playlist = await session.playlist(playlistId: playlistId) {
-									await session.helpers.offline.syncPlaylist(playlist)
+									session.helpers.offline.syncPlaylist(playlist)
 									await MainActor.run {
 										viewState.refreshCurrentView()
 										playlistEditingValues.showAddTracksModal = false

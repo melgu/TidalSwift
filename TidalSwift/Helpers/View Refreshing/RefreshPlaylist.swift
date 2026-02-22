@@ -45,7 +45,7 @@ extension ViewState {
 				if view.tracks != nil {
 					view.loadingState = .successful
 					cache.playlistTracks[playlist.id] = view.tracks
-					await session.helpers.offline.syncPlaylist(playlist)
+					session.helpers.offline.syncPlaylist(playlist)
 				} else {
 					view.loadingState = .error
 					view.tracks = await session.helpers.offline.getTracks(for: playlist)
