@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B03D3DE12F49FF200044CEA6 /* TidalSwiftLib in Frameworks */ = {isa = PBXBuildFile; productRef = B03D3DE02F49FF200044CEA6 /* TidalSwiftLib */; };
-		B0DDB3C32F4A03810084D5E7 /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = B0DDB3C22F4A03810084D5E7 /* Sliders */; };
-		B0DDB3C52F4A038C0084D5E7 /* UpdateNotification in Frameworks */ = {isa = PBXBuildFile; productRef = B0DDB3C42F4A038C0084D5E7 /* UpdateNotification */; };
+		B0E115162F4AA7B3007AF324 /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = B0E115152F4AA7B3007AF324 /* Sliders */; };
+		B0E115192F4AA7C3007AF324 /* UpdateNotification in Frameworks */ = {isa = PBXBuildFile; productRef = B0E115182F4AA7C3007AF324 /* UpdateNotification */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,9 +19,22 @@
 		B086897C2F49F81800514D0E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B0C6B9CD2F4AA39400C2BF60 /* Exceptions for "TidalSwift" folder in "TidalSwift" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			platformFiltersByRelativePath = {
+				Info.plist = (macos, );
+			};
+			target = B07C89A52F49F7B800078B50 /* TidalSwift */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B07C89A82F49F7B800078B50 /* TidalSwift */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B0C6B9CD2F4AA39400C2BF60 /* Exceptions for "TidalSwift" folder in "TidalSwift" target */,
+			);
 			path = TidalSwift;
 			sourceTree = "<group>";
 		};
@@ -37,9 +50,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0DDB3C52F4A038C0084D5E7 /* UpdateNotification in Frameworks */,
+				B0E115192F4AA7C3007AF324 /* UpdateNotification in Frameworks */,
 				B03D3DE12F49FF200044CEA6 /* TidalSwiftLib in Frameworks */,
-				B0DDB3C32F4A03810084D5E7 /* Sliders in Frameworks */,
+				B0E115162F4AA7B3007AF324 /* Sliders in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,7 +67,6 @@
 				B086897C2F49F81800514D0E /* README.md */,
 				B086897A2F49F81000514D0E /* AGENTS.md */,
 				B086897B2F49F81000514D0E /* CLAUDE.md */,
-				B0DDB3C12F4A03810084D5E7 /* Frameworks */,
 				B07C89A72F49F7B800078B50 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,13 +77,6 @@
 				B07C89A62F49F7B800078B50 /* TidalSwift.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B0DDB3C12F4A03810084D5E7 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,8 +100,8 @@
 			name = TidalSwift;
 			packageProductDependencies = (
 				B03D3DE02F49FF200044CEA6 /* TidalSwiftLib */,
-				B0DDB3C22F4A03810084D5E7 /* Sliders */,
-				B0DDB3C42F4A038C0084D5E7 /* UpdateNotification */,
+				B0E115152F4AA7B3007AF324 /* Sliders */,
+				B0E115182F4AA7C3007AF324 /* UpdateNotification */,
 			);
 			productName = TidalSwift;
 			productReference = B07C89A62F49F7B800078B50 /* TidalSwift.app */;
@@ -128,8 +133,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B03D3DDF2F49FF200044CEA6 /* XCLocalSwiftPackageReference "TidalSwiftLib" */,
-				B03D3DE22F49FF6D0044CEA6 /* XCRemoteSwiftPackageReference "swiftui-sliders" */,
-				B03D3DE32F49FFE10044CEA6 /* XCRemoteSwiftPackageReference "UpdateNotification" */,
+				B0E115142F4AA7B3007AF324 /* XCRemoteSwiftPackageReference "swiftui-sliders" */,
+				B0E115172F4AA7C3007AF324 /* XCRemoteSwiftPackageReference "UpdateNotification" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B07C89A72F49F7B800078B50 /* Products */;
@@ -317,10 +322,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 13;
+				MACOSX_DEPLOYMENT_TARGET = 14;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.melgu.TidalSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -374,10 +379,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 13;
+				MACOSX_DEPLOYMENT_TARGET = 14;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.melgu.TidalSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -426,20 +431,20 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B03D3DE22F49FF6D0044CEA6 /* XCRemoteSwiftPackageReference "swiftui-sliders" */ = {
+		B0E115142F4AA7B3007AF324 /* XCRemoteSwiftPackageReference "swiftui-sliders" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:spacenation/swiftui-sliders.git";
+			repositoryURL = "https://github.com/spacenation/swiftui-sliders.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.1.0;
 			};
 		};
-		B03D3DE32F49FFE10044CEA6 /* XCRemoteSwiftPackageReference "UpdateNotification" */ = {
+		B0E115172F4AA7C3007AF324 /* XCRemoteSwiftPackageReference "UpdateNotification" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:melgu/UpdateNotification.git";
+			repositoryURL = "https://github.com/melgu/UpdateNotification.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -449,14 +454,14 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = TidalSwiftLib;
 		};
-		B0DDB3C22F4A03810084D5E7 /* Sliders */ = {
+		B0E115152F4AA7B3007AF324 /* Sliders */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B03D3DE22F49FF6D0044CEA6 /* XCRemoteSwiftPackageReference "swiftui-sliders" */;
+			package = B0E115142F4AA7B3007AF324 /* XCRemoteSwiftPackageReference "swiftui-sliders" */;
 			productName = Sliders;
 		};
-		B0DDB3C42F4A038C0084D5E7 /* UpdateNotification */ = {
+		B0E115182F4AA7C3007AF324 /* UpdateNotification */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B03D3DE32F49FFE10044CEA6 /* XCRemoteSwiftPackageReference "UpdateNotification" */;
+			package = B0E115172F4AA7C3007AF324 /* XCRemoteSwiftPackageReference "UpdateNotification" */;
 			productName = UpdateNotification;
 		};
 /* End XCSwiftPackageProductDependency section */

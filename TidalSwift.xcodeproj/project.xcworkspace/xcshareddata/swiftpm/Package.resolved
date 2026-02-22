@@ -1,5 +1,5 @@
 {
-  "originHash" : "8c6b70031651288149d7b4801f4ebbd51548233ebed1563000ca16fdc884c712",
+  "originHash" : "8bafe0989a2180c4546d775627d45e0b97f7682ae78521cf7a730737062104d3",
   "pins" : [
     {
       "identity" : "itunesgenreid",
@@ -31,7 +31,7 @@
     {
       "identity" : "swifttagger",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:NCrusher74/SwiftTagger.git",
+      "location" : "https://github.com/NCrusher74/SwiftTagger.git",
       "state" : {
         "revision" : "72dfeacfffb2128cee1faf4c184a3f9ab065c32b",
         "version" : "1.7.0"
@@ -58,7 +58,7 @@
     {
       "identity" : "swiftui-sliders",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:spacenation/swiftui-sliders.git",
+      "location" : "https://github.com/spacenation/swiftui-sliders.git",
       "state" : {
         "revision" : "d5a7d856655d5c91f891c2b69d982c30fd5c7bdf",
         "version" : "2.1.0"
@@ -67,10 +67,10 @@
     {
       "identity" : "updatenotification",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:melgu/UpdateNotification.git",
+      "location" : "https://github.com/melgu/UpdateNotification.git",
       "state" : {
-        "revision" : "aa6092d2ddcbc14a4149fad3856c3b50b805a430",
-        "version" : "1.2.0"
+        "branch" : "main",
+        "revision" : "6d62a0ff10c27891bc20a4d898ce7ec8da6bf2ab"
       }
     }
   ],

@@ -17,7 +17,7 @@ let package = Package(
         ),
     ],
 	dependencies: [
-		.package(url: "git@github.com:NCrusher74/SwiftTagger.git", from: "1.7.0"),
+		.package(url: "https://github.com/NCrusher74/SwiftTagger.git", from: "1.7.0"),
 	],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
