@@ -62,10 +62,6 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		album.getCoverUrl(session: session, resolution: resolution)
 	}
 	
-	public func getCover(session: Session, resolution: Int) -> NSImage? {
-		album.getCover(session: session, resolution: resolution)
-	}
-	
 	public func getCredits(session: Session) async -> [Credit]? {
 		await session.trackCredits(trackId: id)
 	}

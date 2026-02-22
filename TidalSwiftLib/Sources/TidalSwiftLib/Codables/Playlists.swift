@@ -63,22 +63,6 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 		}
 	}
 	
-	public func image(session: Session, resolution: Int, resolutionY: Int? = nil) -> NSImage? {
-		if squareImage == nil && image == nil {
-			return nil
-		}
-		
-		if let resolutionY = resolutionY {
-			return session.image(imageId: squareImage ?? image!, resolution: resolution, resolutionY: resolutionY)
-		}
-		
-		if let squareImage = squareImage {
-			return session.image(imageId: squareImage, resolution: resolution)
-		} else {
-			return session.image(imageId: image!, resolution: 480, resolutionY: 320)
-		}
-	}
-	
 	// Offline
 	
 	public func isOffline(session: Session) async -> Bool {
@@ -148,13 +132,6 @@ public struct PlaylistCreator: Codable {
 			return nil
 		}
 		return session.imageUrl(imageId: picture, resolution: resolution)
-	}
-	
-	public func picture(session: Session, resolution: Int) -> NSImage? {
-		guard let picture = picture else {
-			return nil
-		}
-		return session.image(imageId: picture, resolution: resolution)
 	}
 }
 

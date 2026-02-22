@@ -33,13 +33,4 @@ extension Session {
         let urlString = "\(AuthInformation.ImageLocation)/\(path)/\(resolution)x\(tempResolutionY).jpg"
 		return URL(string: urlString)
 	}
-	
-	@available(*, deprecated, message: "Use AsyncImage or a URLSession download task instead")
-	public func image(imageId: String, resolution: Int, resolutionY: Int? = nil) -> NSImage? {
-		let urlOrNil = imageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
-		guard let url = urlOrNil else {
-			return nil
-		}
-		return NSImage(byReferencing: url)
-	}
 }

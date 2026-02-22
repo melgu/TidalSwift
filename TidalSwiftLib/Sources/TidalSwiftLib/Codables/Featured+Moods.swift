@@ -26,10 +26,6 @@ public struct Genre: Decodable, Identifiable { // Also Mood
 	public func imageUrl(session: Session, resolution: Int) -> URL? {
 		session.imageUrl(imageId: image, resolution: resolution)
 	}
-	
-	public func image(session: Session, resolution: Int) -> NSImage? {
-		session.image(imageId: image, resolution: resolution)
-	}
 }
 
 struct FeaturedItems: Decodable {
@@ -66,9 +62,5 @@ public struct FeaturedItem: Decodable {
 	
 	public func imageUrl(session: Session, resolution: Int, resolutionY: Int) -> URL? {
 		session.imageUrl(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
-	}
-	
-	public func image(session: Session, resolution: Int, resolutionY: Int) -> NSImage? {
-		session.image(imageId: imageId, resolution: resolution, resolutionY: resolutionY)
 	}
 }

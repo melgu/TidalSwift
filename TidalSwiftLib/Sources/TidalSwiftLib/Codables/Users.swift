@@ -29,11 +29,6 @@ public struct User: Decodable, Identifiable {
 		guard let picture = picture else { return nil }
 		return session.imageUrl(imageId: picture, resolution: resolution)
 	}
-	
-	public func picture(session: Session, resolution: Int) -> NSImage? {
-		guard let picture = picture else { return nil }
-		return session.image(imageId: picture, resolution: resolution)
-	}
 }
 
 struct LoginUser: Decodable {

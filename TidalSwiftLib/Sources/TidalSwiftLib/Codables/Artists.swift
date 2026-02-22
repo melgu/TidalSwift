@@ -47,13 +47,6 @@ public struct Artist: Codable, Equatable, Identifiable, Hashable {
 		return session.imageUrl(imageId: picture, resolution: resolution)
 	}
 	
-	public func picture(session: Session, resolution: Int) -> NSImage? {
-		guard let picture = picture else {
-			return nil
-		}
-		return session.image(imageId: picture, resolution: resolution)
-	}
-	
 	public func radio(session: Session) async -> [Track]? {
 		await session.artistRadio(artistId: id)
 	}

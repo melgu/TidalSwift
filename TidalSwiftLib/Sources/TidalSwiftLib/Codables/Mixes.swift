@@ -77,10 +77,6 @@ public struct MixesGraphicImage: Codable {
 	public func getImageUrl(session: Session, resolution: Int) -> URL? {
 		session.imageUrl(imageId: id, resolution: resolution)
 	}
-	
-	public func getImage(session: Session, resolution: Int) -> NSImage? {
-		session.image(imageId: id, resolution: resolution)
-	}
 }
 
 struct Mix: Decodable {

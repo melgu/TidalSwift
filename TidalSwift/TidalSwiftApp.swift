@@ -34,7 +34,7 @@ struct TidalSwiftApp: App {
 			.onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
 				appModel.prepareForTermination()
 			}
-			.onChange(of: scenePhase) { _, newValue in
+			.onChange(of: scenePhase) { newValue in
 				if newValue != .active {
 					appModel.saveState()
 				}

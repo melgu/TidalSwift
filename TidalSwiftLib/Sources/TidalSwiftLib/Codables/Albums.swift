@@ -62,11 +62,6 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 		return session.imageUrl(imageId: cover, resolution: resolution)
 	}
 	
-	public func getCover(session: Session, resolution: Int) -> NSImage? {
-		guard let cover = cover else { return nil }
-		return session.image(imageId: cover, resolution: resolution)
-	}
-	
 	public func isOffline(session: Session) async -> Bool {
 		await session.helpers.offline.isAlbumOffline(album: self)
 	}

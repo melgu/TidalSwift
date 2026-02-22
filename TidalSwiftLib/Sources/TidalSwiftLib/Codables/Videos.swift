@@ -52,13 +52,6 @@ public struct Video: Codable, Equatable, Identifiable, Hashable {
 		return session.imageUrl(imageId: imageId, resolution: resolution)
 	}
 	
-	public func image(session: Session, resolution: Int) -> NSImage? {
-		guard let imageId = imageId else {
-			return nil
-		}
-		return session.image(imageId: imageId, resolution: resolution)
-	}
-	
 	public static func == (lhs: Video, rhs: Video) -> Bool {
 		lhs.id == rhs.id
 	}
