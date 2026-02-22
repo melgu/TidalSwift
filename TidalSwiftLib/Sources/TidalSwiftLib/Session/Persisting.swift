@@ -45,7 +45,7 @@ extension Session {
 	}
 	
 	public func saveConfig() {
-		let persistentInformation: [String: String?] = [
+		var persistentInformation: [String: String?] = [
 			"accessToken": config.accessToken,
 			"refreshToken": config.refreshToken,
 			"apiToken": config.apiToken,
@@ -53,7 +53,10 @@ extension Session {
 			"urlType": config.urlType.rawValue,
 			"imageSize": String(config.imageSize)
 		]
-		
+		if let tokenExpirationDate = config.tokenExpirationDate {
+			persistentInformation["tokenExpirationDate"] = String(tokenExpirationDate.timeIntervalSince1970)
+		}
+
 		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
 	}
 	
@@ -74,6 +77,7 @@ extension Config {
 		}
 		
 		guard let accessToken = persistentInformation["accessToken"],
+			  let refreshToken = persistentInformation["refreshToken"],
 			  let apiToken = persistentInformation["apiToken"],
 			  let offlineAudioQualityString = persistentInformation["offlineAudioQuality"],
 			  let offlineAudioQuality = AudioQuality(rawValue: offlineAudioQualityString),
@@ -86,13 +90,23 @@ extension Config {
 			return nil
 		}
 		
-		let refreshToken = persistentInformation["refreshToken"]
-		
-		return Config(accessToken: accessToken,
-					  refreshToken: refreshToken,
-					  apiToken: apiToken,
-					  offlineAudioQuality: offlineAudioQuality,
-					  urlType: urlType,
-					  imageSize: imageSize)
+		let clientID = persistentInformation["clientID"] ?? AuthInformation.OAuthClientID
+
+		var tokenExpirationDate: Date?
+		if let expirationString = persistentInformation["tokenExpirationDate"],
+		   let expirationInterval = Double(expirationString) {
+			tokenExpirationDate = Date(timeIntervalSince1970: expirationInterval)
+		}
+
+		return Config(
+			accessToken: accessToken,
+			refreshToken: refreshToken,
+			clientID: clientID,
+			apiToken: apiToken,
+			offlineAudioQuality: offlineAudioQuality,
+			urlType: urlType,
+			imageSize: imageSize,
+			tokenExpirationDate: tokenExpirationDate
+		)
 	}
 }

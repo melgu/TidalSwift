@@ -27,8 +27,8 @@ struct LoginView: View {
 	@State var counter = 300
 	let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 	
-	@State var accessToken: String = ""
 	@State var refreshToken: String = ""
+	@State var clientID: String = ""
 	@State var offlineAudioQuality: AudioQuality = .hifi
 	@State var audioUrlType: AudioUrlType = .offline
 	
@@ -96,12 +96,9 @@ struct LoginView: View {
 	
 	var authLogin: some View {
 		VStack {
-			SecureField("Authorization / Access Token", text: $accessToken)
+			SecureField("Refresh Token", text: $refreshToken)
 			
-			Text("In the form: Bearer ABC123…")
-				.foregroundColor(.secondary)
-			
-			SecureField("Optional Refresh Token", text: $refreshToken)
+			TextField("Client ID", text: $clientID)
 			
 			Picker(selection: $audioUrlType, label: Text("Audio URL Type"), content: {
 				Text("Offline").tag(AudioUrlType.offline)
@@ -164,13 +161,11 @@ struct LoginView: View {
 	func setAuthorization() {
 		session.config.urlType = audioUrlType
 		Task {
-			let loginSuccessful = await session.setAccessToken(accessToken, refreshToken: refreshToken)
-			await MainActor.run {
-				if loginSuccessful {
-					successfulLogin(audioUrlType: audioUrlType)
-				} else {
-					wrongLogin = true
-				}
+			let loginSuccessful = await session.login(refreshToken: refreshToken, clientID: clientID)
+			if loginSuccessful {
+				successfulLogin(audioUrlType: audioUrlType)
+			} else {
+				wrongLogin = true
 			}
 		}
 	}
@@ -181,6 +176,7 @@ struct LoginView: View {
 		session.config.urlType = audioUrlType
 		session.saveConfig()
 		session.saveSession()
+		session.scheduleAccessTokenRefresh()
 		player.setAudioQuality(to: offlineAudioQuality)
 		viewState.push(view: TidalSwiftView(viewType: .favoriteTracks))
 	}

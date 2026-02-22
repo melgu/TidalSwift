@@ -27,6 +27,7 @@ public class Session {
 	public var favorites: Favorites?
 	public var helpers: Helpers!
 	public var playlistEditing: PlaylistEditing!
+	var tokenRefreshTask: Task<Void, Never>?
 	
 	public init(config: Config?) {
 		if let config = config {
@@ -35,7 +36,13 @@ public class Session {
 			if let config = Config.load() {
 				self.config = config
 			} else {
-				self.config = Config(accessToken: "", refreshToken: nil, offlineAudioQuality: .hifi, urlType: .streaming)
+				self.config = Config(
+					accessToken: "",
+					refreshToken: "",
+					clientID: "",
+					offlineAudioQuality: .hifi,
+					urlType: .streaming
+				)
 			}
 		}
 		helpers = Helpers(session: self)

@@ -44,14 +44,11 @@ struct ContentView: View {
 			.touchBar {
 				TouchBarView(player: player, playbackInfo: player.playbackInfo)
 			}
-			.onAppear {
-				Task {
-					let success = await session.populateVariablesForAccessToken()
-					if !success {
-						await MainActor.run {
-							loginInfo.showModal = true
-						}
-					}
+			.task {
+				await session.refreshAccessTokenIfNeeded()
+				let success = await session.populateVariablesForAccessToken()
+				if !success {
+					loginInfo.showModal = true
 				}
 			}
 	}
