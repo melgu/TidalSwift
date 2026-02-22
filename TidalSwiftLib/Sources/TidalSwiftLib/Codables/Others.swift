@@ -9,10 +9,26 @@
 import Foundation
 
 public enum AudioQuality: String, Codable {
-	case master = "HI_RES"
-	case hifi = "LOSSLESS"
-	case high = "HIGH"
-	case low = "LOW"
+	case max = "HI_RES_LOSSLESS"	// Lossless, 24 Bit, 192 kHz
+	case high = "LOSSLESS"			// Lossless, 16 Bit / 44,1 kHz
+	case medium = "HIGH"			// 320 kbps
+	case low = "LOW"				// 96 kbps
+}
+
+extension AudioQuality: CaseIterable {}
+extension AudioQuality: Identifiable {
+	public var id: Self { self }
+}
+
+public extension AudioQuality {
+	var title: LocalizedStringResource {
+		switch self {
+		case .max: "Max (Lossless, 24 Bit, 192 kHz)"
+		case .high: "High (16 Bit / 44,1 kHz)"
+		case .medium: "Low (320 kbps)"
+		case .low: "Low (32 kbps)"
+		}
+	}
 }
 
 struct LoginResponse: Decodable {

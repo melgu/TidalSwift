@@ -48,9 +48,9 @@ extension Session {
 	
 	func pathExtension(for audioQuality: AudioQuality) -> String {
 		switch audioQuality {
-		case .low, .high:
+		case .low, .medium:
 			return "m4a"
-		case .hifi, .master:
+		case .high, .max:
 			return "flac"
 		}
 	}

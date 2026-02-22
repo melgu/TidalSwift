@@ -113,7 +113,7 @@ final class TidalSwiftAppModel: ObservableObject {
 		   let audioQuality = AudioQuality(rawValue: audioQualityString) {
 			player = Player(session: session, audioQuality: audioQuality)
 		} else {
-			player = Player(session: session, audioQuality: .hifi)
+			player = Player(session: session, audioQuality: .high)
 		}
 
 		var cache = ViewCache()
@@ -844,8 +844,8 @@ struct TidalSwiftCommands: Commands {
 
 			Menu("Audio Quality") {
 				audioQualityButton(title: "Low", quality: .low)
-				audioQualityButton(title: "High", quality: .high)
-				audioQualityButton(title: "HiFi", quality: .hifi)
+				audioQualityButton(title: "High", quality: .medium)
+				audioQualityButton(title: "HiFi", quality: .high)
 			}
 
 			Button("Clear Queue") {

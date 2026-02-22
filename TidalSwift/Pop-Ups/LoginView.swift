@@ -29,7 +29,7 @@ struct LoginView: View {
 	
 	@State var refreshToken: String = ""
 	@State var clientID: String = ""
-	@State var offlineAudioQuality: AudioQuality = .hifi
+	@State var offlineAudioQuality: AudioQuality = .high
 	@State var audioUrlType: AudioUrlType = .offline
 	
 	var body: some View {
@@ -80,12 +80,7 @@ struct LoginView: View {
 					.foregroundColor(.red)
 			}
 			
-			Picker(selection: $offlineAudioQuality, label: Text("Offline Audio Quality")) {
-//				Text("Master").tag(AudioQuality.master)
-				Text("HiFi").tag(AudioQuality.hifi)
-				Text("High").tag(AudioQuality.high)
-				Text("Low").tag(AudioQuality.low)
-			}
+			qualityPicker
 			
 			Button(action: startAuthorization) {
 				Text("Login")
@@ -124,10 +119,9 @@ struct LoginView: View {
 	
 	var qualityPicker: some View {
 		Picker(selection: $offlineAudioQuality, label: Text("Offline Audio Quality")) {
-//			Text("Master").tag(AudioQuality.master)
-			Text("HiFi").tag(AudioQuality.hifi)
-			Text("High").tag(AudioQuality.high)
-			Text("Low").tag(AudioQuality.low)
+			ForEach(AudioQuality.allCases) { quality in
+				Text(quality.title).tag(quality)
+			}
 		}
 	}
 	

@@ -87,7 +87,7 @@ extension Track {
 			if explicit {
 				Image(systemName: "e.square")
 			}
-			if audioQuality == .master {
+			if audioQuality == .max {
 				Image(systemName: "m.square.fill")
 			}
 			if audioModes?.contains(.sony360RealityAudio) ?? false {
@@ -102,7 +102,7 @@ extension Track {
 	
 	var hasAttributes: Bool {
 		explicit ||
-			audioQuality == .master ||
+			audioQuality == .max ||
 			audioModes?.contains(.sony360RealityAudio) ?? false ||
 			audioModes?.contains(.dolbyAtmos) ?? false
 	}

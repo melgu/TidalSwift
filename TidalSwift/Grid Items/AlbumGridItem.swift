@@ -144,7 +144,7 @@ extension Album {
 			if explicit ?? false {
 				Image(systemName: "e.square")
 			}
-			if audioQuality == .master {
+			if audioQuality == .max {
 				Image(systemName: "m.square.fill")
 			} else if audioModes?.contains(.sony360RealityAudio) ?? false {
 				Image(systemName: "headphones")
@@ -159,7 +159,7 @@ extension Album {
 	
 	var hasAttributes: Bool {
 		explicit ?? false ||
-			audioQuality == .master ||
+			audioQuality == .max ||
 			audioModes?.contains(.sony360RealityAudio) ?? false ||
 			audioModes?.contains(.dolbyAtmos) ?? false
 	}

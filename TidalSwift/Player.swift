@@ -479,13 +479,13 @@ class Player {
 		var chosenQuality = currentAudioQuality
 //		print("\(chosenQuality) \(quality)")
 		
-		if chosenQuality == .master && quality != .master {
-			chosenQuality = .hifi
-		}
-		if chosenQuality == .hifi && (quality == .high || quality == .low) {
+		if chosenQuality == .max && quality != .max {
 			chosenQuality = .high
 		}
-		if chosenQuality == .high && quality == .low {
+		if chosenQuality == .high && (quality == .medium || quality == .low) {
+			chosenQuality = .medium
+		}
+		if chosenQuality == .medium && quality == .low {
 			chosenQuality = .low
 		}
 		
@@ -507,11 +507,11 @@ class Player {
 		switch quality {
 		case .low:
 			return "LOW"
-		case .high:
+		case .medium:
 			return "HIGH"
-		case .hifi:
+		case .high:
 			return "HIFI"
-		case .master:
+		case .max:
 			return "MASTER"
 		}
 	}
