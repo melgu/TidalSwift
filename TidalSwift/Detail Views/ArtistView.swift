@@ -117,7 +117,7 @@ struct ArtistView: View {
 					Image(systemName: "info.circle")
 						.help("Artist Bio")
 						.onTapGesture {
-							let controller = ResizableWindowController(rootView:
+							let controller = ResizableWindowControllerFactory.create(rootView:
 								ArtistBioView(session: session, artist: artist)
 																		.environmentObject(viewState)
 							)

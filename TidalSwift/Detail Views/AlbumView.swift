@@ -64,7 +64,7 @@ struct AlbumView: View {
 										Image(systemName: "c.circle")
 											.help("Credits")
 											.onTapGesture {
-												let controller = ResizableWindowController(rootView:
+												let controller = ResizableWindowControllerFactory.create(rootView:
 													CreditsView(session: session, album: album)
 														.environmentObject(viewState)
 												)

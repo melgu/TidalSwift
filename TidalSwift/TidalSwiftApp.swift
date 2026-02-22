@@ -205,14 +205,14 @@ final class TidalSwiftAppModel: ObservableObject {
 	// MARK: Secondary Windows
 
 	func initSecondaryWindows() {
-		lyricsViewController = ResizableWindowController(rootView:
+		lyricsViewController = ResizableWindowControllerFactory.create(rootView:
 			LyricsView()
 				.environmentObject(viewState)
 				.environmentObject(player.queueInfo)
 		)
 		lyricsViewController?.window?.title = "Lyrics"
 
-		queueViewController = ResizableWindowController(rootView:
+		queueViewController = ResizableWindowControllerFactory.create(rootView:
 			QueueView(session: session, player: player)
 				.environmentObject(viewState)
 				.environmentObject(player.queueInfo)
@@ -220,13 +220,13 @@ final class TidalSwiftAppModel: ObservableObject {
 		)
 		queueViewController?.window?.title = "Queue"
 
-		viewHistoryViewController = ResizableWindowController(rootView:
+		viewHistoryViewController = ResizableWindowControllerFactory.create(rootView:
 			ViewHistoryView()
 				.environmentObject(viewState)
 		)
 		viewHistoryViewController?.window?.title = "View History"
 
-		playbackHistoryViewController = ResizableWindowController(
+		playbackHistoryViewController = ResizableWindowControllerFactory.create(
 			rootView: PlaybackHistoryView(session: session, player: player)
 				.environmentObject(viewState)
 				.environmentObject(player.queueInfo)
@@ -682,7 +682,7 @@ final class TidalSwiftAppModel: ObservableObject {
 		guard let userId = session.userId else { return }
 		Task {
 			guard let user = await session.user(userId: userId) else { return }
-			let controller = ResizableWindowController(rootView:
+			let controller = ResizableWindowControllerFactory.create(rootView:
 				AccountInfoView(session: session)
 			)
 			controller.window?.title = user.username

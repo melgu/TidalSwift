@@ -161,7 +161,7 @@ struct TrackContextMenu: View {
 					}
 					Button {
 						print("Credits")
-						let controller = ResizableWindowController(rootView:
+						let controller = ResizableWindowControllerFactory.create(rootView:
 							CreditsView(session: session, track: track)
 								.environmentObject(viewState)
 						)

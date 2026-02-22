@@ -156,7 +156,7 @@ struct TrackRow: View {
 					#if canImport(AppKit)
 					Image(systemName: "c.circle")
 						.onTapGesture {
-							let controller = ResizableWindowController(rootView:
+							let controller = ResizableWindowControllerFactory.create(rootView:
 								CreditsView(session: session, track: track)
 								.environmentObject(viewState)
 							)

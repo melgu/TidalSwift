@@ -107,7 +107,7 @@ struct ArtistContextMenu: View {
 				}
 				Button {
 					print("Bio")
-					let controller = ResizableWindowController(rootView:
+					let controller = ResizableWindowControllerFactory.create(rootView:
 						ArtistBioView(session: session, artist: artist)
 							.environmentObject(viewState)
 					)

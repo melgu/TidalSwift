@@ -154,7 +154,7 @@ struct AlbumContextMenu: View {
 					}
 					Button {
 						print("Credits")
-						let controller = ResizableWindowController(rootView:
+						let controller = ResizableWindowControllerFactory.create(rootView:
 							CreditsView(session: session, album: album)
 								.environmentObject(viewState)
 						)
