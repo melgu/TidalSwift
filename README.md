@@ -15,8 +15,11 @@ It supports all major features of the official Tidal app, while adding additiona
 ## Download
 
 You can download the latest version [here](https://github.com/melgu/TidalSwift/releases).
-After downloading and unpacking the TidalSwift.zip, move the app to the Applications folder. If you get a GateKeeper warning on first launch, right-click the app, select open and confirm your action in the dialog popping up. Sometimes this needs to be done twice. Alternatively you can allow the app in System Settings -> Security.
+After downloading and unpacking the TidalSwift.zip, move the app to the Applications folder. Because the app is unsigned (I refuse to give current Apple money), you need to explicitly allow the app after the first start in the Privacy system settings. Alternatively, you can execute this:
 
+```sh
+xattr -d com.apple.quarantine /Applications/TidalSwift.app
+```
 
 
 
