@@ -189,7 +189,7 @@ struct PlaybackControls: View {
 					}
 				Group {
 					if playbackInfo.repeatState == .single {
-						Image(systemName: "repeat1")
+						Image(systemName: "repeat.1")
 							#if canImport(AppKit)
 							.tint(.controlAccentColor)
 							#else
