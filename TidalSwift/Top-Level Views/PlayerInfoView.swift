@@ -20,23 +20,27 @@ struct PlayerInfoView: View {
 	
 	var body: some View {
 		VStack {
+            
 			GeometryReader { metrics in
 				HStack {
 					TrackInfoView(player: player, session: session)
-						.frame(width: metrics.size.width / 2 - 100)
+						.frame(width: metrics.size.width / 2 - 107)
 						.contextMenu {
 							if !queueInfo.queue.isEmpty {
-								let track = queueInfo.queue[queueInfo.currentIndex].track
+								let track = queueInfo.queue[0].track
 								TrackContextMenu(track: track, session: session, player: player)
 							}
 						}
+                    VStack{
+                        PlaybackControls(player: player)
+                            .frame(width: 200)
+                        ProgressBar(player: player).padding([.horizontal]).frame(width: 400)
+                    }
 					
-					PlaybackControls(player: player)
-						.frame(width: 200)
 					Spacer()
 					VolumeControl(player: player)
-					Spacer()
-					DownloadIndicator()
+					
+					
 					#if canImport(AppKit)
 					Image(systemName: "quote.bubble")
 						.help("Lyrics")
@@ -50,10 +54,14 @@ struct PlayerInfoView: View {
 						}
 					#endif
 				}
-			}
-			.frame(height: 30)
-			.padding([.top, .horizontal])
-		}
+                
+            }
+			
+            .padding( [.vertical,.horizontal])
+            .frame(alignment: .center)
+            
+            
+        }
 	}
 }
 
@@ -62,11 +70,12 @@ struct TrackInfoView: View {
 	let session: Session
 	
 	@EnvironmentObject var queueInfo: QueueInfo
-	
+    @EnvironmentObject var playbackInfo: PlaybackInfo
 	var body: some View {
 		HStack {
-			if !player.queueInfo.queue.isEmpty {
-				let track = queueInfo.queue[queueInfo.currentIndex].track
+            if player.getCurrentlyPlayingTrack() != nil{
+               
+                let track = player.getCurrentlyPlayingTrack()!
 				HStack {
 					if let coverUrlSmall = track.getCoverUrl(session: session, resolution: 320),
 					   let coverUrlBig = track.getCoverUrl(session: session, resolution: 1280) {
@@ -151,69 +160,115 @@ struct PlaybackControls: View {
 				Spacer()
 				Group {
 					if playbackInfo.shuffle {
-						Image(systemName: "shuffle")
+                        Image(systemName: "shuffle.circle.fill")
+                            .resizable()
+                            .frame(width:15, height:15)
 							#if canImport(AppKit)
 							.tint(.controlAccentColor)
 							#else
 							.tint(.secondary)
 							#endif
 					} else {
-						Image(systemName: "shuffle")
-							.onTapGesture {
-								playbackInfo.shuffle.toggle()
-							}
+						Image(systemName: "shuffle.circle")
+                            .resizable()
+                            .frame(width:15, height:15)
+                        
 					}
 				}
 				.help("Shuffle")
 				.onTapGesture {
 					playbackInfo.shuffle.toggle()
+					if playbackInfo.shuffle {
+						player.queueInfo.setPlaybackMode(.shuffled)
+					} else {
+						// If repeat single is active, keep repeatOne; else normal/repeatAll
+						switch player.playbackInfo.repeatState {
+						case .single:
+							player.queueInfo.setPlaybackMode(.repeatOne)
+						case .all:
+							player.queueInfo.setPlaybackMode(.repeatAll)
+						case .off:
+							player.queueInfo.setPlaybackMode(.normal)
+						}
+					}
 				}
 				Image(systemName: "backward.fill")
+                    .resizable()
+                    .frame(width:15, height:12)
+                
 					.onTapGesture {
 						player.previous()
 					}
 				if playbackInfo.playing {
 					Image(systemName: "pause.fill")
+                        .resizable()
+                        .frame(width:15, height:15)
 						.onTapGesture {
 							player.pause()
 						}
 				} else {
 					Image(systemName: "play.fill")
+                        .resizable()
+                        .frame(width:15,height: 15)
 						.onTapGesture {
 							player.play()
 						}
 				}
 				Image(systemName: "forward.fill")
+                    .resizable()
+                    .frame(width:15, height:12)
 					.onTapGesture {
 						player.next()
 					}
 				Group {
 					if playbackInfo.repeatState == .single {
-						Image(systemName: "repeat.1")
+						Image(systemName: "repeat.1.circle.fill")
+                            .resizable()
+                            .frame(width:15, height:15)
+                        
 							#if canImport(AppKit)
 							.tint(.controlAccentColor)
 							#else
 							.tint(.secondary)
 							#endif
 					} else if playbackInfo.repeatState == .all {
-						Image(systemName: "repeat")
+						Image(systemName: "repeat.circle.fill")
+                            .resizable()
+                            .frame(width:15, height:15)
 							#if canImport(AppKit)
 							.tint(.controlAccentColor)
 							#else
 							.tint(.secondary)
 							#endif
 					} else {
-						Image(systemName: "repeat")
+						Image(systemName: "repeat.circle")
+                            .resizable()
+                            .frame(width:15, height:15)
 					}
 				}
 				.help("Repeat")
 				.onTapGesture {
 					player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
-					print("Repeat: \(player.playbackInfo.repeatState)")
+					switch player.playbackInfo.repeatState {
+					case .off:
+						if playbackInfo.shuffle {
+							player.queueInfo.setPlaybackMode(.shuffled)
+						} else {
+							player.queueInfo.setPlaybackMode(.normal)
+						}
+					case .all:
+						if playbackInfo.shuffle {
+							player.queueInfo.setPlaybackMode(.shuffled)
+						} else {
+							player.queueInfo.setPlaybackMode(.repeatAll)
+						}
+					case .single:
+						player.queueInfo.setPlaybackMode(.repeatOne)
+					}
 				}
 				Spacer()
 			}
-			ProgressBar(player: player)
+			
 		}
 	}
 }
@@ -293,3 +348,4 @@ struct VolumeControl: View {
 		}
 	}
 }
+

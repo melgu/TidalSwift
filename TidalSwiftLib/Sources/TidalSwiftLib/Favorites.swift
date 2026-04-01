@@ -366,12 +366,25 @@ class FavoritesCache {
 	
 	private var _artists: [FavoriteArtist]?
 	private var lastCheckedArtists = Date(timeIntervalSince1970: 0)
+    private var artistsTask: Task<[FavoriteArtist]?, Never>?
 	var artists: [FavoriteArtist]? {
 		get async {
-			if Date().timeIntervalSince(lastCheckedArtists) > timeoutInSeconds {
-				self._artists = await favorites.artists()
+			if Date().timeIntervalSince(lastCheckedArtists) <= timeoutInSeconds, let cached = _artists {
+				return cached
 			}
-			return _artists
+			if let task = artistsTask {
+				return await task.value
+			}
+			let task = Task<[FavoriteArtist]?, Never> {
+				let result = await favorites.artists()
+				return result
+			}
+			artistsTask = task
+			lastCheckedArtists = .now
+			let result = await task.value
+			artistsTask = nil
+			set(result)
+			return result
 		}
 	}
 	func set(_ newValue: [FavoriteArtist]?) {
@@ -381,12 +394,25 @@ class FavoritesCache {
 	
 	private var _albums: [FavoriteAlbum]?
 	private var lastCheckedAlbums = Date(timeIntervalSince1970: 0)
+    private var albumsTask: Task<[FavoriteAlbum]?, Never>?
 	var albums: [FavoriteAlbum]? {
 		get async {
-			if Date().timeIntervalSince(lastCheckedAlbums) > timeoutInSeconds {
-				self._albums = await favorites.albums()
+			if Date().timeIntervalSince(lastCheckedAlbums) <= timeoutInSeconds, let cached = _albums {
+				return cached
 			}
-			return _albums
+			if let task = albumsTask {
+				return await task.value
+			}
+			let task = Task<[FavoriteAlbum]?, Never> {
+				let result = await favorites.albums()
+				return result
+			}
+			albumsTask = task
+			lastCheckedAlbums = .now
+			let result = await task.value
+			albumsTask = nil
+			set(result)
+			return result
 		}
 	}
 	func set(_ newValue: [FavoriteAlbum]?) {
@@ -396,12 +422,25 @@ class FavoritesCache {
 	
 	private var _tracks: [FavoriteTrack]?
 	private var lastCheckedTracks = Date(timeIntervalSince1970: 0)
+    private var tracksTask: Task<[FavoriteTrack]?, Never>?
 	var tracks: [FavoriteTrack]? {
 		get async {
-			if Date().timeIntervalSince(lastCheckedTracks) > timeoutInSeconds {
-				self._tracks = await favorites.tracks()
+			if Date().timeIntervalSince(lastCheckedTracks) <= timeoutInSeconds, let cached = _tracks {
+				return cached
 			}
-			return _tracks
+			if let task = tracksTask {
+				return await task.value
+			}
+			let task = Task<[FavoriteTrack]?, Never> {
+				let result = await favorites.tracks()
+				return result
+			}
+			tracksTask = task
+			lastCheckedTracks = .now
+			let result = await task.value
+			tracksTask = nil
+			set(result)
+			return result
 		}
 	}
 	func set(_ newValue: [FavoriteTrack]?) {
@@ -411,12 +450,25 @@ class FavoritesCache {
 	
 	private var _videos: [FavoriteVideo]?
 	private var lastCheckedVideos = Date(timeIntervalSince1970: 0)
+    private var videosTask: Task<[FavoriteVideo]?, Never>?
 	var videos: [FavoriteVideo]? {
 		get async {
-			if Date().timeIntervalSince(lastCheckedVideos) > timeoutInSeconds {
-				self._videos = await favorites.videos()
+			if Date().timeIntervalSince(lastCheckedVideos) <= timeoutInSeconds, let cached = _videos {
+				return cached
 			}
-			return _videos
+			if let task = videosTask {
+				return await task.value
+			}
+			let task = Task<[FavoriteVideo]?, Never> {
+				let result = await favorites.videos()
+				return result
+			}
+			videosTask = task
+			lastCheckedVideos = .now
+			let result = await task.value
+			videosTask = nil
+			set(result)
+			return result
 		}
 	}
 	func set(_ newValue: [FavoriteVideo]?) {
@@ -426,12 +478,25 @@ class FavoritesCache {
 	
 	private var _playlists: [FavoritePlaylist]?
 	private var lastCheckedPlaylists = Date(timeIntervalSince1970: 0)
+    private var playlistsTask: Task<[FavoritePlaylist]?, Never>?
 	var playlists: [FavoritePlaylist]? {
 		get async {
-			if Date().timeIntervalSince(lastCheckedPlaylists) > timeoutInSeconds {
-				self._playlists = await favorites.playlists()
+			if Date().timeIntervalSince(lastCheckedPlaylists) <= timeoutInSeconds, let cached = _playlists {
+				return cached
 			}
-			return _playlists
+			if let task = playlistsTask {
+				return await task.value
+			}
+			let task = Task<[FavoritePlaylist]?, Never> {
+				let result = await favorites.playlists()
+				return result
+			}
+			playlistsTask = task
+			lastCheckedPlaylists = .now
+			let result = await task.value
+			playlistsTask = nil
+			set(result)
+			return result
 		}
 	}
 	func set(_ newValue: [FavoritePlaylist]?) {
@@ -439,3 +504,4 @@ class FavoritesCache {
 		lastCheckedPlaylists = .now
 	}
 }
+

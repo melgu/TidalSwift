@@ -18,7 +18,8 @@ struct LyricsView: View {
 	@State var lyrics: String?
 	
 	var track: Track? {
-		queueInfo.currentItem?.track
+        queueInfo.currentItem?.track
+        
 	}
 	
 	var body: some View {
@@ -46,7 +47,11 @@ struct LyricsView: View {
 							}
 					} else if loadingState == .loading {
 						FullscreenLoadingSpinner(.loading)
-					} else {
+                        
+                    }else if loadingState == .error{
+                        Text("Error While loading")
+                    }
+                                else {
 						Text("No Lyrics available")
 							.foregroundColor(.secondary)
 					}
@@ -65,7 +70,7 @@ struct LyricsView: View {
 		.task(id: queueInfo.queue) {
 			await fetchLyrics()
 		}
-		.task(id: queueInfo.currentIndex) {
+        .task(id: queueInfo.currentItem?.id) {
 			await fetchLyrics()
 		}
 	}

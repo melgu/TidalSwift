@@ -44,9 +44,9 @@ struct CodablePlaybackInfo: Codable {
 	var pauseAfter: Bool
 	
 	// QueueInfo
-	var nonShuffledQueue: [WrappedTrack]
+
 	var queue: [WrappedTrack]
-	var currentIndex: Int
+	
 	
 	var history: [WrappedTrack]
 	var maxHistoryItems: Int

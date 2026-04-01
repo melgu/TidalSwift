@@ -27,6 +27,23 @@ struct ArtistView: View {
 		case appearances
 		case videos
 	}
+
+    private func firstAvailableSection() -> BottomSectionType? {
+        if !albums.isEmpty { return .albums }
+        if !epsAndSingles.isEmpty { return .epsAndSingles }
+        if !appearances.isEmpty { return .appearances }
+        if !videos.isEmpty { return .videos }
+        return nil
+    }
+
+    private func isSectionEmpty(_ type: BottomSectionType) -> Bool {
+        switch type {
+        case .albums: return albums.isEmpty
+        case .epsAndSingles: return epsAndSingles.isEmpty
+        case .appearances: return appearances.isEmpty
+        case .videos: return videos.isEmpty
+        }
+    }
 	
 	@State var bottomSectionType: BottomSectionType = .albums
 	@State private var isFavorite: Bool? = nil
@@ -39,22 +56,32 @@ struct ArtistView: View {
 		if let view = viewState.stack.last {
 			if let artist = view.artist {
 				self.artist = artist
+                
 			}
 			if let topTracks = view.tracks {
 				self.topTracks = topTracks.wrapped()
+                
 			}
-			if let albums = view.albums {
-				self.albums = albums
-			}
-			if let epsAndSingles = view.albumsEpsAndSingles {
-				self.epsAndSingles = epsAndSingles
-			}
-			if let appearances = view.albumsAppearances {
-				self.appearances = appearances
-			}
+			
+			
+			
 			if let videos = view.videos {
 				self.videos = videos
 			}
+            if let appearances = view.albumsAppearances {
+                self.appearances = appearances
+            }
+            if let epsAndSingles = view.albumsEpsAndSingles {
+                self.epsAndSingles = epsAndSingles
+            }
+            if let albums = view.albums {
+                self.albums = albums
+            }
+            if let initial = firstAvailableSection() {
+                self.bottomSectionType = initial
+            } else {
+                self.bottomSectionType = .albums
+            }
 		}
 	}
 	
@@ -65,7 +92,7 @@ struct ArtistView: View {
 				VStack(alignment: .leading, spacing: 0) {
 					headerSection(artist, viewState: viewState)
 						.padding(.bottom)
-					topTrackSection()
+                    topTrackSection().frame(height: 300)
 					Divider()
 						.padding(.bottom)
 					bottomSection(artist)
@@ -79,7 +106,19 @@ struct ArtistView: View {
 		.task(id: artist?.id) {
 			guard let artist else { return }
 			isFavorite = await artist.isInFavorites(session: session)
-		}
+        }
+        .onChange(of: albums) { _, _ in
+            if isSectionEmpty(bottomSectionType), let s = firstAvailableSection() { bottomSectionType = s }
+        }
+        .onChange(of: epsAndSingles) { _, _ in
+            if isSectionEmpty(bottomSectionType), let s = firstAvailableSection() { bottomSectionType = s }
+        }
+        .onChange(of: appearances) { _, _ in
+            if isSectionEmpty(bottomSectionType), let s = firstAvailableSection() { bottomSectionType = s }
+        }
+        .onChange(of: videos) { _, _ in
+            if isSectionEmpty(bottomSectionType), let s = firstAvailableSection() { bottomSectionType = s }
+        }
 	}
 	
 	func headerSection(_ artist: Artist, viewState: ViewState) -> some View {
@@ -174,16 +213,16 @@ struct ArtistView: View {
 					  showArtist: true, showAlbum: true, playlist: nil,
 					  session: session, player: player)
 		}
-		.frame(height: 155)
+		.frame(height: 300)
 	}
 	
 	func bottomSection(_ artist: Artist) -> some View {
 		VStack(spacing: 0) {
 			Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {
-				Text("Albums (\(albums.count))").tag(BottomSectionType.albums)
-				Text("EPs & Singles (\(epsAndSingles.count))").tag(BottomSectionType.epsAndSingles)
-				Text("Appearances (\(appearances.count))").tag(BottomSectionType.appearances)
-				Text("Videos (\(videos.count))").tag(BottomSectionType.videos)
+                if(albums.count != 0) {Text("Albums (\(albums.count))").tag(BottomSectionType.albums)}
+                if(epsAndSingles.count != 0){Text("EPs & Singles (\(epsAndSingles.count))").tag(BottomSectionType.epsAndSingles)}
+                if(appearances.count != 0){Text("Appearances (\(appearances.count))").tag(BottomSectionType.appearances)}
+                if(videos.count != 0){Text("Videos (\(videos.count))").tag(BottomSectionType.videos)}
 			}
 			.pickerStyle(SegmentedPickerStyle())
 			.layoutPriority(-1)
@@ -206,3 +245,4 @@ struct ArtistView: View {
 		.padding(.horizontal)
 	}
 }
+

@@ -61,13 +61,13 @@ extension Network {
 			let urlString = request.url!.absoluteString + "?" + encodeParameters(parameters)
 			request.url = URL(string: urlString)
 		}
-		print("=== Network Request ===")
+		/*print("=== Network Request ===")
 		print("\(request.httpMethod!) Request with URL: \(request.url!.absoluteString)")
 		print("Headers: \(request.allHTTPHeaderFields!)")
 		if let httpBody = request.httpBody {
 			print("Body: \(String(data: httpBody, encoding: .utf8)!)")
 		}
-		print("=======================")
+		print("=======================")*/
 		
 		let (data, response) = try await URLSession.shared.data(for: request)
 		
@@ -80,9 +80,9 @@ extension Network {
 		}
 		
 		if let responseString = String(data: data, encoding: .utf8) {
-			print("Response: \(responseString)")
+			//print("Response: \(responseString)")
 		} else {
-			print("Response is not UTF8")
+			//print("Response is not UTF8")
 		}
 		
 		return Response(data: data, etag: etag)

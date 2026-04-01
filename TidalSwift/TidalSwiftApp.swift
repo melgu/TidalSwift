@@ -44,7 +44,9 @@ struct TidalSwiftApp: App {
 		.commands {
 			TidalSwiftCommands(appModel: appModel)
 		}
+        
 	}
+    
 }
 
 final class TidalSwiftAppModel: ObservableObject {
@@ -219,6 +221,7 @@ final class TidalSwiftAppModel: ObservableObject {
 				.environmentObject(viewState)
 				.environmentObject(player.queueInfo)
 				.environmentObject(playlistEditingValues)
+                .environmentObject(player.playbackInfo)
 		)
 		queueViewController?.window?.title = "Queue"
 
@@ -248,6 +251,7 @@ final class TidalSwiftAppModel: ObservableObject {
 	}
 
 	func showQueueWindow() {
+        
 		queueViewController?.showWindow(nil)
 	}
 
@@ -270,12 +274,12 @@ final class TidalSwiftAppModel: ObservableObject {
 				player.playbackInfo.repeatState = codablePI.repeatState
 				player.playbackInfo.pauseAfter = codablePI.pauseAfter
 
-				player.queueInfo.nonShuffledQueue = codablePI.nonShuffledQueue
+				
 				player.queueInfo.queue = codablePI.queue
 				player.queueInfo.history = codablePI.history
 				player.queueInfo.maxHistoryItems = codablePI.maxHistoryItems
 
-				player.play(atIndex: codablePI.currentIndex)
+				
 				player.pause()
 			}
 		}
@@ -338,9 +342,8 @@ final class TidalSwiftAppModel: ObservableObject {
 			shuffle: player.playbackInfo.shuffle,
 			repeatState: player.playbackInfo.repeatState,
 			pauseAfter: player.playbackInfo.pauseAfter,
-			nonShuffledQueue: player.queueInfo.nonShuffledQueue,
+			
 			queue: player.queueInfo.queue,
-			currentIndex: player.queueInfo.currentIndex,
 			history: player.queueInfo.history,
 			maxHistoryItems: player.queueInfo.maxHistoryItems
 		)
@@ -427,10 +430,7 @@ final class TidalSwiftAppModel: ObservableObject {
 			self?.savePlaybackInfoOnNextTick = true
 			self?.refreshFavoriteState()
 		}
-		currentIndexCancellable = player.queueInfo.$currentIndex.receive(on: DispatchQueue.main).sink { [weak self] _ in
-			self?.savePlaybackInfoOnNextTick = true
-			self?.refreshFavoriteState()
-		}
+		
 
 		viewStackCancellable = viewState.$stack.receive(on: DispatchQueue.main).sink { [weak self] _ in
 			self?.saveViewStateOnNextTick = true
@@ -539,7 +539,7 @@ final class TidalSwiftAppModel: ObservableObject {
 
 	func downloadTrack() {
 		guard hasCurrentTrack else { return }
-		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
+		let track = player.queueInfo.queue[0].track
 		Task { [self] in
 			_ = await session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
 		}
@@ -547,20 +547,20 @@ final class TidalSwiftAppModel: ObservableObject {
 
 	func goToAlbum() {
 		guard hasCurrentTrack else { return }
-		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
+		let track = player.queueInfo.queue[0].track
 		viewState.push(album: track.album)
 	}
 
 	func goToArtist() {
 		guard hasCurrentTrack else { return }
-		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
+		let track = player.queueInfo.queue[0].track
 		guard !track.artists.isEmpty else { return }
 		viewState.push(artist: track.artists[0])
 	}
 
 	func addCurrentTrackToFavorites() {
 		guard hasCurrentTrack else { return }
-		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].track.id
+		let trackId = player.queueInfo.queue[0].track.id
 		Task {
 			if await session.favorites?.addTrack(trackId: trackId) == true {
 				session.helpers.offline.asyncSyncFavoriteTracks()
@@ -574,7 +574,7 @@ final class TidalSwiftAppModel: ObservableObject {
 
 	func removeCurrentTrackFromFavorites() {
 		guard hasCurrentTrack else { return }
-		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].track.id
+		let trackId = player.queueInfo.queue[0].track.id
 		Task {
 			if await session.favorites?.removeTrack(trackId: trackId) == true {
 				session.helpers.offline.asyncSyncFavoriteTracks()
@@ -588,14 +588,14 @@ final class TidalSwiftAppModel: ObservableObject {
 
 	func addCurrentTrackToPlaylist() {
 		guard hasCurrentTrack else { return }
-		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
+		let track = player.queueInfo.queue[0].track
 		playlistEditingValues.tracks = [track]
 		playlistEditingValues.showAddTracksModal = true
 	}
 
 	func addCurrentAlbumToFavorites() {
 		guard hasCurrentTrack else { return }
-		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id
+		let albumId = player.queueInfo.queue[0].track.album.id
 		Task {
 			if await session.favorites?.addAlbum(albumId: albumId) == true {
 				await MainActor.run {
@@ -608,7 +608,7 @@ final class TidalSwiftAppModel: ObservableObject {
 
 	func removeCurrentAlbumFromFavorites() {
 		guard hasCurrentTrack else { return }
-		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id
+		let albumId = player.queueInfo.queue[0].track.album.id
 		Task {
 			if await session.favorites?.removeAlbum(albumId: albumId) == true {
 				await MainActor.run {
@@ -729,7 +729,7 @@ final class TidalSwiftAppModel: ObservableObject {
 			return
 		}
 
-		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
+		let track = player.queueInfo.queue[0].track
 		Task {
 			let trackFavorite = await track.isInFavorites(session: session) ?? false
 			let albumFavorite = await track.album.isInFavorites(session: session) ?? false

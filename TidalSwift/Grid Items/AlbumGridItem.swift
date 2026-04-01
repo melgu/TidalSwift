@@ -34,7 +34,7 @@ struct AlbumGridItem: View {
 					AsyncImage(url: albumUrl) { image in
 						image.resizable().scaledToFit()
 					} placeholder: {
-						Rectangle()
+                        Rectangle().fill(Color.secondary.opacity(0.2))
 					}
 					.aspectRatio(contentMode: .fill)
 					.frame(width: 160, height: 160)

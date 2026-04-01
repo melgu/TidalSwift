@@ -18,24 +18,51 @@ struct TrackList: View {
 	let playlist: Playlist? // Has to be nil if not displaying User Playlist
 	let session: Session
 	let player: Player
-	
+
+    @State private var hoveredTrackID: Int? = nil
 	var body: some View {
-		LazyVStack {
-			ForEach(wrappedTracks) { wrappedTrack in
-				TrackRow(track: wrappedTrack.track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
-						 trackNumber: showAlbumTrackNumber ? nil : wrappedTrack.id, session: session)
-				.onTapGesture(count: 2) {
-					if wrappedTrack.track.isUnavailable { return }
-					print("\(wrappedTrack.track.id) \(wrappedTrack.track.title)")
-					player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
-				}
-				.contextMenu {
-					TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: playlist != nil ? wrappedTrack.id : nil, playlist: playlist, session: session, player: player)
-				}
+		LazyVStack(alignment: .leading, spacing: 8){
+			ForEach(wrappedTracks) { wrapped in
+                HStack{
+                    Text((wrappedTracks.firstIndex(of: wrapped)! + 1).formatted())
+                    TrackItemView(
+                        track: wrapped.track,
+                        session: session,
+                        player: player,
+                        isHovered: hoveredTrackID == wrapped.track.id,
+                        onHoverChange: { hovering in
+                            hoveredTrackID = hovering ? wrapped.track.id : nil
+                        },
+                        onRemovedFromFavorites: {
+                            
+                        },
+                        onPressedPlay: {
+                            player.clearQueue()
+                            // Start the selected track now
+                            player.add(track: wrapped.track, .now)
+
+                            // Determine the index of the selected track in the current ordered list
+                            let tracks = wrappedTracks
+                            if let currentIndex = tracks.firstIndex(of: wrapped) {
+                                // Queue only the tracks after the selected one
+                                let remainder = tracks.dropFirst(currentIndex + 1)
+                                player.play()
+                                player.add(tracks: remainder.map { $0.track }, .next)
+                            } else {
+                                // Fallback: just play the selected track
+                                player.play()
+                            }
+                        },
+                        showCover:false,
+                        isAlbumView: true
+                    )
+                }.padding(.vertical,6)
+                    .padding(.horizontal)
+                
 				Divider()
 			}
-		}
-		.padding(.horizontal)
+        }
+		
 	}
 }
 
@@ -90,7 +117,7 @@ struct TrackRow: View {
 				HStack {
 					HStack {
 						if !queueInfo.queue.isEmpty &&
-							queueInfo.queue[queueInfo.currentIndex].track == track {
+							queueInfo.queue[0].track == track {
 							Image(systemName: "play.fill")
 								.secondaryIconColor()
 						}
