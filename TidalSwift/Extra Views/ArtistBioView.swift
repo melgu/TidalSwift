@@ -66,13 +66,11 @@ struct ArtistBioView: View {
 		DispatchWorkItem {
 			Task {
 				let t = await artist.bio(session: session)
-				await MainActor.run {
-					if let t {
-						bio = t
-						loadingState = .successful
-					} else {
-						loadingState = .error
-					}
+				if let t {
+					bio = t
+					loadingState = .successful
+				} else {
+					loadingState = .error
 				}
 			}
 		}

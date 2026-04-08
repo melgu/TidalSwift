@@ -79,14 +79,12 @@ struct AccountInfoView: View {
 				}
 				tSubscription = await session.subscriptionInfo()
 				
-				await MainActor.run {
-					if tUser != nil && tSubscription != nil {
-						user = tUser
-						subscription = tSubscription
-						loadingState = .successful
-					} else {
-						loadingState = .error
-					}
+				if tUser != nil && tSubscription != nil {
+					user = tUser
+					subscription = tSubscription
+					loadingState = .successful
+				} else {
+					loadingState = .error
 				}
 			}
 		}

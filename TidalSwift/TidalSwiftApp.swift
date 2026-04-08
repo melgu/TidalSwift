@@ -564,10 +564,8 @@ final class TidalSwiftAppModel: ObservableObject {
 		Task {
 			if await session.favorites?.addTrack(trackId: trackId) == true {
 				session.helpers.offline.asyncSyncFavoriteTracks()
-				await MainActor.run {
-					refreshFavoriteState()
-					viewState.refreshCurrentView()
-				}
+				refreshFavoriteState()
+				viewState.refreshCurrentView()
 			}
 		}
 	}
@@ -578,10 +576,8 @@ final class TidalSwiftAppModel: ObservableObject {
 		Task {
 			if await session.favorites?.removeTrack(trackId: trackId) == true {
 				session.helpers.offline.asyncSyncFavoriteTracks()
-				await MainActor.run {
-					refreshFavoriteState()
-					viewState.refreshCurrentView()
-				}
+				refreshFavoriteState()
+				viewState.refreshCurrentView()
 			}
 		}
 	}
@@ -598,10 +594,8 @@ final class TidalSwiftAppModel: ObservableObject {
 		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id
 		Task {
 			if await session.favorites?.addAlbum(albumId: albumId) == true {
-				await MainActor.run {
-					refreshFavoriteState()
-					viewState.refreshCurrentView()
-				}
+				refreshFavoriteState()
+				viewState.refreshCurrentView()
 			}
 		}
 	}
@@ -611,10 +605,8 @@ final class TidalSwiftAppModel: ObservableObject {
 		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].track.album.id
 		Task {
 			if await session.favorites?.removeAlbum(albumId: albumId) == true {
-				await MainActor.run {
-					refreshFavoriteState()
-					viewState.refreshCurrentView()
-				}
+				refreshFavoriteState()
+				viewState.refreshCurrentView()
 			}
 		}
 	}

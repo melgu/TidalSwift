@@ -34,10 +34,8 @@ struct RemoveFromPlaylistView: View {
 							let success = await playlist.removeItem(atIndex: i, session: session)
 							if success {
 								session.helpers.offline.syncPlaylist(playlist)
-								await MainActor.run {
-									viewState.refreshCurrentView()
-									playlistEditingValues.showRemoveTracksModal = false
-								}
+								viewState.refreshCurrentView()
+								playlistEditingValues.showRemoveTracksModal = false
 							}
 						}
 					} label: {

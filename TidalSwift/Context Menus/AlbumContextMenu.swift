@@ -62,10 +62,8 @@ struct AlbumContextMenu: View {
 						Task {
 							print("Remove from Favorites")
 							if await session.favorites?.removeAlbum(albumId: album.id) == true {
-								await MainActor.run {
-									isFavorite = false
-									viewState.refreshCurrentView()
-								}
+								isFavorite = false
+								viewState.refreshCurrentView()
 							}
 						}
 					} label: {
@@ -76,9 +74,7 @@ struct AlbumContextMenu: View {
 						Task {
 							print("Add to Favorites")
 							if await session.favorites?.addAlbum(albumId: album.id) == true {
-								await MainActor.run {
-									isFavorite = true
-								}
+								isFavorite = true
 							}
 						}
 					} label: {
@@ -90,10 +86,8 @@ struct AlbumContextMenu: View {
 						Task {
 							print("Add \(album.title) to Playlist")
 							if let tracks = await session.albumTracks(albumId: album.id) {
-								await MainActor.run {
-									playlistEditingValues.tracks = tracks
-									playlistEditingValues.showAddTracksModal = true
-								}
+								playlistEditingValues.tracks = tracks
+								playlistEditingValues.showAddTracksModal = true
 							}
 						}
 					} label: {
@@ -106,10 +100,8 @@ struct AlbumContextMenu: View {
 								Task {
 									print("Remove from Offline")
 									await album.removeOffline(session: session)
-									await MainActor.run {
-										isOffline = false
-										viewState.refreshCurrentView()
-									}
+									isOffline = false
+									viewState.refreshCurrentView()
 								}
 							} label: {
 								Text("Remove from Offline")
@@ -119,9 +111,7 @@ struct AlbumContextMenu: View {
 								Task {
 									print("Add to Offline")
 									await album.addOffline(session: session)
-									await MainActor.run {
-										isOffline = true
-									}
+									isOffline = true
 								}
 							} label: {
 								Text("Add to Offline")

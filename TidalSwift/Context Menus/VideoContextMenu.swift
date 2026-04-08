@@ -63,10 +63,8 @@ struct VideoContextMenu: View {
 						Task {
 							print("Remove from Favorites")
 							if await session.favorites?.removeVideo(videoId: video.id) == true {
-								await MainActor.run {
-									isFavorite = false
-									viewState.refreshCurrentView()
-								}
+								isFavorite = false
+								viewState.refreshCurrentView()
 							}
 						}
 					} label: {
@@ -77,9 +75,7 @@ struct VideoContextMenu: View {
 						Task {
 							print("Add to Favorites")
 							if await session.favorites?.addVideo(videoId: video.id) == true {
-								await MainActor.run {
-									isFavorite = true
-								}
+								isFavorite = true
 							}
 						}
 					} label: {

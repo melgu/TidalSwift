@@ -78,9 +78,7 @@ struct AddToPlaylistView: View {
 							if playlistId == "_newPlaylist" {
 								guard !newPlaylistName.isEmpty else {
 									print("Playlist name can't be empty")
-									await MainActor.run {
-										showEmptyNameWarning = true
-									}
+									showEmptyNameWarning = true
 									return
 								}
 								guard let playlist = await session.playlistEditing.create(title: newPlaylistName, description: newPlaylistDescription) else {
@@ -88,23 +86,17 @@ struct AddToPlaylistView: View {
 									return
 								}
 								playlistId = playlist.uuid
-								await MainActor.run {
-									selectedPlaylist = playlistId
-								}
+								selectedPlaylist = playlistId
 							}
 							let ids = playlistEditingValues.tracks.map { $0.id }
 							let success = await session.playlistEditing.addTracks(ids, to: playlistId, duplicate: false)
 							if success {
 								if let playlist = await session.playlist(playlistId: playlistId) {
 									session.helpers.offline.syncPlaylist(playlist)
-									await MainActor.run {
-										viewState.refreshCurrentView()
-										playlistEditingValues.showAddTracksModal = false
-									}
+									viewState.refreshCurrentView()
+									playlistEditingValues.showAddTracksModal = false
 								} else {
-									await MainActor.run {
-										playlistEditingValues.showAddTracksModal = false
-									}
+									playlistEditingValues.showAddTracksModal = false
 								}
 							}
 						}

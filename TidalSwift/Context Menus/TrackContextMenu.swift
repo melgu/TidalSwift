@@ -78,10 +78,8 @@ struct TrackContextMenu: View {
 							print("Remove from Favorites")
 							if await session.favorites?.removeTrack(trackId: track.id) == true {
 								session.helpers.offline.asyncSyncFavoriteTracks()
-								await MainActor.run {
-									isFavorite = false
-									viewState.refreshCurrentView()
-								}
+								isFavorite = false
+								viewState.refreshCurrentView()
 							}
 						}
 					} label: {
@@ -93,10 +91,8 @@ struct TrackContextMenu: View {
 							print("Add to Favorites")
 							if await session.favorites?.addTrack(trackId: track.id) == true {
 								session.helpers.offline.asyncSyncFavoriteTracks()
-								await MainActor.run {
-									isFavorite = true
-									viewState.refreshCurrentView()
-								}
+								isFavorite = true
+								viewState.refreshCurrentView()
 							}
 						}
 					} label: {

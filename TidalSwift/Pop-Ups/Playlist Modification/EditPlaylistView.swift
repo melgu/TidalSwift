@@ -50,10 +50,8 @@ struct EditPlaylistView: View {
 							let success = await playlist.edit(title: playlistTitle, description: playlistDescription, session: session)
 							if success {
 								await playlist.removeOffline(session: session)
-								await MainActor.run {
-									playlistEditingValues.showEditModal = false
-									viewState.refreshCurrentView()
-								}
+								playlistEditingValues.showEditModal = false
+								viewState.refreshCurrentView()
 							}
 						}
 					} label: {

@@ -57,7 +57,7 @@ There is no automated test suite. If `xcodebuild` fails due to local simulator/c
 Use Swift defaults with tabs/indentation matching existing files.
 Types use `UpperCamelCase`; functions/properties use `lowerCamelCase`; file names match the primary type/feature (`ArtistView.swift`, `SearchResults.swift`).
 Prefer `async/await` over callback-style APIs for new async work (the codebase was recently migrated from callbacks).
-Indentation using tabs. Never mess with indentation or whitespace on unrelated lines.
+Indentation using tabs. Never mess with indentation or whitespace on unrelated lines, but make sure that new or edited blocks have correct indentation.
 Default Actor Isolation is set to `MainActor` and Approachable Concurrency is enabled for both `TidalSwift` and `TidalSwiftLib`.
 
 ## Commit & Pull Request Guidelines

@@ -131,10 +131,8 @@ struct ArtistView: View {
 							Task {
 								print("Remove from Favorites")
 								if await session.favorites?.removeArtist(artistId: artist.id) == true {
-									await MainActor.run {
-										isFavorite = false
-										viewState.refreshCurrentView()
-									}
+									isFavorite = false
+									viewState.refreshCurrentView()
 								}
 							}
 						}
@@ -144,10 +142,8 @@ struct ArtistView: View {
 							Task {
 								print("Add to Favorites")
 								if await session.favorites?.addArtist(artistId: artist.id) == true {
-									await MainActor.run {
-										isFavorite = true
-										viewState.refreshCurrentView()
-									}
+									isFavorite = true
+									viewState.refreshCurrentView()
 								}
 							}
 						}

@@ -33,10 +33,8 @@ struct DeletePlaylistView: View {
 							let success = await playlist.delete(session: session)
 							if success {
 								await playlist.removeOffline(session: session)
-								await MainActor.run {
-									playlistEditingValues.showDeleteModal = false
-									viewState.refreshCurrentView()
-								}
+								playlistEditingValues.showDeleteModal = false
+								viewState.refreshCurrentView()
 							}
 						}
 					} label: {

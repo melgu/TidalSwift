@@ -78,10 +78,8 @@ struct AlbumView: View {
 									Task {
 										print("Remove from Favorites")
 										if await session.favorites?.removeAlbum(albumId: album.id) == true {
-											await MainActor.run {
-												isFavorite = false
-												viewState.refreshCurrentView()
-											}
+											isFavorite = false
+											viewState.refreshCurrentView()
 										}
 									}
 								}
@@ -91,10 +89,8 @@ struct AlbumView: View {
 									Task {
 										print("Add to Favorites")
 										if await session.favorites?.addAlbum(albumId: album.id) == true {
-											await MainActor.run {
-												isFavorite = true
-												viewState.refreshCurrentView()
-											}
+											isFavorite = true
+											viewState.refreshCurrentView()
 										}
 									}
 								}
@@ -134,11 +130,9 @@ struct AlbumView: View {
 								Task {
 									print("Remove from Offline")
 									await album.removeOffline(session: session)
-									await MainActor.run {
-										cloudPressed = false
-										isOffline = false
-										viewState.refreshCurrentView()
-									}
+									cloudPressed = false
+									isOffline = false
+									viewState.refreshCurrentView()
 								}
 							}
 					} else {
@@ -154,14 +148,10 @@ struct AlbumView: View {
 								.onTapGesture {
 									Task {
 										print("Add to Offline")
-										await MainActor.run {
-											cloudPressed = true
-										}
+										cloudPressed = true
 										await album.addOffline(session: session)
-										await MainActor.run {
-											isOffline = true
-											viewState.refreshCurrentView()
-										}
+										isOffline = true
+										viewState.refreshCurrentView()
 									}
 								}
 						}

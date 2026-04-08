@@ -66,10 +66,8 @@ struct PlaylistView: View {
 								Task {
 									print("Remove from Favorites")
 									if await session.favorites?.removePlaylist(playlistId: playlist.uuid) == true {
-										await MainActor.run {
-											isFavorite = false
-											viewState.refreshCurrentView()
-										}
+										isFavorite = false
+										viewState.refreshCurrentView()
 									}
 								}
 							}
@@ -79,10 +77,8 @@ struct PlaylistView: View {
 								Task {
 									print("Add to Favorites")
 									if await session.favorites?.addPlaylist(playlistId: playlist.uuid) == true {
-										await MainActor.run {
-											isFavorite = true
-											viewState.refreshCurrentView()
-										}
+										isFavorite = true
+										viewState.refreshCurrentView()
 									}
 								}
 							}
@@ -118,10 +114,8 @@ struct PlaylistView: View {
 								Task {
 									print("Remove from Offline")
 									await playlist.removeOffline(session: session)
-									await MainActor.run {
-										isOffline = false
-										viewState.refreshCurrentView()
-									}
+									isOffline = false
+									viewState.refreshCurrentView()
 								}
 							}
 					} else {
@@ -133,10 +127,8 @@ struct PlaylistView: View {
 								Task {
 									print("Add to Offline")
 									await playlist.addOffline(session: session)
-									await MainActor.run {
-										isOffline = true
-										viewState.refreshCurrentView()
-									}
+									isOffline = true
+									viewState.refreshCurrentView()
 								}
 							}
 					}

@@ -50,10 +50,8 @@ struct MixContextMenu: View {
 				Task {
 					print("Add \(mix.title) to Playlist")
 					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
-						await MainActor.run {
-							playlistEditingValues.tracks = tracks
-							playlistEditingValues.showAddTracksModal = true
-						}
+						playlistEditingValues.tracks = tracks
+						playlistEditingValues.showAddTracksModal = true
 					}
 				}
 			} label: {

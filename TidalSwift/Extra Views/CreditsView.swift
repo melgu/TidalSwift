@@ -63,13 +63,11 @@ struct CreditsView: View {
 					t = await album.credits(session: session)
 				}
 				
-				await MainActor.run {
-					if let t {
-						credits = t
-						loadingState = .successful
-					} else {
-						loadingState = .error
-					}
+				if let t {
+					credits = t
+					loadingState = .successful
+				} else {
+					loadingState = .error
 				}
 			}
 		}
