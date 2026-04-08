@@ -34,8 +34,15 @@ struct TopDetailView: View {
 			})
 		return NavigationView {
 			TopView(selection: selectionBinding, session: session)
+                
 			DetailView(session: session, player: player)
-				.frame(minWidth: 850)
+                .frame(minWidth: 850)
+                .focusable()
+                .focusEffectDisabled()
+                .onKeyPress(.space) {
+                    player.togglePlay()
+                    return .ignored
+                }
 		}
 		.frame(minHeight: 500)
 	}
@@ -55,7 +62,7 @@ struct TopView: View {
 		VStack {
 			SearchField(selection: $selection, searchTerm: viewState.searchTerm)
 				.padding(.top, 10)
-				.padding(.horizontal, 5)
+				.padding(.horizontal, 10)
 			List(selection: $selection) {
 				Section(header: Text("News")) {
 					Text("New Releases").tag(ViewType.newReleases)
@@ -87,14 +94,38 @@ struct SearchField: View {
 	@State var searchTerm: String
 	
 	var body: some View {
-		TextField("Search", text: $searchTerm, onCommit: {
-			print("Search Commit: \(searchTerm)")
-			viewState.searchTerm = searchTerm
-			if !searchTerm.isEmpty /*&& searchTerm != viewState.lastSearchTerm*/ {
-				selection = .search
-			}
-		})
-		.textFieldStyle(RoundedBorderTextFieldStyle())
+        
+		HStack(spacing: 8) {
+			Image(systemName: "magnifyingglass")
+				.foregroundStyle(.secondary)
+			TextField("Search", text: $searchTerm, onCommit: {
+				print("Search Commit: \(searchTerm)")
+				viewState.searchTerm = searchTerm
+				if !searchTerm.isEmpty /*&& searchTerm != viewState.lastSearchTerm*/ {
+					selection = .search
+				}
+			})
+			.textFieldStyle(.plain)
+		}
+		.padding(.horizontal, 10)
+		.padding(.vertical, 8)
+		.background(
+			RoundedRectangle(cornerRadius: 10, style: .continuous)
+				.fill(
+					{
+						#if os(macOS)
+						return Color(nsColor: .textBackgroundColor)
+						#else
+						return Color(uiColor: .secondarySystemBackground)
+						#endif
+					}()
+				)
+		)
+		.overlay(
+			RoundedRectangle(cornerRadius: 10, style: .continuous)
+				.stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+		)
+		.font(.system(size: 14))
 	}
 }
 
@@ -121,8 +152,10 @@ struct DetailView: View {
 	
 	var body: some View {
 		VStack(spacing: 0) {
-			PlayerInfoView(session: session, player: player)
-				.padding(.bottom)
+            PlayerInfoView(session: session, player: player)
+                .frame(height:80)
+                
+				
 			Divider()
 			if let viewType = viewState.stack.last?.viewType {
 				Group {
@@ -176,3 +209,4 @@ struct DetailView: View {
 		}
 	}
 }
+

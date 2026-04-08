@@ -23,7 +23,7 @@ struct VideoGridItem: View {
 				AsyncImage(url: imageUrl) { image in
 					image.resizable().scaledToFit()
 				} placeholder: {
-					Rectangle()
+					Rectangle().fill(Color.secondary.opacity(0.2))
 				}
 				.aspectRatio(contentMode: .fit)
 				.frame(width: 160, height: 160)

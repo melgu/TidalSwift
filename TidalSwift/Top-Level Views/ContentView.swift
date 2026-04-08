@@ -19,39 +19,39 @@ struct ContentView: View {
 	let player: Player
 	
 	var body: some View {
-		TopDetailView(session: session, player: player)
-			.environmentObject(viewState)
-			.environmentObject(sortingState)
-			.environmentObject(playlistEditingValues)
-			.environmentObject(player.playbackInfo)
-			.environmentObject(player.queueInfo)
-			.environmentObject(session.helpers.downloadStatus)
-			.background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
-				LoginView(loginInfo: loginInfo, viewState: viewState, session: session, player: player)
-			})
-			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showAddTracksModal) {
-				AddToPlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)
-			})
-			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showRemoveTracksModal) {
-				RemoveFromPlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)
-			})
-			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showDeleteModal) {
-				DeletePlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)
-			})
-			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showEditModal) {
-				EditPlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)
-			})
-			#if canImport(AppKit)
-			.touchBar {
-				TouchBarView(player: player, playbackInfo: player.playbackInfo)
-			}
-			#endif
-			.task {
-				await session.refreshAccessTokenIfNeeded()
-				let success = await session.populateVariablesForAccessToken()
-				if !success {
-					loginInfo.showModal = true
-				}
-			}
+        TopDetailView(session: session, player: player)
+            .environmentObject(viewState)
+            .environmentObject(sortingState)
+            .environmentObject(playlistEditingValues)
+            .environmentObject(player.playbackInfo)
+            .environmentObject(player.queueInfo)
+            .environmentObject(session.helpers.downloadStatus)
+            .background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
+                LoginView(loginInfo: loginInfo, viewState: viewState, session: session, player: player)
+            })
+            .background(EmptyView().sheet(isPresented: $playlistEditingValues.showAddTracksModal) {
+                AddToPlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)
+            })
+            .background(EmptyView().sheet(isPresented: $playlistEditingValues.showRemoveTracksModal) {
+                RemoveFromPlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)
+            })
+            .background(EmptyView().sheet(isPresented: $playlistEditingValues.showDeleteModal) {
+                DeletePlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)
+            })
+            .background(EmptyView().sheet(isPresented: $playlistEditingValues.showEditModal) {
+                EditPlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)
+            })
+            #if canImport(AppKit)
+            .touchBar {
+                TouchBarView(player: player, playbackInfo: player.playbackInfo)
+            }
+            #endif
+            .task {
+                await session.refreshAccessTokenIfNeeded()
+                let success = await session.populateVariablesForAccessToken()
+                if !success {
+                    loginInfo.showModal = true
+                }
+            }
 	}
 }

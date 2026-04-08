@@ -85,7 +85,7 @@ struct MixImage: View {
 								AsyncImage(url: imageUrl, content: { image in
 									image.resizable().scaledToFit()
 								}, placeholder: {
-									Rectangle()
+									Rectangle().fill(Color.secondary.opacity(0.2))
 								})
 								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
 								.padding(metrics.size.width * 0.01)

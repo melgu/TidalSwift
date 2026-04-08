@@ -42,14 +42,12 @@ struct PlaylistContextMenu: View {
 			Group {
 				if playlist.creator.id == session.userId { // My playlist
 					Button {
-						print("Edit Playlist")
 						playlistEditingValues.playlist = playlist
 						playlistEditingValues.showEditModal = true
 					} label: {
 						Text("Edit Playlist …")
 					}
 					Button {
-						print("Delete Playlist")
 						playlistEditingValues.playlist = playlist
 						playlistEditingValues.showDeleteModal = true
 					} label: {
@@ -59,7 +57,6 @@ struct PlaylistContextMenu: View {
 					if isFavorite ?? false {
 						Button {
 							Task {
-								print("Remove from Favorites")
 								if await session.favorites?.removePlaylist(playlistId: playlist.uuid) == true {
 									isFavorite = false
 								}
@@ -70,7 +67,6 @@ struct PlaylistContextMenu: View {
 					} else {
 						Button {
 							Task {
-								print("Add to Favorites")
 								if await session.favorites?.addPlaylist(playlistId: playlist.uuid) == true {
 									isFavorite = true
 								}
@@ -82,7 +78,6 @@ struct PlaylistContextMenu: View {
 				}
 				Button {
 					Task {
-						print("Add \(playlist.title) to Playlist")
 						if let tracks = await session.playlistTracks(playlistId: playlist.uuid) {
 							playlistEditingValues.tracks = tracks
 							playlistEditingValues.showAddTracksModal = true
@@ -97,7 +92,6 @@ struct PlaylistContextMenu: View {
 				if isOffline {
 					Button {
 						Task {
-							print("Remove from Offline")
 							await playlist.removeOffline(session: session)
 							isOffline = false
 							viewState.refreshCurrentView()
@@ -108,7 +102,6 @@ struct PlaylistContextMenu: View {
 				} else {
 					Button {
 						Task {
-							print("Add to Offline")
 							await playlist.addOffline(session: session)
 							isOffline = true
 							viewState.refreshCurrentView()
@@ -120,7 +113,6 @@ struct PlaylistContextMenu: View {
 				
 				Button {
 					Task {
-						print("Download")
 						_ = await session.helpers.download.download(playlist: playlist)
 					}
 				} label: {
@@ -132,7 +124,6 @@ struct PlaylistContextMenu: View {
 				#if canImport(AppKit)
 				if let imageUrl = playlist.imageUrl(session: session, resolution: 750) {
 					Button {
-						print("Image")
 						let controller = ImageWindowController(
 							imageUrl: imageUrl,
 							title: playlist.title
@@ -145,7 +136,6 @@ struct PlaylistContextMenu: View {
 				}
 				#endif
 				Button {
-					print("Share Playlist")
 					Pasteboard.copy(string: playlist.url.absoluteString)
 				} label: {
 					Text("Copy URL")

@@ -60,7 +60,7 @@ struct AlbumContextMenu: View {
 				if isFavorite ?? false {
 					Button {
 						Task {
-							print("Remove from Favorites")
+							
 							if await session.favorites?.removeAlbum(albumId: album.id) == true {
 								isFavorite = false
 								viewState.refreshCurrentView()
@@ -72,7 +72,7 @@ struct AlbumContextMenu: View {
 				} else {
 					Button {
 						Task {
-							print("Add to Favorites")
+							
 							if await session.favorites?.addAlbum(albumId: album.id) == true {
 								isFavorite = true
 							}
@@ -84,7 +84,7 @@ struct AlbumContextMenu: View {
 				if album.streamReady ?? false {
 					Button {
 						Task {
-							print("Add \(album.title) to Playlist")
+							
 							if let tracks = await session.albumTracks(albumId: album.id) {
 								playlistEditingValues.tracks = tracks
 								playlistEditingValues.showAddTracksModal = true
@@ -98,7 +98,7 @@ struct AlbumContextMenu: View {
 						if isOffline {
 							Button {
 								Task {
-									print("Remove from Offline")
+									
 									await album.removeOffline(session: session)
 									isOffline = false
 									viewState.refreshCurrentView()
@@ -109,7 +109,7 @@ struct AlbumContextMenu: View {
 						} else {
 							Button {
 								Task {
-									print("Add to Offline")
+								
 									await album.addOffline(session: session)
 									isOffline = true
 								}
@@ -120,7 +120,7 @@ struct AlbumContextMenu: View {
 						
 						Button {
 							Task {
-								print("Download")
+								
 								_ = await session.helpers.download.download(album: album)
 							}
 						} label: {
