@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=melgu&project=TidalSwift&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 <img src="README.assets/Icon.png" alt="Icon" width="128">
 
 # TidalSwift
