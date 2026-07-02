@@ -165,7 +165,7 @@ extension Session {
 
 	/// Refreshes the access token if it is expired or about to expire.
 	public func refreshAccessTokenIfNeeded() async {
-		guard config.refreshToken != nil else { return }
+		guard !config.refreshToken.isEmpty else { return }
 		guard let expirationDate = config.tokenExpirationDate else {
 			// No expiration date recorded — refresh to be safe
 			await refreshAccessToken()
