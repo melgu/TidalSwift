@@ -157,6 +157,7 @@ extension Session {
 			let response: TokenSuccessResponse = try await Network.post(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil)
 			await setAccessToken(response.accessToken, refreshToken: nil, expiresIn: response.expiresIn)
 			scheduleAccessTokenRefresh()
+			saveConfig()
 			print("Access token refreshed. New expiration: \(config.tokenExpirationDate?.description ?? "unknown")")
 		} catch {
 			displayError(title: "Refresh Access Token failed", content: "Error: \(error)")
