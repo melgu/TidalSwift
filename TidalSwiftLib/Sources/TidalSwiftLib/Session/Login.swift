@@ -142,13 +142,17 @@ extension Session {
 	public func refreshAccessToken() async {
 		print("refreshAccessToken")
 		let url = URL(string: "\(AuthInformation.AuthLocation)/token")!
-		let parameters: [String: String] = [
+		var parameters: [String: String] = [
 			"client_id": config.clientID,
 			"refresh_token": config.refreshToken,
 			"grant_type": "refresh_token",
 			"scope": AuthInformation.scope
 		]
-		
+		// The built-in client is confidential: Tidal rejects its refresh requests without the secret
+		if config.clientID == AuthInformation.OAuthClientID {
+			parameters["client_secret"] = AuthInformation.OAuthClientSecret
+		}
+
 		do {
 			let response: TokenSuccessResponse = try await Network.post(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil)
 			await setAccessToken(response.accessToken, refreshToken: nil, expiresIn: response.expiresIn)
