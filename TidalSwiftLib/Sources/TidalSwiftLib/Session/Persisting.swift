@@ -48,6 +48,7 @@ extension Session {
 		var persistentInformation: [String: String?] = [
 			"accessToken": config.accessToken,
 			"refreshToken": config.refreshToken,
+			"clientID": config.clientID,
 			"apiToken": config.apiToken,
 			"offlineAudioQuality": config.offlineAudioQuality.rawValue,
 			"urlType": config.urlType.rawValue,
