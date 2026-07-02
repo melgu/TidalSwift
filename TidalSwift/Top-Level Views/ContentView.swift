@@ -48,6 +48,7 @@ struct ContentView: View {
 			#endif
 			.task {
 				await session.refreshAccessTokenIfNeeded()
+				session.scheduleAccessTokenRefresh()
 				let success = await session.populateVariablesForAccessToken()
 				if !success {
 					loginInfo.showModal = true
