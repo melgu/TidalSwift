@@ -23,7 +23,6 @@ struct LoginView: View {
 	
 	@Environment(\.openURL) private var openURL
 	
-	@State var wrongLogin: Bool = false
 	@State var cancellables = Set<AnyCancellable>()
 	@State var authState: Session.AuthorizationState = .waiting
 	@State var counter = 300
@@ -31,6 +30,7 @@ struct LoginView: View {
 	
 	@State var refreshToken: String = ""
 	@State var clientID: String = ""
+	@State var loginErrorMessage: String?
 	@State var offlineAudioQuality: AudioQuality = .high
 	@State var audioUrlType: AudioUrlType = .offline
 	
@@ -107,11 +107,11 @@ struct LoginView: View {
 			
 			qualityPicker
 			
-			if wrongLogin {
-				Text("Wrong Login Credentials")
+			if let loginErrorMessage {
+				Text(loginErrorMessage)
 					.foregroundColor(.red)
 			}
-			
+
 			Button(action: setAuthorization) {
 				Text("Login")
 			}
@@ -141,14 +141,14 @@ struct LoginView: View {
 			.sink { value in
 				switch value {
 				case .waiting:
-					wrongLogin = false
+					break
 				case .pending(loginUrl: let loginUrl, expiration: _):
 					counter = 300
 					openURL(loginUrl)
 				case .success:
 					successfulLogin(audioUrlType: .streaming)
 				case .failure(_):
-					wrongLogin = true
+					break
 				}
 			}
 			.store(in: &cancellables)
@@ -160,14 +160,18 @@ struct LoginView: View {
 			do {
 				try await session.login(refreshToken: refreshToken, clientID: clientID)
 				successfulLogin(audioUrlType: audioUrlType)
+			} catch SessionError.invalidCredentials {
+				loginErrorMessage = "Wrong Login Credentials"
+			} catch SessionError.network {
+				loginErrorMessage = "Couldn't reach Tidal. Check your internet connection."
 			} catch {
-				wrongLogin = true
+				loginErrorMessage = "Login failed"
 			}
 		}
 	}
 	
 	func successfulLogin(audioUrlType: AudioUrlType) {
-		wrongLogin = false
+		loginErrorMessage = nil
 		loginInfo.showModal = false
 		session.config.urlType = audioUrlType
 		session.saveConfig()
