@@ -13,41 +13,44 @@ extension Session {
 	/// Margin before actual expiration to trigger a refresh (5 minutes)
 	private static let tokenRefreshMargin: TimeInterval = 5 * 60
 	
-	public func login(refreshToken: String, clientID: String) async -> Bool {
+	public func login(refreshToken: String, clientID: String) async throws {
 		config.refreshToken = refreshToken
 		config.clientID = clientID
-		await refreshAccessToken()
-		return await populateVariablesForAccessToken()
+		try await refreshAccessToken()
+		try await populateVariablesForAccessToken()
 	}
-	
-	private func setAccessToken(_ accessToken: String, refreshToken: String?, expiresIn: Int) async -> Bool {
+
+	private func setAccessToken(_ accessToken: String, refreshToken: String?, expiresIn: Int) {
 		var token = accessToken
 		if !token.hasPrefix("Bearer ") {
 			token = "Bearer " + token
 		}
-		
+
 		config.accessToken = token
 		if let refreshToken {
 			config.refreshToken = refreshToken
 		}
-		
+
 		config.tokenExpirationDate = Date().addingTimeInterval(TimeInterval(expiresIn))
-		
-		await refreshAccessTokenIfNeeded()
-		return await populateVariablesForAccessToken()
 	}
-	
-	public func populateVariablesForAccessToken() async -> Bool {
+
+	public func populateVariablesForAccessToken() async throws {
 		let url = URL(string: "https://login.tidal.com/oauth2/me")!
+		let response: Response
 		do {
-			let response: LoginUser = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
-			self.countryCode = response.countryCode
-			self.userId = response.userId
-			self.favorites = Favorites(session: self, userId: response.userId)
-			return true
+			response = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
 		} catch {
-			return false
+			throw SessionError.network(underlying: error)
 		}
+		if response.statusCode == 401 || response.statusCode == 403 {
+			throw SessionError.invalidCredentials(description: nil)
+		}
+		guard let user = try? JSONDecoder.custom.decode(LoginUser.self, from: response.data) else {
+			throw SessionError.unexpectedResponse
+		}
+		self.countryCode = user.countryCode
+		self.userId = user.userId
+		self.favorites = Favorites(session: self, userId: user.userId)
 	}
 	
 	public enum AuthorizationState {
@@ -110,12 +113,14 @@ extension Session {
 			do {
 				let response = try await Network.post(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil)
 				if let successResponse = try? JSONDecoder.custom.decode(TokenSuccessResponse.self, from: response.data) {
-					if await setAccessToken(successResponse.accessToken, refreshToken: successResponse.refreshToken, expiresIn: successResponse.expiresIn) {
-						config.clientID = AuthInformation.OAuthClientID
-						scheduleAccessTokenRefresh()
+					setAccessToken(successResponse.accessToken, refreshToken: successResponse.refreshToken, expiresIn: successResponse.expiresIn)
+					config.clientID = AuthInformation.OAuthClientID
+					scheduleAccessTokenRefresh()
+					do {
+						try await populateVariablesForAccessToken()
 						subject.send(.success)
-					} else {
-						subject.send(.failure(AuthorizationError.unknown))
+					} catch {
+						subject.send(.failure(error))
 					}
 				} else if let errorResponse = try? JSONDecoder.custom.decode(TokenErrorResponse.self, from: response.data) {
 					switch errorResponse.error {
@@ -139,8 +144,11 @@ extension Session {
 		}
 	}
 	
-	public func refreshAccessToken() async {
+	public func refreshAccessToken() async throws {
 		print("refreshAccessToken")
+		guard !config.refreshToken.isEmpty else {
+			throw SessionError.notLoggedIn
+		}
 		let url = URL(string: "\(AuthInformation.AuthLocation)/token")!
 		var parameters: [String: String] = [
 			"client_id": config.clientID,
@@ -153,27 +161,35 @@ extension Session {
 			parameters["client_secret"] = AuthInformation.OAuthClientSecret
 		}
 
+		let response: Response
 		do {
-			let response: TokenSuccessResponse = try await Network.post(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil)
-			await setAccessToken(response.accessToken, refreshToken: nil, expiresIn: response.expiresIn)
+			response = try await Network.post(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil)
+		} catch {
+			throw SessionError.network(underlying: error)
+		}
+
+		if let successResponse = try? JSONDecoder.custom.decode(TokenSuccessResponse.self, from: response.data) {
+			setAccessToken(successResponse.accessToken, refreshToken: successResponse.refreshToken, expiresIn: successResponse.expiresIn)
 			scheduleAccessTokenRefresh()
 			saveConfig()
 			print("Access token refreshed. New expiration: \(config.tokenExpirationDate?.description ?? "unknown")")
-		} catch {
-			displayError(title: "Refresh Access Token failed", content: "Error: \(error)")
+		} else if let errorResponse = try? JSONDecoder.custom.decode(TokenErrorResponse.self, from: response.data) {
+			throw SessionError.invalidCredentials(description: errorResponse.errorDescription)
+		} else {
+			throw SessionError.unexpectedResponse
 		}
 	}
 
 	/// Refreshes the access token if it is expired or about to expire.
-	public func refreshAccessTokenIfNeeded() async {
+	public func refreshAccessTokenIfNeeded() async throws {
 		guard !config.refreshToken.isEmpty else { return }
 		guard let expirationDate = config.tokenExpirationDate else {
 			// No expiration date recorded — refresh to be safe
-			await refreshAccessToken()
+			try await refreshAccessToken()
 			return
 		}
 		if Date() >= expirationDate.addingTimeInterval(-Session.tokenRefreshMargin) {
-			await refreshAccessToken()
+			try await refreshAccessToken()
 		}
 	}
 
@@ -196,7 +212,11 @@ extension Session {
 			} catch {
 				return // Task was cancelled
 			}
-			await self?.refreshAccessToken()
+			do {
+				try await self?.refreshAccessToken()
+			} catch {
+				displayError(title: "Refresh Access Token failed", content: "Error: \(error)")
+			}
 		}
 	}
 }

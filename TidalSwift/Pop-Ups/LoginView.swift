@@ -157,10 +157,10 @@ struct LoginView: View {
 	func setAuthorization() {
 		session.config.urlType = audioUrlType
 		Task {
-			let loginSuccessful = await session.login(refreshToken: refreshToken, clientID: clientID)
-			if loginSuccessful {
+			do {
+				try await session.login(refreshToken: refreshToken, clientID: clientID)
 				successfulLogin(audioUrlType: audioUrlType)
-			} else {
+			} catch {
 				wrongLogin = true
 			}
 		}

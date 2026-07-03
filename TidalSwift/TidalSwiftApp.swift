@@ -689,7 +689,11 @@ final class TidalSwiftAppModel: ObservableObject {
 
 	func refreshAccessToken() {
 		Task {
-			await session.refreshAccessToken()
+			do {
+				try await session.refreshAccessToken()
+			} catch {
+				print("Refresh Access Token failed. Error: \(error)")
+			}
 		}
 	}
 	
