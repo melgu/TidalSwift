@@ -51,6 +51,9 @@ struct ContentView: View {
 					try await session.refreshAccessTokenIfNeeded()
 					session.scheduleAccessTokenRefresh()
 					try await session.populateVariablesForAccessToken()
+				} catch SessionError.network(let underlying) {
+					// The stored credentials may still be valid — keep the session
+					print("Couldn't reach Tidal on startup: \(underlying)")
 				} catch {
 					loginInfo.showModal = true
 				}
