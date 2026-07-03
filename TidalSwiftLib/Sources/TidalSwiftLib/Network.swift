@@ -10,6 +10,7 @@ import Foundation
 
 struct Response {
 	let data: Data
+	let statusCode: Int?
 	let etag: Int?
 }
 
@@ -70,7 +71,9 @@ extension Network {
 		print("=======================")
 		
 		let (data, response) = try await URLSession.shared.data(for: request)
-		
+
+		let statusCode = (response as? HTTPURLResponse)?.statusCode
+
 		// Get the Etag if it exists
 		var etag: Int?
 		if let httpURLResponse = response as? HTTPURLResponse,
@@ -85,7 +88,7 @@ extension Network {
 			print("Response is not UTF8")
 		}
 		
-		return Response(data: data, etag: etag)
+		return Response(data: data, statusCode: statusCode, etag: etag)
 	}
 	
 	static func get(url: URL, parameters: [String: String], accessToken: String?, xTidalToken: String?) async throws -> Response {
