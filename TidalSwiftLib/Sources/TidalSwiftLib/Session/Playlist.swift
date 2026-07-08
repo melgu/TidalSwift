@@ -17,7 +17,7 @@ extension Session {
 	public func playlist(playlistId: String) async -> Playlist? {
 		let url = URL(string: "\(AuthInformation.APILocation)/playlists/\(playlistId)")!
 		do {
-			let response: Playlist = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Playlist = try await get(url: url, parameters: sessionParameters)
 			return response
 		} catch {
 			return nil
@@ -27,7 +27,7 @@ extension Session {
 	public func playlistTracks(playlistId: String) async -> [Track]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/playlists/\(playlistId)/tracks")!
 		do {
-			let response: Tracks = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Tracks = try await get(url: url, parameters: sessionParameters)
 			return response.items
 		} catch {
 			return nil

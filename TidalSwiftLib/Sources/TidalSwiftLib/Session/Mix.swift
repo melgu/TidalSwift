@@ -14,7 +14,7 @@ extension Session {
 		parameters["deviceType"] = "DESKTOP"
 		let url = URL(string: "\(AuthInformation.APILocation)/pages/my_collection_my_mixes")!
 		do {
-			let response: Mixes = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Mixes = try await get(url: url, parameters: parameters)
 			
 			// Filter out Video Mixes for now
 			// TODO: Add support for Video Mixes
@@ -34,7 +34,7 @@ extension Session {
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/pages/mix")!
 		do {
-			let response: Mix = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Mix = try await get(url: url, parameters: parameters)
 			return response.rows[1].modules[0].pagedList?.items
 		} catch {
 			return nil

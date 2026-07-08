@@ -19,7 +19,7 @@ extension Session {
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/search/")!
 		do {
-			let response: SearchResult = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: SearchResult = try await get(url: url, parameters: parameters)
 			
 			return SearchResponse(
 				artists: response.artists.items,

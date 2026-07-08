@@ -19,7 +19,7 @@ extension Session {
 	public func video(videoId: Int) async -> Video? {
 		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)")!
 		do {
-			let response: Video = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Video = try await get(url: url, parameters: sessionParameters)
 			return response
 		} catch {
 			return nil

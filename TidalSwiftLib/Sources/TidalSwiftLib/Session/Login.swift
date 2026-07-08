@@ -115,7 +115,6 @@ extension Session {
 				if let successResponse = try? JSONDecoder.custom.decode(TokenSuccessResponse.self, from: response.data) {
 					setAccessToken(successResponse.accessToken, refreshToken: successResponse.refreshToken, expiresIn: successResponse.expiresIn)
 					config.clientID = AuthInformation.OAuthClientID
-					scheduleAccessTokenRefresh()
 					do {
 						try await populateVariablesForAccessToken()
 						subject.send(.success)
@@ -144,7 +143,21 @@ extension Session {
 		}
 	}
 	
+	/// Refreshes the access token. Concurrent calls share a single refresh
+	/// request instead of each hitting the auth server.
 	public func refreshAccessToken() async throws {
+		if let activeTokenRefresh {
+			return try await activeTokenRefresh.value
+		}
+		let task = Task {
+			defer { activeTokenRefresh = nil }
+			try await performAccessTokenRefresh()
+		}
+		activeTokenRefresh = task
+		return try await task.value
+	}
+
+	private func performAccessTokenRefresh() async throws {
 		print("refreshAccessToken")
 		guard !config.refreshToken.isEmpty else {
 			throw SessionError.notLoggedIn
@@ -170,7 +183,6 @@ extension Session {
 
 		if let successResponse = try? JSONDecoder.custom.decode(TokenSuccessResponse.self, from: response.data) {
 			setAccessToken(successResponse.accessToken, refreshToken: successResponse.refreshToken, expiresIn: successResponse.expiresIn)
-			scheduleAccessTokenRefresh()
 			saveConfig()
 			print("Access token refreshed. New expiration: \(config.tokenExpirationDate?.description ?? "unknown")")
 		} else if let errorResponse = try? JSONDecoder.custom.decode(TokenErrorResponse.self, from: response.data) {
@@ -192,39 +204,12 @@ extension Session {
 			try await refreshAccessToken()
 		}
 	}
-
-	/// Schedules a background task that automatically refreshes the access token before it expires.
-	/// Call this after a successful login or on app startup.
-	public func scheduleAccessTokenRefresh() {
-		tokenRefreshTask?.cancel()
-		let expirationDate = self.config.tokenExpirationDate
-		let delay: TimeInterval
-		if let expirationDate {
-			// Refresh 5 minutes before expiration, minimum 30 seconds
-			delay = max(expirationDate.timeIntervalSinceNow - Session.tokenRefreshMargin, 30)
-		} else {
-			// No expiration known — try refreshing in 10 minutes
-			delay = 10 * 60
-		}
-		tokenRefreshTask = Task { [weak self] in
-			do {
-				try await Task.sleep(for: .seconds(delay))
-			} catch {
-				return // Task was cancelled
-			}
-			do {
-				try await self?.refreshAccessToken()
-			} catch {
-				displayError(title: "Refresh Access Token failed", content: "Error: \(error)")
-			}
-		}
-	}
 }
 
 extension Session {
 	public func logout() {
-		tokenRefreshTask?.cancel()
-		tokenRefreshTask = nil
+		activeTokenRefresh?.cancel()
+		activeTokenRefresh = nil
 		deletePersistentInformation()
 		config = Config(accessToken: "", refreshToken: "", clientID: "", offlineAudioQuality: .high, urlType: .streaming)
 	}

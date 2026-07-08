@@ -27,7 +27,7 @@ public class Session {
 	public var favorites: Favorites?
 	public var helpers: Helpers!
 	public var playlistEditing: PlaylistEditing!
-	var tokenRefreshTask: Task<Void, Never>?
+	var activeTokenRefresh: Task<Void, Error>?
 	
 	public init(config: Config?) {
 		if let config = config {

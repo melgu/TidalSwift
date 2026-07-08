@@ -176,7 +176,6 @@ struct LoginView: View {
 		session.config.urlType = audioUrlType
 		session.saveConfig()
 		session.saveSession()
-		session.scheduleAccessTokenRefresh()
 		player.setAudioQuality(to: offlineAudioQuality)
 		viewState.push(view: TidalSwiftView(viewType: .favoriteTracks))
 	}

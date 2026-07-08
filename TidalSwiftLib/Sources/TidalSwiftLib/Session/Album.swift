@@ -19,7 +19,7 @@ extension Session {
 	public func album(albumId: Int) async -> Album? {
 		let url = URL(string: "\(AuthInformation.APILocation)/albums/\(albumId)")!
 		do {
-			let response: Album = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Album = try await get(url: url, parameters: sessionParameters)
 			return response
 		} catch {
 			return nil
@@ -29,7 +29,7 @@ extension Session {
 	public func albumTracks(albumId: Int) async -> [Track]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/albums/\(albumId)/tracks")!
 		do {
-			let response: Tracks = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Tracks = try await get(url: url, parameters: sessionParameters)
 			return response.items
 		} catch {
 			return nil
@@ -39,7 +39,7 @@ extension Session {
 	public func albumCredits(albumId: Int) async -> [Credit]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/albums/\(albumId)/credits")!
 		do {
-			let response: [Credit] = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: [Credit] = try await get(url: url, parameters: sessionParameters)
 			return response
 		} catch {
 			return nil

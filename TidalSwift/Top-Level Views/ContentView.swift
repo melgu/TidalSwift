@@ -49,7 +49,6 @@ struct ContentView: View {
 			.task {
 				do {
 					try await session.refreshAccessTokenIfNeeded()
-					session.scheduleAccessTokenRefresh()
 					try await session.populateVariablesForAccessToken()
 				} catch SessionError.network(let underlying) {
 					// The stored credentials may still be valid — keep the session

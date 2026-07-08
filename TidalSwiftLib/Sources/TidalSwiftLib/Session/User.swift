@@ -13,7 +13,7 @@ extension Session {
 		guard let userId else { return nil }
 		let url = URL(string: "\(AuthInformation.APILocation)/users/\(userId)/subscription")!
 		do {
-			let response: Subscription = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Subscription = try await get(url: url, parameters: sessionParameters)
 			return response
 		} catch {
 			return nil
@@ -23,7 +23,7 @@ extension Session {
 	public func user(userId: Int) async -> User? {
 		let url = URL(string: "\(AuthInformation.APILocation)/users/\(userId)")!
 		do {
-			let response: User = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: User = try await get(url: url, parameters: sessionParameters)
 			return response
 		} catch {
 			return nil
@@ -41,7 +41,7 @@ extension Session {
 		}
 		
 		do {
-			let response: Playlists = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Playlists = try await get(url: url, parameters: parameters)
 			return response.items
 		} catch {
 			return nil

@@ -25,7 +25,7 @@ extension Session {
 	public func track(trackId: Int) async -> Track? {
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)")!
 		do {
-			let response: Track = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Track = try await get(url: url, parameters: sessionParameters)
 			return response
 		} catch {
 			return nil
@@ -35,7 +35,7 @@ extension Session {
 	public func trackCredits(trackId: Int) async -> [Credit]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/credits")!
 		do {
-			let response: [Credit] = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: [Credit] = try await get(url: url, parameters: sessionParameters)
 			return response
 		} catch {
 			return nil
@@ -61,7 +61,7 @@ extension Session {
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/radio")!
 		do {
-			let response: Tracks = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Tracks = try await get(url: url, parameters: parameters)
 			return response.items
 		} catch {
 			return nil

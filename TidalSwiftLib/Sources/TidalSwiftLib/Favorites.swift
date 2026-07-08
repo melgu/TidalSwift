@@ -33,7 +33,7 @@ public class Favorites {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
 		do {
-			let response: FavoriteArtists = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			let response: FavoriteArtists = try await session.get(url: url, parameters: parameters)
 			return response.items
 		} catch {
 			return nil
@@ -52,7 +52,7 @@ public class Favorites {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
 		do {
-			let response: FavoriteAlbums = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			let response: FavoriteAlbums = try await session.get(url: url, parameters: parameters)
 			return response.items
 		} catch {
 			return nil
@@ -71,7 +71,7 @@ public class Favorites {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
 		do {
-			let response: FavoriteTracks = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			let response: FavoriteTracks = try await session.get(url: url, parameters: parameters)
 			return response.items
 		} catch {
 			return nil
@@ -95,7 +95,7 @@ public class Favorites {
 			parameters["orderDirection"] = "\(orderDirection.rawValue)"
 		}
 		do {
-			let response: FavoriteVideos = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			let response: FavoriteVideos = try await session.get(url: url, parameters: parameters)
 			return response.items
 		} catch {
 			return nil
@@ -128,7 +128,7 @@ public class Favorites {
 				parameters["orderDirection"] = "\(orderDirection.rawValue)"
 			}
 			do {
-				let response: FavoritePlaylists = try await Network.get(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+				let response: FavoritePlaylists = try await session.get(url: url, parameters: parameters)
 				// TODO: JSON signature is different
 				
 				tempPlaylists += response.items
@@ -163,7 +163,7 @@ public class Favorites {
 		var parameters = session.sessionParameters
 		parameters["artistIds"] = "\(artistId)"
 		do {
-			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.post(url: url, parameters: parameters)
 			await refreshCachedArtists()
 			return true
 		} catch {
@@ -176,7 +176,7 @@ public class Favorites {
 		var parameters = session.sessionParameters
 		parameters["albumIds"] = "\(albumId)"
 		do {
-			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.post(url: url, parameters: parameters)
 			await refreshCachedAlbums()
 			return true
 		} catch {
@@ -189,7 +189,7 @@ public class Favorites {
 		var parameters = session.sessionParameters
 		parameters["trackIds"] = "\(trackId)"
 		do {
-			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.post(url: url, parameters: parameters)
 			await refreshCachedTracks()
 			return true
 		} catch {
@@ -202,7 +202,7 @@ public class Favorites {
 		var parameters = session.sessionParameters
 		parameters["videoIds"] = "\(videoId)"
 		do {
-			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.post(url: url, parameters: parameters)
 			await refreshCachedVideos()
 			return true
 		} catch {
@@ -215,7 +215,7 @@ public class Favorites {
 		var parameters = session.sessionParameters
 		parameters["uuids"] = playlistId
 		do {
-			_ = try await Network.post(url: url, parameters: parameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.post(url: url, parameters: parameters)
 			await refreshCachedPlaylists()
 			return true
 		} catch {
@@ -228,7 +228,7 @@ public class Favorites {
 	@discardableResult public func removeArtist(artistId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/artists/\(artistId)")!
 		do {
-			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.delete(url: url, parameters: session.sessionParameters)
 			await refreshCachedArtists()
 			return true
 		} catch {
@@ -239,7 +239,7 @@ public class Favorites {
 	@discardableResult public func removeAlbum(albumId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/albums/\(albumId)")!
 		do {
-			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.delete(url: url, parameters: session.sessionParameters)
 			await refreshCachedAlbums()
 			return true
 		} catch {
@@ -250,7 +250,7 @@ public class Favorites {
 	@discardableResult public func removeTrack(trackId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/tracks/\(trackId)")!
 		do {
-			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.delete(url: url, parameters: session.sessionParameters)
 			await refreshCachedTracks()
 			return true
 		} catch {
@@ -261,7 +261,7 @@ public class Favorites {
 	@discardableResult public func removeVideo(videoId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/videos/\(videoId)")!
 		do {
-			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.delete(url: url, parameters: session.sessionParameters)
 			await refreshCachedVideos()
 			return true
 		} catch {
@@ -272,7 +272,7 @@ public class Favorites {
 	@discardableResult public func removePlaylist(playlistId: String) async -> Bool {
 		let url = URL(string: "\(baseUrl)/playlists/\(playlistId)")!
 		do {
-			_ = try await Network.delete(url: url, parameters: session.sessionParameters, accessToken: session.config.accessToken, xTidalToken: session.config.apiToken)
+			_ = try await session.delete(url: url, parameters: session.sessionParameters)
 			await refreshCachedPlaylists()
 			return true
 		} catch {

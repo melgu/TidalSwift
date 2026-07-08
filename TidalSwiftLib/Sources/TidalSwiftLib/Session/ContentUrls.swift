@@ -14,7 +14,7 @@ extension Session {
 		parameters["soundQuality"] = "\(audioQuality.rawValue)"
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/\(config.urlType.rawValue)")!
 		do {
-			let response: AudioUrl = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: AudioUrl = try await get(url: url, parameters: parameters)
 			
 //			print("""
 //			Track ID: \(response.trackId),
@@ -35,7 +35,7 @@ extension Session {
 		parameters["playbackmode"] = "STREAM"
 		parameters["assetpresentation"] = "FULL"
 		do {
-			let response: VideoPlaybackInfo = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: VideoPlaybackInfo = try await get(url: url, parameters: parameters)
 			guard let decodedManifestData = Data(base64Encoded: response.manifest) else { return nil }
 			let manifest = try JSONDecoder().decode(VideoManifest.self, from: decodedManifestData)
 			guard let streamUrlString = manifest.urls.first else { return nil }

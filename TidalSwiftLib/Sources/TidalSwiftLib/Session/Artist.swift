@@ -14,7 +14,7 @@ extension Session {
 	public func artist(artistId: Int) async -> Artist? {
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)")!
 		do {
-			let response: Artist = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Artist = try await get(url: url, parameters: sessionParameters)
 			return response
 		} catch {
 			return nil
@@ -42,7 +42,7 @@ extension Session {
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/albums")!
 		do {
-			let response: Albums = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Albums = try await get(url: url, parameters: parameters)
 			return response.items
 		} catch {
 			return nil
@@ -56,7 +56,7 @@ extension Session {
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/videos")!
 		do {
-			let response: Videos = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Videos = try await get(url: url, parameters: parameters)
 			return response.items
 		} catch {
 			return nil
@@ -70,7 +70,7 @@ extension Session {
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/toptracks")!
 		do {
-			let response: Tracks = try await Network.get(url: url, parameters: parameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Tracks = try await get(url: url, parameters: parameters)
 			return response.items
 		} catch {
 			return nil
@@ -80,7 +80,7 @@ extension Session {
 	func artistBio(artistId: Int, linksRemoved: Bool = true) async -> ArtistBio? {
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/bio")!
 		do {
-			let response: ArtistBio = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: ArtistBio = try await get(url: url, parameters: sessionParameters)
 			
 			// <br/> to \n
 			let regex = #/<br/><br/>|<br/>/#
@@ -101,7 +101,7 @@ extension Session {
 	public func artistSimilar(artistId: Int) async -> [Artist]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/similar")!
 		do {
-			let response: Artists = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Artists = try await get(url: url, parameters: sessionParameters)
 			return response.items
 		} catch {
 			return nil
@@ -111,7 +111,7 @@ extension Session {
 	public func artistRadio(artistId: Int) async -> [Track]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/artists/\(artistId)/radio")!
 		do {
-			let response: Tracks = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			let response: Tracks = try await get(url: url, parameters: sessionParameters)
 			return response.items
 		} catch {
 			return nil

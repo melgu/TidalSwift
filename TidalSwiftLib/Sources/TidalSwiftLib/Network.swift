@@ -33,7 +33,7 @@ extension Network {
 		return components.percentEncodedQuery ?? ""
 	}
 	
-	private static func request(method: HttpMethod, url: URL, parameters: [String: String], etag: Int? = nil, accessToken: String?, xTidalToken: String?) async throws -> Response {
+	static func request(method: HttpMethod, url: URL, parameters: [String: String], etag: Int? = nil, accessToken: String?, xTidalToken: String?) async throws -> Response {
 		var request = URLRequest(url: url)
 		request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 		if let accessToken = accessToken {
