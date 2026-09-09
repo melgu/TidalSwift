@@ -30,6 +30,7 @@ extension Session {
 				topHit: response.topHit
 			)
 		} catch {
+			print("Search failed: \(error)")
 			return nil
 		}
 	}

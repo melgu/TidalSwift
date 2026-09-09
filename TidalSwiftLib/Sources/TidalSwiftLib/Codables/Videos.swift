@@ -21,7 +21,7 @@ public struct Video: Codable, Equatable, Identifiable, Hashable {
 	public let title: String
 	public let volumeNumber: Int
 	public let trackNumber: Int
-	public let releaseDate: Date
+	public let releaseDate: Date? // Null for some videos
 	public let imagePath: String? // As far as I know always null
 	public let imageId: String?
 	public let duration: Int
@@ -93,8 +93,8 @@ extension Array where Element == Video {
 			}
 		case .releaseDate:
 			return self.sorted {
-				($0.releaseDate, $0.title.lowercased()) <
-					($1.releaseDate, $1.title.lowercased())
+				($0.releaseDate ?? Date.distantPast, $0.title.lowercased()) <
+					($1.releaseDate ?? Date.distantPast, $1.title.lowercased())
 			}
 		case .duration:
 			return self.sorted {
