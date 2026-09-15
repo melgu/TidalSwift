@@ -208,7 +208,7 @@ final class TidalSwiftAppModel: ObservableObject {
 
 	func initSecondaryWindows() {
 		lyricsViewController = ResizableWindowControllerFactory.create(rootView:
-			LyricsView()
+			LyricsView(session: session)
 				.environmentObject(viewState)
 				.environmentObject(player.queueInfo)
 		)

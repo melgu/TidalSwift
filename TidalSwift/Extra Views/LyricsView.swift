@@ -10,9 +10,10 @@ import SwiftUI
 import TidalSwiftLib
 
 struct LyricsView: View {
+	let session: Session
+	
 	@EnvironmentObject var queueInfo: QueueInfo
 	
-	@State var workItem: DispatchWorkItem?
 	@State var loadingState: LoadingState = .loading
 	
 	@State var lyrics: String?
@@ -72,13 +73,12 @@ struct LyricsView: View {
 	
 	private func fetchLyrics() async {
 		guard let track else {
+			lyrics = nil
 			loadingState = .error
 			return
 		}
-		do {
-			lyrics = try await Lyrics.shared.lyrics(for: track)
-		} catch {
-			loadingState = .error
-		}
+		loadingState = .loading
+		lyrics = await track.getLyrics(session: session)?.lyrics
+		loadingState = lyrics == nil ? .error : .successful
 	}
 }

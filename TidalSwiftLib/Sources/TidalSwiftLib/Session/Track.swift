@@ -42,6 +42,17 @@ extension Session {
 		}
 	}
 	
+	// Tidal answers with 404 for tracks it has no lyrics for
+	public func lyrics(trackId: Int) async -> Lyrics? {
+		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/lyrics")!
+		do {
+			let response: Lyrics = try await get(url: url, parameters: sessionParameters)
+			return response
+		} catch {
+			return nil
+		}
+	}
+	
 	// Delete inexistent or unaccessable Tracks from list
 	// Detected by checking for nil values
 	public func cleanTrackList(_ trackList: [Track]) -> [Track] {

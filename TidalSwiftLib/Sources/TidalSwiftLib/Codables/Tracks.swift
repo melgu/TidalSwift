@@ -66,6 +66,10 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		await session.trackCredits(trackId: id)
 	}
 	
+	public func getLyrics(session: Session) async -> Lyrics? {
+		await session.lyrics(trackId: id)
+	}
+	
 	public func audioUrl(session: Session, audioQuality: AudioQuality) async -> URL? {
 		await session.audioUrl(trackId: id, audioQuality: audioQuality)
 	}
