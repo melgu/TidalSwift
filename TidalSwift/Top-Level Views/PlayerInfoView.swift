@@ -225,11 +225,15 @@ struct ProgressBar: View {
 	@Environment(\.colorScheme) var colorScheme: ColorScheme
 	
 	var body: some View {
-		ValueSlider(value: $playbackInfo.fraction) { down in
-			if down { // Only apply while scrubbing, not when releasing
-				player.seek(to: Double(playbackInfo.fraction))
+		// The slider reports the new value through the binding, so seek from there.
+		// Its editing callback fires before the value is written, which would seek to the previous position.
+		ValueSlider(value: Binding(
+			get: { playbackInfo.fraction },
+			set: { newFraction in
+				playbackInfo.fraction = newFraction
+				player.seek(to: Double(newFraction))
 			}
-		}
+		))
 		.valueSliderStyle(
 			HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
 																	Rectangle()
