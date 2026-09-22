@@ -14,7 +14,6 @@ struct AccountInfoView: View {
 	@State var user: User?
 	@State var subscription: Subscription?
 	
-	@State var workItem: DispatchWorkItem?
 	@State var loadingState: LoadingState = .loading
 	
 	var body: some View {
@@ -59,33 +58,21 @@ struct AccountInfoView: View {
 				}
 			}
 		}
-		.onAppear {
-			workItem = createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
-		}
-		.onDisappear {
-			workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		DispatchWorkItem {
-			Task {
-				var tUser: User?
-				let tSubscription: Subscription?
-				
-				if let userId = session.userId {
-					tUser = await session.user(userId: userId)
-				}
-				tSubscription = await session.subscriptionInfo()
-				
-				if tUser != nil && tSubscription != nil {
-					user = tUser
-					subscription = tSubscription
-					loadingState = .successful
-				} else {
-					loadingState = .error
-				}
+		.task {
+			var tUser: User?
+			let tSubscription: Subscription?
+			
+			if let userId = session.userId {
+				tUser = await session.user(userId: userId)
+			}
+			tSubscription = await session.subscriptionInfo()
+			
+			if tUser != nil && tSubscription != nil {
+				user = tUser
+				subscription = tSubscription
+				loadingState = .successful
+			} else {
+				loadingState = .error
 			}
 		}
 	}

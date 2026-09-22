@@ -14,7 +14,6 @@ struct ArtistBioView: View {
 	
 	@State var artist: Artist
 	@State var bio: ArtistBio?
-	@State var workItem: DispatchWorkItem?
 	@State var loadingState: LoadingState = .loading
 	
 	var body: some View {
@@ -53,25 +52,13 @@ struct ArtistBioView: View {
 			}
 			.padding()
 		}
-		.onAppear {
-			workItem = createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
-		}
-		.onDisappear {
-			workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		DispatchWorkItem {
-			Task {
-				let t = await artist.bio(session: session)
-				if let t {
-					bio = t
-					loadingState = .successful
-				} else {
-					loadingState = .error
-				}
+		.task(id: artist.id) {
+			let t = await artist.bio(session: session)
+			if let t {
+				bio = t
+				loadingState = .successful
+			} else {
+				loadingState = .error
 			}
 		}
 	}

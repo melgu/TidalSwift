@@ -15,7 +15,6 @@ struct CreditsView: View {
 	@State var album: Album?
 	@State var credits: [Credit]?
 	
-	@State var workItem: DispatchWorkItem?
 	@State var loadingState: LoadingState = .loading
 	
 	var body: some View {
@@ -44,31 +43,19 @@ struct CreditsView: View {
 			}
 			.padding()
 		}
-		.onAppear {
-			workItem = createWorkItem()
-			DispatchQueue.global(qos: .userInitiated).async(execute: workItem!)
-		}
-		.onDisappear {
-			workItem?.cancel()
-		}
-	}
-	
-	func createWorkItem() -> DispatchWorkItem {
-		DispatchWorkItem {
-			Task {
-				var t: [Credit]?
-				if let track = track {
-					t = await track.getCredits(session: session)
-				} else if let album = album {
-					t = await album.credits(session: session)
-				}
-				
-				if let t {
-					credits = t
-					loadingState = .successful
-				} else {
-					loadingState = .error
-				}
+		.task {
+			var t: [Credit]?
+			if let track {
+				t = await track.getCredits(session: session)
+			} else if let album {
+				t = await album.credits(session: session)
+			}
+			
+			if let t {
+				credits = t
+				loadingState = .successful
+			} else {
+				loadingState = .error
 			}
 		}
 	}
