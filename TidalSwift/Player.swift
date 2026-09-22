@@ -19,6 +19,7 @@ class Player {
 	public let playbackInfo = PlaybackInfo()
 	public let queueInfo = QueueInfo()
 	
+	private static let progressUpdateInterval: Double = 5
 	private var timeObserverToken: Any?
 	
 	private var previousValue: Float = 1.0
@@ -26,6 +27,7 @@ class Player {
 	
 	private var volumeCancellable: AnyCancellable?
 	private var shuffleCancellable: AnyCancellable?
+	private var timeControlStatusCancellable: AnyCancellable?
 	
 	private var currentAudioQuality: AudioQuality
 	private(set) var nextAudioQuality: AudioQuality
@@ -36,17 +38,25 @@ class Player {
 		self.nextAudioQuality = audioQuality
 		self.autoplayAfterAddNow = autoplayAfterAddNow
 		
-		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: nil) { [weak self] _ in
+		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: Self.progressUpdateInterval, preferredTimescale: 600), queue: nil) { [weak self] _ in
 			if let self {
 				Task { @MainActor in
-					self.playbackInfo.fraction = CGFloat(self.fraction())
-					self.playbackInfo.playbackTimeInfo = self.playbackTimeInfo()
+					self.updatePlaybackProgress()
 				}
 			}
 		}
 		
 		volumeCancellable = playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: setVolume(to:))
 		shuffleCancellable = playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffle(enabled:))
+		
+		// The periodic observer follows the timebase, so it stops firing when playback stalls or is
+		// interrupted. This puts the progress bar back onto the real position in those cases.
+		timeControlStatusCancellable = avPlayer.publisher(for: \.timeControlStatus)
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] _ in
+				guard let self else { return }
+				self.updatePlaybackProgress(resettingTo: CGFloat(self.fraction()))
+			}
 	}
 	
 	@MainActor
@@ -57,6 +67,7 @@ class Player {
 		}
 		volumeCancellable?.cancel()
 		shuffleCancellable?.cancel()
+		timeControlStatusCancellable?.cancel()
 	}
 	
 	func setAudioQuality(to audioQuality: AudioQuality) {
@@ -68,6 +79,7 @@ class Player {
 //			print("Play: \(playbackInfo.queue[playbackInfo.currentIndex].track.title)")
 			avPlayer.play()
 			playbackInfo.playing = true
+			updatePlaybackProgress(resettingTo: CGFloat(fraction()))
 			queueInfo.addToHistory(track: queueInfo.queue[queueInfo.currentIndex].track)
 		}
 	}
@@ -83,7 +95,7 @@ class Player {
 	func pause() {
 		avPlayer.pause()
 		playbackInfo.playing = false
-		
+		updatePlaybackProgress()
 	}
 	
 	func togglePlay() {
@@ -176,6 +188,8 @@ class Player {
 		}
 		let seconds = percentage * currentItem.duration.seconds
 		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 600))
+		// The seek is asynchronous, so the new position is passed in instead of read back
+		updatePlaybackProgress(resettingTo: CGFloat(percentage))
 	}
 	
 	private func avSetItem(from track: Track) {
@@ -426,6 +440,53 @@ class Player {
 //		print("fraction(): r: \(r), currentTime: \(avPlayer.currentTime().seconds), totalTime: \(totalTime)")
 		
 		return r
+	}
+	
+	// Animates towards the position playback will have reached at the next update, so the
+	// progress bar moves continuously instead of stepping once per update. The animation starts
+	// wherever the bar currently is, so small deviations are evened out instead of jumping.
+	// Pass `resettingTo` after a seek or an interruption to show that position immediately and
+	// animate onwards from there.
+	func updatePlaybackProgress(resettingTo resetFraction: CGFloat? = nil) {
+		guard avPlayer.currentItem != nil else {
+			return
+		}
+		
+		playbackInfo.playbackTimeInfo = playbackTimeInfo()
+		
+		guard !playbackInfo.isScrubbing() else {
+			return
+		}
+		
+		let currentFraction = resetFraction ?? CGFloat(fraction())
+		guard avPlayer.rate > 0,
+			  let totalTime = avPlayer.currentItem?.duration.seconds,
+			  !totalTime.isNaN, totalTime > 0 else {
+			playbackInfo.fraction = currentFraction
+			return
+		}
+		
+		let advance = CGFloat(Double(avPlayer.rate) * Self.progressUpdateInterval / totalTime)
+		let target = min(currentFraction + advance, 1)
+		
+		guard resetFraction != nil else {
+			withAnimation(.linear(duration: Self.progressUpdateInterval)) {
+				playbackInfo.fraction = target
+			}
+			return
+		}
+		
+		// Let the reset position appear before animating onwards, otherwise both changes end up
+		// in the same view update and the animation starts from the outdated position.
+		playbackInfo.fraction = currentFraction
+		DispatchQueue.main.async { [weak self] in
+			guard let self, !self.playbackInfo.isScrubbing(), self.avPlayer.rate > 0 else {
+				return
+			}
+			withAnimation(.linear(duration: Self.progressUpdateInterval)) {
+				self.playbackInfo.fraction = target
+			}
+		}
 	}
 	
 	func playbackTimeInfo() -> String {

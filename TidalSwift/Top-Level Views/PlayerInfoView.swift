@@ -230,10 +230,17 @@ struct ProgressBar: View {
 		ValueSlider(value: Binding(
 			get: { playbackInfo.fraction },
 			set: { newFraction in
+				playbackInfo.startedScrubbing()
 				playbackInfo.fraction = newFraction
 				player.seek(to: Double(newFraction))
 			}
-		))
+		)) { down in
+			if !down {
+				playbackInfo.endedScrubbing()
+				// Picks up the animation again right away instead of at the next playback update
+				player.updatePlaybackProgress(resettingTo: playbackInfo.fraction)
+			}
+		}
 		.valueSliderStyle(
 			HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
 																	Rectangle()

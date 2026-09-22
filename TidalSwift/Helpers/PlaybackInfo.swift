@@ -18,6 +18,28 @@ final class PlaybackInfo: ObservableObject {
 	@Published var shuffle: Bool = false
 	@Published var repeatState: RepeatState = .off
 	@Published var pauseAfter: Bool = false
+	
+	// While the user drags the progress bar, playback updates must not move it
+	private var scrubbing: Bool = false
+	
+	func startedScrubbing() {
+		scrubbing = true
+	}
+	
+	func endedScrubbing() {
+		scrubbing = false
+	}
+	
+	func isScrubbing() -> Bool {
+		#if canImport(AppKit)
+		// A cancelled drag never reports its end, which would leave the progress bar stuck.
+		// Nothing can be dragged with the mouse up, so that ends it as well.
+		if scrubbing && NSEvent.pressedMouseButtons == 0 {
+			scrubbing = false
+		}
+		#endif
+		return scrubbing
+	}
 }
 
 enum RepeatState: Int, CaseIterable, Codable {
