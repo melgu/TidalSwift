@@ -65,7 +65,6 @@ final class TidalSwiftAppModel: ObservableObject {
 	private var queueViewController: NSWindowController?
 	private var viewHistoryViewController: NSWindowController?
 	private var playbackHistoryViewController: NSWindowController?
-	private var windowCloseObserver: NSObjectProtocol?
 	#endif
 
 	// MARK: Cancellables
@@ -175,10 +174,6 @@ final class TidalSwiftAppModel: ObservableObject {
 	func prepareForTermination() {
 		guard !isTerminating else { return }
 		isTerminating = true
-		if let windowCloseObserver {
-			NotificationCenter.default.removeObserver(windowCloseObserver)
-			self.windowCloseObserver = nil
-		}
 		cancelCancellables()
 		closeModals()
 		saveState()
@@ -190,17 +185,32 @@ final class TidalSwiftAppModel: ObservableObject {
 	}
 
 	private func registerCloseLastWindowBehavior() {
-		windowCloseObserver = NotificationCenter.default.addObserver(
-			forName: NSWindow.willCloseNotification,
-			object: nil,
-			queue: .main
-		) { [weak self] _ in
-			guard let self else { return }
-			DispatchQueue.main.async {
-				if !self.isTerminating && !NSApp.windows.contains(where: { $0.isVisible }) {
-					self.quit()
+		if #available(macOS 27, *) {
+			_ = NotificationCenter.default.addObserver(of: NSWindow.self, for: .willClose) { [weak self] message in
+				self?.quitIfLastWindow(closing: message.window)
+			}
+		} else {
+			_ = NotificationCenter.default.addObserver(
+				forName: NSWindow.willCloseNotification,
+				object: nil,
+				queue: .main
+			) { [weak self] notification in
+				let closingWindow = notification.object as? NSWindow
+				// Safe because the observer asks for delivery on the main queue
+				MainActor.assumeIsolated {
+					self?.quitIfLastWindow(closing: closingWindow)
 				}
 			}
+		}
+	}
+	
+	private func quitIfLastWindow(closing closingWindow: NSWindow?) {
+		guard !isTerminating else { return }
+		// The closing window still counts as visible while the notification is
+		// being delivered, so ignore it and look for any other visible one
+		let hasOtherVisibleWindow = NSApp.windows.contains { $0.isVisible && $0 !== closingWindow }
+		if !hasOtherVisibleWindow {
+			quit()
 		}
 	}
 
