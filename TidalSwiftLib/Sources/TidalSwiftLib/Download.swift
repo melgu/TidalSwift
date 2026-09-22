@@ -13,15 +13,11 @@ public final class DownloadStatus: ObservableObject {
 	@Published public var downloadingTasks: Int = 0
 	
 	func startTask() {
-		DispatchQueue.main.async { [weak self] in
-			self?.downloadingTasks += 1
-		}
+		downloadingTasks += 1
 	}
 	
 	func finishTask() {
-		DispatchQueue.main.async { [weak self] in
-			self?.downloadingTasks -= 1
-		}
+		downloadingTasks -= 1
 	}
 }
 
@@ -41,9 +37,6 @@ public class Download {
 	unowned let session: Session
 	unowned let metadata: Metadata
 	private let downloadStatus: DownloadStatus
-	
-	
-	private var dispatchQueue = DispatchQueue(label: "melgu.TidalSwift.download", qos: .background)
 	
 	init(session: Session, metadata: Metadata, downloadStatus: DownloadStatus) {
 		self.session = session
