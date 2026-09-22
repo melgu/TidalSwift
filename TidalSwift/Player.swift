@@ -175,7 +175,7 @@ class Player {
 			return
 		}
 		let seconds = percentage * currentItem.duration.seconds
-		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 1))
+		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 600))
 	}
 	
 	private func avSetItem(from track: Track) {
