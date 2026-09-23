@@ -193,10 +193,7 @@ public final class Offline {
 		if await !db.tracks.contains(where: { (t, _) in t == track }) {
 			return nil
 		}
-		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: session.pathExtension(for: session.config.offlineAudioQuality)) else {
-			return nil
-		}
-		return URL(fileURLWithPath: path.path)
+		return localFiles(forTrackId: track.id)?.first
 	}
 	
 	// The following always show the goal state (planned), i.e., after all downloads have finished
@@ -226,6 +223,16 @@ public final class Offline {
 	}
 	
 	// Actual state
+	
+	/// Files on disk for a track, whatever their extension, so files stay usable after the offline quality changes
+	private func localFiles(forTrackId trackId: Int) -> [URL]? {
+		guard let path = buildPath(baseLocation: .music, parentFolder: nil, name: mainPath, pathExtension: nil),
+			  let directoryContents = try? FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil, options: []) else {
+			return nil
+		}
+		return directoryContents.filter { $0.deletingPathExtension().lastPathComponent == "\(trackId)" }
+	}
+	
 	private func loadOfflineTrackIds() -> [Int]? {
 		var localTracksIds: [Int] = []
 		
@@ -312,17 +319,14 @@ public final class Offline {
 			for trackId in toRemove {
 				print("Offline: Removing \(trackId)")
 				do {
-					let pathExtension = session.pathExtension(for: session.config.offlineAudioQuality)
-					guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(trackId)", pathExtension: pathExtension) else {
-						displayError(title: "Offline: Error during Offline Sync", content: "Error while building path to: \(mainPath)/\(trackId).\(pathExtension)")
-						return
+					guard let files = localFiles(forTrackId: trackId), !files.isEmpty else {
+						displayError(title: "Offline: Error while removing offline track", content: "File to remove doesn't exist: \(mainPath)/\(trackId)")
+						continue
 					}
-					if FileManager.default.fileExists(atPath: path.relativePath) {
-						try FileManager.default.removeItem(at: path)
-						print("Offline: Removed \(trackId)")
-					} else {
-						displayError(title: "Offline: Error while removing offline track", content: "File to remove doesn't exist: \(path)")
+					for file in files {
+						try FileManager.default.removeItem(at: file)
 					}
+					print("Offline: Removed \(trackId)")
 				} catch {
 					displayError(title: "Offline: Error while removing offline track", content: "Error: \(error)")
 				}
