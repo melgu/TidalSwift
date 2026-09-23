@@ -236,9 +236,7 @@ public final class Offline {
 			}
 			let directoryContents = try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil, options: [])
 			for url in directoryContents {
-				var name = url.lastPathComponent
-				name.removeLast(4) // Remove ".m4a" / ".flac"
-				if let id = Int(name) {
+				if let id = Int(url.deletingPathExtension().lastPathComponent) {
 					localTracksIds.append(id)
 				}
 			}
