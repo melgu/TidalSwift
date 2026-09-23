@@ -299,7 +299,7 @@ class FavoritesCache {
 	var artists: [FavoriteArtist]? {
 		get async {
 			if Date().timeIntervalSince(lastCheckedArtists) > timeoutInSeconds {
-				self._artists = await favorites.artists()
+				set(await favorites.artists())
 			}
 			return _artists
 		}
@@ -314,7 +314,7 @@ class FavoritesCache {
 	var albums: [FavoriteAlbum]? {
 		get async {
 			if Date().timeIntervalSince(lastCheckedAlbums) > timeoutInSeconds {
-				self._albums = await favorites.albums()
+				set(await favorites.albums())
 			}
 			return _albums
 		}
@@ -329,7 +329,7 @@ class FavoritesCache {
 	var tracks: [FavoriteTrack]? {
 		get async {
 			if Date().timeIntervalSince(lastCheckedTracks) > timeoutInSeconds {
-				self._tracks = await favorites.tracks()
+				set(await favorites.tracks())
 			}
 			return _tracks
 		}
@@ -344,7 +344,7 @@ class FavoritesCache {
 	var videos: [FavoriteVideo]? {
 		get async {
 			if Date().timeIntervalSince(lastCheckedVideos) > timeoutInSeconds {
-				self._videos = await favorites.videos()
+				set(await favorites.videos())
 			}
 			return _videos
 		}
@@ -359,7 +359,7 @@ class FavoritesCache {
 	var playlists: [FavoritePlaylist]? {
 		get async {
 			if Date().timeIntervalSince(lastCheckedPlaylists) > timeoutInSeconds {
-				self._playlists = await favorites.playlists()
+				set(await favorites.playlists())
 			}
 			return _playlists
 		}
