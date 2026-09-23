@@ -28,6 +28,27 @@ extension Session {
 		}
 	}
 	
+	/// Only unencrypted E-AC-3 streams, which AVFoundation plays directly. Tidal refuses Atmos in offline playback mode.
+	func dolbyAtmosUrl(trackId: Int) async -> URL? {
+		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/playbackinfopostpaywall")!
+		var parameters = sessionParameters
+		parameters["audioquality"] = AudioQuality.max.rawValue
+		parameters["playbackmode"] = "STREAM"
+		parameters["assetpresentation"] = "FULL"
+		parameters["immersiveaudio"] = "true"
+		do {
+			let response: TrackPlaybackInfo = try await get(url: url, parameters: parameters)
+			guard response.audioMode == .dolbyAtmos,
+				  response.manifestMimeType == "application/vnd.tidal.bts",
+				  let decodedManifestData = Data(base64Encoded: response.manifest) else { return nil }
+			let manifest = try JSONDecoder().decode(TrackManifest.self, from: decodedManifestData)
+			guard manifest.codecs == "eac3", manifest.encryptionType == "NONE" else { return nil }
+			return manifest.urls.first?.upgradedToHTTPS
+		} catch {
+			return nil
+		}
+	}
+	
 	func videoUrl(videoId: Int) async -> URL? {
 		let url = URL(string: "\(AuthInformation.APILocation)/videos/\(videoId)/playbackinfo")!
 		var parameters = sessionParameters

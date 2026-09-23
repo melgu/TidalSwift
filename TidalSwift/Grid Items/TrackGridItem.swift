@@ -108,8 +108,8 @@ extension Track {
 	}
 	
 	var isUnavailable: Bool {
+		// Sony 360 Reality Audio can't be played, so a track needs at least one other mode
 		!streamReady ||
-		audioModes?.contains(.sony360RealityAudio) ?? false ||
-			audioModes?.contains(.dolbyAtmos) ?? false
+			!(audioModes?.contains(where: { $0 != .sony360RealityAudio }) ?? true)
 	}
 }

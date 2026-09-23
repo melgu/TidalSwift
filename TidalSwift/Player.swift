@@ -29,11 +29,13 @@ class Player {
 	
 	private var currentAudioQuality: AudioQuality
 	private(set) var nextAudioQuality: AudioQuality
+	private(set) var preferDolbyAtmos: Bool
 	
-	init(session: Session, audioQuality: AudioQuality, autoplayAfterAddNow: Bool = true) {
+	init(session: Session, audioQuality: AudioQuality, preferDolbyAtmos: Bool = false, autoplayAfterAddNow: Bool = true) {
 		self.session = session
 		self.currentAudioQuality = audioQuality
 		self.nextAudioQuality = audioQuality
+		self.preferDolbyAtmos = preferDolbyAtmos
 		self.autoplayAfterAddNow = autoplayAfterAddNow
 		
 		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: nil) { [weak self] _ in
@@ -61,6 +63,10 @@ class Player {
 	
 	func setAudioQuality(to audioQuality: AudioQuality) {
 		nextAudioQuality = audioQuality
+	}
+	
+	func setPreferDolbyAtmos(to preferDolbyAtmos: Bool) {
+		self.preferDolbyAtmos = preferDolbyAtmos
 	}
 	
 	func play() {
@@ -208,9 +214,9 @@ class Player {
 			print("Play \(track.title) from offline URL: \(offlineUrl)")
 			url = offlineUrl
 		} else {
-			if let onlineUrl = await track.audioUrl(session: session, audioQuality: nextAudioQuality) {
-				url = onlineUrl
-				print("Play \(track.title) from online URL: \(onlineUrl)")
+			if let stream = await track.audioStream(session: session, audioQuality: nextAudioQuality, preferDolbyAtmos: preferDolbyAtmos) {
+				url = stream.url
+				print("Play \(track.title) from online URL\(stream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(stream.url)")
 			} else {
 				print("No URL so skipping \(track.title)")
 				skip()

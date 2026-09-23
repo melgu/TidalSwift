@@ -124,7 +124,7 @@ struct TrackContextMenu: View {
 					Button {
 						Task {
 							print("Download")
-							_ = await session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
+							_ = await session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality, preferDolbyAtmos: player.preferDolbyAtmos)
 						}
 					} label: {
 						Text("Download")

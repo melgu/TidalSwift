@@ -70,8 +70,29 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		await session.lyrics(trackId: id)
 	}
 	
-	public func audioUrl(session: Session, audioQuality: AudioQuality) async -> URL? {
-		await session.audioUrl(trackId: id, audioQuality: audioQuality)
+	var hasDolbyAtmos: Bool {
+		audioModes?.contains(.dolbyAtmos) ?? false
+	}
+	
+	var hasStereo: Bool {
+		guard let audioModes else { return true }
+		return audioModes.contains(.stereo) || audioModes.contains(.mono)
+	}
+	
+	/// Dolby Atmos is used when preferred or when the track has no stereo version
+	public func audioStream(session: Session, audioQuality: AudioQuality, preferDolbyAtmos: Bool) async -> AudioStream? {
+		if hasDolbyAtmos && (preferDolbyAtmos || !hasStereo) {
+			if let url = await session.dolbyAtmosUrl(trackId: id) {
+				return AudioStream(url: url, pathExtension: "m4a", isDolbyAtmos: true)
+			}
+			if !hasStereo {
+				return nil
+			}
+		}
+		guard let url = await session.audioUrl(trackId: id, audioQuality: audioQuality) else {
+			return nil
+		}
+		return AudioStream(url: url, pathExtension: session.pathExtension(for: audioQuality), isDolbyAtmos: false)
 	}
 	
 	public func isOffline(session: Session) async -> Bool {
@@ -89,6 +110,24 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
 	}
+}
+
+public struct AudioStream {
+	public let url: URL
+	public let pathExtension: String
+	public let isDolbyAtmos: Bool
+}
+
+struct TrackPlaybackInfo: Decodable {
+	let audioMode: AudioMode
+	let manifestMimeType: String
+	let manifest: String
+}
+
+struct TrackManifest: Decodable {
+	let codecs: String
+	let encryptionType: String
+	let urls: [URL]
 }
 
 struct AudioUrl: Decodable {

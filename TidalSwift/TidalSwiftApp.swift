@@ -111,11 +111,12 @@ final class TidalSwiftAppModel: ObservableObject {
 	init() {
 		session = Session(config: nil)
 
+		let preferDolbyAtmos = UserDefaults.standard.bool(forKey: "preferDolbyAtmos")
 		if let audioQualityString = UserDefaults.standard.string(forKey: "audioQuality"),
 		   let audioQuality = AudioQuality(rawValue: audioQualityString) {
-			player = Player(session: session, audioQuality: audioQuality)
+			player = Player(session: session, audioQuality: audioQuality, preferDolbyAtmos: preferDolbyAtmos)
 		} else {
-			player = Player(session: session, audioQuality: .high)
+			player = Player(session: session, audioQuality: .high, preferDolbyAtmos: preferDolbyAtmos)
 		}
 
 		var cache = ViewCache()
@@ -357,6 +358,7 @@ final class TidalSwiftAppModel: ObservableObject {
 		let playbackInfoData = try? JSONEncoder().encode(codablePI)
 		UserDefaults.standard.set(playbackInfoData, forKey: "PlaybackInfo")
 		UserDefaults.standard.set(player.nextAudioQuality.rawValue, forKey: "audioQuality")
+		UserDefaults.standard.set(player.preferDolbyAtmos, forKey: "preferDolbyAtmos")
 	}
 
 	func saveViewState() {
@@ -551,7 +553,7 @@ final class TidalSwiftAppModel: ObservableObject {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
 		Task { [self] in
-			_ = await session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality)
+			_ = await session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality, preferDolbyAtmos: player.preferDolbyAtmos)
 		}
 	}
 
@@ -675,6 +677,12 @@ final class TidalSwiftAppModel: ObservableObject {
 
 	func isAudioQualitySelected(_ audioQuality: AudioQuality) -> Bool {
 		player.nextAudioQuality == audioQuality
+	}
+
+	func togglePreferDolbyAtmos() {
+		player.setPreferDolbyAtmos(to: !player.preferDolbyAtmos)
+		savePlaybackInfoOnNextTick = true
+		objectWillChange.send()
 	}
 
 	func clearQueue() {
@@ -862,6 +870,13 @@ struct TidalSwiftCommands: Commands {
 				audioQualityButton(title: "Low", quality: .low)
 				audioQualityButton(title: "High", quality: .medium)
 				audioQualityButton(title: "HiFi", quality: .high)
+
+				Divider()
+
+				Toggle("Prefer Dolby Atmos", isOn: Binding(
+					get: { appModel.player.preferDolbyAtmos },
+					set: { _ in appModel.togglePreferDolbyAtmos() }
+				))
 			}
 
 			Button("Clear Queue") {

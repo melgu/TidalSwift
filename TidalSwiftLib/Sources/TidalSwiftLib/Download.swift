@@ -56,23 +56,23 @@ public class Download {
 		"\(video.trackNumber) \(video.title) - \(video.artists.formArtistString())"
 	}
 	
-	public func download(track: Track, parentFolder: String = "", audioQuality: AudioQuality) async -> Bool {
+	public func download(track: Track, parentFolder: String = "", audioQuality: AudioQuality, preferDolbyAtmos: Bool = false) async -> Bool {
 		downloadStatus.startTask()
 		defer { downloadStatus.finishTask() }
-		
-		guard let url = await track.audioUrl(session: session, audioQuality: audioQuality) else {
+
+		guard let stream = await track.audioStream(session: session, audioQuality: audioQuality, preferDolbyAtmos: preferDolbyAtmos) else {
 			return false
 		}
 		let filename = formFileName(track)
 		print("Downloading: \(filename)")
-		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: session.pathExtension(for: audioQuality))
+		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: stream.pathExtension)
 		guard var path = optionalPath else {
 			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
 			return false
 		}
-		
+
 		do {
-			try await Network.download(url, path: path, overwrite: true)
+			try await Network.download(stream.url, path: path, overwrite: true)
 		} catch {
 			displayError(title: "Error while downloading track", content: "Download failed for track \(track.title). Error: \(error)")
 			return false

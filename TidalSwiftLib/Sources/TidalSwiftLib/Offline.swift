@@ -337,11 +337,12 @@ public final class Offline {
 		
 		for track in toAdd {
 			print("Offline: Downloading \(track.title)")
-			guard let url = await track.audioUrl(session: session, audioQuality: session.config.offlineAudioQuality) else {
+			guard let stream = await track.audioStream(session: session, audioQuality: session.config.offlineAudioQuality, preferDolbyAtmos: false) else {
 				displayError(title: "Offline: Error while loading offline track", content: "Couldn't get Audio URL")
 				return
 			}
-			let pathExtension = session.pathExtension(for: session.config.offlineAudioQuality)
+			let url = stream.url
+			let pathExtension = stream.pathExtension
 			guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: pathExtension) else {
 				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(track.id).\(pathExtension)")
 				return
