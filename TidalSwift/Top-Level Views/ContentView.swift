@@ -27,7 +27,7 @@ struct ContentView: View {
 			.environmentObject(player.queueInfo)
 			.environmentObject(session.helpers.downloadStatus)
 			.background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
-				LoginView(loginInfo: loginInfo, viewState: viewState, session: session, player: player)
+				LoginView(loginInfo: loginInfo, viewState: viewState, session: session)
 			})
 			.background(EmptyView().sheet(isPresented: $playlistEditingValues.showAddTracksModal) {
 				AddToPlaylistView(session: session, playlistEditingValues: playlistEditingValues, viewState: viewState)

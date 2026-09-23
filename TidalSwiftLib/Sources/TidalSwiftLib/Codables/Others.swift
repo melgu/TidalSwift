@@ -20,17 +20,6 @@ extension AudioQuality: Identifiable {
 	public var id: Self { self }
 }
 
-public extension AudioQuality {
-	var title: LocalizedStringResource {
-		switch self {
-		case .max: "Max (Lossless, 24 Bit, 192 kHz)"
-		case .high: "High (16 Bit / 44,1 kHz)"
-		case .medium: "Low (320 kbps)"
-		case .low: "Low (32 kbps)"
-		}
-	}
-}
-
 struct LoginResponse: Decodable {
 	let userId: Int
 	let sessionId: String
