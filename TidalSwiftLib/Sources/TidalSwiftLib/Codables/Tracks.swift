@@ -70,11 +70,11 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		await session.lyrics(trackId: id)
 	}
 	
-	var hasDolbyAtmos: Bool {
+	public var hasDolbyAtmos: Bool {
 		audioModes?.contains(.dolbyAtmos) ?? false
 	}
 	
-	var hasStereo: Bool {
+	public var hasStereo: Bool {
 		guard let audioModes else { return true }
 		return audioModes.contains(.stereo) || audioModes.contains(.mono)
 	}

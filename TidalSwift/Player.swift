@@ -28,6 +28,7 @@ class Player {
 	private var shuffleCancellable: AnyCancellable?
 	
 	private var currentAudioQuality: AudioQuality
+	private var currentIsDolbyAtmos = false
 	private(set) var nextAudioQuality: AudioQuality
 	private(set) var preferDolbyAtmos: Bool
 	
@@ -210,12 +211,16 @@ class Player {
 		}
 		
 		let url: URL
+		let isDolbyAtmos: Bool
 		if let offlineUrl = await session.helpers.offline.url(for: track) {
 			print("Play \(track.title) from offline URL: \(offlineUrl)")
 			url = offlineUrl
+			// Offline sync only stores Atmos for tracks without a stereo version
+			isDolbyAtmos = track.hasDolbyAtmos && !track.hasStereo
 		} else {
 			if let stream = await track.audioStream(session: session, audioQuality: nextAudioQuality, preferDolbyAtmos: preferDolbyAtmos) {
 				url = stream.url
+				isDolbyAtmos = stream.isDolbyAtmos
 				print("Play \(track.title) from online URL\(stream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(stream.url)")
 			} else {
 				print("No URL so skipping \(track.title)")
@@ -232,6 +237,7 @@ class Player {
 		avPlayer.replaceCurrentItem(with: item)
 		
 		currentAudioQuality = nextAudioQuality
+		currentIsDolbyAtmos = isDolbyAtmos
 		
 		if wasPlaying {
 //			print("Was playing...")
@@ -480,6 +486,9 @@ class Player {
 		guard !queueInfo.queue.isEmpty else {
 			return ""
 		}
+		if currentIsDolbyAtmos {
+			return "ATMOS"
+		}
 		guard let quality = queueInfo.queue[queueInfo.currentIndex].track.audioQuality else {
 			return ""
 		}
@@ -504,11 +513,16 @@ class Player {
 		guard !queueInfo.queue.isEmpty else {
 			return ""
 		}
-		guard let quality = queueInfo.queue[queueInfo.currentIndex].track.audioQuality else {
+		let track = queueInfo.queue[queueInfo.currentIndex].track
+		// Tidal reports Atmos-only tracks as LOW, which says nothing about the Atmos stream
+		guard track.hasStereo else {
+			return track.hasDolbyAtmos ? "ATMOS" : ""
+		}
+		guard let quality = track.audioQuality else {
 			return ""
 		}
 		
-		return qualityToString(quality: quality)
+		return qualityToString(quality: quality) + (track.hasDolbyAtmos ? " · ATMOS" : "")
 	}
 	
 	private func qualityToString(quality: AudioQuality) -> String {
