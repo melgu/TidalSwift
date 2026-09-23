@@ -32,7 +32,7 @@ extension Session {
 	func dolbyAtmosUrl(trackId: Int) async -> URL? {
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/playbackinfopostpaywall")!
 		var parameters = sessionParameters
-		parameters["audioquality"] = AudioQuality.max.rawValue
+		parameters["audioquality"] = AudioQuality.high.rawValue
 		parameters["playbackmode"] = "STREAM"
 		parameters["assetpresentation"] = "FULL"
 		parameters["immersiveaudio"] = "true"
@@ -71,7 +71,7 @@ extension Session {
 		switch audioQuality {
 		case .low, .medium:
 			return "m4a"
-		case .high, .max:
+		case .high:
 			return "flac"
 		}
 	}

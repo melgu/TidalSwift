@@ -84,7 +84,7 @@ public struct Subscription: Decodable {
 	public let validUntil: Date
 	public let status: String
 	public let subscription: SubscriptionType
-	public let highestSoundQuality: AudioQuality
+	public let highestSoundQuality: String
 	public let premiumAccess: Bool
 	public let canGetTrial: Bool
 	public let paymentType: String

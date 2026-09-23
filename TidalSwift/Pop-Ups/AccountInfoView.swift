@@ -179,7 +179,7 @@ struct SubscriptionInfoView: View {
 			Group {
 				Text("Highest possible Audio Quality")
 					.bold()
-				Text("\(subscription.highestSoundQuality.rawValue)")
+				Text(subscription.highestSoundQuality)
 				Text("")
 				Text("Premium Access")
 					.bold()

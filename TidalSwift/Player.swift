@@ -496,9 +496,6 @@ class Player {
 		var chosenQuality = currentAudioQuality
 //		print("\(chosenQuality) \(quality)")
 		
-		if chosenQuality == .max && quality != .max {
-			chosenQuality = .high
-		}
 		if chosenQuality == .high && (quality == .medium || quality == .low) {
 			chosenQuality = .medium
 		}
@@ -522,19 +519,18 @@ class Player {
 			return ""
 		}
 		
-		return qualityToString(quality: quality) + (track.hasDolbyAtmos ? " · ATMOS" : "")
+		let stereoQuality = track.hasHiRes ? "MAX" : qualityToString(quality: quality)
+		return stereoQuality + (track.hasDolbyAtmos ? " · ATMOS" : "")
 	}
 	
 	private func qualityToString(quality: AudioQuality) -> String {
 		switch quality {
 		case .low:
-			return "LOW"
+			return "LOW 96"
 		case .medium:
-			return "HIGH"
+			return "LOW 320"
 		case .high:
-			return "HIFI"
-		case .max:
-			return "MASTER"
+			return "HIGH"
 		}
 	}
 }

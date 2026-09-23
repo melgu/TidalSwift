@@ -112,12 +112,8 @@ final class TidalSwiftAppModel: ObservableObject {
 		session = Session(config: nil)
 
 		let preferDolbyAtmos = UserDefaults.standard.bool(forKey: "preferDolbyAtmos")
-		if let audioQualityString = UserDefaults.standard.string(forKey: "audioQuality"),
-		   let audioQuality = AudioQuality(rawValue: audioQualityString) {
-			player = Player(session: session, audioQuality: audioQuality, preferDolbyAtmos: preferDolbyAtmos)
-		} else {
-			player = Player(session: session, audioQuality: .high, preferDolbyAtmos: preferDolbyAtmos)
-		}
+		// Only High is offered, so a stored Low or Low 320 falls back to it as well
+		player = Player(session: session, audioQuality: .high, preferDolbyAtmos: preferDolbyAtmos)
 
 		var cache = ViewCache()
 		if let data = UserDefaults.standard.data(forKey: "ViewCache") {
@@ -867,9 +863,12 @@ struct TidalSwiftCommands: Commands {
 			))
 
 			Menu("Audio Quality") {
-				audioQualityButton(title: "Low", quality: .low)
-				audioQualityButton(title: "High", quality: .medium)
-				audioQualityButton(title: "HiFi", quality: .high)
+				// Low and Low 320 only come as DASH streams encrypted with Widevine and PlayReady DRM
+//				audioQualityButton(title: "Low (96 kbps)", quality: .low)
+//				audioQualityButton(title: "Low (320 kbps)", quality: .medium)
+				audioQualityButton(title: "High (Lossless)", quality: .high)
+				// Max isn't delivered to this client, see AudioQuality
+//				audioQualityButton(title: "Max (Hi-Res Lossless)", quality: .max)
 
 				Divider()
 

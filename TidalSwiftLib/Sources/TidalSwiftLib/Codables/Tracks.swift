@@ -46,6 +46,7 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	public let explicit: Bool
 	public let audioQuality: AudioQuality?
 	public let audioModes: [AudioMode]?
+	public let mediaMetadata: MediaMetadata?
 	public let artist: Artist?
 	public let artists: [Artist]
 	public let album: Album
@@ -68,6 +69,10 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 	
 	public func getLyrics(session: Session) async -> Lyrics? {
 		await session.lyrics(trackId: id)
+	}
+	
+	public var hasHiRes: Bool {
+		mediaMetadata?.tags.contains("HIRES_LOSSLESS") ?? false
 	}
 	
 	public var hasDolbyAtmos: Bool {
