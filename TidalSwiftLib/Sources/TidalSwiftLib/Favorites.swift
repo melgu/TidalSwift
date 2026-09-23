@@ -286,86 +286,104 @@ public class Favorites {
 }
 
 class FavoritesCache {
-	unowned let favorites: Favorites
-	let timeoutInSeconds: Double
+	private let artistsCache: CachedFavorites<FavoriteArtist>
+	private let albumsCache: CachedFavorites<FavoriteAlbum>
+	private let tracksCache: CachedFavorites<FavoriteTrack>
+	private let videosCache: CachedFavorites<FavoriteVideo>
+	private let playlistsCache: CachedFavorites<FavoritePlaylist>
 	
 	init(favorites: Favorites, timeoutInSeconds: Double = 60) {
-		self.favorites = favorites
-		self.timeoutInSeconds = timeoutInSeconds
+		artistsCache = CachedFavorites(timeoutInSeconds: timeoutInSeconds) { [unowned favorites] in await favorites.artists() }
+		albumsCache = CachedFavorites(timeoutInSeconds: timeoutInSeconds) { [unowned favorites] in await favorites.albums() }
+		tracksCache = CachedFavorites(timeoutInSeconds: timeoutInSeconds) { [unowned favorites] in await favorites.tracks() }
+		videosCache = CachedFavorites(timeoutInSeconds: timeoutInSeconds) { [unowned favorites] in await favorites.videos() }
+		playlistsCache = CachedFavorites(timeoutInSeconds: timeoutInSeconds) { [unowned favorites] in await favorites.playlists() }
 	}
 	
-	private var _artists: [FavoriteArtist]?
-	private var lastCheckedArtists = Date(timeIntervalSince1970: 0)
 	var artists: [FavoriteArtist]? {
-		get async {
-			if Date().timeIntervalSince(lastCheckedArtists) > timeoutInSeconds {
-				set(await favorites.artists())
-			}
-			return _artists
-		}
+		get async { await artistsCache.items }
 	}
 	func set(_ newValue: [FavoriteArtist]?) {
-		_artists = newValue
-		lastCheckedArtists = .now
+		artistsCache.set(newValue)
 	}
 	
-	private var _albums: [FavoriteAlbum]?
-	private var lastCheckedAlbums = Date(timeIntervalSince1970: 0)
 	var albums: [FavoriteAlbum]? {
-		get async {
-			if Date().timeIntervalSince(lastCheckedAlbums) > timeoutInSeconds {
-				set(await favorites.albums())
-			}
-			return _albums
-		}
+		get async { await albumsCache.items }
 	}
 	func set(_ newValue: [FavoriteAlbum]?) {
-		_albums = newValue
-		lastCheckedAlbums = .now
+		albumsCache.set(newValue)
 	}
 	
-	private var _tracks: [FavoriteTrack]?
-	private var lastCheckedTracks = Date(timeIntervalSince1970: 0)
 	var tracks: [FavoriteTrack]? {
-		get async {
-			if Date().timeIntervalSince(lastCheckedTracks) > timeoutInSeconds {
-				set(await favorites.tracks())
-			}
-			return _tracks
-		}
+		get async { await tracksCache.items }
 	}
 	func set(_ newValue: [FavoriteTrack]?) {
-		_tracks = newValue
-		lastCheckedTracks = .now
+		tracksCache.set(newValue)
 	}
 	
-	private var _videos: [FavoriteVideo]?
-	private var lastCheckedVideos = Date(timeIntervalSince1970: 0)
 	var videos: [FavoriteVideo]? {
-		get async {
-			if Date().timeIntervalSince(lastCheckedVideos) > timeoutInSeconds {
-				set(await favorites.videos())
-			}
-			return _videos
-		}
+		get async { await videosCache.items }
 	}
 	func set(_ newValue: [FavoriteVideo]?) {
-		_videos = newValue
-		lastCheckedVideos = .now
+		videosCache.set(newValue)
 	}
 	
-	private var _playlists: [FavoritePlaylist]?
-	private var lastCheckedPlaylists = Date(timeIntervalSince1970: 0)
 	var playlists: [FavoritePlaylist]? {
-		get async {
-			if Date().timeIntervalSince(lastCheckedPlaylists) > timeoutInSeconds {
-				set(await favorites.playlists())
-			}
-			return _playlists
-		}
+		get async { await playlistsCache.items }
 	}
 	func set(_ newValue: [FavoritePlaylist]?) {
-		_playlists = newValue
-		lastCheckedPlaylists = .now
+		playlistsCache.set(newValue)
+	}
+}
+
+private class CachedFavorites<Item> {
+	private let timeoutInSeconds: Double
+	private let load: () async -> [Item]?
+	
+	private var value: [Item]?
+	private var lastUpdated = Date(timeIntervalSince1970: 0)
+	/// Shared by all callers while a reload is running, so concurrent lookups trigger only one request
+	private var reloadTask: Task<Void, Never>?
+	/// Incremented by set(), so a reload that was running meanwhile doesn't overwrite newer data
+	private var generation = 0
+	
+	init(timeoutInSeconds: Double, load: @escaping () async -> [Item]?) {
+		self.timeoutInSeconds = timeoutInSeconds
+		self.load = load
+	}
+	
+	var items: [Item]? {
+		get async {
+			guard Date().timeIntervalSince(lastUpdated) > timeoutInSeconds else {
+				return value
+			}
+			let task = reloadTask ?? startReload()
+			await task.value
+			return value
+		}
+	}
+	
+	func set(_ newValue: [Item]?) {
+		value = newValue
+		lastUpdated = .now
+		reloadTask = nil
+		generation += 1
+	}
+	
+	private func startReload() -> Task<Void, Never> {
+		let generation = generation
+		let task = Task {
+			let newValue = await load()
+			guard generation == self.generation else {
+				return
+			}
+			reloadTask = nil
+			// A failed reload keeps the old data, so the next lookup tries again
+			if let newValue {
+				set(newValue)
+			}
+		}
+		reloadTask = task
+		return task
 	}
 }
