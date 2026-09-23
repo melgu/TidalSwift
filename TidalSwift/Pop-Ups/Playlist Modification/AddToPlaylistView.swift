@@ -13,7 +13,7 @@ struct AddToPlaylistView: View {
 	let session: Session
 	
 	@State private var playlists: [Playlist]? = nil
-	@State private var isLoadingPlaylists = false
+	@State private var loadingState: LoadingState = .loading
 	
 	@ObservedObject var playlistEditingValues: PlaylistEditingValues
 	@ObservedObject var viewState: ViewState
@@ -34,7 +34,7 @@ struct AddToPlaylistView: View {
 			VStack {
 				if let playlists = playlists {
 					Text("\(playlistEditingValues.tracks.count) \(playlistEditingValues.tracks.count > 1 ? "tracks" : "track")")
-					Picker(selection: $selectedPlaylist, label: Spacer(minLength: 0)) {
+					Picker("Playlist", selection: $selectedPlaylist) {
 						ForEach(playlists) { playlist in
 							Text(playlist.title).tag(playlist.uuid)
 						}
@@ -45,13 +45,21 @@ struct AddToPlaylistView: View {
 							if !newPlaylistName.isEmpty {
 								TextField("Optional Playlist Description", text: $newPlaylistDescription)
 							}
-						}.tag("_newPlaylist")
+						}
+						.frame(minWidth: 200)
+						.tag("_newPlaylist")
 					}
+					.labelsHidden()
 					#if canImport(AppKit)
 					.pickerStyle(RadioGroupPickerStyle())
 					#else
 					.pickerStyle(.automatic)
 					#endif
+				} else if loadingState == .loading {
+					ProgressView()
+				} else {
+					Text("Couldn't load playlists")
+						.foregroundColor(.secondary)
 				}
 				
 				Text(showEmptyNameWarning ? "Playlist name can't be empty" : "")
@@ -108,18 +116,20 @@ struct AddToPlaylistView: View {
 			}
 			.padding()
 		}
+		// Playlists load after the sheet is presented, so it can't size itself to them
+		.frame(minWidth: 300, idealWidth: 400, minHeight: 300, idealHeight: 500)
 		.task {
 			await loadPlaylistsIfNeeded()
 		}
 	}
 	
 	private func loadPlaylistsIfNeeded() async {
-		guard playlists == nil, !isLoadingPlaylists else { return }
-		isLoadingPlaylists = true
+		guard playlists == nil else { return }
+		loadingState = .loading
 		playlists = await session.favorites?.userPlaylists()
+		loadingState = playlists == nil ? .error : .successful
 		if selectedPlaylist.isEmpty {
 			selectedPlaylist = playlists?.first?.uuid ?? ""
 		}
-		isLoadingPlaylists = false
 	}
 }
