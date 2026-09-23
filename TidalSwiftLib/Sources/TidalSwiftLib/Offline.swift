@@ -189,11 +189,11 @@ public final class Offline {
 		Task { await asyncSync() }
 	}
 	
-	public func url(for track: Track, audioQuality: AudioQuality) async -> URL? {
+	public func url(for track: Track) async -> URL? {
 		if await !db.tracks.contains(where: { (t, _) in t == track }) {
 			return nil
 		}
-		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: session.pathExtension(for: audioQuality)) else {
+		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: session.pathExtension(for: session.config.offlineAudioQuality)) else {
 			return nil
 		}
 		return URL(fileURLWithPath: path.path)

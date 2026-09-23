@@ -204,7 +204,7 @@ class Player {
 		}
 		
 		let url: URL
-		if let offlineUrl = await session.helpers.offline.url(for: track, audioQuality: nextAudioQuality) {
+		if let offlineUrl = await session.helpers.offline.url(for: track) {
 			print("Play \(track.title) from offline URL: \(offlineUrl)")
 			url = offlineUrl
 		} else {
