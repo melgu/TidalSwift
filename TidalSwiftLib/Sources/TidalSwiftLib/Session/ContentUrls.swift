@@ -12,7 +12,7 @@ extension Session {
 	func audioUrl(trackId: Int, audioQuality: AudioQuality) async -> URL? {
 		var parameters = sessionParameters
 		parameters["soundQuality"] = "\(audioQuality.rawValue)"
-		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/\(config.urlType.rawValue)")!
+		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)/streamUrl")!
 		do {
 			let response: AudioUrl = try await get(url: url, parameters: parameters)
 			

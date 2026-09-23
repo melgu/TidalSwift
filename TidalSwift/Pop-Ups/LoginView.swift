@@ -30,7 +30,6 @@ struct LoginView: View {
 	@State var refreshToken: String = ""
 	@State var clientID: String = ""
 	@State var loginErrorMessage: String?
-	@State var audioUrlType: AudioUrlType = .offline
 	
 	var body: some View {
 		ScrollView {
@@ -93,14 +92,6 @@ struct LoginView: View {
 			
 			TextField("Client ID", text: $clientID)
 			
-			Picker(selection: $audioUrlType, label: Text("Audio URL Type"), content: {
-				Text("Offline").tag(AudioUrlType.offline)
-				Text("Streaming").tag(AudioUrlType.streaming)
-			})
-			Text("When choosing Offline, TidalSwift won't stop playback on official clients, but does not work with TV authorization details.")
-				.foregroundColor(.secondary)
-				.fixedSize(horizontal: false, vertical: true)
-			
 			if let loginErrorMessage {
 				Text(loginErrorMessage)
 					.foregroundColor(.red)
@@ -132,7 +123,7 @@ struct LoginView: View {
 					counter = 300
 					openURL(loginUrl)
 				case .success:
-					successfulLogin(audioUrlType: .streaming)
+					successfulLogin()
 				case .failure(_):
 					break
 				}
@@ -141,11 +132,10 @@ struct LoginView: View {
 	}
 	
 	func setAuthorization() {
-		session.config.urlType = audioUrlType
 		Task {
 			do {
 				try await session.login(refreshToken: refreshToken, clientID: clientID)
-				successfulLogin(audioUrlType: audioUrlType)
+				successfulLogin()
 			} catch SessionError.invalidCredentials {
 				loginErrorMessage = "Wrong Login Credentials"
 			} catch SessionError.network {
@@ -156,10 +146,9 @@ struct LoginView: View {
 		}
 	}
 	
-	func successfulLogin(audioUrlType: AudioUrlType) {
+	func successfulLogin() {
 		loginErrorMessage = nil
 		loginInfo.showModal = false
-		session.config.urlType = audioUrlType
 		session.saveConfig()
 		session.saveSession()
 		viewState.push(view: TidalSwiftView(viewType: .favoriteTracks))

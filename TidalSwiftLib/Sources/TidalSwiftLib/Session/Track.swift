@@ -16,11 +16,6 @@ public enum TrackOrder: String {
 	case length = "LENGTH"
 }
 
-public enum AudioUrlType: String {
-	case streaming = "streamUrl"
-	case offline = "offlineUrl"
-}
-
 extension Session {
 	public func track(trackId: Int) async -> Track? {
 		let url = URL(string: "\(AuthInformation.APILocation)/tracks/\(trackId)")!

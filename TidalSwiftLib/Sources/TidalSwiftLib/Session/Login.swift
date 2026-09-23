@@ -211,6 +211,6 @@ extension Session {
 		activeTokenRefresh?.cancel()
 		activeTokenRefresh = nil
 		deletePersistentInformation()
-		config = Config(accessToken: "", refreshToken: "", clientID: "", offlineAudioQuality: .high, urlType: .streaming)
+		config = Config(accessToken: "", refreshToken: "", clientID: "", offlineAudioQuality: .high)
 	}
 }

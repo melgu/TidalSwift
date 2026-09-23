@@ -40,8 +40,7 @@ public class Session {
 					accessToken: "",
 					refreshToken: "",
 					clientID: "",
-					offlineAudioQuality: .high,
-					urlType: .streaming
+					offlineAudioQuality: .high
 				)
 			}
 		}

@@ -51,7 +51,6 @@ extension Session {
 			"clientID": config.clientID,
 			"apiToken": config.apiToken,
 			"offlineAudioQuality": config.offlineAudioQuality.rawValue,
-			"urlType": config.urlType.rawValue,
 			"imageSize": String(config.imageSize)
 		]
 		if let tokenExpirationDate = config.tokenExpirationDate {
@@ -82,8 +81,6 @@ extension Config {
 			  let apiToken = persistentInformation["apiToken"],
 			  let offlineAudioQualityString = persistentInformation["offlineAudioQuality"],
 			  let offlineAudioQuality = AudioQuality(rawValue: offlineAudioQualityString),
-			  let urlTypeString = persistentInformation["urlType"],
-			  let urlType = AudioUrlType(rawValue: urlTypeString),
 			  let imageSizeString = persistentInformation["imageSize"],
 			  let imageSize = Int(imageSizeString)
 		else {
@@ -105,7 +102,6 @@ extension Config {
 			clientID: clientID,
 			apiToken: apiToken,
 			offlineAudioQuality: offlineAudioQuality,
-			urlType: urlType,
 			imageSize: imageSize,
 			tokenExpirationDate: tokenExpirationDate
 		)
