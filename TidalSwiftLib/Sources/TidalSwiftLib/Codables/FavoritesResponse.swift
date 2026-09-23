@@ -18,7 +18,13 @@ struct FavoritesResponse: Decodable {
 	let updatedFavoriteVideos: Date?
 }
 
-struct FavoriteArtists: Decodable {
+protocol FavoritesPage: Decodable {
+	associatedtype Item: Decodable
+	var totalNumberOfItems: Int { get }
+	var items: [Item] { get }
+}
+
+struct FavoriteArtists: @MainActor FavoritesPage {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
@@ -44,7 +50,7 @@ public struct FavoriteArtist: Decodable, Equatable, Identifiable {
 	}
 }
 
-struct FavoriteAlbums: Decodable {
+struct FavoriteAlbums: @MainActor FavoritesPage {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
@@ -70,7 +76,7 @@ public struct FavoriteAlbum: Decodable, Equatable, Identifiable {
 	}
 }
 
-struct FavoriteTracks: Decodable {
+struct FavoriteTracks: @MainActor FavoritesPage {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
@@ -96,7 +102,7 @@ public struct FavoriteTrack: Decodable, Equatable, Identifiable {
 	}
 }
 
-struct FavoriteVideos: Decodable {
+struct FavoriteVideos: @MainActor FavoritesPage {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int
@@ -122,7 +128,7 @@ public struct FavoriteVideo: Decodable, Equatable, Identifiable {
 	}
 }
 
-struct FavoritePlaylists: Decodable {
+struct FavoritePlaylists: @MainActor FavoritesPage {
 	let limit: Int
 	let offset: Int
 	let totalNumberOfItems: Int

@@ -21,130 +21,60 @@ public class Favorites {
 	
 	// Return
 	
-	public func artists(limit: Int = 999, offset: Int = 0, order: ArtistOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteArtist]? {
+	public func artists(order: ArtistOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteArtist]? {
 		let url = URL(string: "\(baseUrl)/artists")!
-		var parameters = session.sessionParameters
-		parameters["limit"] = "\(limit)"
-		parameters["offset"] = "\(offset)"
-		if let order = order {
-			parameters["order"] = "\(order.rawValue)"
-		}
-		if let orderDirection = orderDirection {
-			parameters["orderDirection"] = "\(orderDirection.rawValue)"
-		}
-		do {
-			let response: FavoriteArtists = try await session.get(url: url, parameters: parameters)
-			return response.items
-		} catch {
-			return nil
-		}
+		return await allPages(FavoriteArtists.self, url: url, pageSize: 1000, order: order?.rawValue, orderDirection: orderDirection)
 	}
 
-	public func albums(limit: Int = 999, offset: Int = 0, order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteAlbum]? {
+	public func albums(order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteAlbum]? {
 		let url = URL(string: "\(baseUrl)/albums")!
-		var parameters = session.sessionParameters
-		parameters["limit"] = "\(limit)"
-		parameters["offset"] = "\(offset)"
-		if let order = order {
-			parameters["order"] = "\(order.rawValue)"
-		}
-		if let orderDirection = orderDirection {
-			parameters["orderDirection"] = "\(orderDirection.rawValue)"
-		}
-		do {
-			let response: FavoriteAlbums = try await session.get(url: url, parameters: parameters)
-			return response.items
-		} catch {
-			return nil
-		}
+		return await allPages(FavoriteAlbums.self, url: url, pageSize: 1000, order: order?.rawValue, orderDirection: orderDirection)
 	}
 
-	public func tracks(limit: Int = 999, offset: Int = 0, order: TrackOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteTrack]? {
+	public func tracks(order: TrackOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteTrack]? {
 		let url = URL(string: "\(baseUrl)/tracks")!
-		var parameters = session.sessionParameters
-		parameters["limit"] = "\(limit)"
-		parameters["offset"] = "\(offset)"
-		if let order = order {
-			parameters["order"] = "\(order.rawValue)"
-		}
-		if let orderDirection = orderDirection {
-			parameters["orderDirection"] = "\(orderDirection.rawValue)"
-		}
-		do {
-			let response: FavoriteTracks = try await session.get(url: url, parameters: parameters)
-			return response.items
-		} catch {
-			return nil
-		}
+		return await allPages(FavoriteTracks.self, url: url, pageSize: 1000, order: order?.rawValue, orderDirection: orderDirection)
 	}
 	
-	public func videos(limit: Int = 100, offset: Int = 0, order: VideoOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteVideo]? {
-		guard limit <= 100 else {
-			displayError(title: "Favorite Videos failed (Limit too high)", content: "The limit has to be 100 or below.")
-			return nil
-		}
-		
+	public func videos(order: VideoOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteVideo]? {
 		let url = URL(string: "\(baseUrl)/videos")!
-		var parameters = session.sessionParameters
-		parameters["limit"] = "\(limit)" // Unlike the rest, here a maximum limit of 100 exists. Error if higher.
-		parameters["offset"] = "\(offset)"
-		if let order = order {
-			parameters["order"] = "\(order.rawValue)"
-		}
-		if let orderDirection = orderDirection {
-			parameters["orderDirection"] = "\(orderDirection.rawValue)"
-		}
-		do {
-			let response: FavoriteVideos = try await session.get(url: url, parameters: parameters)
-			return response.items
-		} catch {
-			return nil
-		}
+		// Unlike the rest, here a maximum limit of 100 exists. Error if higher.
+		return await allPages(FavoriteVideos.self, url: url, pageSize: 100, order: order?.rawValue, orderDirection: orderDirection)
 	}
 	
 	/// - Note: Includes User Playlists
-	public func playlists(limit: Int = 999, offset: Int = 0, order: PlaylistOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoritePlaylist]? {
+	public func playlists(order: PlaylistOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoritePlaylist]? {
 		guard let userId = session.userId else {
 			return nil
 		}
 		let url = URL(string: "\(AuthInformation.APILocation)/users/\(userId)/playlistsAndFavoritePlaylists")!
-		
-		var tempLimit = limit
-		var tempOffset = offset
-		var tempPlaylists: [FavoritePlaylist] = []
-		while tempLimit > 0 {
-//			print("tempLimit: \(tempLimit), tempOffset: \(tempOffset)")
+		// Maximum of 50 allowed by Tidal
+		return await allPages(FavoritePlaylists.self, url: url, pageSize: 50, order: order?.rawValue, orderDirection: orderDirection)
+	}
+	
+	/// Fetches every page, so the result doesn't depend on the order.
+	/// - Note: Defaults to newest first, because Tidal's default order isn't stable across pages and repeats or skips items.
+	private func allPages<Page: FavoritesPage>(_ pageType: Page.Type, url: URL, pageSize: Int, order: String?, orderDirection: OrderDirection?) async -> [Page.Item]? {
+		var items: [Page.Item] = []
+		var offset = 0
+		while true {
 			var parameters = session.sessionParameters
-			if tempLimit > 50 { // Maximum of 50 allowed by Tidal
-				parameters["limit"] = "50"
-			} else {
-				parameters["limit"] = "\(tempLimit)"
-			}
-			parameters["offset"] = "\(tempOffset)"
-			if let order = order {
-				parameters["order"] = "\(order.rawValue)"
-			}
-			if let orderDirection = orderDirection {
-				parameters["orderDirection"] = "\(orderDirection.rawValue)"
-			}
+			parameters["limit"] = "\(pageSize)"
+			parameters["offset"] = "\(offset)"
+			parameters["order"] = order ?? "DATE"
+			parameters["orderDirection"] = (orderDirection ?? .descending).rawValue
 			do {
-				let response: FavoritePlaylists = try await session.get(url: url, parameters: parameters)
-				// TODO: JSON signature is different
-				
-				tempPlaylists += response.items
-				
-				if response.totalNumberOfItems - tempOffset < tempLimit {
-					return tempPlaylists
+				let page: Page = try await session.get(url: url, parameters: parameters)
+				items += page.items
+				offset += pageSize
+				// Pages can come back short, because totalNumberOfItems also counts unavailable items that Tidal leaves out
+				if offset >= page.totalNumberOfItems {
+					return items
 				}
-				
-				tempLimit -= 50
-				tempOffset += 50
 			} catch {
 				return nil
 			}
 		}
-		
-		return tempPlaylists
 	}
 
 	public func userPlaylists() async -> [Playlist]? {
