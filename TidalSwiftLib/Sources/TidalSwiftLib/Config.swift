@@ -22,7 +22,7 @@ public class Config {
 	var refreshToken: String
 	var clientID: String
 	var apiToken: String
-	var offlineAudioQuality: AudioQuality
+	public var offlineAudioQuality: AudioQuality
 	var imageSize: Int
 	var tokenExpirationDate: Date?
 	

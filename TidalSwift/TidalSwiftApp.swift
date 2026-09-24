@@ -671,6 +671,16 @@ final class TidalSwiftAppModel: ObservableObject {
 		objectWillChange.send()
 	}
 
+	func setOfflineAudioQuality(_ audioQuality: AudioQuality) {
+		session.helpers.offline.setAudioQuality(to: audioQuality)
+		objectWillChange.send()
+	}
+
+	func toggleOfflinePreferDolbyAtmos() {
+		session.helpers.offline.setPreferDolbyAtmos(to: !session.helpers.offline.preferDolbyAtmos)
+		objectWillChange.send()
+	}
+
 	func togglePreferDolbyAtmos() {
 		player.setPreferDolbyAtmos(to: !player.preferDolbyAtmos)
 		savePlaybackInfoOnNextTick = true
@@ -881,6 +891,28 @@ struct TidalSwiftCommands: Commands {
 				Toggle("Prefer Dolby Atmos", isOn: Binding(
 					get: { appModel.player.preferDolbyAtmos },
 					set: { _ in appModel.togglePreferDolbyAtmos() }
+				))
+			}
+
+			Menu("Offline Audio Quality") {
+				Picker("Offline Audio Quality", selection: Binding(
+					get: { appModel.session.config.offlineAudioQuality },
+					set: { appModel.setOfflineAudioQuality($0) }
+				)) {
+					// Same options as Audio Quality, see there
+//					Text("Low (96 kbps)").tag(AudioQuality.low)
+//					Text("Low (320 kbps)").tag(AudioQuality.medium)
+					Text("High (Lossless)").tag(AudioQuality.high)
+//					Text("Max (Hi-Res Lossless)").tag(AudioQuality.max)
+				}
+				.pickerStyle(.inline)
+				.labelsHidden()
+
+				Divider()
+
+				Toggle("Prefer Dolby Atmos", isOn: Binding(
+					get: { appModel.session.helpers.offline.preferDolbyAtmos },
+					set: { _ in appModel.toggleOfflinePreferDolbyAtmos() }
 				))
 			}
 
