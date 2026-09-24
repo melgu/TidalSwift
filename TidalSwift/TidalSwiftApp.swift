@@ -956,14 +956,15 @@ struct TidalSwiftCommands: Commands {
 			}
 		}
 		#endif
-
-		CommandMenu("Edit") {
+		
+		CommandGroup(after: .textEditing) {
 			Button("Find") {
 				appModel.find()
 			}
 			.keyboardShortcut("f")
+			.disabled(true)
 		}
-
+		
 		CommandGroup(after: .newItem) {
 			Button("Download Track") {
 				appModel.downloadTrack()
