@@ -541,10 +541,6 @@ final class TidalSwiftAppModel: ObservableObject {
 	}
 	#endif
 
-	func find() {
-		print("Find. Coming soon.")
-	}
-
 	func downloadTrack() {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
@@ -757,6 +753,7 @@ final class TidalSwiftAppModel: ObservableObject {
 
 struct TidalSwiftCommands: Commands {
 	@ObservedObject var appModel: TidalSwiftAppModel
+	@FocusedValue(\.searchFieldFocus) private var searchFieldFocus
 
 	var body: some Commands {
 		#if canImport(AppKit)
@@ -959,10 +956,10 @@ struct TidalSwiftCommands: Commands {
 		
 		CommandGroup(after: .textEditing) {
 			Button("Find") {
-				appModel.find()
+				searchFieldFocus?.wrappedValue = true
 			}
 			.keyboardShortcut("f")
-			.disabled(true)
+			.disabled(searchFieldFocus == nil)
 		}
 		
 		CommandGroup(after: .newItem) {

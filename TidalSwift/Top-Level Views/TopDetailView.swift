@@ -85,6 +85,7 @@ struct SearchField: View {
 	@EnvironmentObject var viewState: ViewState
 	
 	@State var searchTerm: String
+	@FocusState private var isFocused: Bool
 	
 	var body: some View {
 		TextField("Search", text: $searchTerm, onCommit: {
@@ -95,7 +96,13 @@ struct SearchField: View {
 			}
 		})
 		.textFieldStyle(RoundedBorderTextFieldStyle())
+		.focused($isFocused)
+		.focusedSceneValue(\.searchFieldFocus, $isFocused)
 	}
+}
+
+extension FocusedValues {
+	@Entry var searchFieldFocus: FocusState<Bool>.Binding?
 }
 
 struct DetailView: View {
