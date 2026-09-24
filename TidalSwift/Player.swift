@@ -212,11 +212,10 @@ class Player {
 		
 		let url: URL
 		let isDolbyAtmos: Bool
-		if let offlineUrl = await session.helpers.offline.url(for: track) {
-			print("Play \(track.title) from offline URL: \(offlineUrl)")
-			url = offlineUrl
-			// Offline sync only stores Atmos for tracks without a stereo version
-			isDolbyAtmos = track.hasDolbyAtmos && !track.hasStereo
+		if let offlineStream = await session.helpers.offline.stream(for: track) {
+			url = offlineStream.url
+			isDolbyAtmos = offlineStream.isDolbyAtmos
+			print("Play \(track.title) from offline URL\(offlineStream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(offlineStream.url)")
 		} else {
 			if let stream = await track.audioStream(session: session, audioQuality: nextAudioQuality, preferDolbyAtmos: preferDolbyAtmos) {
 				url = stream.url

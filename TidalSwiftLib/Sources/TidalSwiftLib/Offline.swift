@@ -164,6 +164,16 @@ public final class Offline {
 	public var uiRefreshFunc: () -> Void = {}
 	
 	@AppStorage("SaveFavoritesOffline") public var saveFavoritesOffline = false
+	@AppStorage("offlinePreferDolbyAtmos") public private(set) var preferDolbyAtmos = false
+	
+	/// Dolby Atmos files are named "<track ID>.atmos.m4a", stereo files "<track ID>.<audio quality>.<extension>"
+	private let dolbyAtmosFileMarker = "atmos"
+	
+	/// What a file on disk holds. The quality is nil for m4a files stored before it was part of the name.
+	private enum FileVariant: Equatable {
+		case dolbyAtmos
+		case stereo(AudioQuality?)
+	}
 	
 	private let db = OfflineDB()
 	
@@ -189,12 +199,56 @@ public final class Offline {
 		Task { await asyncSync() }
 	}
 	
-	public func url(for track: Track) async -> URL? {
+	public func stream(for track: Track) async -> AudioStream? {
 		if await !db.tracks.contains(where: { (t, _) in t == track }) {
 			return nil
 		}
-		return localFiles(forTrackId: track.id)?.first
+		guard let url = localFilesByTrackId()?[track.id]?.first else {
+			return nil
+		}
+		return AudioStream(url: url, pathExtension: url.pathExtension, isDolbyAtmos: variant(of: url, track: track) == .dolbyAtmos)
 	}
+	
+	/// Changing it replaces offline files in other qualities on the next sync
+	public func setAudioQuality(to audioQuality: AudioQuality) {
+		guard audioQuality != session.config.offlineAudioQuality else { return }
+		session.config.offlineAudioQuality = audioQuality
+		session.saveConfig()
+		asyncSync()
+	}
+	
+	/// Changing it replaces offline files of tracks with Dolby Atmos on the next sync
+	public func setPreferDolbyAtmos(to preferDolbyAtmos: Bool) {
+		guard preferDolbyAtmos != self.preferDolbyAtmos else { return }
+		self.preferDolbyAtmos = preferDolbyAtmos
+		asyncSync()
+	}
+	
+	/// Same choice as streaming, so offline playback sounds the same
+	private func wantedVariant(of track: Track) -> FileVariant {
+		if track.hasDolbyAtmos && (preferDolbyAtmos || !track.hasStereo) {
+			return .dolbyAtmos
+		}
+		return .stereo(session.config.offlineAudioQuality)
+	}
+	
+	private func variant(of url: URL, track: Track) -> FileVariant {
+		let marker = url.deletingPathExtension().pathExtension
+		// Atmos-only tracks were stored without the marker before, but can't be anything else
+		if marker == dolbyAtmosFileMarker || (track.hasDolbyAtmos && !track.hasStereo) {
+			return .dolbyAtmos
+		}
+		if let audioQuality = AudioQuality(rawValue: marker.uppercased()) {
+			return .stereo(audioQuality)
+		}
+		// Only lossless comes as FLAC
+		return .stereo(url.pathExtension == "flac" ? .high : nil)
+	}
+	
+	private func variant(of stream: AudioStream) -> FileVariant {
+		stream.isDolbyAtmos ? .dolbyAtmos : .stereo(session.config.offlineAudioQuality)
+	}
+
 	
 	// The following always show the goal state (planned), i.e., after all downloads have finished
 	public func numberOfOfflineTracks() async -> Int {
@@ -224,35 +278,29 @@ public final class Offline {
 	
 	// Actual state
 	
-	/// Files on disk for a track, whatever their extension, so files stay usable after the offline quality changes
-	private func localFiles(forTrackId trackId: Int) -> [URL]? {
-		guard let path = buildPath(baseLocation: .music, parentFolder: nil, name: mainPath, pathExtension: nil),
-			  let directoryContents = try? FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil, options: []) else {
-			return nil
-		}
-		return directoryContents.filter { $0.deletingPathExtension().lastPathComponent == "\(trackId)" }
-	}
-	
-	private func loadOfflineTrackIds() -> [Int]? {
-		var localTracksIds: [Int] = []
-		
+	/// Files on disk by track ID, whatever their extension, so files stay usable after the offline quality changes
+	private func localFilesByTrackId() -> [Int: [URL]]? {
 		do {
 			guard let path = buildPath(baseLocation: .music, parentFolder: nil, name: mainPath, pathExtension: nil) else {
 				displayError(title: "Offline: Error loading Track IDs on Disk", content: "Error while building path to: \(mainPath)")
 				return nil
 			}
 			let directoryContents = try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil, options: [])
+			var files: [Int: [URL]] = [:]
 			for url in directoryContents {
-				if let id = Int(url.deletingPathExtension().lastPathComponent) {
-					localTracksIds.append(id)
+				if let idString = url.lastPathComponent.split(separator: ".").first, let id = Int(idString) {
+					files[id, default: []].append(url)
 				}
 			}
+			return files
 		} catch {
 			displayError(title: "Offline: Couldn't load Track IDs from Disk", content: error.localizedDescription)
 			return nil
 		}
-		
-		return localTracksIds
+	}
+	
+	private func loadOfflineTrackIds() -> [Int]? {
+		localFilesByTrackId().map { Array($0.keys) }
 	}
 	
 	private var offlineTrackIdsCache: [Int]?
@@ -290,12 +338,13 @@ public final class Offline {
 		
 		// Load Local Track IDs
 		let dbTracks: [Track] = await db.tracks.map { $0.key }
-		guard let localTracksIds: [Int] = offlineTrackIds() else {
+		guard let localFiles = localFilesByTrackId() else {
 			displayError(title: "Offline: Sync Error", content: "Couldn't load Tracks from Disk")
 			syncAgain = false
 			syncRunning = false
 			return
 		}
+		let localTracksIds = Array(localFiles.keys)
 		print("Offline: DB IDs: \(dbTracks.map { $0.id })")
 		print("Offline: Track IDs: \(localTracksIds)")
 		
@@ -309,7 +358,13 @@ public final class Offline {
 		
 		var toAdd: [Track] = []
 		for track in dbTracks {
-			if !localTracksIds.contains(track.id) {
+			if let files = localFiles[track.id] {
+				// Replace the file once the offline quality or Dolby Atmos preference changed
+				let wantedVariant = wantedVariant(of: track)
+				if !files.contains(where: { variant(of: $0, track: track) == wantedVariant }) {
+					toAdd.append(track)
+				}
+			} else {
 				toAdd.append(track)
 			}
 		}
@@ -319,7 +374,7 @@ public final class Offline {
 			for trackId in toRemove {
 				print("Offline: Removing \(trackId)")
 				do {
-					guard let files = localFiles(forTrackId: trackId), !files.isEmpty else {
+					guard let files = localFiles[trackId], !files.isEmpty else {
 						displayError(title: "Offline: Error while removing offline track", content: "File to remove doesn't exist: \(mainPath)/\(trackId)")
 						continue
 					}
@@ -337,18 +392,34 @@ public final class Offline {
 		
 		for track in toAdd {
 			print("Offline: Downloading \(track.title)")
-			guard let stream = await track.audioStream(session: session, audioQuality: session.config.offlineAudioQuality, preferDolbyAtmos: false) else {
+			let existingFiles = localFiles[track.id] ?? []
+			guard let stream = await track.audioStream(session: session, audioQuality: session.config.offlineAudioQuality, preferDolbyAtmos: preferDolbyAtmos) else {
+				if !existingFiles.isEmpty {
+					print("Offline: Keeping existing file of \(track.title), as no Audio URL is available")
+					continue
+				}
 				displayError(title: "Offline: Error while loading offline track", content: "Couldn't get Audio URL")
 				return
 			}
+			// The Atmos stream can be unavailable, in which case the existing file can be what we'd download again
+			let streamVariant = variant(of: stream)
+			if existingFiles.contains(where: { variant(of: $0, track: track) == streamVariant }) {
+				print("Offline: Keeping existing file of \(track.title)")
+				continue
+			}
 			let url = stream.url
 			let pathExtension = stream.pathExtension
-			guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "\(track.id)", pathExtension: pathExtension) else {
-				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(track.id).\(pathExtension)")
+			let marker = stream.isDolbyAtmos ? dolbyAtmosFileMarker : session.config.offlineAudioQuality.rawValue.lowercased()
+			let name = "\(track.id).\(marker)"
+			guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: name, pathExtension: pathExtension) else {
+				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(name).\(pathExtension)")
 				return
 			}
 			do {
-				try await Network.download(url, path: path)
+				try await Network.download(url, path: path, overwrite: true)
+				for file in existingFiles where file.standardizedFileURL != path.standardizedFileURL {
+					try FileManager.default.removeItem(at: file)
+				}
 				print("Offline: Finished Download of \(track.title)")
 				invalidateOfflineTrackIdsCache()
 				await uiRefreshFunc()
