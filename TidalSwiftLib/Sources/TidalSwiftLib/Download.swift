@@ -56,11 +56,12 @@ public class Download {
 		"\(video.trackNumber) \(video.title) - \(video.artists.formArtistString())"
 	}
 	
-	public func download(track: Track, parentFolder: String = "", audioQuality: AudioQuality, preferDolbyAtmos: Bool = false) async -> Bool {
+	/// Uses the offline audio quality and Dolby Atmos preference
+	public func download(track: Track, parentFolder: String = "") async -> Bool {
 		downloadStatus.startTask()
 		defer { downloadStatus.finishTask() }
 
-		guard let stream = await track.audioStream(session: session, audioQuality: audioQuality, preferDolbyAtmos: preferDolbyAtmos) else {
+		guard let stream = await track.audioStream(session: session, audioQuality: session.config.offlineAudioQuality, preferDolbyAtmos: session.helpers.offline.preferDolbyAtmos) else {
 			return false
 		}
 		let filename = formFileName(track)
@@ -89,7 +90,7 @@ public class Download {
 		
 		var errors = DownloadErrors()
 		for track in tracks {
-			let success = await download(track: track, parentFolder: parentFolder, audioQuality: session.config.offlineAudioQuality)
+			let success = await download(track: track, parentFolder: parentFolder)
 			if !success {
 				errors.affectedTracks.insert(track)
 			}

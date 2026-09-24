@@ -549,7 +549,7 @@ final class TidalSwiftAppModel: ObservableObject {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex].track
 		Task { [self] in
-			_ = await session.helpers.download.download(track: track, audioQuality: player.nextAudioQuality, preferDolbyAtmos: player.preferDolbyAtmos)
+			_ = await session.helpers.download.download(track: track)
 		}
 	}
 
