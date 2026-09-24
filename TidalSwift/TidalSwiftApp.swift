@@ -870,6 +870,13 @@ struct TidalSwiftCommands: Commands {
 				get: { appModel.player.playbackInfo.pauseAfter },
 				set: { _ in appModel.togglePauseAfterCurrentTrack() }
 			))
+			
+			Button("Clear Queue") {
+				appModel.clearQueue()
+			}
+			.disabled(appModel.player.queueInfo.queue.isEmpty)
+			
+			Divider()
 
 			Menu("Audio Quality") {
 				Picker("Audio Quality", selection: Binding(
@@ -915,11 +922,6 @@ struct TidalSwiftCommands: Commands {
 					set: { _ in appModel.toggleOfflinePreferDolbyAtmos() }
 				))
 			}
-
-			Button("Clear Queue") {
-				appModel.clearQueue()
-			}
-			.disabled(appModel.player.queueInfo.queue.isEmpty)
 		}
 
 		CommandMenu("Account") {
