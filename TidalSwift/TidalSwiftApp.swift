@@ -671,10 +671,6 @@ final class TidalSwiftAppModel: ObservableObject {
 		objectWillChange.send()
 	}
 
-	func isAudioQualitySelected(_ audioQuality: AudioQuality) -> Bool {
-		player.nextAudioQuality == audioQuality
-	}
-
 	func togglePreferDolbyAtmos() {
 		player.setPreferDolbyAtmos(to: !player.preferDolbyAtmos)
 		savePlaybackInfoOnNextTick = true
@@ -851,10 +847,13 @@ struct TidalSwiftCommands: Commands {
 				set: { _ in appModel.toggleShuffle() }
 			))
 
-			Menu("Repeat") {
-				repeatButton(title: "Off", repeatState: .off)
-				repeatButton(title: "All", repeatState: .all)
-				repeatButton(title: "Single", repeatState: .single)
+			Picker("Repeat", selection: Binding(
+				get: { appModel.player.playbackInfo.repeatState },
+				set: { appModel.setRepeatState($0) }
+			)) {
+				Text("Off").tag(RepeatState.off)
+				Text("All").tag(RepeatState.all)
+				Text("Single").tag(RepeatState.single)
 			}
 
 			Toggle("Pause After Current Track", isOn: Binding(
@@ -863,12 +862,19 @@ struct TidalSwiftCommands: Commands {
 			))
 
 			Menu("Audio Quality") {
-				// Low and Low 320 only come as DASH streams encrypted with Widevine and PlayReady DRM
-//				audioQualityButton(title: "Low (96 kbps)", quality: .low)
-//				audioQualityButton(title: "Low (320 kbps)", quality: .medium)
-				audioQualityButton(title: "High (Lossless)", quality: .high)
-				// Max isn't delivered to this client, see AudioQuality
-//				audioQualityButton(title: "Max (Hi-Res Lossless)", quality: .max)
+				Picker("Audio Quality", selection: Binding(
+					get: { appModel.player.nextAudioQuality },
+					set: { appModel.setAudioQuality($0) }
+				)) {
+					// Low and Low 320 only come as DASH streams encrypted with Widevine and PlayReady DRM
+//					Text("Low (96 kbps)").tag(AudioQuality.low)
+//					Text("Low (320 kbps)").tag(AudioQuality.medium)
+					Text("High (Lossless)").tag(AudioQuality.high)
+					// Max isn't delivered to this client, see AudioQuality
+//					Text("Max (Hi-Res Lossless)").tag(AudioQuality.max)
+				}
+				.pickerStyle(.inline)
+				.labelsHidden()
 
 				Divider()
 
@@ -929,32 +935,6 @@ struct TidalSwiftCommands: Commands {
 				appModel.downloadTrack()
 			}
 			.disabled(!appModel.hasCurrentTrack)
-		}
-	}
-
-	@ViewBuilder
-	private func repeatButton(title: String, repeatState: RepeatState) -> some View {
-		Button {
-			appModel.setRepeatState(repeatState)
-		} label: {
-			if appModel.player.playbackInfo.repeatState == repeatState {
-				Label(title, systemImage: "checkmark")
-			} else {
-				Text(title)
-			}
-		}
-	}
-
-	@ViewBuilder
-	private func audioQualityButton(title: String, quality: AudioQuality) -> some View {
-		Button {
-			appModel.setAudioQuality(quality)
-		} label: {
-			if appModel.isAudioQualitySelected(quality) {
-				Label(title, systemImage: "checkmark")
-			} else {
-				Text(title)
-			}
 		}
 	}
 }
