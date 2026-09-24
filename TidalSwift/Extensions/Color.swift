@@ -78,13 +78,3 @@ extension Color {
 		return nil
 	}
 }
-
-// MARK: - NSColor Bridge
-
-#if canImport(AppKit)
-extension Color {
-	static var controlAccentColor: Self {
-		Color(nsColor: .controlAccentColor)
-	}
-}
-#endif

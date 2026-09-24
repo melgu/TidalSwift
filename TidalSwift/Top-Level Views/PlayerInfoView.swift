@@ -149,25 +149,12 @@ struct PlaybackControls: View {
 		VStack(spacing: 8) {
 			HStack {
 				Spacer()
-				Group {
-					if playbackInfo.shuffle {
-						Image(systemName: "shuffle")
-							#if canImport(AppKit)
-							.tint(.controlAccentColor)
-							#else
-							.tint(.secondary)
-							#endif
-					} else {
-						Image(systemName: "shuffle")
-							.onTapGesture {
-								playbackInfo.shuffle.toggle()
-							}
+				Image(systemName: "shuffle")
+					.foregroundStyle(playbackInfo.shuffle ? Color.accentColor : .primary)
+					.help("Shuffle")
+					.onTapGesture {
+						playbackInfo.shuffle.toggle()
 					}
-				}
-				.help("Shuffle")
-				.onTapGesture {
-					playbackInfo.shuffle.toggle()
-				}
 				Image(systemName: "backward.fill")
 					.onTapGesture {
 						player.previous()
@@ -187,30 +174,13 @@ struct PlaybackControls: View {
 					.onTapGesture {
 						player.next()
 					}
-				Group {
-					if playbackInfo.repeatState == .single {
-						Image(systemName: "repeat.1")
-							#if canImport(AppKit)
-							.tint(.controlAccentColor)
-							#else
-							.tint(.secondary)
-							#endif
-					} else if playbackInfo.repeatState == .all {
-						Image(systemName: "repeat")
-							#if canImport(AppKit)
-							.tint(.controlAccentColor)
-							#else
-							.tint(.secondary)
-							#endif
-					} else {
-						Image(systemName: "repeat")
+				Image(systemName: playbackInfo.repeatState == .single ? "repeat.1" : "repeat")
+					.foregroundStyle(playbackInfo.repeatState == .off ? .primary : Color.accentColor)
+					.help("Repeat")
+					.onTapGesture {
+						player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
+						print("Repeat: \(player.playbackInfo.repeatState)")
 					}
-				}
-				.help("Repeat")
-				.onTapGesture {
-					player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
-					print("Repeat: \(player.playbackInfo.repeatState)")
-				}
 				Spacer()
 			}
 			ProgressBar(player: player)
