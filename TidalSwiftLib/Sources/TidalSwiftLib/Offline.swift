@@ -398,8 +398,8 @@ public final class Offline {
 					print("Offline: Keeping existing file of \(track.title), as no Audio URL is available")
 					continue
 				}
-				displayError(title: "Offline: Error while loading offline track", content: "Couldn't get Audio URL")
-				return
+				displayError(title: "Offline: Error while loading offline track", content: "Couldn't get Audio URL for \(track.title)")
+				continue
 			}
 			// The Atmos stream can be unavailable, in which case the existing file can be what we'd download again
 			let streamVariant = variant(of: stream)
@@ -413,7 +413,7 @@ public final class Offline {
 			let name = "\(track.id).\(marker)"
 			guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: name, pathExtension: pathExtension) else {
 				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(name).\(pathExtension)")
-				return
+				continue
 			}
 			do {
 				try await Network.download(url, path: path, overwrite: true)
