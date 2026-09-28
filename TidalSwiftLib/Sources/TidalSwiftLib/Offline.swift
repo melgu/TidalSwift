@@ -417,15 +417,20 @@ public final class Offline {
 			}
 			do {
 				try await Network.download(url, path: path, overwrite: true)
-				for file in existingFiles where file.standardizedFileURL != path.standardizedFileURL {
-					try FileManager.default.removeItem(at: file)
-				}
-				print("Offline: Finished Download of \(track.title)")
-				invalidateOfflineTrackIdsCache()
-				await uiRefreshFunc()
 			} catch {
 				displayError(title: "Offline: Error while loading offline track", content: "Network error: \(error)")
+				continue
 			}
+			for file in existingFiles where file.standardizedFileURL != path.standardizedFileURL {
+				do {
+					try FileManager.default.removeItem(at: file)
+				} catch {
+					displayError(title: "Offline: Error while removing old offline file", content: "Error: \(error)")
+				}
+			}
+			print("Offline: Finished Download of \(track.title)")
+			invalidateOfflineTrackIdsCache()
+			await uiRefreshFunc()
 		}
 		
 		// Outro
