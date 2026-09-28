@@ -1,5 +1,5 @@
 {
-  "originHash" : "dd551ac4b91ef2d556bfbf03866abaf524c4f9becf714f13384d12ee9de26452",
+  "originHash" : "7f04276a8edc76eaaa87a28a6a0e61b656022683fa2b0c1322fda65733552b8d",
   "pins" : [
     {
       "identity" : "itunesgenreid",
@@ -31,7 +31,7 @@
     {
       "identity" : "swifttagger",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:NCrusher74/SwiftTagger.git",
+      "location" : "https://github.com/NCrusher74/SwiftTagger.git",
       "state" : {
         "revision" : "72dfeacfffb2128cee1faf4c184a3f9ab065c32b",
         "version" : "1.7.0"
