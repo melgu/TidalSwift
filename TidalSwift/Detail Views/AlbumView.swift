@@ -158,7 +158,7 @@ struct AlbumView: View {
 						.frame(height: 100)
 						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 						
-						TrackList(wrappedTracks: tracks.wrapped(), showCover: false, showAlbumTrackNumber: true,
+						TrackList(tracks: tracks, showCover: false, showAlbumTrackNumber: true,
 								  showArtist: true, showAlbum: false, playlist: nil, session: session, player: player)
 					} else {
 						HStack {

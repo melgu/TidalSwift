@@ -132,7 +132,7 @@ struct PlaylistView: View {
 						.frame(height: 100)
 						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 						
-						TrackList(wrappedTracks: tracks.wrapped(), showCover: true, showAlbumTrackNumber: false,
+						TrackList(tracks: tracks, showCover: true, showAlbumTrackNumber: false,
 								  showArtist: true, showAlbum: true, playlist: isUserPlaylist ? playlist : nil,
 								  session: session, player: player)
 					} else {

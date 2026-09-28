@@ -42,7 +42,7 @@ struct QueueView: View {
 					VStack(alignment: .trailing) {
 						Text("\(queueInfo.queue.count) Tracks")
 							.foregroundColor(.secondary)
-						Text(secondsToHoursMinutesSecondsString(seconds: calculateTotalTime(for: queueInfo.queue.map { $0.track })))
+						Text(secondsToHoursMinutesSecondsString(seconds: calculateTotalTime(for: queueInfo.queue)))
 							.foregroundColor(.secondary)
 						Spacer()
 					}
@@ -51,22 +51,22 @@ struct QueueView: View {
 					Text("Empty Queue")
 						.foregroundColor(.secondary)
 				} else {
-					ForEach(queueInfo.queue) { item in
+					ForEach(Array(queueInfo.queue.enumerated()), id: \.offset) { index, track in
 						HStack {
-							Text("\(item.track.title) - \(item.track.artists.formArtistString())")
-								.fontWeight(item.id == queueInfo.currentIndex ? .bold : .regular)
+							Text("\(track.title) - \(track.artists.formArtistString())")
+								.fontWeight(index == queueInfo.currentIndex ? .bold : .regular)
 								.lineLimit(1)
 								.onTapGesture(count: 2) {
-									player.play(atIndex: item.id)
+									player.play(atIndex: index)
 								}
 								.contextMenu {
-									TrackContextMenu(track: item.track, session: session, player: player)
+									TrackContextMenu(track: track, session: session, player: player)
 								}
 							Spacer(minLength: 5)
 							Image(systemName: "x.circle.fill")
 								.secondaryIconColor()
 								.onTapGesture {
-									player.removeTrack(atIndex: item.id)
+									player.removeTrack(atIndex: index)
 								}
 						}
 						.padding(.top, -12)

@@ -180,7 +180,7 @@ struct FavoriteTracks: View {
 				.padding(.horizontal)
 				
 				if let tracks = viewState.stack.last?.tracks {
-					TrackList(wrappedTracks: tracks.sortedTracks(by: sortingState.favoriteTrackSorting).reversed(sortingState.favoriteTrackReversed).wrapped(),
+					TrackList(tracks: tracks.sortedTracks(by: sortingState.favoriteTrackSorting).reversed(sortingState.favoriteTrackReversed),
 							  showCover: true, showAlbumTrackNumber: false,
 							  showArtist: true, showAlbum: true, playlist: nil,
 							  session: session, player: player)

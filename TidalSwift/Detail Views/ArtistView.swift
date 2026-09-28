@@ -15,7 +15,7 @@ struct ArtistView: View {
 	let viewState: ViewState
 	
 	var artist: Artist?
-	var topTracks: [WrappedTrack] = []
+	var topTracks: [Track] = []
 	var albums: [Album] = []
 	var epsAndSingles: [Album] = []
 	var appearances: [Album] = []
@@ -41,7 +41,7 @@ struct ArtistView: View {
 				self.artist = artist
 			}
 			if let topTracks = view.tracks {
-				self.topTracks = topTracks.wrapped()
+				self.topTracks = topTracks
 			}
 			if let albums = view.albums {
 				self.albums = albums
@@ -162,7 +162,7 @@ struct ArtistView: View {
 	
 	func topTrackSection() -> some View {
 		ScrollView {
-			TrackList(wrappedTracks: topTracks, showCover: true, showAlbumTrackNumber: false,
+			TrackList(tracks: topTracks, showCover: true, showAlbumTrackNumber: false,
 					  showArtist: true, showAlbum: true, playlist: nil,
 					  session: session, player: player)
 		}

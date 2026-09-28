@@ -130,7 +130,7 @@ struct OfflineTracksView: View {
 				.padding(.horizontal)
 				
 				if let tracks = viewState.stack.last?.tracks {
-					TrackList(wrappedTracks: tracks.sortedTracks(by: sortingState.offlineTrackSorting).reversed(sortingState.offlineTrackReversed).wrapped(), showCover: true, showAlbumTrackNumber: false, showArtist: true, showAlbum: true, playlist: nil, session: session, player: player)
+					TrackList(tracks: tracks.sortedTracks(by: sortingState.offlineTrackSorting).reversed(sortingState.offlineTrackReversed), showCover: true, showAlbumTrackNumber: false, showArtist: true, showAlbum: true, playlist: nil, session: session, player: player)
 				}
 				Spacer(minLength: 0)
 			}

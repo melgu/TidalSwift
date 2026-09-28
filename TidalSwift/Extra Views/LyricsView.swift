@@ -19,7 +19,7 @@ struct LyricsView: View {
 	@State var lyrics: String?
 	
 	var track: Track? {
-		queueInfo.currentItem?.track
+		queueInfo.currentItem
 	}
 	
 	var body: some View {

@@ -44,10 +44,10 @@ struct CodablePlaybackInfo: Codable {
 	var pauseAfter: Bool
 	
 	// QueueInfo
-	var nonShuffledQueue: [WrappedTrack]
-	var queue: [WrappedTrack]
+	var nonShuffledQueue: [Track]
+	var queue: [Track]
 	var currentIndex: Int
 	
-	var history: [WrappedTrack]
+	var history: [Track]
 	var maxHistoryItems: Int
 }

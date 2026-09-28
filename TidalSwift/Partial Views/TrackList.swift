@@ -10,7 +10,7 @@ import SwiftUI
 import TidalSwiftLib
 
 struct TrackList: View {
-	let wrappedTracks: [WrappedTrack]
+	let tracks: [Track]
 	let showCover: Bool
 	let showAlbumTrackNumber: Bool
 	let showArtist: Bool
@@ -21,16 +21,16 @@ struct TrackList: View {
 	
 	var body: some View {
 		LazyVStack {
-			ForEach(wrappedTracks) { wrappedTrack in
-				TrackRow(track: wrappedTrack.track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
-						 trackNumber: showAlbumTrackNumber ? nil : wrappedTrack.id, session: session)
+			ForEach(Array(tracks.enumerated()), id: \.offset) { index, track in
+				TrackRow(track: track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
+						 trackNumber: showAlbumTrackNumber ? nil : index, session: session)
 				.onTapGesture(count: 2) {
-					if wrappedTrack.track.isUnavailable { return }
-					print("\(wrappedTrack.track.id) \(wrappedTrack.track.title)")
-					player.add(tracks: wrappedTracks.unwrapped(), .now, playAt: wrappedTrack.id)
+					if track.isUnavailable { return }
+					print("\(track.id) \(track.title)")
+					player.add(tracks: tracks, .now, playAt: index)
 				}
 				.contextMenu {
-					TrackContextMenu(track: wrappedTrack.track, indexInPlaylist: playlist != nil ? wrappedTrack.id : nil, playlist: playlist, session: session, player: player)
+					TrackContextMenu(track: track, indexInPlaylist: playlist != nil ? index : nil, playlist: playlist, session: session, player: player)
 				}
 				Divider()
 			}
@@ -90,7 +90,7 @@ struct TrackRow: View {
 				HStack {
 					HStack {
 						if !queueInfo.queue.isEmpty &&
-							queueInfo.queue[queueInfo.currentIndex].track == track {
+							queueInfo.queue[queueInfo.currentIndex] == track {
 							Image(systemName: "play.fill")
 								.secondaryIconColor()
 						}
