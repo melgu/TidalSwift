@@ -201,9 +201,12 @@ public final class Offline {
 		if await !db.tracks.contains(track) {
 			return nil
 		}
-		guard let url = localFilesByTrackId()?[track.id]?.first else {
+		guard let files = localFilesByTrackId()?[track.id], !files.isEmpty else {
 			return nil
 		}
+		// An older variant can be left over, e.g. when removing it after a download failed
+		let wantedVariant = wantedVariant(of: track)
+		let url = files.first(where: { variant(of: $0, track: track) == wantedVariant }) ?? files[0]
 		return AudioStream(url: url, pathExtension: url.pathExtension, isDolbyAtmos: variant(of: url, track: track) == .dolbyAtmos)
 	}
 	
