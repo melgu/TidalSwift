@@ -828,12 +828,15 @@ struct TidalSwiftCommands: Commands {
 			Button("Stop") {
 				appModel.stop()
 			}
+			.keyboardShortcut(".", modifiers: .command)
 			Button("Next") {
 				appModel.next()
 			}
+			.keyboardShortcut(.rightArrow, modifiers: .command)
 			Button("Previous") {
 				appModel.previous()
 			}
+			.keyboardShortcut(.leftArrow, modifiers: .command)
 
 			Divider()
 
