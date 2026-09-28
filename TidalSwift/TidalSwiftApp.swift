@@ -960,9 +960,11 @@ struct TidalSwiftCommands: Commands {
 			Button("Playback History") {
 				appModel.showPlaybackHistoryWindow()
 			}
+			.keyboardShortcut("k", modifiers: .command)
 			Button("View History") {
 				appModel.showViewHistoryWindow()
 			}
+			.keyboardShortcut("u", modifiers: .command)
 		}
 		#endif
 		
