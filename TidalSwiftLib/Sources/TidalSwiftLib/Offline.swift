@@ -129,6 +129,7 @@ public final class OfflineDB {
 	func clear() {
 		favoriteTracks = []
 		albums = []
+		albumTracks = [:]
 		playlists = []
 		playlistTracks = [:]
 	}
@@ -458,6 +459,7 @@ public final class Offline {
 		syncTask?.cancel()
 		syncFavoriteTracksTask?.cancel()
 		syncPlaylistsTask?.cancel()
+		playlistsToSync = []
 		
 		saveFavoritesOffline = false
 		Task {
@@ -488,6 +490,10 @@ public final class Offline {
 		}
 		
 		// Do
+		// Turned off while loading, e.g. by removing everything
+		if !saveFavoritesOffline {
+			tracks = []
+		}
 		await db.setFavoriteTracks(to: tracks)
 		print("Offline: Favorite Tracks synchronized")
 		
@@ -581,7 +587,10 @@ public final class Offline {
 		if await db.playlists.contains(playlist) {
 			if let tracks = await session.playlistTracks(playlistId: playlist.id) {
 				print("Offline: Playlist tracks: \(tracks.map { $0.id })")
-				await db.setTracks(for: playlist, to: tracks)
+				// Removed while loading, e.g. by removing everything
+				if await db.playlists.contains(playlist) {
+					await db.setTracks(for: playlist, to: tracks)
+				}
 			} else {
 				// Keep the stored tracks and carry on with the other playlists
 				displayError(title: "Offline: Error while synchronizing Playlist Tracks", content: "Couldn't load playlist tracks from Tidal API.")
