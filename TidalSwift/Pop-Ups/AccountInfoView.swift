@@ -25,11 +25,7 @@ struct AccountInfoView: View {
 							Text("User")
 								.font(.title)
 							if let pictureUrl = user.pictureUrl(session: session, resolution: 210) {
-								AsyncImage(url: pictureUrl) { image in
-									image.resizable().scaledToFit()
-								} placeholder: {
-									Rectangle()
-								}
+								AsyncImage(url: pictureUrl)
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)

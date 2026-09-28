@@ -20,11 +20,7 @@ struct VideoGridItem: View {
 	var body: some View {
 		VStack {
 			if let imageUrl = video.imageUrl(session: session, resolution: 320) {
-				AsyncImage(url: imageUrl) { image in
-					image.resizable().scaledToFit()
-				} placeholder: {
-					Rectangle()
-				}
+				AsyncImage(url: imageUrl)
 				.aspectRatio(contentMode: .fit)
 				.frame(width: 160, height: 160)
 				.cornerRadius(CORNERRADIUS)

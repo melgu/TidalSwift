@@ -70,11 +70,7 @@ struct TrackInfoView: View {
 				HStack {
 					if let coverUrlSmall = track.getCoverUrl(session: session, resolution: 320),
 					   let coverUrlBig = track.getCoverUrl(session: session, resolution: 1280) {
-						AsyncImage(url: coverUrlSmall) { image in
-							image.resizable().scaledToFit()
-						} placeholder: {
-							Rectangle()
-						}
+						AsyncImage(url: coverUrlSmall)
 						.frame(width: 30, height: 30)
 						.cornerRadius(CORNERRADIUS)
 						.help("Show cover in new window")

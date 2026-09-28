@@ -31,11 +31,7 @@ struct AlbumGridItem: View {
 		VStack {
 			ZStack(alignment: .bottomTrailing) {
 				if let albumUrl = album.getCoverUrl(session: session, resolution: 320) {
-					AsyncImage(url: albumUrl) { image in
-						image.resizable().scaledToFit()
-					} placeholder: {
-						Rectangle()
-					}
+					AsyncImage(url: albumUrl)
 					.aspectRatio(contentMode: .fill)
 					.frame(width: 160, height: 160)
 					.cornerRadius(CORNERRADIUS)

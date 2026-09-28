@@ -26,10 +26,6 @@ struct ImageWindowView: View {
 	let title: String
 	
 	var body: some View {
-		AsyncImage(url: imageUrl) { image in
-			image.resizable().scaledToFit()
-		} placeholder: {
-			Rectangle()
-		}
+		AsyncImage(url: imageUrl)
 	}
 }

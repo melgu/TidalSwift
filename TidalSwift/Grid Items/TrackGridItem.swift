@@ -18,11 +18,7 @@ struct TrackGridItem: View {
 	var body: some View {
 		VStack {
 			if let coverUrl = track.album.getCoverUrl(session: session, resolution: 320) {
-				AsyncImage(url: coverUrl) { image in
-					image.resizable().scaledToFit()
-				} placeholder: {
-					Rectangle()
-				}
+				AsyncImage(url: coverUrl)
 				.aspectRatio(contentMode: .fit)
 				.frame(width: 160, height: 160)
 				.cornerRadius(CORNERRADIUS)

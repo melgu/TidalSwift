@@ -19,11 +19,7 @@ struct ArtistGridItem: View {
 	var body: some View {
 		VStack {
 			if let pictureUrl = artist.pictureUrl(session: session, resolution: 320) {
-				AsyncImage(url: pictureUrl) { image in
-					image.resizable().scaledToFit()
-				} placeholder: {
-					Rectangle()
-				}
+				AsyncImage(url: pictureUrl)
 				.aspectRatio(contentMode: .fill)
 				.frame(width: 160, height: 160)
 				.cornerRadius(CORNERRADIUS)

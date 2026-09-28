@@ -31,11 +31,7 @@ struct PlaylistView: View {
 			   let imageUrlBig = playlist.imageUrl(session: session, resolution: 750) {
 						ZStack(alignment: .bottomTrailing) {
 							HStack {
-								AsyncImage(url: imageUrlSmall) { image in
-									image.resizable().scaledToFit()
-								} placeholder: {
-									Rectangle()
-								}
+								AsyncImage(url: imageUrlSmall)
 								.aspectRatio(contentMode: .fill)
 								.frame(width: 100, height: 100)
 								.contentShape(Rectangle())

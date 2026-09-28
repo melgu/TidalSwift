@@ -21,11 +21,7 @@ struct PlaylistGridItem: View {
 		VStack {
 			ZStack(alignment: .bottomTrailing) {
 				if let imageUrl = playlist.imageUrl(session: session, resolution: 320) {
-					AsyncImage(url: imageUrl) { image in
-						image.resizable().scaledToFit()
-					} placeholder: {
-						Rectangle()
-					}
+					AsyncImage(url: imageUrl)
 					.aspectRatio(contentMode: .fill)
 					.frame(width: 160, height: 160)
 					.contentShape(Rectangle())

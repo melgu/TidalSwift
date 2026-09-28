@@ -86,11 +86,7 @@ struct ArtistView: View {
 		HStack {
 		if let pictureUrlSmall = artist.pictureUrl(session: session, resolution: 320),
 		   let pictureUrlBig = artist.pictureUrl(session: session, resolution: 750) {
-				AsyncImage(url: pictureUrlSmall) { image in
-					image.resizable().scaledToFit()
-				} placeholder: {
-					Rectangle()
-				}
+				AsyncImage(url: pictureUrlSmall)
 				.frame(width: 100, height: 100)
 				.cornerRadius(CORNERRADIUS)
 				.shadow(radius: SHADOWRADIUS, y: SHADOWY)
