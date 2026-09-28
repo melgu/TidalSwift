@@ -23,6 +23,8 @@ class Player {
 	
 	private var previousValue: Float = 1.0
 	private var failedItems = 0
+	// Incremented on every item change, so outdated async loads can be discarded
+	private var itemLoadID = 0
 	
 	private var volumeCancellable: AnyCancellable?
 	private var shuffleCancellable: AnyCancellable?
@@ -186,15 +188,19 @@ class Player {
 	}
 	
 	private func avSetItem(from track: Track) {
+		itemLoadID += 1
+		let loadID = itemLoadID
 		Task {
-			await avSetItemAsync(from: track)
+			await avSetItemAsync(from: track, loadID: loadID)
 		}
 	}
 	
-	private func avSetItemAsync(from track: Track) async {
+	private func avSetItemAsync(from track: Track, loadID: Int) async {
 //		print("avSetItem(): \(track.title)")
-		let wasPlaying = playbackInfo.playing
-		pause()
+		guard loadID == itemLoadID else {
+			return
+		}
+		avPlayer.pause()
 		
 		func skip() {
 			failedItems += 1
@@ -222,10 +228,17 @@ class Player {
 				isDolbyAtmos = stream.isDolbyAtmos
 				print("Play \(track.title) from online URL\(stream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(stream.url)")
 			} else {
+				guard loadID == itemLoadID else {
+					return
+				}
 				print("No URL so skipping \(track.title)")
 				skip()
 				return
 			}
+		}
+		// Another item was requested while this one was loading
+		guard loadID == itemLoadID else {
+			return
 		}
 		failedItems = 0
 		
@@ -238,8 +251,7 @@ class Player {
 		currentAudioQuality = nextAudioQuality
 		currentIsDolbyAtmos = isDolbyAtmos
 		
-		if wasPlaying {
-//			print("Was playing...")
+		if playbackInfo.playing {
 			play()
 		}
 	}
@@ -412,6 +424,7 @@ class Player {
 			queueInfo.nonShuffledQueue = queueInfo.queue
 			queueInfo.assignQueueIndices()
 		} else {
+			itemLoadID += 1
 			avPlayer.pause()
 			playbackInfo.playing = false
 			queueInfo.currentIndex = 0
