@@ -847,9 +847,11 @@ struct TidalSwiftCommands: Commands {
 			Button("Increase Volume") {
 				appModel.increaseVolume()
 			}
+			.keyboardShortcut(.upArrow, modifiers: .command)
 			Button("Decrease Volume") {
 				appModel.decreaseVolume()
 			}
+			.keyboardShortcut(.downArrow, modifiers: .command)
 			Toggle("Mute", isOn: Binding(
 				get: { appModel.player.playbackInfo.volume == 0 },
 				set: { _ in appModel.toggleMute() }
