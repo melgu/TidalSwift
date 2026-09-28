@@ -952,9 +952,11 @@ struct TidalSwiftCommands: Commands {
 			Button("Lyrics") {
 				appModel.showLyricsWindow()
 			}
+			.keyboardShortcut("l", modifiers: .command)
 			Button("Queue") {
 				appModel.showQueueWindow()
 			}
+			.keyboardShortcut("p", modifiers: .command)
 			Button("Playback History") {
 				appModel.showPlaybackHistoryWindow()
 			}
