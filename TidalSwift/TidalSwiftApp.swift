@@ -770,7 +770,7 @@ struct TidalSwiftCommands: Commands {
 			Button("Quit TidalSwift") {
 				appModel.quit()
 			}
-			.keyboardShortcut("q")
+			.keyboardShortcut("q", modifiers: .command)
 		}
 		#endif
 
@@ -824,7 +824,7 @@ struct TidalSwiftCommands: Commands {
 			Button(appModel.player.playbackInfo.playing ? "Pause" : "Play") {
 				appModel.togglePlay()
 			}
-			.keyboardShortcut(.space, modifiers: []) // Empty modifiers needed to work
+			.keyboardShortcut(.space, modifiers: []) // Explicit empty modifiers required because of implicit CMD modifier
 			.disabled(!appModel.hasCurrentTrack)
 			Button("Stop") {
 				appModel.stop()
@@ -970,7 +970,7 @@ struct TidalSwiftCommands: Commands {
 			Button("Find") {
 				searchFieldFocus?.wrappedValue = true
 			}
-			.keyboardShortcut("f")
+			.keyboardShortcut("f", modifiers: .command)
 			.disabled(searchFieldFocus == nil)
 		}
 		
