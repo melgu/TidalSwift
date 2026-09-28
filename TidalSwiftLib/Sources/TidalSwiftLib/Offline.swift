@@ -357,11 +357,15 @@ public final class Offline {
 		}
 		
 		var toAdd: [Track] = []
+		var leftoverFiles: [URL] = []
 		for track in dbTracks {
 			if let files = localFiles[track.id] {
 				// Replace the file once the offline quality or Dolby Atmos preference changed
 				let wantedVariant = wantedVariant(of: track)
-				if !files.contains(where: { variant(of: $0, track: track) == wantedVariant }) {
+				if let wantedFile = files.first(where: { variant(of: $0, track: track) == wantedVariant }) {
+					// Other variants remain when removing them after a download failed
+					leftoverFiles += files.filter { $0 != wantedFile }
+				} else {
 					toAdd.append(track)
 				}
 			} else {
@@ -388,6 +392,15 @@ public final class Offline {
 			}
 			invalidateOfflineTrackIdsCache()
 			await uiRefreshFunc()
+		}
+		
+		for file in leftoverFiles {
+			print("Offline: Removing leftover file \(file.lastPathComponent)")
+			do {
+				try FileManager.default.removeItem(at: file)
+			} catch {
+				displayError(title: "Offline: Error while removing old offline file", content: "Error: \(error)")
+			}
 		}
 		
 		for track in toAdd {
