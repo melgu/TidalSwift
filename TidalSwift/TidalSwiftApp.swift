@@ -824,6 +824,7 @@ struct TidalSwiftCommands: Commands {
 			Button(appModel.player.playbackInfo.playing ? "Pause" : "Play") {
 				appModel.togglePlay()
 			}
+			.keyboardShortcut(.space, modifiers: []) // Empty modifiers needed to work
 			Button("Stop") {
 				appModel.stop()
 			}
