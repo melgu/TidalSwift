@@ -825,18 +825,22 @@ struct TidalSwiftCommands: Commands {
 				appModel.togglePlay()
 			}
 			.keyboardShortcut(.space, modifiers: []) // Empty modifiers needed to work
+			.disabled(!appModel.hasCurrentTrack)
 			Button("Stop") {
 				appModel.stop()
 			}
 			.keyboardShortcut(".", modifiers: .command)
+			.disabled(!appModel.hasCurrentTrack)
 			Button("Next") {
 				appModel.next()
 			}
 			.keyboardShortcut(.rightArrow, modifiers: .command)
+			.disabled(!appModel.hasCurrentTrack)
 			Button("Previous") {
 				appModel.previous()
 			}
 			.keyboardShortcut(.leftArrow, modifiers: .command)
+			.disabled(!appModel.hasCurrentTrack)
 
 			Divider()
 
