@@ -130,7 +130,13 @@ extension Network {
 			return
 		}
 		
-		let (downloadURL, _) = try await URLSession.shared.download(from: url)
+		let (downloadURL, response) = try await URLSession.shared.download(from: url)
+		
+		// Otherwise an error page, e.g. for an expired URL, would be stored as the file
+		if let statusCode = (response as? HTTPURLResponse)?.statusCode, !(200..<300).contains(statusCode) {
+			try? FileManager.default.removeItem(at: downloadURL)
+			throw URLError(.badServerResponse)
+		}
 		
 		// If we want to overwrite and the file exists, delete the existing file
 		if overwrite && FileManager.default.fileExists(atPath: path.relativePath) {
