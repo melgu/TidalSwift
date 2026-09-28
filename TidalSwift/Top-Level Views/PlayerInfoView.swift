@@ -140,6 +140,7 @@ struct PlaybackControls: View {
 	let player: Player
 	
 	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@EnvironmentObject var queueInfo: QueueInfo
 	
 	var body: some View {
 		VStack(spacing: 8) {
@@ -151,25 +152,33 @@ struct PlaybackControls: View {
 					.onTapGesture {
 						playbackInfo.shuffle.toggle()
 					}
-				Image(systemName: "backward.fill")
-					.onTapGesture {
+				Group {
+					Button {
 						player.previous()
+					} label: {
+						Image(systemName: "backward.fill")
 					}
-				if playbackInfo.playing {
-					Image(systemName: "pause.fill")
-						.onTapGesture {
+					if playbackInfo.playing {
+						Button {
 							player.pause()
+						} label: {
+							Image(systemName: "pause.fill")
 						}
-				} else {
-					Image(systemName: "play.fill")
-						.onTapGesture {
+					} else {
+						Button {
 							player.play()
+						} label: {
+							Image(systemName: "play.fill")
 						}
-				}
-				Image(systemName: "forward.fill")
-					.onTapGesture {
-						player.next()
 					}
+					Button {
+						player.next()
+					} label: {
+						Image(systemName: "forward.fill")
+					}
+				}
+				.buttonStyle(.plain)
+				.disabled(queueInfo.queue.isEmpty)
 				Image(systemName: playbackInfo.repeatState == .single ? "repeat.1" : "repeat")
 					.foregroundStyle(playbackInfo.repeatState == .off ? .primary : Color.accentColor)
 					.help("Repeat")
@@ -180,6 +189,8 @@ struct PlaybackControls: View {
 				Spacer()
 			}
 			ProgressBar(player: player)
+				.opacity(queueInfo.queue.isEmpty ? 0.5 : 1)
+				.disabled(queueInfo.queue.isEmpty)
 		}
 	}
 }
