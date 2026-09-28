@@ -97,6 +97,16 @@ struct SearchField: View {
 		})
 		.textFieldStyle(RoundedBorderTextFieldStyle())
 		.focused($isFocused)
+		.onAppear {
+			// AppKit makes the first text field the window's first responder when it opens.
+			// Give that up, so Space can control playback right away.
+			Task {
+				isFocused = false
+			}
+		}
+		.onExitCommand {
+			isFocused = false
+		}
 		.focusedSceneValue(\.searchFieldFocus, $isFocused)
 	}
 }
