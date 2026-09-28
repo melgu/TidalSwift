@@ -328,7 +328,6 @@ public final class Offline {
 		// Preparations (e.g. setting syncRunning) happen in asyncSync func beforehand
 		
 		print("Offline: --- Starting Sync ---")
-		syncRunning = true
 		
 		downloadStatus.startTask()
 		defer { downloadStatus.finishTask() }
@@ -443,6 +442,8 @@ public final class Offline {
 			syncAgain = true // If Sync is requested while running, do another one afterwards
 			return
 		}
+		// Set before the task starts, so a second call in the meantime can't start another sync
+		syncRunning = true
 		
 		syncTask = Task { await sync() }
 	}
