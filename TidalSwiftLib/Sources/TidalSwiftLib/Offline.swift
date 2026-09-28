@@ -480,6 +480,8 @@ public final class Offline {
 				tracks = favTracks.map { $0.item }
 			} else {
 				displayError(title: "Offline: Error while synchronizing Favorite Tracks", content: "")
+				favTracksSyncAgain = false
+				favTracksSyncRunning = false
 				return
 			}
 		}
@@ -567,6 +569,7 @@ public final class Offline {
 		if playlistsToSync.isEmpty {
 			print("Offline: No more Playlists to sync.")
 			print("Offline: --- Sync Playlists finished ---")
+			playlistSyncRunning = false
 			return
 		}
 		let playlist = playlistsToSync[0]
@@ -579,8 +582,8 @@ public final class Offline {
 				print("Offline: Playlist tracks: \(tracks.map { $0.id })")
 				await db.setTracks(for: playlist, to: tracks)
 			} else {
+				// Keep the stored tracks and carry on with the other playlists
 				displayError(title: "Offline: Error while synchronizing Playlist Tracks", content: "Couldn't load playlist tracks from Tidal API.")
-				return
 			}
 		} else {
 			print("Offline: Playlist isn't marked to be offline, so deleting offline tracks, if there are any")
