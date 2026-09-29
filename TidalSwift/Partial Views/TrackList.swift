@@ -51,8 +51,8 @@ struct TrackRow: View {
 	var widthFactorArtist: CGFloat
 	var widthFactorAlbum: CGFloat
 	
-	@EnvironmentObject var viewState: ViewState
-	@EnvironmentObject var queueInfo: QueueInfo
+	@Environment(ViewState.self) var viewState
+	@Environment(QueueInfo.self) var queueInfo
 	@State private var isOffline: Bool = false
 	@State private var isFavorite: Bool? = nil
 	
@@ -154,7 +154,7 @@ struct TrackRow: View {
 						.onTapGesture {
 							let controller = ResizableWindowControllerFactory.create(rootView:
 								CreditsView(session: session, track: track)
-								.environmentObject(viewState)
+								.environment(viewState)
 							)
 							controller.window?.title = "Credits – \(track.title)"
 							controller.showWindow(nil)

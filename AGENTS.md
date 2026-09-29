@@ -26,7 +26,7 @@ Keep app-facing code in `TidalSwift/...` and platform-agnostic API/domain logic 
 - `QueueInfo.swift` — observable queue state
 - `SortingState.swift` — observable sort preferences
 
-All state objects use `@Published` and are injected as `@EnvironmentObject` into SwiftUI views. `AppDelegate.swift` owns all instances, wires up Combine subscriptions (`AnyCancellable`), and persists state to UserDefaults via JSON encoding on a timer and on app quit.
+All state objects are `@Observable` classes, injected with `.environment(_:)` and read via `@Environment(Type.self)` (or passed directly, with `@Bindable` where a view needs bindings). Persisted properties set an `@ObservationIgnored` `hasUnsavedChanges` flag in `didSet`. `TidalSwiftAppModel` in `TidalSwiftApp.swift` owns all instances and saves flagged state to UserDefaults via JSON encoding from a 10-second task loop and on app quit. The project doesn't use Combine.
 
 **Player (`TidalSwift/Player.swift`):** Thin `AVPlayer` wrapper that manages the playback queue, shuffle, repeat, and stream URL resolution.
 

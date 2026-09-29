@@ -7,18 +7,17 @@
 //
 
 import SwiftUI
-import Combine
 import TidalSwiftLib
 
 struct NewReleases: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
-	
-	@State var cancellable: AnyCancellable?
+	@Environment(ViewState.self) var viewState
 	
 	var body: some View {
+		@Bindable var viewState = viewState
+		
 		ScrollView {
 			VStack(alignment: .leading) {
 				HStack {
@@ -36,14 +35,8 @@ struct NewReleases: View {
 			}
 			.padding()
 		}
-		.onAppear {
-			cancellable = viewState.$newReleasesIncludeEps
-				.sink { _ in
-					viewState.refreshCurrentView()
-				}
-		}
-		.onDisappear {
-			cancellable?.cancel()
+		.onChange(of: viewState.newReleasesIncludeEps, initial: true) {
+			viewState.refreshCurrentView()
 		}
 	}
 }

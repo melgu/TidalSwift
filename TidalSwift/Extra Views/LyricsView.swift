@@ -12,7 +12,7 @@ import TidalSwiftLib
 struct LyricsView: View {
 	let session: Session
 	
-	@EnvironmentObject var queueInfo: QueueInfo
+	@Environment(QueueInfo.self) var queueInfo
 	
 	@State var loadingState: LoadingState = .loading
 	

@@ -46,7 +46,7 @@ struct LoadingSpinner: View {
 		self.externalState = externalState
 	}
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	@State var animate = false
 	

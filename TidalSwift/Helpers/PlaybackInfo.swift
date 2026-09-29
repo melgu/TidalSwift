@@ -7,17 +7,32 @@
 //
 
 import SwiftUI
-import Combine
 import TidalSwiftLib
 
-final class PlaybackInfo: ObservableObject {
-	@Published var fraction: CGFloat = 0.0
-	@Published var playbackTimeInfo: String = "0:00 / 0:00"
-	@Published var playing: Bool = false
-	@Published var volume: Float = 1.0
-	@Published var shuffle: Bool = false
-	@Published var repeatState: RepeatState = .off
-	@Published var pauseAfter: Bool = false
+@Observable
+final class PlaybackInfo {
+	var fraction: CGFloat = 0.0
+	var playbackTimeInfo: String = "0:00 / 0:00"
+	var playing: Bool = false
+	var volume: Float = 1.0 {
+		didSet {
+			hasUnsavedChanges = true
+			onVolumeChange?(volume)
+		}
+	}
+	var shuffle: Bool = false {
+		didSet {
+			hasUnsavedChanges = true
+			onShuffleChange?(shuffle)
+		}
+	}
+	var repeatState: RepeatState = .off { didSet { hasUnsavedChanges = true } }
+	var pauseAfter: Bool = false { didSet { hasUnsavedChanges = true } }
+	
+	@ObservationIgnored var hasUnsavedChanges = false
+	
+	@ObservationIgnored var onVolumeChange: ((Float) -> Void)?
+	@ObservationIgnored var onShuffleChange: ((Bool) -> Void)?
 }
 
 enum RepeatState: Int, CaseIterable, Codable {

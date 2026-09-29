@@ -7,35 +7,37 @@
 //
 
 import Foundation
-import Combine
 import TidalSwiftLib
 
-final class SortingState: ObservableObject {
+@Observable
+final class SortingState {
 	// Favorites
-	@Published var favoritePlaylistSorting: PlaylistSorting = .dateAdded
-	@Published var favoritePlaylistReversed: Bool = false
+	var favoritePlaylistSorting: PlaylistSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
+	var favoritePlaylistReversed: Bool = false { didSet { hasUnsavedChanges = true } }
 	
-	@Published var favoriteAlbumSorting: AlbumSorting = .dateAdded
-	@Published var favoriteAlbumReversed: Bool = false
+	var favoriteAlbumSorting: AlbumSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
+	var favoriteAlbumReversed: Bool = false { didSet { hasUnsavedChanges = true } }
 	
-	@Published var favoriteTrackSorting: TrackSorting = .dateAdded
-	@Published var favoriteTrackReversed: Bool = false
+	var favoriteTrackSorting: TrackSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
+	var favoriteTrackReversed: Bool = false { didSet { hasUnsavedChanges = true } }
 	
-	@Published var favoriteVideoSorting: VideoSorting = .dateAdded
-	@Published var favoriteVideoReversed: Bool = false
+	var favoriteVideoSorting: VideoSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
+	var favoriteVideoReversed: Bool = false { didSet { hasUnsavedChanges = true } }
 	
-	@Published var favoriteArtistSorting: ArtistSorting = .dateAdded
-	@Published var favoriteArtistReversed: Bool = false
+	var favoriteArtistSorting: ArtistSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
+	var favoriteArtistReversed: Bool = false { didSet { hasUnsavedChanges = true } }
 	
 	// Offline
-	@Published var offlinePlaylistSorting: PlaylistSorting = .dateAdded
-	@Published var offlinePlaylistReversed: Bool = false
+	var offlinePlaylistSorting: PlaylistSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
+	var offlinePlaylistReversed: Bool = false { didSet { hasUnsavedChanges = true } }
 	
-	@Published var offlineAlbumSorting: AlbumSorting = .dateAdded
-	@Published var offlineAlbumReversed: Bool = false
+	var offlineAlbumSorting: AlbumSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
+	var offlineAlbumReversed: Bool = false { didSet { hasUnsavedChanges = true } }
 	
-	@Published var offlineTrackSorting: TrackSorting = .dateAdded
-	@Published var offlineTrackReversed: Bool = false
+	var offlineTrackSorting: TrackSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
+	var offlineTrackReversed: Bool = false { didSet { hasUnsavedChanges = true } }
+	
+	@ObservationIgnored var hasUnsavedChanges = false
 }
 
 struct CodableSortingState: Codable {

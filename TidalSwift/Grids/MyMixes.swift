@@ -13,7 +13,7 @@ struct MyMixes: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	var body: some View {
 		ScrollView {

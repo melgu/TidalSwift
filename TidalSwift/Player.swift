@@ -7,10 +7,10 @@
 //
 
 import SwiftUI
-@preconcurrency import Combine
 import AVFoundation
 import TidalSwiftLib
 
+@Observable
 class Player {
 	let session: Session
 	var autoplayAfterAddNow: Bool
@@ -19,15 +19,12 @@ class Player {
 	public let playbackInfo = PlaybackInfo()
 	public let queueInfo = QueueInfo()
 	
-	private var timeObserverToken: Any?
+	@ObservationIgnored private var timeObserverToken: Any?
 	
-	private var previousValue: Float = 1.0
-	private var failedItems = 0
+	@ObservationIgnored private var previousValue: Float = 1.0
+	@ObservationIgnored private var failedItems = 0
 	// Incremented on every item change, so outdated async loads can be discarded
-	private var itemLoadID = 0
-	
-	private var volumeCancellable: AnyCancellable?
-	private var shuffleCancellable: AnyCancellable?
+	@ObservationIgnored private var itemLoadID = 0
 	
 	private var currentAudioQuality: AudioQuality
 	private var currentIsDolbyAtmos = false
@@ -50,8 +47,8 @@ class Player {
 			}
 		}
 		
-		volumeCancellable = playbackInfo.$volume.receive(on: DispatchQueue.main).sink(receiveValue: setVolume(to:))
-		shuffleCancellable = playbackInfo.$shuffle.receive(on: DispatchQueue.main).sink(receiveValue: shuffle(enabled:))
+		playbackInfo.onVolumeChange = { [weak self] in self?.setVolume(to: $0) }
+		playbackInfo.onShuffleChange = { [weak self] in self?.shuffle(enabled: $0) }
 	}
 	
 	@MainActor
@@ -60,8 +57,6 @@ class Player {
 			avPlayer.removeTimeObserver(token)
 			timeObserverToken = nil
 		}
-		volumeCancellable?.cancel()
-		shuffleCancellable?.cancel()
 	}
 	
 	func setAudioQuality(to audioQuality: AudioQuality) {

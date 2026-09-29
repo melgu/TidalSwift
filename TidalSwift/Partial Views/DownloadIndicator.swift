@@ -7,30 +7,28 @@
 //
 
 import SwiftUI
-import Combine
 import TidalSwiftLib
 
 struct DownloadIndicator: View {
 	@State var animationState: Bool = false
-	@State var timerCancellable: AnyCancellable?
 	
-	@EnvironmentObject var downloadStatus: DownloadStatus
+	@Environment(DownloadStatus.self) var downloadStatus
 	
 	var body: some View {
 		Group {
 			if downloadStatus.downloadingTasks > 0 {
 				Text(animationState ? "􀈉" : "􀈈")
-					.onAppear {
-						timerCancellable = Timer.publish(every: 1, on: .main, in: .default)
-							.autoconnect()
-							.sink { _ in
-								animationState.toggle()
+					.task {
+						while true {
+							do {
+								try await Task.sleep(for: .seconds(1))
+							} catch {
+								return
 							}
+							animationState.toggle()
+						}
 					}
 					.help("Downloads currently running")
-					.onDisappear {
-						timerCancellable?.cancel()
-					}
 			}
 		}
 	}

@@ -13,7 +13,7 @@ struct TopDetailView: View {
     let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	init(session: Session, player: Player) {
 		self.session = session
@@ -47,7 +47,7 @@ struct TopView: View {
 	
 	let session: Session
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	@State var becomeFirstResponder = true
 	
@@ -82,7 +82,7 @@ struct TopView: View {
 struct SearchField: View {
 	@Binding var selection: ViewType?
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	@State var searchTerm: String
 	@FocusState private var isFocused: Bool
@@ -119,7 +119,7 @@ struct DetailView: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	init(session: Session, player: Player) {
 		self.session = session

@@ -33,10 +33,12 @@ struct FavoritePlaylists: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
-	@EnvironmentObject var sortingState: SortingState
+	@Environment(ViewState.self) var viewState
+	@Environment(SortingState.self) var sortingState
 	
 	var body: some View {
+		@Bindable var sortingState = sortingState
+		
 		ScrollView {
 			VStack(alignment: .leading) {
 				HStack {
@@ -77,10 +79,12 @@ struct FavoriteAlbums: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
-	@EnvironmentObject var sortingState: SortingState
+	@Environment(ViewState.self) var viewState
+	@Environment(SortingState.self) var sortingState
 	
 	var body: some View {
+		@Bindable var sortingState = sortingState
+		
 		ScrollView {
 			VStack(alignment: .leading) {
 				HStack {
@@ -119,12 +123,14 @@ struct FavoriteTracks: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
-	@EnvironmentObject var sortingState: SortingState
+	@Environment(ViewState.self) var viewState
+	@Environment(SortingState.self) var sortingState
 	
 	@AppStorage("SaveFavoritesOffline") public var saveFavoritesOffline = false
 	
 	var body: some View {
+		@Bindable var sortingState = sortingState
+		
 		ScrollView {
 			VStack(alignment: .leading) {
 				VStack {
@@ -196,10 +202,12 @@ struct FavoriteVideos: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
-	@EnvironmentObject var sortingState: SortingState
+	@Environment(ViewState.self) var viewState
+	@Environment(SortingState.self) var sortingState
 	
 	var body: some View {
+		@Bindable var sortingState = sortingState
+		
 		ScrollView {
 			VStack(alignment: .leading) {
 				HStack {
@@ -239,10 +247,12 @@ struct FavoriteArtists: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
-	@EnvironmentObject var sortingState: SortingState
+	@Environment(ViewState.self) var viewState
+	@Environment(SortingState.self) var sortingState
 	
 	var body: some View {
+		@Bindable var sortingState = sortingState
+		
 		ScrollView {
 			VStack(alignment: .leading) {
 				VStack {

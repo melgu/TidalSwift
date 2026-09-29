@@ -14,7 +14,7 @@ struct MixContextMenu: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@Environment(PlaylistEditingValues.self) var playlistEditingValues
 	
 	var body: some View {
 		Group {

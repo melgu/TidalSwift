@@ -8,9 +8,11 @@
 
 import Foundation
 import AVFoundation
+import Observation
 
-public final class DownloadStatus: ObservableObject {
-	@Published public var downloadingTasks: Int = 0
+@Observable
+public final class DownloadStatus {
+	public var downloadingTasks: Int = 0
 	
 	func startTask() {
 		downloadingTasks += 1

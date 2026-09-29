@@ -16,8 +16,8 @@ struct TrackContextMenu: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
-	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@Environment(ViewState.self) var viewState
+	@Environment(PlaylistEditingValues.self) var playlistEditingValues
 	@State private var isFavorite: Bool? = nil
 	
 	init(track: Track, indexInPlaylist: Int? = nil, playlist: Playlist? = nil, session: Session, player: Player) {
@@ -159,7 +159,7 @@ struct TrackContextMenu: View {
 						print("Credits")
 						let controller = ResizableWindowControllerFactory.create(rootView:
 							CreditsView(session: session, track: track)
-								.environmentObject(viewState)
+								.environment(viewState)
 						)
 						controller.window?.title = "Credits – \(track.title)"
 						controller.showWindow(nil)

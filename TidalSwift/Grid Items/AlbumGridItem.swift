@@ -16,7 +16,7 @@ struct AlbumGridItem: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	@State private var isOffline: Bool = false
 	
 	init(album: Album, showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {

@@ -14,7 +14,7 @@ struct ArtistContextMenu: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	@State private var isFavorite: Bool? = nil
 	
 	var body: some View {
@@ -105,7 +105,7 @@ struct ArtistContextMenu: View {
 					print("Bio")
 					let controller = ResizableWindowControllerFactory.create(rootView:
 						ArtistBioView(session: session, artist: artist)
-							.environmentObject(viewState)
+							.environment(viewState)
 					)
 					controller.window?.title = "Bio – \(artist.name)"
 					controller.showWindow(nil)

@@ -15,8 +15,8 @@ struct AddToPlaylistView: View {
 	@State private var playlists: [Playlist]? = nil
 	@State private var loadingState: LoadingState = .loading
 	
-	@ObservedObject var playlistEditingValues: PlaylistEditingValues
-	@ObservedObject var viewState: ViewState
+	let playlistEditingValues: PlaylistEditingValues
+	let viewState: ViewState
 	
 	@State var selectedPlaylist: String = "" // Playlist UUID
 	@State var newPlaylistName: String = ""

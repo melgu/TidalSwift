@@ -15,8 +15,8 @@ struct PlayerInfoView: View {
 	let player: Player
 	
 	
-	@EnvironmentObject var queueInfo: QueueInfo
-	@EnvironmentObject var appModel: TidalSwiftAppModel
+	@Environment(QueueInfo.self) var queueInfo
+	@Environment(TidalSwiftAppModel.self) var appModel
 	
 	var body: some View {
 		VStack {
@@ -61,7 +61,7 @@ struct TrackInfoView: View {
 	let player: Player
 	let session: Session
 	
-	@EnvironmentObject var queueInfo: QueueInfo
+	@Environment(QueueInfo.self) var queueInfo
 	
 	var body: some View {
 		HStack {
@@ -139,8 +139,8 @@ struct TrackInfoView: View {
 struct PlaybackControls: View {
 	let player: Player
 	
-	@EnvironmentObject var playbackInfo: PlaybackInfo
-	@EnvironmentObject var queueInfo: QueueInfo
+	@Environment(PlaybackInfo.self) var playbackInfo
+	@Environment(QueueInfo.self) var queueInfo
 	
 	var body: some View {
 		VStack(spacing: 8) {
@@ -198,7 +198,7 @@ struct PlaybackControls: View {
 struct ProgressBar: View {
 	let player: Player
 	
-	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@Environment(PlaybackInfo.self) var playbackInfo
 	@Environment(\.colorScheme) var colorScheme: ColorScheme
 	
 	var body: some View {
@@ -233,9 +233,11 @@ struct ProgressBar: View {
 struct VolumeControl: View {
 	let player: Player
 	
-	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@Environment(PlaybackInfo.self) var playbackInfo
 	
 	var body: some View {
+		@Bindable var playbackInfo = playbackInfo
+		
 		HStack {
 			speakerSymbol
 				.frame(width: 20, alignment: .leading)

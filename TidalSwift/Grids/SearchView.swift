@@ -7,14 +7,13 @@
 //
 
 import SwiftUI
-import Combine
 import TidalSwiftLib
 
 struct SearchView: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	init(session: Session, player: Player) {
 		print("init SearchView")

@@ -12,8 +12,8 @@ import TidalSwiftLib
 struct RemoveFromPlaylistView: View {
 	let session: Session
 	
-	@ObservedObject var playlistEditingValues: PlaylistEditingValues
-	@ObservedObject var viewState: ViewState
+	let playlistEditingValues: PlaylistEditingValues
+	let viewState: ViewState
 	
 	var body: some View {
 		VStack {

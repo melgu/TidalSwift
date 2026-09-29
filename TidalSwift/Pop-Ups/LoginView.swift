@@ -7,25 +7,24 @@
 //
 
 import SwiftUI
-import Combine
 import TidalSwiftLib
 
-final class LoginInfo: ObservableObject {
-	@Published var showModal = false
+@Observable
+final class LoginInfo {
+	var showModal = false
 }
 
 struct LoginView: View {
-	@ObservedObject var loginInfo: LoginInfo
-	@ObservedObject var viewState: ViewState
+	let loginInfo: LoginInfo
+	let viewState: ViewState
 	
 	let session: Session
 	
 	@Environment(\.openURL) private var openURL
 	
-	@State var cancellables = Set<AnyCancellable>()
+	@State var authorizationTask: Task<Void, Never>?
 	@State var authState: Session.AuthorizationState = .waiting
 	@State var counter = 300
-	let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 	
 	@State var refreshToken: String = ""
 	@State var clientID: String = ""
@@ -50,6 +49,9 @@ struct LoginView: View {
 			.textFieldStyle(RoundedBorderTextFieldStyle())
 			.padding()
 		}
+		.onDisappear {
+			authorizationTask?.cancel()
+		}
 	}
 	
 	var deviceLogin: some View {
@@ -66,9 +68,16 @@ struct LoginView: View {
 				
 				if counter > 0 {
 					Text("Time remaining: \(counter)")
-						.onReceive(timer, perform: { _ in
-							counter -= 1
-						})
+						.task {
+							while counter > 0 {
+								do {
+									try await Task.sleep(for: .seconds(1))
+								} catch {
+									return
+								}
+								counter -= 1
+							}
+						}
 				} else {
 					Text("Time expired")
 				}
@@ -105,18 +114,11 @@ struct LoginView: View {
 	}
 	
 	func startAuthorization() {
-		cancellables.removeAll()
-		
-		let subject = session.startAuthorization()
-			.receive(on: DispatchQueue.main)
-		
-		subject
-			.assign(to: \.authState, on: self)
-			.store(in: &cancellables)
-		
-		subject
-			.sink { value in
-				switch value {
+		authorizationTask?.cancel()
+		authorizationTask = Task {
+			for await state in session.startAuthorization() {
+				authState = state
+				switch state {
 				case .waiting:
 					break
 				case .pending(loginUrl: let loginUrl, expiration: _):
@@ -128,7 +130,7 @@ struct LoginView: View {
 					break
 				}
 			}
-			.store(in: &cancellables)
+		}
 	}
 	
 	func setAuthorization() {

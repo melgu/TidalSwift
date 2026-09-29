@@ -13,7 +13,7 @@ struct QueueView: View {
 	unowned let session: Session
 	unowned let player: Player
 	
-	@EnvironmentObject var queueInfo: QueueInfo
+	@Environment(QueueInfo.self) var queueInfo
 	
 	func calculateTotalTime(for tracks: [Track]) -> Int {
 		var result = 0

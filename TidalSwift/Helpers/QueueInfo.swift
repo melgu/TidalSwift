@@ -7,16 +7,30 @@
 //
 
 import Foundation
-import Combine
 import TidalSwiftLib
 
-final class QueueInfo: ObservableObject {
-	var nonShuffledQueue = [Track]()
-	@Published var queue = [Track]()
-	@Published var currentIndex: Int = 0
+@Observable
+final class QueueInfo {
+	@ObservationIgnored var nonShuffledQueue = [Track]()
+	var queue = [Track]() {
+		didSet {
+			hasUnsavedChanges = true
+			onCurrentTrackChange?()
+		}
+	}
+	var currentIndex: Int = 0 {
+		didSet {
+			hasUnsavedChanges = true
+			onCurrentTrackChange?()
+		}
+	}
 	
-	@Published var history: [Track] = []
-	var maxHistoryItems: Int = 100
+	var history: [Track] = []
+	@ObservationIgnored var maxHistoryItems: Int = 100
+	
+	@ObservationIgnored var hasUnsavedChanges = false
+	
+	@ObservationIgnored var onCurrentTrackChange: (() -> Void)?
 	
 	var currentItem: Track? {
 		queue.element(at: currentIndex)

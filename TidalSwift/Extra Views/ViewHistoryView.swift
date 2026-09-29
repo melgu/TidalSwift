@@ -10,7 +10,7 @@ import SwiftUI
 import TidalSwiftLib
 
 struct ViewHistoryView: View {
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	var body: some View {
 		ScrollView {
@@ -48,7 +48,7 @@ struct ViewHistoryViewRow: View {
 	let view: TidalSwiftView
 	var text: String
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	init(view: TidalSwiftView) {
 		self.view = view

@@ -115,7 +115,7 @@ struct ArtistView: View {
 						.onTapGesture {
 							let controller = ResizableWindowControllerFactory.create(rootView:
 								ArtistBioView(session: session, artist: artist)
-																		.environmentObject(viewState)
+																		.environment(viewState)
 							)
 							controller.window?.title = "Bio – \(artist.name)"
 							controller.showWindow(nil)

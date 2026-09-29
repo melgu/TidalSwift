@@ -10,7 +10,7 @@ import SwiftUI
 
 struct TouchBarView: View {
 	let player: Player
-	@ObservedObject var playbackInfo: PlaybackInfo
+	@Bindable var playbackInfo: PlaybackInfo
 	
 	var body: some View {
 		Button(action: {

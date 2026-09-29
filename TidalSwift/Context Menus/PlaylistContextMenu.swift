@@ -14,8 +14,8 @@ struct PlaylistContextMenu: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
-	@EnvironmentObject var playlistEditingValues: PlaylistEditingValues
+	@Environment(ViewState.self) var viewState
+	@Environment(PlaylistEditingValues.self) var playlistEditingValues
 	@State private var isFavorite: Bool? = nil
 	@State private var isOffline: Bool = false
 	

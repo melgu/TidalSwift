@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct BackButton: View {
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	var body: some View {
 		VStack {

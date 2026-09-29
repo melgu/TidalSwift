@@ -7,17 +7,17 @@
 //
 
 import SwiftUI
-import Combine
 import TidalSwiftLib
 
-final class PlaylistEditingValues: ObservableObject {
-	@Published var showAddTracksModal: Bool = false
-	@Published var tracks: [Track] = []
+@Observable
+final class PlaylistEditingValues {
+	var showAddTracksModal: Bool = false
+	var tracks: [Track] = []
 	
-	@Published var showRemoveTracksModal: Bool = false
-	@Published var indexToRemove: Int?
+	var showRemoveTracksModal: Bool = false
+	var indexToRemove: Int?
 	
-	@Published var showDeleteModal: Bool = false
-	@Published var showEditModal: Bool = false
-	@Published var playlist: Playlist?
+	var showDeleteModal: Bool = false
+	var showEditModal: Bool = false
+	var playlist: Playlist?
 }

@@ -10,22 +10,22 @@ import SwiftUI
 import TidalSwiftLib
 
 struct ContentView: View {
-	@ObservedObject var loginInfo: LoginInfo
-	@ObservedObject var playlistEditingValues: PlaylistEditingValues
-	@ObservedObject var viewState: ViewState
-	@ObservedObject var sortingState: SortingState
+	@Bindable var loginInfo: LoginInfo
+	@Bindable var playlistEditingValues: PlaylistEditingValues
+	let viewState: ViewState
+	let sortingState: SortingState
 	
 	let session: Session
 	let player: Player
 	
 	var body: some View {
 		TopDetailView(session: session, player: player)
-			.environmentObject(viewState)
-			.environmentObject(sortingState)
-			.environmentObject(playlistEditingValues)
-			.environmentObject(player.playbackInfo)
-			.environmentObject(player.queueInfo)
-			.environmentObject(session.helpers.downloadStatus)
+			.environment(viewState)
+			.environment(sortingState)
+			.environment(playlistEditingValues)
+			.environment(player.playbackInfo)
+			.environment(player.queueInfo)
+			.environment(session.helpers.downloadStatus)
 			.background(EmptyView().sheet(isPresented: $loginInfo.showModal) {
 				LoginView(loginInfo: loginInfo, viewState: viewState, session: session)
 			})

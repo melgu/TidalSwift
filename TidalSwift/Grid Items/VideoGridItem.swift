@@ -15,7 +15,7 @@ struct VideoGridItem: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var playbackInfo: PlaybackInfo
+	@Environment(PlaybackInfo.self) var playbackInfo
 	
 	var body: some View {
 		VStack {

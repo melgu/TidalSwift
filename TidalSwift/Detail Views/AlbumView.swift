@@ -13,7 +13,7 @@ struct AlbumView: View {
 	let session: Session
 	let player: Player
 	
-	@EnvironmentObject var viewState: ViewState
+	@Environment(ViewState.self) var viewState
 	
 	@State var cloudPressed: Bool = false
 	@State private var isFavorite: Bool? = nil
@@ -62,7 +62,7 @@ struct AlbumView: View {
 											.onTapGesture {
 												let controller = ResizableWindowControllerFactory.create(rootView:
 													CreditsView(session: session, album: album)
-														.environmentObject(viewState)
+														.environment(viewState)
 												)
 												controller.window?.title = "Credits – \(album.title)"
 												controller.showWindow(nil)
