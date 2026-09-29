@@ -140,29 +140,20 @@ struct FavoriteTracks: View {
 							.lineLimit(1)
 						Spacer()
 						LoadingSpinner()
-						if saveFavoritesOffline {
-							Image(systemName: "cloud.fill")
+						Button {
+							print(saveFavoritesOffline ? "Remove from Offline" : "Add to Offline")
+							saveFavoritesOffline.toggle()
+							session.helpers.offline.asyncSyncFavoriteTracks()
+							viewState.refreshCurrentView()
+						} label: {
+							Image(systemName: saveFavoritesOffline ? "cloud.fill" : "cloud")
 								.resizable()
 								.scaledToFit()
 								.frame(width: 30)
-								.onTapGesture {
-									print("Remove from Offline")
-									saveFavoritesOffline = false
-									session.helpers.offline.asyncSyncFavoriteTracks()
-									viewState.refreshCurrentView()
-								}
-						} else {
-							Image(systemName: "cloud")
-								.resizable()
-								.scaledToFit()
-								.frame(width: 30)
-								.onTapGesture {
-									print("Add to Offline")
-									saveFavoritesOffline = true
-									session.helpers.offline.asyncSyncFavoriteTracks()
-									viewState.refreshCurrentView()
-								}
+								.accessibilityLabel("Available Offline")
+								.accessibilityAddTraits(saveFavoritesOffline ? .isSelected : [])
 						}
+						.buttonStyle(.plain)
 						Picker(selection: $sortingState.favoriteTrackSorting, label: Spacer(minLength: 0)) {
 							Text("Added").tag(TrackSorting.dateAdded)
 							Text("Title").tag(TrackSorting.title)
