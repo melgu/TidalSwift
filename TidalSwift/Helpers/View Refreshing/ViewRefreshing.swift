@@ -81,7 +81,7 @@ extension ViewState {
 		}
 	}
 	
-	func doNothing() {
+	private func doNothing() {
 		print("ViewState doNothing(): \(stack.last?.viewType.rawValue ?? "nil")")
 		refreshTask?.cancel()
 		refreshTask = nil

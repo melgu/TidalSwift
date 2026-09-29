@@ -24,10 +24,10 @@ public final class DownloadStatus {
 }
 
 public struct DownloadErrors {
-	var affectedTracks = Set<Track>()
-	var affectedAlbums = Set<Album>()
-	var affectedArtists = Set<Artist>()
-	var affectedPlaylists = Set<Playlist>()
+	fileprivate var affectedTracks = Set<Track>()
+	fileprivate var affectedAlbums = Set<Album>()
+	fileprivate var affectedArtists = Set<Artist>()
+	fileprivate var affectedPlaylists = Set<Playlist>()
 }
 
 public enum DownloadLocation {
@@ -36,8 +36,8 @@ public enum DownloadLocation {
 }
 
 public class Download {
-	unowned let session: Session
-	unowned let metadata: Metadata
+	private unowned let session: Session
+	private unowned let metadata: Metadata
 	private let downloadStatus: DownloadStatus
 	
 	init(session: Session, metadata: Metadata, downloadStatus: DownloadStatus) {
@@ -46,7 +46,7 @@ public class Download {
 		self.downloadStatus = downloadStatus
 	}
 	
-	func formFileName(_ track: Track) -> String {
+	private func formFileName(_ track: Track) -> String {
 		var title = track.title
 		if let version = track.version {
 			title += " (\(version))"
@@ -54,7 +54,7 @@ public class Download {
 		return "\(track.trackNumber) \(title) - \(track.artists.formArtistString())"
 	}
 	
-	func formFileName(_ video: Video) -> String {
+	private func formFileName(_ video: Video) -> String {
 		"\(video.trackNumber) \(video.title) - \(video.artists.formArtistString())"
 	}
 	

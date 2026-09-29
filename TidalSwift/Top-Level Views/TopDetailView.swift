@@ -13,7 +13,7 @@ struct TopDetailView: View {
     let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
 	init(session: Session, player: Player) {
 		self.session = session
@@ -41,15 +41,15 @@ struct TopDetailView: View {
 	}
 }
 
-struct TopView: View {
+private struct TopView: View {
 	@Binding var selection: ViewType?
 //	@Binding var searchTerm: String
 	
 	let session: Session
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
-	@State var becomeFirstResponder = true
+	@State private var becomeFirstResponder = true
 	
 	var body: some View {
 		VStack {
@@ -79,10 +79,10 @@ struct TopView: View {
 	}
 }
 
-struct SearchField: View {
+private struct SearchField: View {
 	@Binding var selection: ViewType?
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
 	@State var searchTerm: String
 	@FocusState private var isFocused: Bool
@@ -115,11 +115,11 @@ extension FocusedValues {
 	@Entry var searchFieldFocus: FocusState<Bool>.Binding?
 }
 
-struct DetailView: View {
+private struct DetailView: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
 	init(session: Session, player: Player) {
 		self.session = session
@@ -127,7 +127,7 @@ struct DetailView: View {
 		print("init DetailView")
 	}
 	
-	var placeHolderView: some View {
+	private var placeHolderView: some View {
 		HStack {
 			VStack {
 				Spacer(minLength: 0)

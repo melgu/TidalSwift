@@ -11,10 +11,10 @@ import TidalSwiftLib
 
 struct AccountInfoView: View {
 	let session: Session
-	@State var user: User?
-	@State var subscription: Subscription?
+	@State private var user: User?
+	@State private var subscription: Subscription?
 	
-	@State var loadingState: LoadingState = .loading
+	@State private var loadingState: LoadingState = .loading
 	
 	var body: some View {
 		ScrollView {
@@ -74,7 +74,7 @@ struct AccountInfoView: View {
 	}
 }
 
-struct UserInfoView: View {
+private struct UserInfoView: View {
 	let user: User
 	let session: Session
 	
@@ -145,7 +145,7 @@ struct UserInfoView: View {
 	}
 }
 
-struct SubscriptionInfoView: View {
+private struct SubscriptionInfoView: View {
 	let subscription: Subscription
 	
 	var body: some View {

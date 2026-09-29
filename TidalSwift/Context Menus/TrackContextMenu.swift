@@ -16,8 +16,8 @@ struct TrackContextMenu: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(PlaylistEditingValues.self) var playlistEditingValues
+	@Environment(ViewState.self) private var viewState
+	@Environment(PlaylistEditingValues.self) private var playlistEditingValues
 	@State private var isFavorite: Bool? = nil
 	
 	init(track: Track, indexInPlaylist: Int? = nil, playlist: Playlist? = nil, session: Session, player: Player) {

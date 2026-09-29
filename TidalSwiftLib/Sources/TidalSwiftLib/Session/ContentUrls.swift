@@ -78,7 +78,7 @@ extension Session {
 }
 
 private extension URL {
-	var upgradedToHTTPS: URL {
+	fileprivate var upgradedToHTTPS: URL {
 		guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else { return self }
 		guard components.scheme?.lowercased() == "http" else { return self }
 		components.scheme = "https"

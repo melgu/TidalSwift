@@ -59,7 +59,7 @@ extension Session {
 		case failure(Error)
 	}
 	
-	enum AuthorizationError: Error {
+	private enum AuthorizationError: Error {
 		case deviceAuthorizationFailed
 		case pollingFailed
 		case expiredToken

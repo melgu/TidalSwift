@@ -18,10 +18,10 @@ struct AddToPlaylistView: View {
 	let playlistEditingValues: PlaylistEditingValues
 	let viewState: ViewState
 	
-	@State var selectedPlaylist: String = "" // Playlist UUID
-	@State var newPlaylistName: String = ""
-	@State var newPlaylistDescription: String = ""
-	@State var showEmptyNameWarning: Bool = false
+	@State private var selectedPlaylist: String = "" // Playlist UUID
+	@State private var newPlaylistName: String = ""
+	@State private var newPlaylistDescription: String = ""
+	@State private var showEmptyNameWarning: Bool = false
 	
 	init(session: Session, playlistEditingValues: PlaylistEditingValues, viewState: ViewState) {
 		self.session = session

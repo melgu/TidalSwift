@@ -16,7 +16,7 @@ struct AlbumGrid: View {
 	let session: Session
 	let player: Player
 	
-	var rowHeight: CGFloat = 190
+	private var rowHeight: CGFloat = 190
 	
 	init(albums: [Album], showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
 		self.albums = albums

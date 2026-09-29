@@ -28,7 +28,7 @@ nonisolated struct AudioTags {
 }
 
 class Metadata {
-	unowned let session: Session
+	private unowned let session: Session
 
 	init(session: Session) {
 		self.session = session

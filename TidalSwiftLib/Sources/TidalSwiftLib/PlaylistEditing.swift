@@ -9,15 +9,15 @@
 import Foundation
 
 public class PlaylistEditing {
-	unowned let session: Session
-	let baseUrl: String
+	private unowned let session: Session
+	private let baseUrl: String
 	
 	init(session: Session) {
 		self.session = session
 		self.baseUrl = "\(AuthInformation.APILocation)/playlists"
 	}
 	
-	func etag(for playlistId: String) async -> Int {
+	private func etag(for playlistId: String) async -> Int {
 		let url = URL(string: "\(baseUrl)/\(playlistId)")!
 		do {
 			let response = try await session.get(url: url, parameters: session.sessionParameters)

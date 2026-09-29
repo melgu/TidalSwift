@@ -15,20 +15,20 @@ struct ArtistView: View {
 	let viewState: ViewState
 	
 	var artist: Artist?
-	var topTracks: [Track] = []
-	var albums: [Album] = []
-	var epsAndSingles: [Album] = []
-	var appearances: [Album] = []
-	var videos: [Video] = []
+	private var topTracks: [Track] = []
+	private var albums: [Album] = []
+	private var epsAndSingles: [Album] = []
+	private var appearances: [Album] = []
+	private var videos: [Video] = []
 	
-	enum BottomSectionType {
+	private enum BottomSectionType {
 		case albums
 		case epsAndSingles
 		case appearances
 		case videos
 	}
 	
-	@State var bottomSectionType: BottomSectionType = .albums
+	@State private var bottomSectionType: BottomSectionType = .albums
 	@State private var isFavorite: Bool? = nil
 	
 	init(session: Session, player: Player, viewState: ViewState) {
@@ -82,7 +82,7 @@ struct ArtistView: View {
 		}
 	}
 	
-	func headerSection(_ artist: Artist, viewState: ViewState) -> some View {
+	private func headerSection(_ artist: Artist, viewState: ViewState) -> some View {
 		HStack {
 		if let pictureUrlSmall = artist.pictureUrl(session: session, resolution: 320),
 		   let pictureUrlBig = artist.pictureUrl(session: session, resolution: 750) {
@@ -173,7 +173,7 @@ struct ArtistView: View {
 		.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
 	}
 	
-	func topTrackSection() -> some View {
+	private func topTrackSection() -> some View {
 		ScrollView {
 			TrackList(tracks: topTracks, showCover: true, showAlbumTrackNumber: false,
 					  showArtist: true, showAlbum: true, playlist: nil,
@@ -182,7 +182,7 @@ struct ArtistView: View {
 		.frame(height: 155)
 	}
 	
-	func bottomSection(_ artist: Artist) -> some View {
+	private func bottomSection(_ artist: Artist) -> some View {
 		VStack(spacing: 0) {
 			Picker(selection: $bottomSectionType, label: Spacer(minLength: 0)) {
 				Text("Albums (\(albums.count))").tag(BottomSectionType.albums)

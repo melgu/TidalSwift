@@ -12,10 +12,10 @@ import TidalSwiftLib
 
 @Observable
 class Player {
-	let session: Session
-	var autoplayAfterAddNow: Bool
+	private let session: Session
+	private var autoplayAfterAddNow: Bool
 	
-	let avPlayer = AVPlayer()
+	private let avPlayer = AVPlayer()
 	public let playbackInfo = PlaybackInfo()
 	public let queueInfo = QueueInfo()
 	
@@ -156,7 +156,7 @@ class Player {
 		}
 	}
 	
-	func shuffle(enabled: Bool) {
+	private func shuffle(enabled: Bool) {
 		if queueInfo.queue.isEmpty {
 			return
 		}
@@ -249,12 +249,12 @@ class Player {
 		}
 	}
 	
-	@objc func playerDidFinishPlaying(sender: Notification) {
+	@objc private func playerDidFinishPlaying(sender: Notification) {
 //		print("Song finished playing")
 		next()
 	}
 	
-	func add(playlists: [Playlist], _ when: When) {
+	private func add(playlists: [Playlist], _ when: When) {
 		playlists.forEach { playlist in
 			add(playlist: playlist, when)
 		}
@@ -270,7 +270,7 @@ class Player {
 		}
 	}
 	
-	func add(albums: [Album], _ when: When) {
+	private func add(albums: [Album], _ when: When) {
 		albums.forEach { album in
 			add(album: album, when)
 		}
@@ -423,11 +423,11 @@ class Player {
 		}
 	}
 	
-	func queueCount() -> Int {
+	private func queueCount() -> Int {
 		queueInfo.queue.count
 	}
 	
-	func fraction() -> Double {
+	private func fraction() -> Double {
 		guard let totalTime = avPlayer.currentItem?.duration.seconds else {
 			return 0
 		}
@@ -441,7 +441,7 @@ class Player {
 		return r
 	}
 	
-	func playbackTimeInfo() -> String {
+	private func playbackTimeInfo() -> String {
 		guard let totalTime = avPlayer.currentItem?.duration.seconds else {
 			return ""
 		}
@@ -454,7 +454,7 @@ class Player {
 		return "\(currentTimeString) / \(totalTimeString)"
 	}
 	
-	func setVolume(to volume: Float) {
+	private func setVolume(to volume: Float) {
 		avPlayer.volume = volume
 	}
 	

@@ -46,7 +46,7 @@ struct TrackList: View {
 	}
 }
 
-struct TrackRow: View {
+private struct TrackRow: View {
 	let track: Track
 	let showCover: Bool
 	let showArtist: Bool

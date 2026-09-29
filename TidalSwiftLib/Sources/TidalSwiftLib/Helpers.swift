@@ -9,7 +9,7 @@
 import Foundation
 
 public class Helpers {
-	unowned let session: Session
+	private unowned let session: Session
 	private let metadata: Metadata
 	public let downloadStatus = DownloadStatus()
 	public let offline: Offline

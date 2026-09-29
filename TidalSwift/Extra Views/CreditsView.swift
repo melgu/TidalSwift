@@ -13,9 +13,9 @@ struct CreditsView: View {
 	let session: Session
 	@State var track: Track?
 	@State var album: Album?
-	@State var credits: [Credit]?
+	@State private var credits: [Credit]?
 	
-	@State var loadingState: LoadingState = .loading
+	@State private var loadingState: LoadingState = .loading
 	
 	var body: some View {
 		ScrollView {

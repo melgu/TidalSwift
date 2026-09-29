@@ -14,8 +14,8 @@ struct PlayerInfoView: View {
 	let player: Player
 	
 	
-	@Environment(QueueInfo.self) var queueInfo
-	@Environment(TidalSwiftAppModel.self) var appModel
+	@Environment(QueueInfo.self) private var queueInfo
+	@Environment(TidalSwiftAppModel.self) private var appModel
 	
 	var body: some View {
 		VStack {
@@ -58,11 +58,11 @@ struct PlayerInfoView: View {
 	}
 }
 
-struct TrackInfoView: View {
+private struct TrackInfoView: View {
 	let player: Player
 	let session: Session
 	
-	@Environment(QueueInfo.self) var queueInfo
+	@Environment(QueueInfo.self) private var queueInfo
 	
 	var body: some View {
 		HStack {
@@ -133,7 +133,7 @@ struct TrackInfoView: View {
 		}
 	}
 	
-	func trackToolTipString(for track: Track) -> String {
+	private func trackToolTipString(for track: Track) -> String {
 		var s = track.title
 		if let version = track.version {
 			s += " (\(version))"
@@ -143,11 +143,11 @@ struct TrackInfoView: View {
 	}
 }
 
-struct PlaybackControls: View {
+private struct PlaybackControls: View {
 	let player: Player
 	
-	@Environment(PlaybackInfo.self) var playbackInfo
-	@Environment(QueueInfo.self) var queueInfo
+	@Environment(PlaybackInfo.self) private var playbackInfo
+	@Environment(QueueInfo.self) private var queueInfo
 	
 	var body: some View {
 		VStack(spacing: 8) {
@@ -209,7 +209,7 @@ struct PlaybackControls: View {
 		}
 	}
 	
-	var repeatStateAccessibilityValue: LocalizedStringResource {
+	private var repeatStateAccessibilityValue: LocalizedStringResource {
 		switch playbackInfo.repeatState {
 		case .off: "Off"
 		case .all: "All"
@@ -218,11 +218,11 @@ struct PlaybackControls: View {
 	}
 }
 
-struct ProgressBar: View {
+private struct ProgressBar: View {
 	let player: Player
 	
-	@Environment(PlaybackInfo.self) var playbackInfo
-	@Environment(\.colorScheme) var colorScheme: ColorScheme
+	@Environment(PlaybackInfo.self) private var playbackInfo
+	@Environment(\.colorScheme) private var colorScheme: ColorScheme
 	
 	var body: some View {
 		let fraction = Binding(
@@ -262,10 +262,10 @@ struct ProgressBar: View {
 	}
 }
 
-struct VolumeControl: View {
+private struct VolumeControl: View {
 	let player: Player
 	
-	@Environment(PlaybackInfo.self) var playbackInfo
+	@Environment(PlaybackInfo.self) private var playbackInfo
 	
 	var body: some View {
 		@Bindable var playbackInfo = playbackInfo
@@ -290,7 +290,7 @@ struct VolumeControl: View {
 	}
 	
 	@ViewBuilder
-	var speakerSymbol: some View {
+	private var speakerSymbol: some View {
 		if playbackInfo.volume > 0.66 {
 			Image(systemName: "speaker.3.fill")
 		} else if playbackInfo.volume > 0.33 {

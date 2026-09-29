@@ -13,11 +13,11 @@ struct PlaylistView: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	@State private var isFavorite: Bool? = nil
 	@State private var isOffline: Bool = false
 	
-	var isUserPlaylist: Bool {
+	private var isUserPlaylist: Bool {
 		viewState.stack.last?.playlist?.creator.id == session.userId
 	}
 	

@@ -27,53 +27,53 @@ public final class OfflineDB {
 			save()
 		}
 	}
-	func setFavoriteTracks(to tracks: [Track]) {
+	fileprivate func setFavoriteTracks(to tracks: [Track]) {
 		favoriteTracks = tracks
 	}
 	
-	var albums: [Album] = [] {
+	fileprivate var albums: [Album] = [] {
 		didSet {
 			updateTracks()
 			save()
 		}
 	}
-	func add(_ album: Album) {
+	fileprivate func add(_ album: Album) {
 		albums.append(album)
 	}
-	func remove(_ album: Album) {
+	fileprivate func remove(_ album: Album) {
 		albums.removeAll(where: { $0 == album })
 	}
 	
-	var albumTracks: [Album: [Track]] = [:] {
+	fileprivate var albumTracks: [Album: [Track]] = [:] {
 		didSet {
 			updateTracks()
 			save()
 		}
 	}
-	func setTracks(for album: Album, to tracks: [Track]?) {
+	fileprivate func setTracks(for album: Album, to tracks: [Track]?) {
 		albumTracks[album] = tracks
 	}
 	
-	var playlists: [Playlist] = [] {
+	fileprivate var playlists: [Playlist] = [] {
 		didSet {
 			updateTracks()
 			save()
 		}
 	}
-	func add(_ playlist: Playlist) {
+	fileprivate func add(_ playlist: Playlist) {
 		playlists.append(playlist)
 	}
-	func remove(_ playlist: Playlist) {
+	fileprivate func remove(_ playlist: Playlist) {
 		playlists.removeAll(where: { $0 == playlist })
 	}
 	
-	var playlistTracks: [Playlist: [Track]] = [:] {
+	fileprivate var playlistTracks: [Playlist: [Track]] = [:] {
 		didSet {
 			updateTracks()
 			save()
 		}
 	}
-	func setTracks(for playlist: Playlist, to tracks: [Track]?) {
+	fileprivate func setTracks(for playlist: Playlist, to tracks: [Track]?) {
 		playlistTracks[playlist] = tracks
 	}
 	
@@ -126,7 +126,7 @@ public final class OfflineDB {
 		updateTracks()
 	}
 	
-	func clear() {
+	fileprivate func clear() {
 		favoriteTracks = []
 		albums = []
 		albumTracks = [:]

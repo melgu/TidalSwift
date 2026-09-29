@@ -22,13 +22,13 @@ struct LoginView: View {
 	
 	@Environment(\.openURL) private var openURL
 	
-	@State var authorizationTask: Task<Void, Never>?
-	@State var authState: Session.AuthorizationState = .waiting
-	@State var counter = 300
+	@State private var authorizationTask: Task<Void, Never>?
+	@State private var authState: Session.AuthorizationState = .waiting
+	@State private var counter = 300
 	
-	@State var refreshToken: String = ""
-	@State var clientID: String = ""
-	@State var loginErrorMessage: String?
+	@State private var refreshToken: String = ""
+	@State private var clientID: String = ""
+	@State private var loginErrorMessage: String?
 	
 	var body: some View {
 		ScrollView {
@@ -54,7 +54,7 @@ struct LoginView: View {
 		}
 	}
 	
-	var deviceLogin: some View {
+	private var deviceLogin: some View {
 		VStack {
 			switch authState {
 			case .waiting:
@@ -95,7 +95,7 @@ struct LoginView: View {
 		.padding()
 	}
 	
-	var authLogin: some View {
+	private var authLogin: some View {
 		VStack {
 			SecureField("Refresh Token", text: $refreshToken)
 			
@@ -113,7 +113,7 @@ struct LoginView: View {
 		.padding()
 	}
 	
-	func startAuthorization() {
+	private func startAuthorization() {
 		authorizationTask?.cancel()
 		authorizationTask = Task {
 			for await state in session.startAuthorization() {
@@ -133,7 +133,7 @@ struct LoginView: View {
 		}
 	}
 	
-	func setAuthorization() {
+	private func setAuthorization() {
 		Task {
 			do {
 				try await session.login(refreshToken: refreshToken, clientID: clientID)
@@ -148,7 +148,7 @@ struct LoginView: View {
 		}
 	}
 	
-	func successfulLogin() {
+	private func successfulLogin() {
 		loginErrorMessage = nil
 		loginInfo.showModal = false
 		session.saveConfig()

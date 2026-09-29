@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct FullscreenLoadingSpinner: View {
-	let externalState: LoadingState?
+	private let externalState: LoadingState?
 	
 	init(_ externalState: LoadingState? = nil) {
 		self.externalState = externalState
@@ -29,8 +29,8 @@ struct FullscreenLoadingSpinner: View {
 }
 
 struct LoadingSpinner: View {
-	let externalState: LoadingState?
-	var loadingState: LoadingState {
+	private let externalState: LoadingState?
+	private var loadingState: LoadingState {
 		if let state = externalState {
 			return state
 		} else {
@@ -46,9 +46,9 @@ struct LoadingSpinner: View {
 		self.externalState = externalState
 	}
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
-	@State var animate = false
+	@State private var animate = false
 	
 	var body: some View {
 		Group {
@@ -85,7 +85,7 @@ enum LoadingState: Int, Codable {
 }
 
 #if DEBUG
-struct LoadingSpinner_Previews: PreviewProvider {
+private struct LoadingSpinner_Previews: PreviewProvider {
 	static var previews: some View {
 		FullscreenLoadingSpinner()
 	}

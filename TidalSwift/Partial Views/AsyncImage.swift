@@ -86,7 +86,7 @@ struct AsyncImage: View {
 	}
 }
 
-final class ImageLoader {
+private final class ImageLoader {
 	static let shared = ImageLoader()
 
 	private let cache = NSCache<NSURL, PlatformImage>()
@@ -134,7 +134,7 @@ final class ImageLoader {
 // MARK: - Platform Image
 
 #if canImport(AppKit)
-typealias PlatformImage = NSImage
+private typealias PlatformImage = NSImage
 
 private extension Image {
 	init(platformImage: PlatformImage) {
@@ -142,7 +142,7 @@ private extension Image {
 	}
 }
 #else
-typealias PlatformImage = UIImage
+private typealias PlatformImage = UIImage
 
 private extension Image {
 	init(platformImage: PlatformImage) {

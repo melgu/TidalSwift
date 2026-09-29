@@ -14,8 +14,8 @@ struct VideoContextMenu: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(PlaybackInfo.self) var playbackInfo
+	@Environment(ViewState.self) private var viewState
+	@Environment(PlaybackInfo.self) private var playbackInfo
 	@State private var isFavorite: Bool? = nil
 	
 	var body: some View {

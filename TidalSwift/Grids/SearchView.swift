@@ -13,7 +13,7 @@ struct SearchView: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
 	init(session: Session, player: Player) {
 		print("init SearchView")
@@ -69,7 +69,7 @@ struct SearchView: View {
 	}
 }
 
-struct SearchViewArtists: View {
+private struct SearchViewArtists: View {
 	let artists: [Artist]
 	let session: Session
 	let player: Player
@@ -92,7 +92,7 @@ struct SearchViewArtists: View {
 	}
 }
 
-struct SearchViewAlbums: View {
+private struct SearchViewAlbums: View {
 	let albums: [Album]
 	let session: Session
 	let player: Player
@@ -115,7 +115,7 @@ struct SearchViewAlbums: View {
 	}
 }
 
-struct SearchViewPlaylists: View {
+private struct SearchViewPlaylists: View {
 	let playlists: [Playlist]
 	let session: Session
 	let player: Player
@@ -138,7 +138,7 @@ struct SearchViewPlaylists: View {
 	}
 }
 
-struct SearchViewTracks: View {
+private struct SearchViewTracks: View {
 	let tracks: [Track]
 	let session: Session
 	let player: Player
@@ -161,7 +161,7 @@ struct SearchViewTracks: View {
 	}
 }
 
-struct SearchViewVideos: View {
+private struct SearchViewVideos: View {
 	let videos: [Video]
 	let session: Session
 	let player: Player

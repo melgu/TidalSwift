@@ -43,7 +43,7 @@ struct TidalSwiftApp: App {
 
 @Observable
 final class TidalSwiftAppModel {
-	@ObservationIgnored let updateNotification = UpdateNotification(feedUrl: URL(string: "https://www.melvin-gundlach.de/apps/app-feeds/TidalSwift.json")!)
+	@ObservationIgnored private let updateNotification = UpdateNotification(feedUrl: URL(string: "https://www.melvin-gundlach.de/apps/app-feeds/TidalSwift.json")!)
 
 	let session: Session
 	let player: Player
@@ -142,7 +142,7 @@ final class TidalSwiftAppModel {
 	}
 	
 	#if canImport(AppKit)
-	func prepareForTermination() {
+	private func prepareForTermination() {
 		guard !isTerminating else { return }
 		isTerminating = true
 		saveTask?.cancel()
@@ -201,7 +201,7 @@ final class TidalSwiftAppModel {
 
 	// MARK: Secondary Windows
 
-	func initSecondaryWindows() {
+	private func initSecondaryWindows() {
 		lyricsViewController = ResizableWindowControllerFactory.create(rootView:
 			LyricsView(session: session)
 				.environment(viewState)
@@ -231,7 +231,7 @@ final class TidalSwiftAppModel {
 		playbackHistoryViewController?.window?.title = "Playback History"
 	}
 
-	func closeAllSecondaryWindows() {
+	private func closeAllSecondaryWindows() {
 		lyricsViewController?.close()
 		queueViewController?.close()
 		viewHistoryViewController?.close()
@@ -326,7 +326,7 @@ final class TidalSwiftAppModel {
 		}
 	}
 
-	func savePlaybackState() {
+	private func savePlaybackState() {
 		let codablePI = CodablePlaybackInfo(
 			fraction: player.playbackInfo.fraction,
 			volume: player.playbackInfo.volume,
@@ -345,7 +345,7 @@ final class TidalSwiftAppModel {
 		UserDefaults.standard.set(player.preferDolbyAtmos, forKey: "preferDolbyAtmos")
 	}
 
-	func saveViewState() {
+	private func saveViewState() {
 		UserDefaults.standard.set(viewState.searchTerm, forKey: "SearchTerm")
 		UserDefaults.standard.set(viewState.newReleasesIncludeEps, forKey: "NewReleasesIncludeEps")
 		let viewStackData = try? JSONEncoder().encode(viewState.stack)
@@ -355,7 +355,7 @@ final class TidalSwiftAppModel {
 		UserDefaults.standard.set(viewState.maxHistoryItems, forKey: "ViewStateHistoryMaxItems")
 	}
 
-	func saveFavoritesSortingState() {
+	private func saveFavoritesSortingState() {
 		let codableSS = CodableSortingState(
 			favoritePlaylistSorting: sortingState.favoritePlaylistSorting,
 			favoritePlaylistReversed: sortingState.favoritePlaylistReversed,
@@ -378,7 +378,7 @@ final class TidalSwiftAppModel {
 		UserDefaults.standard.set(codableSSData, forKey: "SortingState")
 	}
 
-	func saveViewCache() {
+	private func saveViewCache() {
 		let viewCacheData = try? JSONEncoder().encode(viewState.cache)
 		UserDefaults.standard.set(viewCacheData, forKey: "ViewCache")
 	}
@@ -392,7 +392,7 @@ final class TidalSwiftAppModel {
 		saveFavoritesSortingState()
 	}
 
-	func closeModals() {
+	private func closeModals() {
 		loginInfo.showModal = false
 		playlistEditingValues.showAddTracksModal = false
 		playlistEditingValues.showRemoveTracksModal = false
@@ -446,7 +446,7 @@ final class TidalSwiftAppModel {
 	}
 
 	#if canImport(AppKit)
-	func updateCheck(showNoUpdatesAlert: Bool) {
+	private func updateCheck(showNoUpdatesAlert: Bool) {
 		Task {
 			do {
 				if try await updateNotification.checkForUpdates() {
@@ -657,7 +657,7 @@ final class TidalSwiftAppModel {
 		}
 	}
 
-	func refreshFavoriteState() {
+	private func refreshFavoriteState() {
 		guard hasCurrentTrack else {
 			trackIsFavorite = false
 			albumIsFavorite = false
@@ -674,7 +674,7 @@ final class TidalSwiftAppModel {
 	}
 }
 
-struct TidalSwiftCommands: Commands {
+private struct TidalSwiftCommands: Commands {
 	let appModel: TidalSwiftAppModel
 	@FocusedValue(\.searchFieldFocus) private var searchFieldFocus
 

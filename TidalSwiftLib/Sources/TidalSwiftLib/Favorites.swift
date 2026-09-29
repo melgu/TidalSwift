@@ -9,9 +9,9 @@
 import Foundation
 
 public class Favorites {
-	unowned let session: Session
-	var cache: FavoritesCache!
-	let baseUrl: String
+	private unowned let session: Session
+	private var cache: FavoritesCache!
+	private let baseUrl: String
 	
 	public init(session: Session, userId: Int) {
 		self.session = session
@@ -285,7 +285,7 @@ public class Favorites {
 	}
 }
 
-class FavoritesCache {
+private class FavoritesCache {
 	private let artistsCache: CachedFavorites<FavoriteArtist>
 	private let albumsCache: CachedFavorites<FavoriteAlbum>
 	private let tracksCache: CachedFavorites<FavoriteTrack>

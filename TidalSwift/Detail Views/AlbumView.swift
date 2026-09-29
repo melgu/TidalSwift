@@ -13,9 +13,9 @@ struct AlbumView: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
-	@State var cloudPressed: Bool = false
+	@State private var cloudPressed: Bool = false
 	@State private var isFavorite: Bool? = nil
 	@State private var isOffline: Bool = false
 	

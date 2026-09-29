@@ -101,7 +101,7 @@ extension Track {
 		.secondaryIconColor()
 	}
 	
-	var hasAttributes: Bool {
+	fileprivate var hasAttributes: Bool {
 		explicit ||
 			hasHiRes ||
 			audioModes?.contains(.sony360RealityAudio) ?? false ||

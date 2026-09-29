@@ -13,8 +13,8 @@ struct ArtistBioView: View {
 	let session: Session
 	
 	@State var artist: Artist
-	@State var bio: ArtistBio?
-	@State var loadingState: LoadingState = .loading
+	@State private var bio: ArtistBio?
+	@State private var loadingState: LoadingState = .loading
 	
 	var body: some View {
 		ScrollView {

@@ -13,9 +13,9 @@ struct QueueView: View {
 	unowned let session: Session
 	unowned let player: Player
 	
-	@Environment(QueueInfo.self) var queueInfo
+	@Environment(QueueInfo.self) private var queueInfo
 	
-	func calculateTotalTime(for tracks: [Track]) -> Int {
+	private func calculateTotalTime(for tracks: [Track]) -> Int {
 		var result = 0
 		for track in tracks {
 			result += track.duration

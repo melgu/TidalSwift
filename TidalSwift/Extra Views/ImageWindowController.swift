@@ -21,7 +21,7 @@ class ImageWindowController: NSWindowController {
 }
 #endif
 
-struct ImageWindowView: View {
+private struct ImageWindowView: View {
 	let imageUrl: URL
 	let title: String
 	

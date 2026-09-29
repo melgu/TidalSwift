@@ -68,7 +68,7 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 			lhs.videos == rhs.videos
 	}
 	
-	static func equateBase(_ lhs: TidalSwiftView, _ rhs: TidalSwiftView) -> Bool {
+	fileprivate static func equateBase(_ lhs: TidalSwiftView, _ rhs: TidalSwiftView) -> Bool {
 		lhs.viewType == rhs.viewType && lhs.artist == rhs.artist &&
 			lhs.album == rhs.album && lhs.playlist == rhs.playlist &&
 			lhs.mix == rhs.mix

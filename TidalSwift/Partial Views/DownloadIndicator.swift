@@ -10,9 +10,9 @@ import SwiftUI
 import TidalSwiftLib
 
 struct DownloadIndicator: View {
-	@State var animationState: Bool = false
+	@State private var animationState: Bool = false
 	
-	@Environment(DownloadStatus.self) var downloadStatus
+	@Environment(DownloadStatus.self) private var downloadStatus
 	
 	var body: some View {
 		Group {
@@ -34,7 +34,7 @@ struct DownloadIndicator: View {
 	}
 }
 
-struct DownloadIndicator_Previews: PreviewProvider {
+private struct DownloadIndicator_Previews: PreviewProvider {
 	static var previews: some View {
 		DownloadIndicator()
 	}

@@ -33,8 +33,8 @@ struct FavoritePlaylists: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(SortingState.self) var sortingState
+	@Environment(ViewState.self) private var viewState
+	@Environment(SortingState.self) private var sortingState
 	
 	var body: some View {
 		@Bindable var sortingState = sortingState
@@ -79,8 +79,8 @@ struct FavoriteAlbums: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(SortingState.self) var sortingState
+	@Environment(ViewState.self) private var viewState
+	@Environment(SortingState.self) private var sortingState
 	
 	var body: some View {
 		@Bindable var sortingState = sortingState
@@ -123,10 +123,10 @@ struct FavoriteTracks: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(SortingState.self) var sortingState
+	@Environment(ViewState.self) private var viewState
+	@Environment(SortingState.self) private var sortingState
 	
-	@AppStorage("SaveFavoritesOffline") public var saveFavoritesOffline = false
+	@AppStorage("SaveFavoritesOffline") private var saveFavoritesOffline = false
 	
 	var body: some View {
 		@Bindable var sortingState = sortingState
@@ -193,8 +193,8 @@ struct FavoriteVideos: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(SortingState.self) var sortingState
+	@Environment(ViewState.self) private var viewState
+	@Environment(SortingState.self) private var sortingState
 	
 	var body: some View {
 		@Bindable var sortingState = sortingState
@@ -238,8 +238,8 @@ struct FavoriteArtists: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(SortingState.self) var sortingState
+	@Environment(ViewState.self) private var viewState
+	@Environment(SortingState.self) private var sortingState
 	
 	var body: some View {
 		@Bindable var sortingState = sortingState

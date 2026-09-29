@@ -64,10 +64,10 @@ struct MixImage: View {
 	let highResolutionImages: Bool
 	let session: Session
 	
-	let lowResolution: Int = 160
-	let highResolution: Int = 480
+	private let lowResolution: Int = 160
+	private let highResolution: Int = 480
 	
-	@State var scrollImages = false
+	@State private var scrollImages = false
 	
 	var body: some View {
 		GeometryReader { metrics in

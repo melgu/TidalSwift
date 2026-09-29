@@ -13,7 +13,7 @@ import AVFoundation
 ///
 /// The file is rewritten, as AVFoundation can't edit metadata in place.
 nonisolated enum MP4TagWriter {
-	enum WriteError: Error {
+	private enum WriteError: Error {
 		case exportUnavailable
 		case exportFailed(Error?)
 	}

@@ -44,7 +44,7 @@ struct ViewHistoryView: View {
 	}
 }
 
-struct ViewHistoryViewRow: View {
+private struct ViewHistoryViewRow: View {
 	let view: TidalSwiftView
 	private var text: String
 	

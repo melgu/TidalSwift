@@ -13,8 +13,8 @@ struct OfflinePlaylistsView: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(SortingState.self) var sortingState
+	@Environment(ViewState.self) private var viewState
+	@Environment(SortingState.self) private var sortingState
 	
 	var body: some View {
 		@Bindable var sortingState = sortingState
@@ -57,8 +57,8 @@ struct OfflineAlbumsView: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(SortingState.self) var sortingState
+	@Environment(ViewState.self) private var viewState
+	@Environment(SortingState.self) private var sortingState
 	
 	var body: some View {
 		@Bindable var sortingState = sortingState
@@ -100,8 +100,8 @@ struct OfflineTracksView: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(SortingState.self) var sortingState
+	@Environment(ViewState.self) private var viewState
+	@Environment(SortingState.self) private var sortingState
 	
 	var body: some View {
 		@Bindable var sortingState = sortingState

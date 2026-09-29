@@ -14,7 +14,7 @@ struct ArtistContextMenu: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	@State private var isFavorite: Bool? = nil
 	
 	var body: some View {

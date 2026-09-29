@@ -26,7 +26,7 @@ extension ViewState {
 		}
 	}
 	
-	func doSearch(term: String) {
+	private func doSearch(term: String) {
 		if stack.last?.viewType != .search {
 			return
 		}

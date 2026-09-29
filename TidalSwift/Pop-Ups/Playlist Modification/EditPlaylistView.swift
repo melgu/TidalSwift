@@ -15,9 +15,9 @@ struct EditPlaylistView: View {
 	let playlistEditingValues: PlaylistEditingValues
 	let viewState: ViewState
 	
-	@State var playlistTitle: String = ""
-	@State var playlistDescription: String = ""
-	@State var showEmptyNameWarning: Bool = false
+	@State private var playlistTitle: String = ""
+	@State private var playlistDescription: String = ""
+	@State private var showEmptyNameWarning: Bool = false
 	@State private var isOffline: Bool = false
 	
 	var body: some View {

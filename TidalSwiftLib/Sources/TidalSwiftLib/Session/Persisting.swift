@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct PersistentInformation {
+private struct PersistentInformation {
 	var sessionId: String
 	var countryCode: String
 	var userId: Int

@@ -16,7 +16,7 @@ import UniformTypeIdentifiers
 /// Existing tag, picture and padding blocks are replaced, all others (e.g. stream info and seek table) are kept.
 /// The file is rewritten, as there is no room to insert blocks in place.
 nonisolated enum FLACTagWriter {
-	enum WriteError: Error {
+	private enum WriteError: Error {
 		case notFLAC
 		case truncated
 		case blockTooLarge
