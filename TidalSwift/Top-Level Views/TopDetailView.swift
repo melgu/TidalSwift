@@ -113,9 +113,12 @@ private struct SearchField: View {
 				isFocused = false
 			}
 		}
+		#if canImport(AppKit)
+		// Esc gives up focus, so Space can control playback again
 		.onExitCommand {
 			isFocused = false
 		}
+		#endif
 		.focusedSceneValue(\.searchFieldFocus, $isFocused)
 	}
 }
