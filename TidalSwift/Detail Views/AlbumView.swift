@@ -102,12 +102,10 @@ struct AlbumView: View {
 										}
 										.buttonStyle(.plain)
 										if let url = album.url {
-											Button {
-												Pasteboard.copy(string: url.absoluteString)
-											} label: {
+											ShareLink(item: url, preview: SharePreview(album.title)) {
 												Image(systemName: "square.and.arrow.up")
-													.accessibilityLabel("Copy URL")
-													.help("Copy URL")
+													.accessibilityLabel("Share")
+													.help("Share")
 											}
 											.buttonStyle(.plain)
 										}

@@ -155,12 +155,10 @@ struct ArtistView: View {
 					}
 					.buttonStyle(.plain)
 					if let url = artist.url {
-						Button {
-							Pasteboard.copy(string: url.absoluteString)
-						} label: {
+						ShareLink(item: url, preview: SharePreview(artist.name)) {
 							Image(systemName: "square.and.arrow.up")
-								.accessibilityLabel("Copy URL")
-								.help("Copy URL")
+								.accessibilityLabel("Share")
+								.help("Share")
 						}
 						.buttonStyle(.plain)
 					}

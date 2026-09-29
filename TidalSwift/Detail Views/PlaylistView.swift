@@ -86,12 +86,10 @@ struct PlaylistView: View {
 												.accessibilityAddTraits(isFavorite ?? true ? .isSelected : [])
 										}
 										.buttonStyle(.plain)
-										Button {
-											Pasteboard.copy(string: playlist.url.absoluteString)
-										} label: {
+										ShareLink(item: playlist.url, preview: SharePreview(playlist.title)) {
 											Image(systemName: "square.and.arrow.up")
-												.accessibilityLabel("Copy URL")
-												.help("Copy URL")
+												.accessibilityLabel("Share")
+												.help("Share")
 										}
 										.buttonStyle(.plain)
 									}
