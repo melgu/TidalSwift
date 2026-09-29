@@ -25,9 +25,10 @@ struct TrackList: View {
 				TrackRow(track: track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
 						 trackNumber: showAlbumTrackNumber ? nil : index, session: session)
 				.onTapGesture(count: 2) {
-					if track.isUnavailable { return }
-					print("\(track.id) \(track.title)")
-					player.add(tracks: tracks, .now, playAt: index)
+					play(track, at: index)
+				}
+				.accessibilityAction {
+					play(track, at: index)
 				}
 				.contextMenu {
 					TrackContextMenu(track: track, indexInPlaylist: playlist != nil ? index : nil, playlist: playlist, session: session, player: player)
@@ -36,6 +37,12 @@ struct TrackList: View {
 			}
 		}
 		.padding(.horizontal)
+	}
+	
+	private func play(_ track: Track, at index: Int) {
+		if track.isUnavailable { return }
+		print("\(track.id) \(track.title)")
+		player.add(tracks: tracks, .now, playAt: index)
 	}
 }
 
@@ -47,12 +54,12 @@ struct TrackRow: View {
 	let trackNumber: Int?
 	let session: Session
 	
-	var widthFactorTrack: CGFloat
-	var widthFactorArtist: CGFloat
-	var widthFactorAlbum: CGFloat
+	private var widthFactorTrack: CGFloat
+	private var widthFactorArtist: CGFloat
+	private var widthFactorAlbum: CGFloat
 	
-	@Environment(ViewState.self) var viewState
-	@Environment(QueueInfo.self) var queueInfo
+	@Environment(ViewState.self) private var viewState
+	@Environment(QueueInfo.self) private var queueInfo
 	@State private var isOffline: Bool = false
 	@State private var isFavorite: Bool? = nil
 	
@@ -150,19 +157,22 @@ struct TrackRow: View {
 							.secondaryIconColor()
 					}
 					#if canImport(AppKit)
-					Image(systemName: "c.circle")
-						.onTapGesture {
-							let controller = ResizableWindowControllerFactory.create(rootView:
-								CreditsView(session: session, track: track)
+					Button {
+						let controller = ResizableWindowControllerFactory.create(rootView:
+							CreditsView(session: session, track: track)
 								.environment(viewState)
-							)
-							controller.window?.title = "Credits – \(track.title)"
-							controller.showWindow(nil)
-						}
+						)
+						controller.window?.title = "Credits – \(track.title)"
+						controller.showWindow(nil)
+					} label: {
+						Image(systemName: "c.circle")
+							.accessibilityLabel("Credits")
+							.help("Credits")
+					}
+					.buttonStyle(.plain)
 					#endif
-				if isFavorite ?? false {
-					Image(systemName: "heart.fill")
-						.onTapGesture {
+					Button {
+						if isFavorite ?? false {
 							print("Remove from Favorites")
 							Task {
 								if await session.favorites?.removeTrack(trackId: track.id) == true {
@@ -171,10 +181,7 @@ struct TrackRow: View {
 									viewState.refreshCurrentView()
 								}
 							}
-						}
-				} else {
-					Image(systemName: "heart")
-						.onTapGesture {
+						} else {
 							print("Add to Favorites")
 							Task {
 								if await session.favorites?.addTrack(trackId: track.id) == true {
@@ -184,7 +191,12 @@ struct TrackRow: View {
 								}
 							}
 						}
-				}
+					} label: {
+						Image(systemName: isFavorite ?? false ? "heart.fill" : "heart")
+							.accessibilityLabel("Favorite")
+							.accessibilityAddTraits(isFavorite ?? false ? .isSelected : [])
+					}
+					.buttonStyle(.plain)
 				}
 			}
 		.foregroundColor(track.isUnavailable ? .secondary : .primary)
@@ -197,7 +209,7 @@ struct TrackRow: View {
 		.frame(height: showCover ? 30 : 16) // Values tested "by hand"
 	}
 	
-	var trackToolTipString: String {
+	private var trackToolTipString: String {
 		var s = track.title
 		if let version = track.version {
 			s += " (\(version))"
