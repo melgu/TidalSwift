@@ -90,6 +90,15 @@ private struct SearchField: View {
 	var body: some View {
 		TextField("Search", text: $searchTerm, onCommit: {
 			print("Search Commit: \(searchTerm)")
+			if let link = TidalLink(string: searchTerm) {
+				// Ending editing writes the typed text back, so clear it afterwards
+				isFocused = false
+				Task {
+					searchTerm = ""
+				}
+				viewState.open(link)
+				return
+			}
 			viewState.searchTerm = searchTerm
 			if !searchTerm.isEmpty /*&& searchTerm != viewState.lastSearchTerm*/ {
 				selection = .search

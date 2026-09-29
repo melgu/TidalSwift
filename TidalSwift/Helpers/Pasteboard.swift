@@ -20,4 +20,13 @@ class Pasteboard {
 		UIPasteboard.general.string = string
 		#endif
 	}
+	
+	static func tidalLink() -> TidalLink? {
+		#if canImport(AppKit)
+		let string = NSPasteboard.general.string(forType: .string)
+		#else
+		let string = UIPasteboard.general.string
+		#endif
+		return string.flatMap { TidalLink(string: $0) }
+	}
 }

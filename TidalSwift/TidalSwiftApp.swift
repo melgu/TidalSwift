@@ -14,6 +14,9 @@ import UpdateNotification
 struct TidalSwiftApp: App {
 	@State private var appModel = TidalSwiftAppModel()
 	@Environment(\.scenePhase) private var scenePhase
+	#if canImport(AppKit)
+	@NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
+	#endif
 	
 	var body: some Scene {
 		WindowGroup("TidalSwift") {
@@ -27,6 +30,9 @@ struct TidalSwiftApp: App {
 			)
 			.environment(appModel)
 			.onAppear {
+				#if canImport(AppKit)
+				appDelegate.appModel = appModel
+				#endif
 				appModel.startupIfNeeded()
 			}
 			.onChange(of: scenePhase) { _, newValue in
@@ -40,6 +46,36 @@ struct TidalSwiftApp: App {
 		}
 	}
 }
+
+#if canImport(AppKit)
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
+	weak var appModel: TidalSwiftAppModel?
+	
+	// Copy and Paste reach the app delegate at the end of the responder chain,
+	// so they only land here when nothing focused, like a text field, handles them
+	
+	@objc func copy(_ sender: Any?) {
+		guard let url = appModel?.viewState.currentShareUrl else { return }
+		Pasteboard.copy(string: url.absoluteString)
+	}
+	
+	@objc func paste(_ sender: Any?) {
+		guard let link = Pasteboard.tidalLink() else { return }
+		appModel?.viewState.open(link)
+	}
+	
+	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+		switch menuItem.action {
+		case #selector(copy(_:)):
+			appModel?.viewState.currentShareUrl != nil
+		case #selector(paste(_:)):
+			Pasteboard.tidalLink() != nil
+		default:
+			true
+		}
+	}
+}
+#endif
 
 @Observable
 final class TidalSwiftAppModel {
