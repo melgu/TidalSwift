@@ -14,7 +14,7 @@ struct ArtistGridItem: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
 	var body: some View {
 		VStack {
@@ -45,16 +45,24 @@ struct ArtistGridItem: View {
 		}
 		.padding(5)
 		.help(artist.name)
-		.onTapGesture(count: 2) {
-			print("\(artist.name)")
-			player.add(artist: artist, .now)
-		}
-		.onTapGesture(count: 1) {
-			print("First Click. \(artist.name)")
-			viewState.push(artist: artist)
-		}
+		.onTapGesture(count: 2, perform: play)
+		.onTapGesture(count: 1, perform: open)
+		.accessibilityElement(children: .combine)
+		.accessibilityAddTraits(.isButton)
+		.accessibilityAction(.default, open)
+		.accessibilityAction(named: "Play", play)
 		.contextMenu {
 			ArtistContextMenu(artist: artist, session: session, player: player)
 		}
+	}
+	
+	private func open() {
+		print("First Click. \(artist.name)")
+		viewState.push(artist: artist)
+	}
+	
+	private func play() {
+		print("\(artist.name)")
+		player.add(artist: artist, .now)
 	}
 }

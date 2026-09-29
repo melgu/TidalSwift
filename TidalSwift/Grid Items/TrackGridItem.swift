@@ -58,16 +58,21 @@ struct TrackGridItem: View {
 		}
 		.padding(5)
 		.help(toolTipString)
-		.onTapGesture(count: 2) {
-			print("\(track.title)")
-			player.add(track: track, .now)
-		}
+		.onTapGesture(count: 2, perform: play)
+		.accessibilityElement(children: .combine)
+		.accessibilityAddTraits(.isButton)
+		.accessibilityAction(.default, play)
 		.contextMenu {
 			TrackContextMenu(track: track, session: session, player: player)
 		}
 	}
 	
-	var toolTipString: String {
+	private func play() {
+		print("\(track.title)")
+		player.add(track: track, .now)
+	}
+	
+	private var toolTipString: String {
 		var s = track.title
 		if let version = track.version {
 			s += " (\(version))"

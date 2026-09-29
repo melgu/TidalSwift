@@ -14,7 +14,7 @@ struct MixGridItem: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
 	var body: some View {
 		VStack {
@@ -33,20 +33,28 @@ struct MixGridItem: View {
 				.frame(width: 160)
 		}
 		.padding(5)
-		.onTapGesture(count: 2) {
-			print("Second Click. \(mix.title)")
-			Task {
-				if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
-					player.add(tracks: tracks, .now)
-				}
-			}
-		}
-		.onTapGesture(count: 1) {
-			print("First Click. \(mix.title)")
-			viewState.push(mix: mix)
-		}
+		.onTapGesture(count: 2, perform: play)
+		.onTapGesture(count: 1, perform: open)
+		.accessibilityElement(children: .combine)
+		.accessibilityAddTraits(.isButton)
+		.accessibilityAction(.default, open)
+		.accessibilityAction(named: "Play", play)
 		.contextMenu {
 			MixContextMenu(mix: mix, session: session, player: player)
+		}
+	}
+	
+	private func open() {
+		print("First Click. \(mix.title)")
+		viewState.push(mix: mix)
+	}
+	
+	private func play() {
+		print("Second Click. \(mix.title)")
+		Task {
+			if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
+				player.add(tracks: tracks, .now)
+			}
 		}
 	}
 }

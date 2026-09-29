@@ -16,7 +16,7 @@ struct AlbumGridItem: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	@State private var isOffline: Bool = false
 	
 	init(album: Album, showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
@@ -107,16 +107,12 @@ struct AlbumGridItem: View {
 		}
 		.padding(5)
 		.help(toolTipString)
-		.onTapGesture(count: 2) {
-			print("Second Click. \(album.title)")
-			player.add(album: album, .now)
-		}
-		.onTapGesture(count: 1) {
-			print("First Click. \(album.title)")
-			if album.streamReady ?? false {
-				viewState.push(album: album)
-			}
-		}
+		.onTapGesture(count: 2, perform: play)
+		.onTapGesture(count: 1, perform: open)
+		.accessibilityElement(children: .combine)
+		.accessibilityAddTraits(.isButton)
+		.accessibilityAction(.default, open)
+		.accessibilityAction(named: "Play", play)
 		.contextMenu {
 			AlbumContextMenu(album: album, session: session, player: player)
 		}
@@ -125,7 +121,19 @@ struct AlbumGridItem: View {
 		}
 	}
 	
-	var toolTipString: String {
+	private func open() {
+		print("First Click. \(album.title)")
+		if album.streamReady ?? false {
+			viewState.push(album: album)
+		}
+	}
+	
+	private func play() {
+		print("Second Click. \(album.title)")
+		player.add(album: album, .now)
+	}
+	
+	private var toolTipString: String {
 		var s = album.title
 		if let artists = album.artists {
 			s += " – \(artists.formArtistString())"

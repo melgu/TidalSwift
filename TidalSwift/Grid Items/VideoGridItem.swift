@@ -15,7 +15,7 @@ struct VideoGridItem: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(PlaybackInfo.self) var playbackInfo
+	@Environment(PlaybackInfo.self) private var playbackInfo
 	
 	var body: some View {
 		VStack {
@@ -60,21 +60,28 @@ struct VideoGridItem: View {
 		}
 		.padding(5)
 		.help("\(video.title) – \(video.artists.formArtistString())")
+		.accessibilityElement(children: .combine)
 		#if canImport(AppKit)
-		.onTapGesture(count: 2) {
-			print("Play Video: \(video.title)")
-			Task {
-				guard let url = await video.videoUrl(session: session) else { return }
-				print(url)
-				player.pause()
-				let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
-				controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
-				controller.showWindow(nil)
-			}
-		}
+		.onTapGesture(count: 2, perform: play)
+		.accessibilityAddTraits(.isButton)
+		.accessibilityAction(.default, play)
 		#endif
 		.contextMenu {
 			VideoContextMenu(video: video, session: session, player: player)
 		}
 	}
+	
+	#if canImport(AppKit)
+	private func play() {
+		print("Play Video: \(video.title)")
+		Task {
+			guard let url = await video.videoUrl(session: session) else { return }
+			print(url)
+			player.pause()
+			let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
+			controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
+			controller.showWindow(nil)
+		}
+	}
+	#endif
 }

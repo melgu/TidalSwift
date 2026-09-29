@@ -14,7 +14,7 @@ struct PlaylistGridItem: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	@State private var isOffline: Bool = false
 	
 	var body: some View {
@@ -58,19 +58,27 @@ struct PlaylistGridItem: View {
 		}
 		.padding(5)
 		.help(playlist.title)
-		.onTapGesture(count: 2) {
-			print("Second Click. \(playlist.title)")
-			player.add(playlist: playlist, .now)
-		}
-		.onTapGesture(count: 1) {
-			print("First Click. \(playlist.title)")
-			viewState.push(playlist: playlist)
-		}
+		.onTapGesture(count: 2, perform: play)
+		.onTapGesture(count: 1, perform: open)
+		.accessibilityElement(children: .combine)
+		.accessibilityAddTraits(.isButton)
+		.accessibilityAction(.default, open)
+		.accessibilityAction(named: "Play", play)
 		.contextMenu {
 			PlaylistContextMenu(playlist: playlist, session: session, player: player)
 		}
 		.task(id: playlist.uuid) {
 			isOffline = await playlist.isOffline(session: session)
 		}
+	}
+	
+	private func open() {
+		print("First Click. \(playlist.title)")
+		viewState.push(playlist: playlist)
+	}
+	
+	private func play() {
+		print("Second Click. \(playlist.title)")
+		player.add(playlist: playlist, .now)
 	}
 }
