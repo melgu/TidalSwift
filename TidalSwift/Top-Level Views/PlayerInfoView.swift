@@ -8,7 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import Sliders
 
 struct PlayerInfoView: View {
 	let session: Session
@@ -202,31 +201,40 @@ struct ProgressBar: View {
 	@Environment(\.colorScheme) var colorScheme: ColorScheme
 	
 	var body: some View {
-		// The slider reports the new value through the binding, so seek from there.
-		// Its editing callback fires before the value is written, which would seek to the previous position.
-		ValueSlider(value: Binding(
+		let fraction = Binding(
 			get: { playbackInfo.fraction },
 			set: { newFraction in
 				playbackInfo.fraction = newFraction
 				player.seek(to: Double(newFraction))
 			}
-		))
-		.valueSliderStyle(
-			HorizontalValueSliderStyle(track: HorizontalValueTrack(view:
-																	Rectangle()
-																	.foregroundColor(.playbackProgressBarForeground(for: colorScheme))
-																	.frame(height: 5),
-																   mask: Rectangle()
-			)
-			.background(Color.playbackProgressBarBackground(for: colorScheme))
-			.frame(height: 5)
-			.cornerRadius(3)
-			.help((playbackInfo.playbackTimeInfo)),
-			thumb: EmptyView(),
-			thumbSize: .zero,
-			options: .interactiveTrack)
 		)
+
+		GeometryReader { geometry in
+			ZStack(alignment: .leading) {
+				Rectangle()
+					.foregroundStyle(Color.playbackProgressBarBackground(for: colorScheme))
+				Rectangle()
+					.foregroundStyle(Color.playbackProgressBarForeground(for: colorScheme))
+					.frame(width: geometry.size.width * min(max(playbackInfo.fraction, 0), 1))
+			}
+			.clipShape(.rect(cornerRadius: 3))
+			.contentShape(.rect)
+			.gesture(
+				DragGesture(minimumDistance: 0)
+					.onChanged { value in
+						guard geometry.size.width > 0 else { return }
+						fraction.wrappedValue = min(max(value.location.x / geometry.size.width, 0), 1)
+					}
+			)
+		}
 		.frame(height: 5)
+		.help(playbackInfo.playbackTimeInfo)
+		.accessibilityRepresentation {
+			Slider(value: fraction, in: 0...1) {
+				Text("Playback Position")
+			}
+			.accessibilityValue(playbackInfo.playbackTimeInfo)
+		}
 	}
 }
 
@@ -244,22 +252,14 @@ struct VolumeControl: View {
 				.onTapGesture {
 					player.toggleMute()
 				}
-			ValueSlider(value: $playbackInfo.volume, in: 0.0...1.0)
-				.valueSliderStyle(
-					HorizontalValueSliderStyle(track:
-												HorizontalValueTrack(view:
-													Rectangle()
-														.foregroundColor(.secondary)
-														.frame(height: 4)
-												)
-												.background(Color.secondary)
-												.frame(height: 4)
-												.cornerRadius(3),
-											   thumbSize: CGSize(width: 15, height: 15),
-											   options: .interactiveTrack)
-				)
-				.frame(width: 80, height: 30)
-				.layoutPriority(1)
+			Slider(value: $playbackInfo.volume, in: 0...1) {
+				Text("Volume")
+			}
+			.labelsHidden()
+			.controlSize(.small)
+			.tint(.secondary)
+			.frame(width: 80, height: 30)
+			.layoutPriority(1)
 		}
 	}
 	

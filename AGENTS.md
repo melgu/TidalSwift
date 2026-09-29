@@ -37,7 +37,6 @@ All state objects are `@Observable` classes, injected with `.environment(_:)` an
 ### Swift Package Manager Dependencies
 
 - `UpdateNotification` — in-app update checking
-- `swiftui-sliders` — custom slider UI component
 
 ## Build, Test, and Development Commands
 

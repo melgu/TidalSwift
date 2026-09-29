@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B03D3DE12F49FF200044CEA6 /* TidalSwiftLib in Frameworks */ = {isa = PBXBuildFile; productRef = B03D3DE02F49FF200044CEA6 /* TidalSwiftLib */; };
-		B0E115162F4AA7B3007AF324 /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = B0E115152F4AA7B3007AF324 /* Sliders */; };
 		B0E115192F4AA7C3007AF324 /* UpdateNotification in Frameworks */ = {isa = PBXBuildFile; productRef = B0E115182F4AA7C3007AF324 /* UpdateNotification */; };
 /* End PBXBuildFile section */
 
@@ -52,7 +51,6 @@
 			files = (
 				B0E115192F4AA7C3007AF324 /* UpdateNotification in Frameworks */,
 				B03D3DE12F49FF200044CEA6 /* TidalSwiftLib in Frameworks */,
-				B0E115162F4AA7B3007AF324 /* Sliders in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,7 +98,6 @@
 			name = TidalSwift;
 			packageProductDependencies = (
 				B03D3DE02F49FF200044CEA6 /* TidalSwiftLib */,
-				B0E115152F4AA7B3007AF324 /* Sliders */,
 				B0E115182F4AA7C3007AF324 /* UpdateNotification */,
 			);
 			productName = TidalSwift;
@@ -133,7 +130,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B03D3DDF2F49FF200044CEA6 /* XCLocalSwiftPackageReference "TidalSwiftLib" */,
-				B0E115142F4AA7B3007AF324 /* XCRemoteSwiftPackageReference "swiftui-sliders" */,
 				B0E115172F4AA7C3007AF324 /* XCRemoteSwiftPackageReference "UpdateNotification" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -428,14 +424,6 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B0E115142F4AA7B3007AF324 /* XCRemoteSwiftPackageReference "swiftui-sliders" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/spacenation/swiftui-sliders.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.0;
-			};
-		};
 		B0E115172F4AA7C3007AF324 /* XCRemoteSwiftPackageReference "UpdateNotification" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/melgu/UpdateNotification.git";
@@ -450,11 +438,6 @@
 		B03D3DE02F49FF200044CEA6 /* TidalSwiftLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TidalSwiftLib;
-		};
-		B0E115152F4AA7B3007AF324 /* Sliders */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B0E115142F4AA7B3007AF324 /* XCRemoteSwiftPackageReference "swiftui-sliders" */;
-			productName = Sliders;
 		};
 		B0E115182F4AA7C3007AF324 /* UpdateNotification */ = {
 			isa = XCSwiftPackageProductDependency;
