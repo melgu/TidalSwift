@@ -84,6 +84,11 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		return audioModes.contains(.stereo) || audioModes.contains(.mono)
 	}
 	
+	/// Sony 360 Reality Audio can't be played, so a track needs at least one other mode
+	public var isPlayable: Bool {
+		streamReady && (audioModes?.contains { $0 != .sony360RealityAudio } ?? true)
+	}
+	
 	/// Dolby Atmos is used when preferred or when the track has no stereo version
 	public func audioStream(session: Session, audioQuality: AudioQuality, preferDolbyAtmos: Bool) async -> AudioStream? {
 		if hasDolbyAtmos && (preferDolbyAtmos || !hasStereo) {

@@ -40,7 +40,7 @@ struct TrackList: View {
 	}
 	
 	private func play(_ track: Track, at index: Int) {
-		if track.isUnavailable { return }
+		guard track.isPlayable else { return }
 		print("\(track.id) \(track.title)")
 		player.add(tracks: tracks, .now, playAt: index)
 	}
@@ -199,7 +199,7 @@ private struct TrackRow: View {
 					.buttonStyle(.plain)
 				}
 			}
-		.foregroundColor(track.isUnavailable ? .secondary : .primary)
+		.foregroundColor(track.isPlayable ? .primary : .secondary)
 		.task(id: track.id) {
 			isOffline = await track.isOffline(session: session)
 			isFavorite = await track.isInFavorites(session: session)

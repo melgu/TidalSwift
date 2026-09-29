@@ -31,7 +31,7 @@ struct TrackContextMenu: View {
 	var body: some View {
 		Group {
 			Group {
-				if track.streamReady {
+				if track.isPlayable {
 					Button {
 						player.add(track: track, .now)
 					} label: {
@@ -120,7 +120,7 @@ struct TrackContextMenu: View {
 					}
 				}
 				Divider()
-				if track.streamReady {
+				if track.isPlayable {
 					Button {
 						Task {
 							print("Download")

@@ -18,7 +18,7 @@ public final class OfflineDB {
 	private func updateTracks() {
 		let albumTracks = albums.flatMap { self.albumTracks[$0] ?? [] }
 		let playlistTracks = playlists.flatMap { self.playlistTracks[$0] ?? [] }
-		tracks = Set((favoriteTracks + albumTracks + playlistTracks).filter(\.streamReady))
+		tracks = Set((favoriteTracks + albumTracks + playlistTracks).filter(\.isPlayable))
 	}
 	
 	private(set) var favoriteTracks: [Track] = [] { // Used for Favorites

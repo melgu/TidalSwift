@@ -106,7 +106,7 @@ class Player {
 	func previous() {
 		if avPlayer.currentTime().seconds >= 3 || queueInfo.currentIndex == 0 {
 			avPlayer.seek(to: CMTime(seconds: 0, preferredTimescale: 1))
-			if queueInfo.currentIndex == 0 && !queueInfo.queue[queueInfo.currentIndex].streamReady {
+			if queueInfo.currentIndex == 0 && !queueInfo.queue[queueInfo.currentIndex].isPlayable {
 				print("Not possible to stream \(queueInfo.queue[queueInfo.currentIndex].title)")
 				pause()
 				next()
@@ -115,7 +115,7 @@ class Player {
 		}
 		
 		queueInfo.currentIndex -= 1
-		if queueInfo.queue[queueInfo.currentIndex].streamReady {
+		if queueInfo.queue[queueInfo.currentIndex].isPlayable {
 //			print("previous(): \(playbackInfo.currentIndex) - \(playbackInfo.queue.count)")
 			avSetItem(from: queueInfo.queue[queueInfo.currentIndex])
 //			print("previous() done")
@@ -143,7 +143,7 @@ class Player {
 		} else {
 			queueInfo.currentIndex += 1
 		}
-		if queueInfo.queue[queueInfo.currentIndex].streamReady {
+		if queueInfo.queue[queueInfo.currentIndex].isPlayable {
 //			print("next(): \(playbackInfo.currentIndex) - \(queueCount())")
 			avSetItem(from: queueInfo.queue[queueInfo.currentIndex])
 		} else {
@@ -204,7 +204,7 @@ class Player {
 			}
 		}
 		
-		if track.isUnavailable {
+		if !track.isPlayable {
 			skip()
 			return
 		}
@@ -307,11 +307,11 @@ class Player {
 	}
 	
 	func add(tracks: [Track], _ when: When, playAt index: Int = 0) {
-		let unavailableCount = tracks[0..<index].filter(\.isUnavailable).count
+		let unavailableCount = tracks[0..<index].filter { !$0.isPlayable }.count
 		let newIndex = index - unavailableCount
 		print("New Index: \(newIndex), index: \(index), \(unavailableCount)")
 		
-		let tracks = tracks.filter { !$0.isUnavailable }
+		let tracks = tracks.filter(\.isPlayable)
 		if when == .now {
 			addNow(tracks: tracks, playAt: newIndex)
 			play(atIndex: newIndex)
