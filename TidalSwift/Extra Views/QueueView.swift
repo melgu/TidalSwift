@@ -59,15 +59,21 @@ struct QueueView: View {
 								.onTapGesture(count: 2) {
 									player.play(atIndex: index)
 								}
+								.accessibilityAction {
+									player.play(atIndex: index)
+								}
 								.contextMenu {
 									TrackContextMenu(track: track, session: session, player: player)
 								}
 							Spacer(minLength: 5)
-							Image(systemName: "x.circle.fill")
-								.secondaryIconColor()
-								.onTapGesture {
-									player.removeTrack(atIndex: index)
-								}
+							Button {
+								player.removeTrack(atIndex: index)
+							} label: {
+								Image(systemName: "x.circle.fill")
+									.secondaryIconColor()
+									.accessibilityLabel("Remove from Queue")
+							}
+							.buttonStyle(.plain)
 						}
 						.padding(.top, -12)
 					}
