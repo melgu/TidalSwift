@@ -249,7 +249,6 @@ public final class Offline {
 	private func variant(of stream: AudioStream) -> FileVariant {
 		stream.isDolbyAtmos ? .dolbyAtmos : .stereo(session.config.offlineAudioQuality)
 	}
-
 	
 	// The following always show the goal state (planned), i.e., after all downloads have finished
 	public func numberOfOfflineTracks() async -> Int {

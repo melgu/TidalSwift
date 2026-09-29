@@ -21,29 +21,29 @@ nonisolated enum FLACTagWriter {
 		case truncated
 		case blockTooLarge
 	}
-
+	
 	private enum BlockType: UInt8 {
 		case padding = 1
 		case vorbisComment = 4
 		case picture = 6
 	}
-
+	
 	private struct Block {
 		var type: UInt8
 		var body: Data
 	}
-
+	
 	private static let marker = Data("fLaC".utf8)
 	private static let maxBlockLength = (1 << 24) - 1
 	/// Allows later tag edits in place
 	private static let paddingLength = 8192
 	private static let copyChunkLength = 1 << 20
-
+	
 	@concurrent
 	static func write(_ tags: AudioTags, to url: URL) async throws {
 		let input = try FileHandle(forReadingFrom: url)
 		defer { try? input.close() }
-
+		
 		var blocks = try readBlocks(from: input).filter {
 			![BlockType.padding, .vorbisComment, .picture].map(\.rawValue).contains($0.type)
 		}
@@ -52,7 +52,7 @@ nonisolated enum FLACTagWriter {
 			blocks.append(Block(type: BlockType.picture.rawValue, body: picture))
 		}
 		blocks.append(Block(type: BlockType.padding.rawValue, body: Data(count: paddingLength)))
-
+		
 		var header = marker
 		for (index, block) in blocks.enumerated() {
 			guard block.body.count <= maxBlockLength else {
@@ -63,30 +63,30 @@ nonisolated enum FLACTagWriter {
 			header.append(bigEndian: UInt32(block.body.count), byteCount: 3)
 			header.append(block.body)
 		}
-
+		
 		let temporaryDirectory = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: url, create: true)
 		defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
 		let temporaryUrl = temporaryDirectory.appendingPathComponent(url.lastPathComponent)
-
+		
 		FileManager.default.createFile(atPath: temporaryUrl.path, contents: header)
 		let output = try FileHandle(forWritingTo: temporaryUrl)
 		defer { try? output.close() }
 		try output.seekToEnd()
-
+		
 		// Input is positioned at the first audio frame after reading the blocks
 		while let chunk = try input.read(upToCount: copyChunkLength), !chunk.isEmpty {
 			try output.write(contentsOf: chunk)
 		}
 		try output.close()
-
+		
 		_ = try FileManager.default.replaceItemAt(url, withItemAt: temporaryUrl)
 	}
-
+	
 	private static func readBlocks(from input: FileHandle) throws -> [Block] {
 		guard try input.read(upToCount: marker.count) == marker else {
 			throw WriteError.notFLAC
 		}
-
+		
 		var blocks = [Block]()
 		var isLast = false
 		while !isLast {
@@ -103,7 +103,7 @@ nonisolated enum FLACTagWriter {
 		}
 		return blocks
 	}
-
+	
 	/// Little-endian, unlike the rest of FLAC (https://www.xiph.org/vorbis/doc/v-comment.html)
 	private static func vorbisComment(for tags: AudioTags) -> Data {
 		var fields: [(String, String?)] = [
@@ -128,7 +128,7 @@ nonisolated enum FLACTagWriter {
 		let comments = fields.compactMap { key, value in
 			value.flatMap { $0.isEmpty ? nil : Data("\(key)=\($0)".utf8) }
 		}
-
+		
 		let vendor = Data("TidalSwift".utf8)
 		var body = Data()
 		body.append(littleEndian: UInt32(vendor.count))
@@ -140,7 +140,7 @@ nonisolated enum FLACTagWriter {
 		}
 		return body
 	}
-
+	
 	private static func pictureBody(for image: Data) -> Data? {
 		guard let source = CGImageSourceCreateWithData(image as CFData, nil),
 			  let typeIdentifier = CGImageSourceGetType(source) as String?,
@@ -152,7 +152,7 @@ nonisolated enum FLACTagWriter {
 		}
 		let bitsPerComponent = properties[kCGImagePropertyDepth] as? Int ?? 8
 		let componentCount = properties[kCGImagePropertyHasAlpha] as? Bool == true ? 4 : 3
-
+		
 		let mime = Data(mimeType.utf8)
 		var body = Data()
 		body.append(bigEndian: 3, byteCount: 4) // Front cover
@@ -175,7 +175,7 @@ private nonisolated extension Data {
 			append(UInt8(truncatingIfNeeded: value >> shift))
 		}
 	}
-
+	
 	mutating func append(littleEndian value: UInt32) {
 		for shift in stride(from: 0, through: 24, by: 8) {
 			append(UInt8(truncatingIfNeeded: value >> shift))

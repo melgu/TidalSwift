@@ -17,12 +17,12 @@ extension ViewState {
 		switch stack.last?.viewType {
 		case .search:
 			search()
-
+		
 		case .newReleases:
 			newReleases()
 		case .myMixes:
 			myMixes()
-
+		
 		case .favoriteArtists:
 			favoriteArtists()
 		case .favoriteAlbums:
@@ -40,7 +40,7 @@ extension ViewState {
 			offlinePlaylists()
 		case .offlineTracks:
 			offlineTracks()
-
+		
 		case .artist:
 			artist()
 		case .album:

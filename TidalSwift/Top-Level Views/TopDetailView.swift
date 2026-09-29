@@ -10,7 +10,7 @@ import SwiftUI
 import TidalSwiftLib
 
 struct TopDetailView: View {
-    let session: Session
+	let session: Session
 	let player: Player
 	
 	@Environment(ViewState.self) private var viewState

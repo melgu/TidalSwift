@@ -14,7 +14,7 @@ import UpdateNotification
 struct TidalSwiftApp: App {
 	@State private var appModel = TidalSwiftAppModel()
 	@Environment(\.scenePhase) private var scenePhase
-
+	
 	var body: some Scene {
 		WindowGroup("TidalSwift") {
 			ContentView(
@@ -44,14 +44,14 @@ struct TidalSwiftApp: App {
 @Observable
 final class TidalSwiftAppModel {
 	@ObservationIgnored private let updateNotification = UpdateNotification(feedUrl: URL(string: "https://www.melvin-gundlach.de/apps/app-feeds/TidalSwift.json")!)
-
+	
 	let session: Session
 	let player: Player
 	var viewState: ViewState
 	var sortingState: SortingState
 	var playlistEditingValues = PlaylistEditingValues()
 	let loginInfo = LoginInfo()
-
+	
 	private var didStart = false
 	private var isTerminating = false
 	
@@ -61,62 +61,62 @@ final class TidalSwiftAppModel {
 	private var viewHistoryViewController: NSWindowController?
 	private var playbackHistoryViewController: NSWindowController?
 	#endif
-
+	
 	@ObservationIgnored private var saveTask: Task<Void, Never>?
-
+	
 	var trackIsFavorite = false
 	var albumIsFavorite = false
-
+	
 	// The offline settings live in the non-observable library, so the menus read these copies
 	private(set) var offlineAudioQuality: AudioQuality
 	private(set) var offlinePreferDolbyAtmos: Bool
-
+	
 	var hasCurrentTrack: Bool {
 		!player.queueInfo.queue.isEmpty
 	}
-
+	
 	init() {
 		session = Session(config: nil)
-
+		
 		let preferDolbyAtmos = UserDefaults.standard.bool(forKey: "preferDolbyAtmos")
 		// Only High is offered, so a stored Low or Low 320 falls back to it as well
 		player = Player(session: session, audioQuality: .high, preferDolbyAtmos: preferDolbyAtmos)
-
+		
 		var cache = ViewCache()
 		if let data = UserDefaults.standard.data(forKey: "ViewCache") {
 			if let tempCache = try? JSONDecoder().decode(ViewCache.self, from: data) {
 				cache = tempCache
 			}
 		}
-
+		
 		viewState = ViewState(session: session, cache: cache)
 		sortingState = SortingState()
-
+		
 		offlineAudioQuality = session.config.offlineAudioQuality
 		offlinePreferDolbyAtmos = session.helpers.offline.preferDolbyAtmos
 	}
-
+	
 	func startupIfNeeded() {
 		guard !didStart else { return }
 		didStart = true
 		startup()
 	}
-
+	
 	private func startup() {
 		session.helpers.offline.uiRefreshFunc = { [weak self] in
 			self?.viewState.refreshCurrentView()
 		}
-
+		
 		let loggedIn = session.loadSession()
 		print("Login Succesful: \(loggedIn)")
 		loginInfo.showModal = !loggedIn
-
+		
 		if loggedIn {
 			restorePlaybackState()
 			restoreSortingState()
 			restoreViewState()
 		}
-
+		
 		player.queueInfo.onCurrentTrackChange = { [weak self] in
 			self?.refreshFavoriteState()
 		}
@@ -154,7 +154,7 @@ final class TidalSwiftAppModel {
 		prepareForTermination()
 		NSApp.terminate(nil)
 	}
-
+	
 	private func registerTerminationBehavior() {
 		// Not an async sequence: its elements arrive after the app has already terminated
 		_ = NotificationCenter.default.addObserver(
@@ -168,7 +168,7 @@ final class TidalSwiftAppModel {
 			}
 		}
 	}
-
+	
 	private func registerCloseLastWindowBehavior() {
 		if #available(macOS 27, *) {
 			_ = NotificationCenter.default.addObserver(of: NSWindow.self, for: .willClose) { [weak self] message in
@@ -198,9 +198,9 @@ final class TidalSwiftAppModel {
 			quit()
 		}
 	}
-
+	
 	// MARK: Secondary Windows
-
+	
 	private func initSecondaryWindows() {
 		lyricsViewController = ResizableWindowControllerFactory.create(rootView:
 			LyricsView(session: session)
@@ -208,7 +208,7 @@ final class TidalSwiftAppModel {
 				.environment(player.queueInfo)
 		)
 		lyricsViewController?.window?.title = "Lyrics"
-
+		
 		queueViewController = ResizableWindowControllerFactory.create(rootView:
 			QueueView(session: session, player: player)
 				.environment(viewState)
@@ -216,13 +216,13 @@ final class TidalSwiftAppModel {
 				.environment(playlistEditingValues)
 		)
 		queueViewController?.window?.title = "Queue"
-
+		
 		viewHistoryViewController = ResizableWindowControllerFactory.create(rootView:
 			ViewHistoryView()
 				.environment(viewState)
 		)
 		viewHistoryViewController?.window?.title = "View History"
-
+		
 		playbackHistoryViewController = ResizableWindowControllerFactory.create(
 			rootView: PlaybackHistoryView(session: session, player: player)
 				.environment(viewState)
@@ -230,33 +230,33 @@ final class TidalSwiftAppModel {
 		)
 		playbackHistoryViewController?.window?.title = "Playback History"
 	}
-
+	
 	private func closeAllSecondaryWindows() {
 		lyricsViewController?.close()
 		queueViewController?.close()
 		viewHistoryViewController?.close()
 		playbackHistoryViewController?.close()
 	}
-
+	
 	func showLyricsWindow() {
 		lyricsViewController?.showWindow(nil)
 	}
-
+	
 	func showQueueWindow() {
 		queueViewController?.showWindow(nil)
 	}
-
+	
 	func showPlaybackHistoryWindow() {
 		playbackHistoryViewController?.showWindow(nil)
 	}
-
+	
 	func showViewHistoryWindow() {
 		viewHistoryViewController?.showWindow(nil)
 	}
 	#endif
-
+	
 	// MARK: Persisting
-
+	
 	private func restorePlaybackState() {
 		if let data = UserDefaults.standard.data(forKey: "PlaybackInfo") {
 			if let codablePI = try? JSONDecoder().decode(CodablePlaybackInfo.self, from: data) {
@@ -264,18 +264,18 @@ final class TidalSwiftAppModel {
 				player.playbackInfo.shuffle = codablePI.shuffle
 				player.playbackInfo.repeatState = codablePI.repeatState
 				player.playbackInfo.pauseAfter = codablePI.pauseAfter
-
+				
 				player.queueInfo.nonShuffledQueue = codablePI.nonShuffledQueue
 				player.queueInfo.queue = codablePI.queue
 				player.queueInfo.history = codablePI.history
 				player.queueInfo.maxHistoryItems = codablePI.maxHistoryItems
-
+				
 				player.play(atIndex: codablePI.currentIndex)
 				player.pause()
 			}
 		}
 	}
-
+	
 	private func restoreSortingState() {
 		if let data = UserDefaults.standard.data(forKey: "SortingState") {
 			if let codableSS = try? JSONDecoder().decode(CodableSortingState.self, from: data) {
@@ -298,21 +298,21 @@ final class TidalSwiftAppModel {
 			}
 		}
 	}
-
+	
 	private func restoreViewState() {
 		if let data = UserDefaults.standard.data(forKey: "ViewStateStack") {
 			if let tempStack = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
 				viewState.stack = tempStack
 			}
 		}
-
+		
 		if let searchTerm = UserDefaults.standard.string(forKey: "SearchTerm") {
 			viewState.searchTerm = searchTerm
 			viewState.lastSearchTerm = searchTerm
 		}
-
+		
 		viewState.newReleasesIncludeEps = UserDefaults.standard.bool(forKey: "NewReleasesIncludeEps")
-
+		
 		if let data = UserDefaults.standard.data(forKey: "ViewStateHistory") {
 			if let tempHistory = try? JSONDecoder().decode([TidalSwiftView].self, from: data) {
 				viewState.history = tempHistory
@@ -325,7 +325,7 @@ final class TidalSwiftAppModel {
 			viewState.maxHistoryItems = 100
 		}
 	}
-
+	
 	private func savePlaybackState() {
 		let codablePI = CodablePlaybackInfo(
 			fraction: player.playbackInfo.fraction,
@@ -344,7 +344,7 @@ final class TidalSwiftAppModel {
 		UserDefaults.standard.set(player.nextAudioQuality.rawValue, forKey: "audioQuality")
 		UserDefaults.standard.set(player.preferDolbyAtmos, forKey: "preferDolbyAtmos")
 	}
-
+	
 	private func saveViewState() {
 		UserDefaults.standard.set(viewState.searchTerm, forKey: "SearchTerm")
 		UserDefaults.standard.set(viewState.newReleasesIncludeEps, forKey: "NewReleasesIncludeEps")
@@ -354,7 +354,7 @@ final class TidalSwiftAppModel {
 		UserDefaults.standard.set(viewHistoryData, forKey: "ViewStateHistory")
 		UserDefaults.standard.set(viewState.maxHistoryItems, forKey: "ViewStateHistoryMaxItems")
 	}
-
+	
 	private func saveFavoritesSortingState() {
 		let codableSS = CodableSortingState(
 			favoritePlaylistSorting: sortingState.favoritePlaylistSorting,
@@ -377,12 +377,12 @@ final class TidalSwiftAppModel {
 		let codableSSData = try? JSONEncoder().encode(codableSS)
 		UserDefaults.standard.set(codableSSData, forKey: "SortingState")
 	}
-
+	
 	private func saveViewCache() {
 		let viewCacheData = try? JSONEncoder().encode(viewState.cache)
 		UserDefaults.standard.set(viewCacheData, forKey: "ViewCache")
 	}
-
+	
 	func saveState() {
 		session.saveConfig()
 		session.saveSession()
@@ -391,7 +391,7 @@ final class TidalSwiftAppModel {
 		saveViewCache()
 		saveFavoritesSortingState()
 	}
-
+	
 	private func closeModals() {
 		loginInfo.showModal = false
 		playlistEditingValues.showAddTracksModal = false
@@ -399,7 +399,7 @@ final class TidalSwiftAppModel {
 		playlistEditingValues.showDeleteModal = false
 		playlistEditingValues.showEditModal = false
 	}
-
+	
 	private func startSaveLoop() {
 		saveTask = Task { [weak self] in
 			while !Task.isCancelled {
@@ -412,7 +412,7 @@ final class TidalSwiftAppModel {
 			}
 		}
 	}
-
+	
 	private func saveUnsavedChanges() {
 		if player.playbackInfo.hasUnsavedChanges || player.queueInfo.hasUnsavedChanges {
 			player.playbackInfo.hasUnsavedChanges = false
@@ -428,7 +428,7 @@ final class TidalSwiftAppModel {
 			saveFavoritesSortingState()
 		}
 	}
-
+	
 	// MARK: Menu Actions
 	
 	#if canImport(AppKit)
@@ -444,7 +444,7 @@ final class TidalSwiftAppModel {
 		print("Not implemented")
 		#endif
 	}
-
+	
 	#if canImport(AppKit)
 	private func updateCheck(showNoUpdatesAlert: Bool) {
 		Task {
@@ -465,7 +465,7 @@ final class TidalSwiftAppModel {
 		}
 	}
 	#endif
-
+	
 	func downloadTrack() {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex]
@@ -473,20 +473,20 @@ final class TidalSwiftAppModel {
 			_ = await session.helpers.download.download(track: track)
 		}
 	}
-
+	
 	func goToAlbum() {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex]
 		viewState.push(album: track.album)
 	}
-
+	
 	func goToArtist() {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex]
 		guard !track.artists.isEmpty else { return }
 		viewState.push(artist: track.artists[0])
 	}
-
+	
 	func addCurrentTrackToFavorites() {
 		guard hasCurrentTrack else { return }
 		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].id
@@ -498,7 +498,7 @@ final class TidalSwiftAppModel {
 			}
 		}
 	}
-
+	
 	func removeCurrentTrackFromFavorites() {
 		guard hasCurrentTrack else { return }
 		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].id
@@ -510,14 +510,14 @@ final class TidalSwiftAppModel {
 			}
 		}
 	}
-
+	
 	func addCurrentTrackToPlaylist() {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex]
 		playlistEditingValues.tracks = [track]
 		playlistEditingValues.showAddTracksModal = true
 	}
-
+	
 	func addCurrentAlbumToFavorites() {
 		guard hasCurrentTrack else { return }
 		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].album.id
@@ -528,7 +528,7 @@ final class TidalSwiftAppModel {
 			}
 		}
 	}
-
+	
 	func removeCurrentAlbumFromFavorites() {
 		guard hasCurrentTrack else { return }
 		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].album.id
@@ -539,73 +539,73 @@ final class TidalSwiftAppModel {
 			}
 		}
 	}
-
+	
 	func addQueueToPlaylist() {
 		let tracks = player.queueInfo.queue
 		playlistEditingValues.tracks = tracks
 		playlistEditingValues.showAddTracksModal = true
 	}
-
+	
 	func togglePlay() {
 		player.togglePlay()
 	}
-
+	
 	func stop() {
 		player.stop()
 	}
-
+	
 	func next() {
 		player.next()
 	}
-
+	
 	func previous() {
 		player.previous()
 	}
-
+	
 	func increaseVolume() {
 		player.increaseVolume()
 	}
-
+	
 	func decreaseVolume() {
 		player.decreaseVolume()
 	}
-
+	
 	func toggleMute() {
 		player.toggleMute()
 	}
-
+	
 	func toggleShuffle() {
 		player.playbackInfo.shuffle.toggle()
 	}
-
+	
 	func setRepeatState(_ repeatState: RepeatState) {
 		player.playbackInfo.repeatState = repeatState
 	}
-
+	
 	func togglePauseAfterCurrentTrack() {
 		player.playbackInfo.pauseAfter.toggle()
 	}
-
+	
 	func setAudioQuality(_ audioQuality: AudioQuality) {
 		player.setAudioQuality(to: audioQuality)
 		player.playbackInfo.hasUnsavedChanges = true
 	}
-
+	
 	func setOfflineAudioQuality(_ audioQuality: AudioQuality) {
 		session.helpers.offline.setAudioQuality(to: audioQuality)
 		offlineAudioQuality = session.config.offlineAudioQuality
 	}
-
+	
 	func toggleOfflinePreferDolbyAtmos() {
 		session.helpers.offline.setPreferDolbyAtmos(to: !session.helpers.offline.preferDolbyAtmos)
 		offlinePreferDolbyAtmos = session.helpers.offline.preferDolbyAtmos
 	}
-
+	
 	func togglePreferDolbyAtmos() {
 		player.setPreferDolbyAtmos(to: !player.preferDolbyAtmos)
 		player.playbackInfo.hasUnsavedChanges = true
 	}
-
+	
 	func clearQueue() {
 		player.clearQueue(leavingCurrent: true)
 	}
@@ -625,7 +625,7 @@ final class TidalSwiftAppModel {
 		print("Coming soon")
 		#endif
 	}
-
+	
 	func refreshAccessToken() {
 		Task {
 			do {
@@ -649,21 +649,21 @@ final class TidalSwiftAppModel {
 		trackIsFavorite = false
 		albumIsFavorite = false
 	}
-
+	
 	func removeAllOfflineContent() {
 		Task {
 			session.helpers.offline.removeAll()
 			viewState.clearEverything()
 		}
 	}
-
+	
 	private func refreshFavoriteState() {
 		guard hasCurrentTrack else {
 			trackIsFavorite = false
 			albumIsFavorite = false
 			return
 		}
-
+		
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex]
 		Task {
 			let trackFavorite = await track.isInFavorites(session: session) ?? false
@@ -677,7 +677,7 @@ final class TidalSwiftAppModel {
 private struct TidalSwiftCommands: Commands {
 	let appModel: TidalSwiftAppModel
 	@FocusedValue(\.searchFieldFocus) private var searchFieldFocus
-
+	
 	var body: some Commands {
 		#if canImport(AppKit)
 		CommandGroup(after: .appInfo) {
@@ -696,18 +696,18 @@ private struct TidalSwiftCommands: Commands {
 			.keyboardShortcut("q", modifiers: .command)
 		}
 		#endif
-
+		
 		CommandMenu("Track") {
 			Button("Go to Album") {
 				appModel.goToAlbum()
 			}
 			.disabled(!appModel.hasCurrentTrack)
-
+			
 			Button("Go to Artist") {
 				appModel.goToArtist()
 			}
 			.disabled(!appModel.hasCurrentTrack)
-
+				
 				if appModel.trackIsFavorite {
 					Button("Remove from Favorites") {
 						appModel.removeCurrentTrackFromFavorites()
@@ -719,12 +719,12 @@ private struct TidalSwiftCommands: Commands {
 					}
 					.disabled(!appModel.hasCurrentTrack)
 				}
-
+			
 			Button("Add to Playlist") {
 				appModel.addCurrentTrackToPlaylist()
 			}
 			.disabled(!appModel.hasCurrentTrack)
-
+				
 				if appModel.albumIsFavorite {
 					Button("Remove Album from Favorites") {
 						appModel.removeCurrentAlbumFromFavorites()
@@ -736,13 +736,13 @@ private struct TidalSwiftCommands: Commands {
 					}
 					.disabled(!appModel.hasCurrentTrack)
 				}
-
+			
 			Button("Add Queue to Playlist") {
 				appModel.addQueueToPlaylist()
 			}
 			.disabled(appModel.player.queueInfo.queue.isEmpty)
 		}
-
+		
 		CommandMenu("Control") {
 			Button(appModel.player.playbackInfo.playing ? "Pause" : "Play") {
 				appModel.togglePlay()
@@ -764,9 +764,9 @@ private struct TidalSwiftCommands: Commands {
 			}
 			.keyboardShortcut(.leftArrow, modifiers: .command)
 			.disabled(!appModel.hasCurrentTrack)
-
+			
 			Divider()
-
+			
 			Button("Increase Volume") {
 				appModel.increaseVolume()
 			}
@@ -779,14 +779,14 @@ private struct TidalSwiftCommands: Commands {
 				get: { appModel.player.playbackInfo.volume == 0 },
 				set: { _ in appModel.toggleMute() }
 			))
-
+			
 			Divider()
-
+			
 			Toggle("Shuffle", isOn: Binding(
 				get: { appModel.player.playbackInfo.shuffle },
 				set: { _ in appModel.toggleShuffle() }
 			))
-
+			
 			Picker("Repeat", selection: Binding(
 				get: { appModel.player.playbackInfo.repeatState },
 				set: { appModel.setRepeatState($0) }
@@ -795,7 +795,7 @@ private struct TidalSwiftCommands: Commands {
 				Text("All").tag(RepeatState.all)
 				Text("Single").tag(RepeatState.single)
 			}
-
+			
 			Toggle("Pause After Current Track", isOn: Binding(
 				get: { appModel.player.playbackInfo.pauseAfter },
 				set: { _ in appModel.togglePauseAfterCurrentTrack() }
@@ -807,7 +807,7 @@ private struct TidalSwiftCommands: Commands {
 			.disabled(appModel.player.queueInfo.queue.isEmpty)
 			
 			Divider()
-
+			
 			Menu("Audio Quality") {
 				Picker("Audio Quality", selection: Binding(
 					get: { appModel.player.nextAudioQuality },
@@ -822,15 +822,15 @@ private struct TidalSwiftCommands: Commands {
 				}
 				.pickerStyle(.inline)
 				.labelsHidden()
-
+				
 				Divider()
-
+				
 				Toggle("Prefer Dolby Atmos", isOn: Binding(
 					get: { appModel.player.preferDolbyAtmos },
 					set: { _ in appModel.togglePreferDolbyAtmos() }
 				))
 			}
-
+			
 			Menu("Offline Audio Quality") {
 				Picker("Offline Audio Quality", selection: Binding(
 					get: { appModel.offlineAudioQuality },
@@ -844,16 +844,16 @@ private struct TidalSwiftCommands: Commands {
 				}
 				.pickerStyle(.inline)
 				.labelsHidden()
-
+				
 				Divider()
-
+				
 				Toggle("Prefer Dolby Atmos", isOn: Binding(
 					get: { appModel.offlinePreferDolbyAtmos },
 					set: { _ in appModel.toggleOfflinePreferDolbyAtmos() }
 				))
 			}
 		}
-
+		
 		CommandMenu("Account") {
 			Button("Account Info") {
 				appModel.accountInfo()

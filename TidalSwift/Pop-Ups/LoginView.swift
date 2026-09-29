@@ -105,7 +105,7 @@ struct LoginView: View {
 				Text(loginErrorMessage)
 					.foregroundColor(.red)
 			}
-
+			
 			Button(action: setAuthorization) {
 				Text("Login")
 			}

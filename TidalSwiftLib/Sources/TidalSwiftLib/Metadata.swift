@@ -29,11 +29,11 @@ nonisolated struct AudioTags {
 
 class Metadata {
 	private unowned let session: Session
-
+	
 	init(session: Session) {
 		self.session = session
 	}
-
+	
 	/// Only works for FLAC & M4A/MP4
 	func setMetadata(for track: Track, at path: URL) async {
 		let tags = await tags(for: track)
@@ -50,13 +50,13 @@ class Metadata {
 			displayError(title: "Error writing Metadata", content: "Path: \(path). Error: \(error)")
 		}
 	}
-
+	
 	private func tags(for track: Track) async -> AudioTags {
 		var title = track.title
 		if let version = track.version {
 			title += " (\(version))"
 		}
-
+		
 		var tags = AudioTags(
 			title: title,
 			artist: track.artists.isEmpty ? nil : track.artists.formArtistString(),
@@ -69,7 +69,7 @@ class Metadata {
 			isCompilation: track.album.isCompilation,
 			isExplicit: track.explicit
 		)
-
+		
 		// The album embedded in a track lacks most details
 		if let album = await session.album(albumId: track.album.id) {
 			tags.trackTotal = album.numberOfTracks
@@ -81,14 +81,14 @@ class Metadata {
 				tags.releaseDate = album.releaseDate?.formatted(.iso8601.year().month().day())
 			}
 		}
-
+		
 		if let coverUrl = track.getCoverUrl(session: session, resolution: 1280) {
 			tags.cover = await downloadCover(from: coverUrl)
 		}
-
+		
 		return tags
 	}
-
+	
 	private func downloadCover(from url: URL) async -> Data? {
 		do {
 			let (data, response) = try await URLSession.shared.data(from: url)

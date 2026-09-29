@@ -17,7 +17,7 @@ nonisolated enum MP4TagWriter {
 		case exportUnavailable
 		case exportFailed(Error?)
 	}
-
+	
 	@concurrent
 	static func write(_ tags: AudioTags, to url: URL) async throws {
 		let asset = AVURLAsset(url: url)
@@ -26,11 +26,11 @@ nonisolated enum MP4TagWriter {
 		}
 		exportSession.metadata = metadataItems(for: tags)
 		let fileType: AVFileType = url.pathExtension.lowercased() == "m4a" ? .m4a : .mp4
-
+		
 		let temporaryDirectory = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: url, create: true)
 		defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
 		let temporaryUrl = temporaryDirectory.appendingPathComponent(url.lastPathComponent)
-
+		
 		if #available(macOS 15, iOS 18, *) {
 			try await exportSession.export(to: temporaryUrl, as: fileType)
 		} else {
@@ -41,10 +41,10 @@ nonisolated enum MP4TagWriter {
 				throw WriteError.exportFailed(exportSession.error)
 			}
 		}
-
+		
 		_ = try FileManager.default.replaceItemAt(url, withItemAt: temporaryUrl)
 	}
-
+	
 	private static func metadataItems(for tags: AudioTags) -> [AVMetadataItem] {
 		var items = [
 			item(.iTunesMetadataSongName, tags.title),

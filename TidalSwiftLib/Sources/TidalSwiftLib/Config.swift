@@ -9,12 +9,12 @@
 import Foundation
 
 enum AuthInformation {
-    static let OAuthClientID = "4ywnjRfroi84hz7i"
-    static let OAuthClientSecret = "7cNdrLt3NIQg0CHEpMDjcbV38XlwVdstczHqf59QiI0="
+	static let OAuthClientID = "4ywnjRfroi84hz7i"
+	static let OAuthClientSecret = "7cNdrLt3NIQg0CHEpMDjcbV38XlwVdstczHqf59QiI0="
 	static let scope = "r_usr+w_usr"
-    static let APILocation = "https://api.tidal.com/v1"
-    static let AuthLocation = "https://auth.tidal.com/v1/oauth2"
-    static let ImageLocation = "https://resources.tidal.com/images"
+	static let APILocation = "https://api.tidal.com/v1"
+	static let AuthLocation = "https://auth.tidal.com/v1/oauth2"
+	static let ImageLocation = "https://resources.tidal.com/images"
 }
 
 public class Config {

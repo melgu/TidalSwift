@@ -42,12 +42,12 @@ enum RepeatState: Int, CaseIterable, Codable {
 }
 
 extension CaseIterable where Self: Equatable {
-    func next() -> Self {
-        let all = Self.allCases
+	func next() -> Self {
+		let all = Self.allCases
 		let idx = all.firstIndex(of: self)!
-        let next = all.index(after: idx)
-        return all[next == all.endIndex ? all.startIndex : next]
-    }
+		let next = all.index(after: idx)
+		return all[next == all.endIndex ? all.startIndex : next]
+	}
 }
 
 struct CodablePlaybackInfo: Codable {

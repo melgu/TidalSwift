@@ -53,11 +53,11 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 	public var isCompilation: Bool {
 		artist?.name == "Various Artists"
 	}
-
+	
 	public var hasHiRes: Bool {
 		mediaMetadata?.tags.contains("HIRES_LOSSLESS") ?? false
 	}
-
+	
 	public func isInFavorites(session: Session) async -> Bool? {
 		await session.favorites?.doFavoritesContainAlbum(albumId: id)
 	}

@@ -53,10 +53,11 @@ There is no automated test suite. If `xcodebuild` fails due to local simulator/c
 
 ## Coding Style & Naming Conventions
 
-Use Swift defaults with tabs/indentation matching existing files.
+Indent with tabs, one per level, never spaces. Xcode and many tools default to four spaces, so check new code. `.editorconfig` encodes this for editors that support it.
 Types use `UpperCamelCase`; functions/properties use `lowerCamelCase`; file names match the primary type/feature (`ArtistView.swift`, `SearchResults.swift`).
 Prefer `async/await` over callback-style APIs for new async work (the codebase was recently migrated from callbacks).
-Indentation using tabs. Never mess with indentation or whitespace on unrelated lines, but make sure that new or edited blocks have correct indentation.
+Never mess with indentation or whitespace on unrelated lines, but make sure that new or edited blocks have correct indentation.
+Blank lines inside a type or function carry the indentation of the surrounding block (e.g. a single tab between two methods), they are not left empty. Only blank lines at the top level of a file are empty. Editors and tools tend to strip this whitespace, so check the diff of new or edited code for bare blank lines (`git diff | grep -n '^+$'`).
 Default Actor Isolation is set to `MainActor` and Approachable Concurrency is enabled for both `TidalSwift` and `TidalSwiftLib`.
 
 ## Commit & Pull Request Guidelines

@@ -232,7 +232,7 @@ private struct ProgressBar: View {
 				player.seek(to: Double(newFraction))
 			}
 		)
-
+		
 		GeometryReader { geometry in
 			ZStack(alignment: .leading) {
 				Rectangle()

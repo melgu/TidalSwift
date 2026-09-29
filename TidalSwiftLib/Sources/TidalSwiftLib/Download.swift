@@ -62,7 +62,7 @@ public class Download {
 	public func download(track: Track, parentFolder: String = "") async -> Bool {
 		downloadStatus.startTask()
 		defer { downloadStatus.finishTask() }
-
+		
 		guard let stream = await track.audioStream(session: session, audioQuality: session.config.offlineAudioQuality, preferDolbyAtmos: session.helpers.offline.preferDolbyAtmos) else {
 			return false
 		}
@@ -73,7 +73,7 @@ public class Download {
 			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
 			return false
 		}
-
+		
 		do {
 			try await Network.download(stream.url, path: path, overwrite: true)
 		} catch {

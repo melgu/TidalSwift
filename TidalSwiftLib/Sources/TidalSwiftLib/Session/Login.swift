@@ -18,21 +18,21 @@ extension Session {
 		try await refreshAccessToken()
 		try await populateVariablesForAccessToken()
 	}
-
+	
 	private func setAccessToken(_ accessToken: String, refreshToken: String?, expiresIn: Int) {
 		var token = accessToken
 		if !token.hasPrefix("Bearer ") {
 			token = "Bearer " + token
 		}
-
+		
 		config.accessToken = token
 		if let refreshToken {
 			config.refreshToken = refreshToken
 		}
-
+		
 		config.tokenExpirationDate = Date().addingTimeInterval(TimeInterval(expiresIn))
 	}
-
+	
 	public func populateVariablesForAccessToken() async throws {
 		let url = URL(string: "https://login.tidal.com/oauth2/me")!
 		let response: Response
@@ -163,7 +163,7 @@ extension Session {
 		activeTokenRefresh = task
 		return try await task.value
 	}
-
+	
 	private func performAccessTokenRefresh() async throws {
 		print("refreshAccessToken")
 		guard !config.refreshToken.isEmpty else {
@@ -180,14 +180,14 @@ extension Session {
 		if config.clientID == AuthInformation.OAuthClientID {
 			parameters["client_secret"] = AuthInformation.OAuthClientSecret
 		}
-
+		
 		let response: Response
 		do {
 			response = try await Network.post(url: url, parameters: parameters, accessToken: nil, xTidalToken: nil)
 		} catch {
 			throw SessionError.network(underlying: error)
 		}
-
+		
 		if let successResponse = try? JSONDecoder.custom.decode(TokenSuccessResponse.self, from: response.data) {
 			setAccessToken(successResponse.accessToken, refreshToken: successResponse.refreshToken, expiresIn: successResponse.expiresIn)
 			saveConfig()
@@ -198,7 +198,7 @@ extension Session {
 			throw SessionError.unexpectedResponse
 		}
 	}
-
+	
 	/// Refreshes the access token if it is expired or about to expire.
 	public func refreshAccessTokenIfNeeded() async throws {
 		guard !config.refreshToken.isEmpty else { return }

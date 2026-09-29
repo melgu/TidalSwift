@@ -14,25 +14,25 @@ extension Session {
 	func get(url: URL, parameters: [String: String]) async throws -> Response {
 		try await authenticatedRequest(method: .get, url: url, parameters: parameters)
 	}
-
+	
 	func get<Result: Decodable>(url: URL, parameters: [String: String], decoder: JSONDecoder = .custom) async throws -> Result {
 		let response = try await authenticatedRequest(method: .get, url: url, parameters: parameters)
 		return try decoder.decode(Result.self, from: response.data)
 	}
-
+	
 	func post(url: URL, parameters: [String: String], etag: Int? = nil) async throws -> Response {
 		try await authenticatedRequest(method: .post, url: url, parameters: parameters, etag: etag)
 	}
-
+	
 	func post<Result: Decodable>(url: URL, parameters: [String: String], etag: Int? = nil, decoder: JSONDecoder = .custom) async throws -> Result {
 		let response = try await authenticatedRequest(method: .post, url: url, parameters: parameters, etag: etag)
 		return try decoder.decode(Result.self, from: response.data)
 	}
-
+	
 	func delete(url: URL, parameters: [String: String], etag: Int? = nil) async throws -> Response {
 		try await authenticatedRequest(method: .delete, url: url, parameters: parameters, etag: etag)
 	}
-
+	
 	private func authenticatedRequest(method: Network.HttpMethod, url: URL, parameters: [String: String], etag: Int? = nil) async throws -> Response {
 		// A failed proactive refresh isn't fatal here: the request itself
 		// surfaces the definitive error (network failure or 401 below)

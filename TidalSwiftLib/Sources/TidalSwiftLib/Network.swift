@@ -71,9 +71,9 @@ extension Network {
 		print("=======================")
 		
 		let (data, response) = try await URLSession.shared.data(for: request)
-
+		
 		let statusCode = (response as? HTTPURLResponse)?.statusCode
-
+		
 		// Get the Etag if it exists
 		var etag: Int?
 		if let httpURLResponse = response as? HTTPURLResponse,

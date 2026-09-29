@@ -21,14 +21,14 @@ struct AsyncImage: View {
 		case success(Image)
 		case failure
 	}
-
+	
 	let url: URL
-
+	
 	@State private var task: Task<Void, Never>? = nil
 	@State private var phase: Phase = .empty
-
+	
 	@Environment(\.colorScheme) private var colorScheme
-
+	
 	var body: some View {
 		Group {
 			switch phase {
@@ -55,7 +55,7 @@ struct AsyncImage: View {
 			task?.cancel()
 		}
 	}
-
+	
 	private func load() {
 		self.task?.cancel()
 		
@@ -88,23 +88,23 @@ struct AsyncImage: View {
 
 private final class ImageLoader {
 	static let shared = ImageLoader()
-
+	
 	private let cache = NSCache<NSURL, PlatformImage>()
 	
 	typealias ImageTask = Task<Image?, Never>
 	private var tasks: [URL: ImageTask] = [:]
-
+	
 	private init() {
 		cache.countLimit = 500
 	}
-
+	
 	func cachedImage(for url: URL) -> Image? {
 		guard let platformImage = cache.object(forKey: url as NSURL) else {
 			return nil
 		}
 		return Image(platformImage: platformImage)
 	}
-
+	
 	func image(from url: URL) async -> Image? {
 		if let task = tasks[url] {
 			return await task.value

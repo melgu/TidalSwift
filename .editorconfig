@@ -1,0 +1,6 @@
+root = true
+
+[*.swift]
+indent_style = tab
+# Blank lines inside blocks keep their indentation
+trim_trailing_whitespace = false

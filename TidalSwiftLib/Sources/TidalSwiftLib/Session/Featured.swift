@@ -18,7 +18,7 @@ extension Session {
 			return nil
 		}
 	}
-
+	
 	public func moods() async -> [Mood]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/moods")!
 		do {
@@ -28,7 +28,7 @@ extension Session {
 			return nil
 		}
 	}
-
+	
 	public func moodPlaylists(moodPath: String) async -> [Playlist]? {
 		let url = URL(string: "\(AuthInformation.APILocation)/moods/\(moodPath)/playlists")!
 		do {

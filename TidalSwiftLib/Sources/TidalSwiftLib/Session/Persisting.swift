@@ -56,7 +56,7 @@ extension Session {
 		if let tokenExpirationDate = config.tokenExpirationDate {
 			persistentInformation["tokenExpirationDate"] = String(tokenExpirationDate.timeIntervalSince1970)
 		}
-
+		
 		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
 	}
 	
@@ -89,13 +89,13 @@ extension Config {
 		}
 		
 		let clientID = persistentInformation["clientID"] ?? AuthInformation.OAuthClientID
-
+		
 		var tokenExpirationDate: Date?
 		if let expirationString = persistentInformation["tokenExpirationDate"],
 		   let expirationInterval = Double(expirationString) {
 			tokenExpirationDate = Date(timeIntervalSince1970: expirationInterval)
 		}
-
+		
 		return Config(
 			accessToken: accessToken,
 			refreshToken: refreshToken,

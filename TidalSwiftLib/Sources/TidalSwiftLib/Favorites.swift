@@ -25,12 +25,12 @@ public class Favorites {
 		let url = URL(string: "\(baseUrl)/artists")!
 		return await allPages(FavoriteArtists.self, url: url, pageSize: 1000, order: order?.rawValue, orderDirection: orderDirection)
 	}
-
+	
 	public func albums(order: AlbumOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteAlbum]? {
 		let url = URL(string: "\(baseUrl)/albums")!
 		return await allPages(FavoriteAlbums.self, url: url, pageSize: 1000, order: order?.rawValue, orderDirection: orderDirection)
 	}
-
+	
 	public func tracks(order: TrackOrder? = nil, orderDirection: OrderDirection? = nil) async -> [FavoriteTrack]? {
 		let url = URL(string: "\(baseUrl)/tracks")!
 		return await allPages(FavoriteTracks.self, url: url, pageSize: 1000, order: order?.rawValue, orderDirection: orderDirection)
@@ -76,7 +76,7 @@ public class Favorites {
 			}
 		}
 	}
-
+	
 	public func userPlaylists() async -> [Playlist]? {
 		guard let userId = session.userId else {
 			displayError(title: "User Playlists failed", content: "User ID not set yet.")
@@ -100,7 +100,7 @@ public class Favorites {
 			return false
 		}
 	}
-
+	
 	@discardableResult public func addAlbum(albumId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/albums")!
 		var parameters = session.sessionParameters
@@ -113,7 +113,7 @@ public class Favorites {
 			return false
 		}
 	}
-
+	
 	@discardableResult public func addTrack(trackId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/tracks")!
 		var parameters = session.sessionParameters
@@ -139,7 +139,7 @@ public class Favorites {
 			return false
 		}
 	}
-
+	
 	@discardableResult public func addPlaylist(playlistId: String) async -> Bool {
 		let url = URL(string: "\(baseUrl)/playlists")!
 		var parameters = session.sessionParameters
@@ -165,7 +165,7 @@ public class Favorites {
 			return false
 		}
 	}
-
+	
 	@discardableResult public func removeAlbum(albumId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/albums/\(albumId)")!
 		do {
@@ -176,7 +176,7 @@ public class Favorites {
 			return false
 		}
 	}
-
+	
 	@discardableResult public func removeTrack(trackId: Int) async -> Bool {
 		let url = URL(string: "\(baseUrl)/tracks/\(trackId)")!
 		do {
@@ -198,7 +198,7 @@ public class Favorites {
 			return false
 		}
 	}
-
+	
 	@discardableResult public func removePlaylist(playlistId: String) async -> Bool {
 		let url = URL(string: "\(baseUrl)/playlists/\(playlistId)")!
 		do {
