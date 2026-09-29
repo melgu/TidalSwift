@@ -62,13 +62,16 @@ struct LoadingSpinner: View {
 						animate.toggle()
 					}
 			} else if loadingState == .error {
-				Image(systemName: "wifi.exclamationmark")
-					.resizable()
-					.scaledToFit()
-					.help("Your connection appears to be offline")
-					.onTapGesture {
-						viewState.refreshCurrentView()
-					}
+				Button {
+					viewState.refreshCurrentView()
+				} label: {
+					Image(systemName: "wifi.exclamationmark")
+						.resizable()
+						.scaledToFit()
+						.accessibilityLabel("Retry")
+						.help("Your connection appears to be offline")
+				}
+				.buttonStyle(.plain)
 			}
 		}
 		.frame(width: 30, height: 30)
