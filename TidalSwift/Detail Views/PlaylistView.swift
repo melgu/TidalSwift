@@ -31,58 +31,69 @@ struct PlaylistView: View {
 			   let imageUrlBig = playlist.imageUrl(session: session, resolution: 750) {
 						ZStack(alignment: .bottomTrailing) {
 							HStack {
-								AsyncImage(url: imageUrlSmall)
-								.aspectRatio(contentMode: .fill)
-								.frame(width: 100, height: 100)
-								.contentShape(Rectangle())
-								.clipped()
-								.cornerRadius(CORNERRADIUS)
-								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-								.help("Show image in new window")
+								let image = AsyncImage(url: imageUrlSmall)
+									.aspectRatio(contentMode: .fill)
+									.frame(width: 100, height: 100)
+									.contentShape(Rectangle())
+									.clipped()
+									.cornerRadius(CORNERRADIUS)
+									.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 								#if canImport(AppKit)
-								.onTapGesture {
+								Button {
 									let controller = ImageWindowController(
 										imageUrl: imageUrlBig,
 										title: playlist.title
 									)
 									controller.window?.title = playlist.title
 									controller.showWindow(nil)
+								} label: {
+									image
+										.accessibilityLabel("Show image in new window")
+										.help("Show image in new window")
 								}
+								.buttonStyle(.plain)
+								#else
+								image
+									.accessibilityHidden(true)
 								#endif
-								.accessibilityHidden(true)
 								
 								VStack(alignment: .leading) {
 									HStack {
 										Text(playlist.title)
 											.font(.title)
 											.lineLimit(2)
-					if isFavorite ?? true {
-						Image(systemName: "heart.fill")
-							.onTapGesture {
-								Task {
-									print("Remove from Favorites")
-									if await session.favorites?.removePlaylist(playlistId: playlist.uuid) == true {
-										isFavorite = false
-										viewState.refreshCurrentView()
-									}
-								}
-							}
-					} else {
-						Image(systemName: "heart")
-							.onTapGesture {
-								Task {
-									print("Add to Favorites")
-									if await session.favorites?.addPlaylist(playlistId: playlist.uuid) == true {
-										isFavorite = true
-										viewState.refreshCurrentView()
-									}
-								}
-							}
-					}
-										Image(systemName: "square.and.arrow.up")
-											.onTapGesture {
-												Pasteboard.copy(string: playlist.url.absoluteString)
+										Button {
+											if isFavorite ?? true {
+												Task {
+													print("Remove from Favorites")
+													if await session.favorites?.removePlaylist(playlistId: playlist.uuid) == true {
+														isFavorite = false
+														viewState.refreshCurrentView()
+													}
+												}
+											} else {
+												Task {
+													print("Add to Favorites")
+													if await session.favorites?.addPlaylist(playlistId: playlist.uuid) == true {
+														isFavorite = true
+														viewState.refreshCurrentView()
+													}
+												}
 											}
+										} label: {
+											Image(systemName: isFavorite ?? true ? "heart.fill" : "heart")
+												.accessibilityLabel("Favorite")
+												.accessibilityAddTraits(isFavorite ?? true ? .isSelected : [])
+										}
+										.buttonStyle(.plain)
+										Button {
+											Pasteboard.copy(string: playlist.url.absoluteString)
+										} label: {
+											Image(systemName: "square.and.arrow.up")
+												.accessibilityLabel("Copy URL")
+												.help("Copy URL")
+										}
+										.buttonStyle(.plain)
 									}
 									Text(playlist.description ?? "")
 									Text(playlist.creator.name ?? "")
@@ -101,33 +112,31 @@ struct PlaylistView: View {
 									Spacer()
 								}
 							}
-					if isOffline {
-						Image(systemName: "cloud.fill")
-							.resizable()
-							.scaledToFit()
-							.frame(width: 30)
-							.onTapGesture {
-								Task {
-									print("Remove from Offline")
-									await playlist.removeOffline(session: session)
-									isOffline = false
-									viewState.refreshCurrentView()
+							Button {
+								if isOffline {
+									Task {
+										print("Remove from Offline")
+										await playlist.removeOffline(session: session)
+										isOffline = false
+										viewState.refreshCurrentView()
+									}
+								} else {
+									Task {
+										print("Add to Offline")
+										await playlist.addOffline(session: session)
+										isOffline = true
+										viewState.refreshCurrentView()
+									}
 								}
+							} label: {
+								Image(systemName: isOffline ? "cloud.fill" : "cloud")
+									.resizable()
+									.scaledToFit()
+									.frame(width: 30)
+									.accessibilityLabel("Available Offline")
+									.accessibilityAddTraits(isOffline ? .isSelected : [])
 							}
-					} else {
-						Image(systemName: "cloud")
-							.resizable()
-							.scaledToFit()
-							.frame(width: 30)
-							.onTapGesture {
-								Task {
-									print("Add to Offline")
-									await playlist.addOffline(session: session)
-									isOffline = true
-									viewState.refreshCurrentView()
-								}
-							}
-					}
+							.buttonStyle(.plain)
 						}
 						.frame(height: 100)
 						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))

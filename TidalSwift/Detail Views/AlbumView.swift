@@ -29,22 +29,28 @@ struct AlbumView: View {
 					   let coverUrlBig = album.getCoverUrl(session: session, resolution: 1280) {
 						ZStack(alignment: .bottomTrailing) {
 							HStack {
-								AsyncImage(url: coverUrlSmall)
-								.frame(width: 100, height: 100)
-								.cornerRadius(CORNERRADIUS)
-								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-								.help("Show cover in new window")
+								let cover = AsyncImage(url: coverUrlSmall)
+									.frame(width: 100, height: 100)
+									.cornerRadius(CORNERRADIUS)
+									.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 								#if canImport(AppKit)
-								.onTapGesture {
+								Button {
 									let controller = ImageWindowController(
 										imageUrl: coverUrlBig,
 										title: album.title
 									)
 									controller.window?.title = album.title
 									controller.showWindow(nil)
+								} label: {
+									cover
+										.accessibilityLabel("Show cover in new window")
+										.help("Show cover in new window")
 								}
+								.buttonStyle(.plain)
+								#else
+								cover
+									.accessibilityHidden(true)
 								#endif
-								.accessibilityHidden(true)
 								
 								VStack(alignment: .leading) {
 									HStack {
@@ -57,46 +63,53 @@ struct AlbumView: View {
 												.padding(.leading, -5)
 										}
 										#if canImport(AppKit)
-										Image(systemName: "c.circle")
-											.help("Credits")
-											.onTapGesture {
-												let controller = ResizableWindowControllerFactory.create(rootView:
-													CreditsView(session: session, album: album)
-														.environment(viewState)
-												)
-												controller.window?.title = "Credits – \(album.title)"
-												controller.showWindow(nil)
-											}
+										Button {
+											let controller = ResizableWindowControllerFactory.create(rootView:
+												CreditsView(session: session, album: album)
+													.environment(viewState)
+											)
+											controller.window?.title = "Credits – \(album.title)"
+											controller.showWindow(nil)
+										} label: {
+											Image(systemName: "c.circle")
+												.accessibilityLabel("Credits")
+												.help("Credits")
+										}
+										.buttonStyle(.plain)
 										#endif
-						if isFavorite ?? true {
-							Image(systemName: "heart.fill")
-								.onTapGesture {
-									Task {
-										print("Remove from Favorites")
-										if await session.favorites?.removeAlbum(albumId: album.id) == true {
-											isFavorite = false
-											viewState.refreshCurrentView()
-										}
-									}
-								}
-						} else {
-							Image(systemName: "heart")
-								.onTapGesture {
-									Task {
-										print("Add to Favorites")
-										if await session.favorites?.addAlbum(albumId: album.id) == true {
-											isFavorite = true
-											viewState.refreshCurrentView()
-										}
-									}
-								}
-						}
-										if let url = album.url {
-											Image(systemName: "square.and.arrow.up")
-												.help("Copy URL")
-												.onTapGesture {
-													Pasteboard.copy(string: url.absoluteString)
+										Button {
+											if isFavorite ?? true {
+												Task {
+													print("Remove from Favorites")
+													if await session.favorites?.removeAlbum(albumId: album.id) == true {
+														isFavorite = false
+														viewState.refreshCurrentView()
+													}
 												}
+											} else {
+												Task {
+													print("Add to Favorites")
+													if await session.favorites?.addAlbum(albumId: album.id) == true {
+														isFavorite = true
+														viewState.refreshCurrentView()
+													}
+												}
+											}
+										} label: {
+											Image(systemName: isFavorite ?? true ? "heart.fill" : "heart")
+												.accessibilityLabel("Favorite")
+												.accessibilityAddTraits(isFavorite ?? true ? .isSelected : [])
+										}
+										.buttonStyle(.plain)
+										if let url = album.url {
+											Button {
+												Pasteboard.copy(string: url.absoluteString)
+											} label: {
+												Image(systemName: "square.and.arrow.up")
+													.accessibilityLabel("Copy URL")
+													.help("Copy URL")
+											}
+											.buttonStyle(.plain)
 										}
 									}
 									Text(album.artists?.formArtistString() ?? "")
@@ -118,40 +131,39 @@ struct AlbumView: View {
 								}
 							}
 							Group {
-					if isOffline {
-						Image(systemName: "cloud.fill")
-							.resizable()
-							.scaledToFit()
-							.onTapGesture {
-								Task {
-									print("Remove from Offline")
-									await album.removeOffline(session: session)
-									cloudPressed = false
-									isOffline = false
-									viewState.refreshCurrentView()
-								}
-							}
-					} else {
-						if cloudPressed {
-										Image(systemName: "cloud.fill")
+								if cloudPressed && !isOffline {
+									Image(systemName: "cloud.fill")
+										.resizable()
+										.scaledToFit()
+										.secondaryIconColor()
+								} else {
+									Button {
+										if isOffline {
+											Task {
+												print("Remove from Offline")
+												await album.removeOffline(session: session)
+												cloudPressed = false
+												isOffline = false
+												viewState.refreshCurrentView()
+											}
+										} else {
+											Task {
+												print("Add to Offline")
+												cloudPressed = true
+												await album.addOffline(session: session)
+												isOffline = true
+												viewState.refreshCurrentView()
+											}
+										}
+									} label: {
+										Image(systemName: isOffline ? "cloud.fill" : "cloud")
 											.resizable()
 											.scaledToFit()
-											.secondaryIconColor()
-									} else {
-							Image(systemName: "cloud")
-								.resizable()
-								.scaledToFit()
-								.onTapGesture {
-									Task {
-										print("Add to Offline")
-										cloudPressed = true
-										await album.addOffline(session: session)
-										isOffline = true
-										viewState.refreshCurrentView()
+											.accessibilityLabel("Available Offline")
+											.accessibilityAddTraits(isOffline ? .isSelected : [])
 									}
+									.buttonStyle(.plain)
 								}
-						}
-					}
 							}
 							.frame(width: 30)
 						}

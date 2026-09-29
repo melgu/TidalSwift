@@ -86,22 +86,28 @@ struct ArtistView: View {
 		HStack {
 		if let pictureUrlSmall = artist.pictureUrl(session: session, resolution: 320),
 		   let pictureUrlBig = artist.pictureUrl(session: session, resolution: 750) {
-				AsyncImage(url: pictureUrlSmall)
-				.frame(width: 100, height: 100)
-				.cornerRadius(CORNERRADIUS)
-				.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-				.help("Show image in new window")
+				let picture = AsyncImage(url: pictureUrlSmall)
+					.frame(width: 100, height: 100)
+					.cornerRadius(CORNERRADIUS)
+					.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 				#if canImport(AppKit)
-				.onTapGesture {
+				Button {
 					let controller = ImageWindowController(
 						imageUrl: pictureUrlBig,
 						title: artist.name
 					)
 					controller.window?.title = artist.name
 					controller.showWindow(nil)
+				} label: {
+					picture
+						.accessibilityLabel("Show image in new window")
+						.help("Show image in new window")
 				}
+				.buttonStyle(.plain)
+				#else
+				picture
+					.accessibilityHidden(true)
 				#endif
-				.accessibilityHidden(true)
 			}
 			
 			VStack(alignment: .leading) {
@@ -110,20 +116,22 @@ struct ArtistView: View {
 						.font(.title)
 						.lineLimit(2)
 					#if canImport(AppKit)
-					Image(systemName: "info.circle")
-						.help("Artist Bio")
-						.onTapGesture {
-							let controller = ResizableWindowControllerFactory.create(rootView:
-								ArtistBioView(session: session, artist: artist)
-																		.environment(viewState)
-							)
-							controller.window?.title = "Bio – \(artist.name)"
-							controller.showWindow(nil)
-						}
+					Button {
+						let controller = ResizableWindowControllerFactory.create(rootView:
+							ArtistBioView(session: session, artist: artist)
+								.environment(viewState)
+						)
+						controller.window?.title = "Bio – \(artist.name)"
+						controller.showWindow(nil)
+					} label: {
+						Image(systemName: "info.circle")
+							.accessibilityLabel("Artist Bio")
+							.help("Artist Bio")
+					}
+					.buttonStyle(.plain)
 					#endif
-				if isFavorite ?? true {
-					Image(systemName: "heart.fill")
-						.onTapGesture {
+					Button {
+						if isFavorite ?? true {
 							Task {
 								print("Remove from Favorites")
 								if await session.favorites?.removeArtist(artistId: artist.id) == true {
@@ -131,10 +139,7 @@ struct ArtistView: View {
 									viewState.refreshCurrentView()
 								}
 							}
-						}
-				} else {
-					Image(systemName: "heart")
-						.onTapGesture {
+						} else {
 							Task {
 								print("Add to Favorites")
 								if await session.favorites?.addArtist(artistId: artist.id) == true {
@@ -143,13 +148,21 @@ struct ArtistView: View {
 								}
 							}
 						}
-				}
+					} label: {
+						Image(systemName: isFavorite ?? true ? "heart.fill" : "heart")
+							.accessibilityLabel("Favorite")
+							.accessibilityAddTraits(isFavorite ?? true ? .isSelected : [])
+					}
+					.buttonStyle(.plain)
 					if let url = artist.url {
-						Image(systemName: "square.and.arrow.up")
-							.help("Copy URL")
-							.onTapGesture {
-								Pasteboard.copy(string: url.absoluteString)
-							}
+						Button {
+							Pasteboard.copy(string: url.absoluteString)
+						} label: {
+							Image(systemName: "square.and.arrow.up")
+								.accessibilityLabel("Copy URL")
+								.help("Copy URL")
+						}
+						.buttonStyle(.plain)
 					}
 				}
 			}

@@ -21,17 +21,24 @@ struct MixPlaylistView: View {
 				VStack(alignment: .leading) {
 					if let mix = viewState.stack.last?.mix, let tracks = viewState.stack.last?.tracks {
 						HStack {
-							MixImage(mix: mix, highResolutionImages: false, session: session)
+							let image = MixImage(mix: mix, highResolutionImages: false, session: session)
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
-								#if canImport(AppKit)
-								.onTapGesture {
-									let controller = ResizableWindowControllerFactory.create(rootView: MixImage(mix: mix, highResolutionImages: true, session: session), width: 640, height: 640)
-									controller.window?.title = mix.title
-									controller.showWindow(nil)
-								}
-								#endif
+							#if canImport(AppKit)
+							Button {
+								let controller = ResizableWindowControllerFactory.create(rootView: MixImage(mix: mix, highResolutionImages: true, session: session), width: 640, height: 640)
+								controller.window?.title = mix.title
+								controller.showWindow(nil)
+							} label: {
+								image
+									.accessibilityLabel("Show image in new window")
+									.help("Show image in new window")
+							}
+							.buttonStyle(.plain)
+							#else
+							image
+							#endif
 							
 							VStack(alignment: .leading) {
 								Text(mix.title)
