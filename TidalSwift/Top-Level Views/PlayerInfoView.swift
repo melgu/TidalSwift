@@ -37,16 +37,18 @@ struct PlayerInfoView: View {
 					Spacer()
 					DownloadIndicator()
 					#if canImport(AppKit)
-					Image(systemName: "quote.bubble")
-						.help("Lyrics")
-						.onTapGesture {
-							appModel.showLyricsWindow()
-						}
-					Image(systemName: "list.dash")
-						.help("Queue")
-						.onTapGesture {
-							appModel.showQueueWindow()
-						}
+					Button(action: appModel.showLyricsWindow) {
+						Image(systemName: "quote.bubble")
+							.accessibilityLabel("Lyrics")
+							.help("Lyrics")
+					}
+					.buttonStyle(.plain)
+					Button(action: appModel.showQueueWindow) {
+						Image(systemName: "list.dash")
+							.accessibilityLabel("Queue")
+							.help("Queue")
+					}
+					.buttonStyle(.plain)
 					#endif
 				}
 			}
@@ -69,12 +71,11 @@ struct TrackInfoView: View {
 				HStack {
 					if let coverUrlSmall = track.getCoverUrl(session: session, resolution: 320),
 					   let coverUrlBig = track.getCoverUrl(session: session, resolution: 1280) {
-						AsyncImage(url: coverUrlSmall)
-						.frame(width: 30, height: 30)
-						.cornerRadius(CORNERRADIUS)
-						.help("Show cover in new window")
+						let cover = AsyncImage(url: coverUrlSmall)
+							.frame(width: 30, height: 30)
+							.cornerRadius(CORNERRADIUS)
 						#if canImport(AppKit)
-						.onTapGesture {
+						Button {
 							print("Big Cover")
 							let title = "\(track.title) – \(track.album.title)"
 							let controller = ImageWindowController(
@@ -83,9 +84,16 @@ struct TrackInfoView: View {
 							)
 							controller.window?.title = title
 							controller.showWindow(nil)
+						} label: {
+							cover
+								.accessibilityLabel("Show cover in new window")
+								.help("Show cover in new window")
 						}
+						.buttonStyle(.plain)
+						#else
+						cover
+							.accessibilityHidden(true)
 						#endif
-						.accessibilityHidden(true)
 					} else {
 						Rectangle()
 							.foregroundColor(.black)
@@ -145,12 +153,16 @@ struct PlaybackControls: View {
 		VStack(spacing: 8) {
 			HStack {
 				Spacer()
-				Image(systemName: "shuffle")
-					.foregroundStyle(playbackInfo.shuffle ? Color.accentColor : .primary)
-					.help("Shuffle")
-					.onTapGesture {
-						playbackInfo.shuffle.toggle()
-					}
+				Button {
+					playbackInfo.shuffle.toggle()
+				} label: {
+					Image(systemName: "shuffle")
+						.foregroundStyle(playbackInfo.shuffle ? Color.accentColor : .primary)
+						.accessibilityLabel("Shuffle")
+						.accessibilityAddTraits(playbackInfo.shuffle ? .isSelected : [])
+						.help("Shuffle")
+				}
+				.buttonStyle(.plain)
 				Group {
 					Button {
 						player.previous()
@@ -178,18 +190,30 @@ struct PlaybackControls: View {
 				}
 				.buttonStyle(.plain)
 				.disabled(queueInfo.queue.isEmpty)
-				Image(systemName: playbackInfo.repeatState == .single ? "repeat.1" : "repeat")
-					.foregroundStyle(playbackInfo.repeatState == .off ? .primary : Color.accentColor)
-					.help("Repeat")
-					.onTapGesture {
-						player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
-						print("Repeat: \(player.playbackInfo.repeatState)")
-					}
+				Button {
+					player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
+					print("Repeat: \(player.playbackInfo.repeatState)")
+				} label: {
+					Image(systemName: playbackInfo.repeatState == .single ? "repeat.1" : "repeat")
+						.foregroundStyle(playbackInfo.repeatState == .off ? .primary : Color.accentColor)
+						.accessibilityLabel("Repeat")
+						.accessibilityValue(repeatStateAccessibilityValue)
+						.help("Repeat")
+				}
+				.buttonStyle(.plain)
 				Spacer()
 			}
 			ProgressBar(player: player)
 				.opacity(queueInfo.queue.isEmpty ? 0.5 : 1)
 				.disabled(queueInfo.queue.isEmpty)
+		}
+	}
+	
+	var repeatStateAccessibilityValue: LocalizedStringResource {
+		switch playbackInfo.repeatState {
+		case .off: "Off"
+		case .all: "All"
+		case .single: "One"
 		}
 	}
 }
@@ -247,11 +271,13 @@ struct VolumeControl: View {
 		@Bindable var playbackInfo = playbackInfo
 		
 		HStack {
-			speakerSymbol
-				.frame(width: 20, alignment: .leading)
-				.onTapGesture {
-					player.toggleMute()
-				}
+			Button(action: player.toggleMute) {
+				speakerSymbol
+					.frame(width: 20, alignment: .leading)
+					.accessibilityLabel("Mute")
+					.accessibilityAddTraits(playbackInfo.volume == 0 ? .isSelected : [])
+			}
+			.buttonStyle(.plain)
 			Slider(value: $playbackInfo.volume, in: 0...1) {
 				Text("Volume")
 			}
