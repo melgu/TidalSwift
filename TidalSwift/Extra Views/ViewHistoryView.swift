@@ -10,7 +10,7 @@ import SwiftUI
 import TidalSwiftLib
 
 struct ViewHistoryView: View {
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
 	var body: some View {
 		ScrollView {
@@ -46,9 +46,9 @@ struct ViewHistoryView: View {
 
 struct ViewHistoryViewRow: View {
 	let view: TidalSwiftView
-	var text: String
+	private var text: String
 	
-	@Environment(ViewState.self) var viewState
+	@Environment(ViewState.self) private var viewState
 	
 	init(view: TidalSwiftView) {
 		self.view = view
@@ -67,11 +67,14 @@ struct ViewHistoryViewRow: View {
 	
 	var body: some View {
 		Text(text)
-			.onTapGesture(count: 2) {
-				if view.isBase() {
-					viewState.clearStack()
-				}
-				viewState.push(view: view)
-			}
+			.onTapGesture(count: 2, perform: open)
+			.accessibilityAction(.default, open)
+	}
+	
+	private func open() {
+		if view.isBase() {
+			viewState.clearStack()
+		}
+		viewState.push(view: view)
 	}
 }

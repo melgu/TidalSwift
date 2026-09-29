@@ -44,6 +44,9 @@ struct PlaybackHistoryView: View {
 								.onTapGesture(count: 2) {
 									player.add(tracks: queueInfo.history, .now, playAt: index)
 								}
+								.accessibilityAction {
+									player.add(tracks: queueInfo.history, .now, playAt: index)
+								}
 								.contextMenu {
 									TrackContextMenu(track: track, session: session, player: player)
 								}
