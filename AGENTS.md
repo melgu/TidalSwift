@@ -30,7 +30,7 @@ All state objects are `@Observable` classes, injected with `.environment(_:)` an
 
 **Player (`TidalSwift/Player.swift`):** Thin `AVPlayer` wrapper that manages the playback queue, shuffle, repeat, and stream URL resolution.
 
-**Offline & Downloads (`TidalSwiftLib/`):** The `Offline` and `Download` modules handle caching tracks locally and syncing favorites for offline use.
+**Offline & Downloads (`TidalSwiftLib/`):** The `Offline` and `Download` modules handle caching tracks locally and syncing favorites for offline use. `Metadata` tags downloaded tracks without dependencies: `FLACTagWriter` writes Vorbis comment and picture blocks, `MP4TagWriter` uses an AVFoundation passthrough export.
 
 **Models (`TidalSwiftLib/Codables/`):** `Codable` structs for every Tidal entity — `Album`, `Artist`, `Track`, `Video`, `Playlist`, login responses, etc.
 
@@ -38,7 +38,6 @@ All state objects are `@Observable` classes, injected with `.environment(_:)` an
 
 - `UpdateNotification` — in-app update checking
 - `swiftui-sliders` — custom slider UI component
-- `SwiftTagger` — audio file metadata tagging for downloads
 
 ## Build, Test, and Development Commands
 

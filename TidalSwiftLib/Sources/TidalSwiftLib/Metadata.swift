@@ -7,79 +7,99 @@
 //
 
 import Foundation
-import SwiftTagger
+
+/// Format-independent tags, written by `FLACTagWriter` and `MP4TagWriter`
+nonisolated struct AudioTags {
+	var title: String
+	var artist: String?
+	var album: String
+	var albumArtist: String?
+	var trackNumber: Int
+	var trackTotal: Int?
+	var discNumber: Int
+	var discTotal: Int?
+	/// Formatted as `yyyy-MM-dd`
+	var releaseDate: String?
+	var copyright: String?
+	var isrc: String?
+	var isCompilation: Bool
+	var isExplicit: Bool
+	var cover: Data?
+}
 
 class Metadata {
 	unowned let session: Session
-	
+
 	init(session: Session) {
 		self.session = session
 	}
-	
-	// Only works for M4A & MP3
+
+	/// Only works for FLAC & M4A/MP4
 	func setMetadata(for track: Track, at path: URL) async {
-		print("FIXME: Set Metadata") // FIXME: Set Metadata
-		
-		var m4aFile: AudioFile
+		let tags = await tags(for: track)
 		do {
-			m4aFile = try AudioFile(location: path)
+			switch path.pathExtension.lowercased() {
+			case "flac":
+				try await FLACTagWriter.write(tags, to: path)
+			case "m4a", "mp4":
+				try await MP4TagWriter.write(tags, to: path)
+			default:
+				print("Metadata: Unsupported file type \(path.pathExtension)")
+			}
 		} catch {
-			displayError(title: "Error finding M4A file", content: "Path: \(path). Error: \(error)")
-			return
+			displayError(title: "Error writing Metadata", content: "Path: \(path). Error: \(error)")
 		}
-		
+	}
+
+	private func tags(for track: Track) async -> AudioTags {
 		var title = track.title
 		if let version = track.version {
 			title += " (\(version))"
 		}
-		m4aFile.title = title
-		
-		if !track.artists.isEmpty {
-			m4aFile.artist = track.artists.formArtistString()
-		}
-		
-		
-		m4aFile.album = track.album.title
-		
+
+		var tags = AudioTags(
+			title: title,
+			artist: track.artists.isEmpty ? nil : track.artists.formArtistString(),
+			album: track.album.title,
+			trackNumber: track.trackNumber,
+			discNumber: track.volumeNumber,
+			releaseDate: track.album.releaseDate?.formatted(.iso8601.year().month().day()),
+			copyright: track.copyright,
+			isrc: track.isrc,
+			isCompilation: track.album.isCompilation,
+			isExplicit: track.explicit
+		)
+
+		// The album embedded in a track lacks most details
 		if let album = await session.album(albumId: track.album.id) {
-			m4aFile.discNumber = .init(index: track.volumeNumber, total: album.numberOfVolumes)
-			
-			m4aFile.trackNumber = .init(index: track.trackNumber, total: album.numberOfTracks)
-			
+			tags.trackTotal = album.numberOfTracks
+			tags.discTotal = album.numberOfVolumes
 			if let artists = album.artists, !artists.isEmpty {
-				m4aFile.albumArtist = artists.formArtistString()
+				tags.albumArtist = artists.formArtistString()
+			}
+			if tags.releaseDate == nil {
+				tags.releaseDate = album.releaseDate?.formatted(.iso8601.year().month().day())
 			}
 		}
-		
-		m4aFile.releaseDateTime = track.album.releaseDate
 
-		m4aFile.copyright = track.copyright
-		
 		if let coverUrl = track.getCoverUrl(session: session, resolution: 1280) {
-			do {
-				try m4aFile.setCoverArt(imageLocation: coverUrl)
-			} catch {
-				displayError(title: "Error setting cover art", content: "Error: \(error)")
-				return
-			}
+			tags.cover = await downloadCover(from: coverUrl)
 		}
 
-		// TODO: Content rating
-//		if track.explicit {
-//			 m4aFile.contentRating = .
-//		}
+		return tags
+	}
 
-		// TODO: Check if correct
-		m4aFile.compilation = track.album.isCompilation
-		
-		// iTunes Artist ID
-		m4aFile.artistID = track.artist?.id
-		
+	private func downloadCover(from url: URL) async -> Data? {
 		do {
-			try m4aFile.write(outputLocation: path)
+			let (data, response) = try await URLSession.shared.data(from: url)
+			if let statusCode = (response as? HTTPURLResponse)?.statusCode, !(200..<300).contains(statusCode) {
+				print("Metadata: Cover download failed with status \(statusCode)")
+				return nil
+			}
+			return data
 		} catch {
-			displayError(title: "Error writing Metadata", content: "Path: \(path). Error: \(error)")
-			return
+			print("Metadata: Cover download failed. Error: \(error)")
+			return nil
 		}
 	}
 }

@@ -69,7 +69,7 @@ public class Download {
 		let filename = formFileName(track)
 		print("Downloading: \(filename)")
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: stream.pathExtension)
-		guard var path = optionalPath else {
+		guard let path = optionalPath else {
 			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
 			return false
 		}
@@ -81,7 +81,7 @@ public class Download {
 			return false
 		}
 		
-//		await metadata.setMetadata(for: track, at: path)
+		await metadata.setMetadata(for: track, at: path)
 		print("Download Finished: \(filename)")
 		return true
 	}

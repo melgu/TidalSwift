@@ -16,15 +16,11 @@ let package = Package(
             targets: ["TidalSwiftLib"]
         ),
     ],
-	dependencies: [
-		.package(url: "https://github.com/NCrusher74/SwiftTagger.git", from: "1.7.0"),
-	],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "TidalSwiftLib",
-			dependencies: ["SwiftTagger"],
 			swiftSettings: [
 				.defaultIsolation(MainActor.self),
 				.enableUpcomingFeature("DisableOutwardActorInference"),
