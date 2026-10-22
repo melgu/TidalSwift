@@ -45,6 +45,11 @@ struct ContentView: View {
 			.touchBar {
 				TouchBarView(player: player, playbackInfo: player.playbackInfo)
 			}
+			.background(WindowReader { window in
+				if let window {
+					viewState.window = window
+				}
+			})
 			#endif
 			.task {
 				do {

@@ -99,6 +99,11 @@ final class ViewState {
 	
 	@ObservationIgnored var hasUnsavedChanges = false
 	
+	#if canImport(AppKit)
+	/// The main window showing this view state, so other windows can bring it forward
+	@ObservationIgnored weak var window: NSWindow?
+	#endif
+	
 	init(session: Session, cache: ViewCache) {
 		self.session = session
 		self.cache = cache

@@ -30,7 +30,17 @@ struct CreditsView: View {
 					ForEach(credits) { credit in
 						Text(credit.type)
 							.bold()
-						Text("\(credit.contributors.formContributorString())\n")
+						FlowLayout {
+							ForEach(Array(credit.contributors.enumerated()), id: \.offset) { i, contributor in
+								HStack(spacing: 0) {
+									ContributorLink(contributor: contributor)
+									if i < credit.contributors.count - 1 {
+										Text(i == credit.contributors.count - 2 ? " & " : ", ")
+									}
+								}
+							}
+						}
+						.padding(.bottom)
 					}
 					Spacer(minLength: 0)
 				} else if loadingState == .loading {
@@ -57,6 +67,27 @@ struct CreditsView: View {
 			} else {
 				loadingState = .error
 			}
+		}
+	}
+}
+
+/// A contributor's name, linking to their artist view if they have an ID
+private struct ContributorLink: View {
+	let contributor: Contributor
+	
+	@Environment(ViewState.self) private var viewState
+	
+	var body: some View {
+		if let id = contributor.id {
+			Button(contributor.name) {
+				viewState.open(.artist(id: id))
+				#if canImport(AppKit)
+				viewState.window?.makeKeyAndOrderFront(nil)
+				#endif
+			}
+			.buttonStyle(.hoverLink)
+		} else {
+			Text(contributor.name)
 		}
 	}
 }
