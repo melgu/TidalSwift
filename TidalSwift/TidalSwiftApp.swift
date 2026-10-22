@@ -239,11 +239,24 @@ final class TidalSwiftAppModel {
 	
 	private func initSecondaryWindows() {
 		lyricsViewController = ResizableWindowControllerFactory.create(rootView:
-			LyricsView(session: session)
+			LyricsView(session: session, player: player)
 				.environment(viewState)
 				.environment(player.queueInfo)
+				.environment(player.playbackInfo)
 		)
 		lyricsViewController?.window?.title = "Lyrics"
+		// Occlusion also covers a closed, minimized or hidden window
+		_ = NotificationCenter.default.addObserver(
+			forName: NSWindow.didChangeOcclusionStateNotification,
+			object: lyricsViewController?.window,
+			queue: .main
+		) { [weak self] notification in
+			let window = notification.object as? NSWindow
+			// Safe because the observer asks for delivery on the main queue
+			MainActor.assumeIsolated {
+				self?.player.setLyricsFollowing(enabled: window?.occlusionState.contains(.visible) ?? false)
+			}
+		}
 		
 		queueViewController = ResizableWindowControllerFactory.create(rootView:
 			QueueView(session: session, player: player)

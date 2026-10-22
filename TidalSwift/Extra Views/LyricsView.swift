@@ -11,32 +11,60 @@ import TidalSwiftLib
 
 struct LyricsView: View {
 	let session: Session
+	let player: Player
 	
 	@Environment(QueueInfo.self) private var queueInfo
+	@Environment(PlaybackInfo.self) private var playbackInfo
 	
 	@State private var loadingState: LoadingState = .loading
 	
 	@State private var lyrics: String?
+	@State private var syncedLines: [SyncedLyricsLine]?
+	@State private var fullyVisibleLines = Set<Int>()
 	
 	private var track: Track? {
 		queueInfo.currentItem
 	}
 	
+	private var activeLine: Int? {
+		syncedLines?.lastIndex { $0.time <= playbackInfo.currentTime }
+	}
+	
 	var body: some View {
-		ScrollView {
-			VStack(alignment: .leading) {
-				if let track = track {
-					HStack {
-						Text(track.title)
-							.font(.title)
+		ScrollViewReader { proxy in
+			ScrollView {
+				VStack(alignment: .leading) {
+					if let track = track {
+						HStack {
+							Text(track.title)
+								.font(.title)
+								.padding(.bottom)
+							Spacer(minLength: 0)
+							if loadingState == .successful, syncedLines != nil {
+								Text("LIVE")
+									.font(.caption.bold())
+									.foregroundStyle(.white)
+									.padding(.horizontal, 6)
+									.padding(.vertical, 2)
+									.background(.red, in: Capsule())
+									.padding(.bottom)
+							}
+						}
+						Text(track.artists.formArtistString())
+							.font(.headline)
 							.padding(.bottom)
-						Spacer(minLength: 0)
-					}
-					Text(track.artists.formArtistString())
-						.font(.headline)
-						.padding(.bottom)
-					if loadingState == .successful, let lyrics = lyrics {
-						Text(lyrics)
+						if loadingState == .successful, let lyrics = lyrics {
+							Group {
+								if let syncedLines {
+									VStack(alignment: .leading, spacing: 0) {
+										ForEach(syncedLines.indices, id: \.self) { index in
+											syncedLine(index: index, line: syncedLines[index])
+										}
+									}
+								} else {
+									Text(lyrics)
+								}
+							}
 							.contextMenu {
 								Button {
 									print("Copy Lyrics")
@@ -45,23 +73,31 @@ struct LyricsView: View {
 									Text("Copy")
 								}
 							}
-					} else if loadingState == .loading {
-						FullscreenLoadingSpinner(.loading)
+						} else if loadingState == .loading {
+							FullscreenLoadingSpinner(.loading)
+						} else {
+							Text("No Lyrics available")
+								.foregroundColor(.secondary)
+						}
 					} else {
-						Text("No Lyrics available")
-							.foregroundColor(.secondary)
+						HStack {
+							Text("No track")
+								.font(.title)
+								.padding(.bottom)
+							Spacer(minLength: 0)
+						}
 					}
-				} else {
-					HStack {
-						Text("No track")
-							.font(.title)
-							.padding(.bottom)
-						Spacer(minLength: 0)
+					Spacer(minLength: 0)
+				}
+				.padding()
+			}
+			.onChange(of: activeLine) {
+				if let activeLine, !fullyVisibleLines.contains(activeLine) {
+					withAnimation {
+						proxy.scrollTo(activeLine, anchor: .center)
 					}
 				}
-				Spacer(minLength: 0)
 			}
-			.padding()
 		}
 		.task(id: queueInfo.queue) {
 			await fetchLyrics()
@@ -71,14 +107,41 @@ struct LyricsView: View {
 		}
 	}
 	
+	private func syncedLine(index: Int, line: SyncedLyricsLine) -> some View {
+		// An empty line would collapse, but it marks a break in the song
+		Text(line.text.isEmpty ? " " : line.text)
+			.fontWeight(index == activeLine ? .bold : .regular)
+			.frame(maxWidth: .infinity, alignment: .leading)
+			.contentShape(Rectangle())
+			.onTapGesture {
+				player.seek(toSeconds: line.time)
+			}
+			.id(index)
+			.onGeometryChange(for: Bool.self) { geometry in
+				guard let scrollViewBounds = geometry.bounds(of: .scrollView) else {
+					return false
+				}
+				return scrollViewBounds.contains(CGRect(origin: .zero, size: geometry.size))
+			} action: { isFullyVisible in
+				if isFullyVisible {
+					fullyVisibleLines.insert(index)
+				} else {
+					fullyVisibleLines.remove(index)
+				}
+			}
+	}
+	
 	private func fetchLyrics() async {
 		guard let track else {
 			lyrics = nil
+			syncedLines = nil
 			loadingState = .error
 			return
 		}
 		loadingState = .loading
-		lyrics = await track.getLyrics(session: session)?.lyrics
+		let response = await track.getLyrics(session: session)
+		lyrics = response?.lyrics
+		syncedLines = response?.syncedLines
 		loadingState = lyrics == nil ? .error : .successful
 	}
 }

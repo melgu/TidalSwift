@@ -20,6 +20,7 @@ class Player {
 	public let queueInfo = QueueInfo()
 	
 	@ObservationIgnored private var timeObserverToken: Any?
+	@ObservationIgnored private var lyricsTimeObserverToken: Any?
 	
 	@ObservationIgnored private var previousValue: Float = 1.0
 	@ObservationIgnored private var failedItems = 0
@@ -56,6 +57,29 @@ class Player {
 		if let token = timeObserverToken {
 			avPlayer.removeTimeObserver(token)
 			timeObserverToken = nil
+		}
+		if let token = lyricsTimeObserverToken {
+			avPlayer.removeTimeObserver(token)
+			lyricsTimeObserverToken = nil
+		}
+	}
+	
+	// Following the lyrics needs finer updates than the progress bar, so this only runs while they are visible
+	func setLyricsFollowing(enabled: Bool) {
+		if enabled {
+			guard lyricsTimeObserverToken == nil else {
+				return
+			}
+			playbackInfo.currentTime = avPlayer.currentTime().seconds
+			lyricsTimeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 600), queue: nil) { [weak self] time in
+				let seconds = time.seconds
+				Task { @MainActor in
+					self?.playbackInfo.currentTime = seconds
+				}
+			}
+		} else if let token = lyricsTimeObserverToken {
+			avPlayer.removeTimeObserver(token)
+			lyricsTimeObserverToken = nil
 		}
 	}
 	
@@ -177,6 +201,10 @@ class Player {
 			return
 		}
 		let seconds = percentage * currentItem.duration.seconds
+		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 600))
+	}
+	
+	func seek(toSeconds seconds: Double) {
 		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 600))
 	}
 	
