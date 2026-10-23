@@ -18,6 +18,7 @@ class Player {
 	private let avPlayer = AVPlayer()
 	public let playbackInfo = PlaybackInfo()
 	public let queueInfo = QueueInfo()
+	@ObservationIgnored private let nowPlaying: NowPlaying
 	
 	@ObservationIgnored private var timeObserverToken: Any?
 	@ObservationIgnored private var lyricsTimeObserverToken: Any?
@@ -38,6 +39,7 @@ class Player {
 		self.nextAudioQuality = audioQuality
 		self.preferDolbyAtmos = preferDolbyAtmos
 		self.autoplayAfterAddNow = autoplayAfterAddNow
+		self.nowPlaying = NowPlaying(session: session)
 		
 		timeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: nil) { [weak self] _ in
 			if let self {
@@ -50,6 +52,15 @@ class Player {
 		
 		playbackInfo.onVolumeChange = { [weak self] in self?.setVolume(to: $0) }
 		playbackInfo.onShuffleChange = { [weak self] in self?.shuffle(enabled: $0) }
+		
+		nowPlaying.register(NowPlaying.Commands(
+			play: { [weak self] in self?.play() },
+			pause: { [weak self] in self?.pause() },
+			togglePlay: { [weak self] in self?.togglePlay() },
+			next: { [weak self] in self?.next() },
+			previous: { [weak self] in self?.previous() },
+			seek: { [weak self] in self?.seek(toSeconds: $0) }
+		))
 	}
 	
 	@MainActor
@@ -96,6 +107,7 @@ class Player {
 //			print("Play: \(playbackInfo.queue[playbackInfo.currentIndex].track.title)")
 			avPlayer.play()
 			playbackInfo.playing = true
+			nowPlaying.update(playing: true, elapsed: avPlayer.currentTime().seconds)
 			queueInfo.addToHistory(track: queueInfo.queue[queueInfo.currentIndex])
 		}
 	}
@@ -111,7 +123,7 @@ class Player {
 	func pause() {
 		avPlayer.pause()
 		playbackInfo.playing = false
-		
+		nowPlaying.update(playing: false, elapsed: avPlayer.currentTime().seconds)
 	}
 	
 	func togglePlay() {
@@ -129,7 +141,7 @@ class Player {
 	
 	func previous() {
 		if avPlayer.currentTime().seconds >= 3 || queueInfo.currentIndex == 0 {
-			avPlayer.seek(to: CMTime(seconds: 0, preferredTimescale: 1))
+			seek(toSeconds: 0)
 			if queueInfo.currentIndex == 0 && !queueInfo.queue[queueInfo.currentIndex].isPlayable {
 				print("Not possible to stream \(queueInfo.queue[queueInfo.currentIndex].title)")
 				pause()
@@ -200,12 +212,12 @@ class Player {
 		guard let currentItem = avPlayer.currentItem else {
 			return
 		}
-		let seconds = percentage * currentItem.duration.seconds
-		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 600))
+		seek(toSeconds: percentage * currentItem.duration.seconds)
 	}
 	
 	func seek(toSeconds seconds: Double) {
 		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 600))
+		nowPlaying.update(playing: playbackInfo.playing, elapsed: seconds)
 	}
 	
 	private func avSetItem(from track: Track) {
@@ -272,8 +284,11 @@ class Player {
 		currentAudioQuality = nextAudioQuality
 		currentIsDolbyAtmos = isDolbyAtmos
 		
+		nowPlaying.update(track: track)
 		if playbackInfo.playing {
 			play()
+		} else {
+			nowPlaying.update(playing: false, elapsed: 0)
 		}
 	}
 	
@@ -426,6 +441,7 @@ class Player {
 				avSetItem(from: queueInfo.queue[queueInfo.currentIndex])
 			} else {
 				avPlayer.replaceCurrentItem(with: nil)
+				nowPlaying.clear()
 			}
 		}
 		
@@ -446,6 +462,7 @@ class Player {
 			playbackInfo.playing = false
 			queueInfo.currentIndex = 0
 			avPlayer.replaceCurrentItem(with: nil)
+			nowPlaying.clear()
 			queueInfo.queue.removeAll()
 			queueInfo.nonShuffledQueue.removeAll()
 		}
