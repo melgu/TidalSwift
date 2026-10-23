@@ -13,7 +13,7 @@ import TidalSwiftLib
 final class PlaybackInfo {
 	var fraction: CGFloat = 0.0
 	var playbackTimeInfo: String = "0:00 / 0:00"
-	var currentTime: Double = 0 // Only kept up to date while lyrics following is enabled
+	var activeLyricsLine: Int? // Only kept up to date while lyrics following is enabled
 	var playing: Bool = false
 	var volume: Float = 1.0 {
 		didSet {

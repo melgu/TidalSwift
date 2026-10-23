@@ -22,6 +22,8 @@ class Player {
 	
 	@ObservationIgnored private var timeObserverToken: Any?
 	@ObservationIgnored private var lyricsTimeObserverToken: Any?
+	@ObservationIgnored private var isFollowingLyrics = false
+	@ObservationIgnored private var lyricsLineTimes: [Double] = []
 	
 	@ObservationIgnored private var previousValue: Float = 1.0
 	@ObservationIgnored private var failedItems = 0
@@ -46,6 +48,8 @@ class Player {
 				Task { @MainActor in
 					self.playbackInfo.fraction = CGFloat(self.fraction())
 					self.playbackInfo.playbackTimeInfo = self.playbackTimeInfo()
+					// Boundary observers miss seeks, but this one also fires on every time jump
+					self.updateActiveLyricsLine()
 				}
 			}
 		}
@@ -75,22 +79,46 @@ class Player {
 		}
 	}
 	
-	// Following the lyrics needs finer updates than the progress bar, so this only runs while they are visible
+	// Only runs while the lyrics are visible
 	func setLyricsFollowing(enabled: Bool) {
-		if enabled {
-			guard lyricsTimeObserverToken == nil else {
-				return
-			}
-			playbackInfo.currentTime = avPlayer.currentTime().seconds
-			lyricsTimeObserverToken = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 600), queue: nil) { [weak self] time in
-				let seconds = time.seconds
-				Task { @MainActor in
-					self?.playbackInfo.currentTime = seconds
-				}
-			}
-		} else if let token = lyricsTimeObserverToken {
+		isFollowingLyrics = enabled
+		updateLyricsTimeObserver()
+	}
+	
+	// Start times of the current track's synced lyrics lines, empty if there are none
+	func setLyricsLineTimes(_ times: [Double]) {
+		lyricsLineTimes = times
+		updateLyricsTimeObserver()
+	}
+	
+	// A boundary observer fires exactly when a line starts, instead of polling the time
+	private func updateLyricsTimeObserver() {
+		if let token = lyricsTimeObserverToken {
 			avPlayer.removeTimeObserver(token)
 			lyricsTimeObserverToken = nil
+		}
+		guard isFollowingLyrics, !lyricsLineTimes.isEmpty else {
+			playbackInfo.activeLyricsLine = nil
+			return
+		}
+		let times = lyricsLineTimes.map { NSValue(time: CMTime(seconds: $0, preferredTimescale: 600)) }
+		lyricsTimeObserverToken = avPlayer.addBoundaryTimeObserver(forTimes: times, queue: nil) { [weak self] in
+			Task { @MainActor in
+				self?.updateActiveLyricsLine()
+			}
+		}
+		updateActiveLyricsLine()
+	}
+	
+	private func updateActiveLyricsLine() {
+		guard isFollowingLyrics else {
+			return
+		}
+		// The boundary observer can fire marginally before the line's start time
+		let seconds = avPlayer.currentTime().seconds + 0.05
+		let activeLine = lyricsLineTimes.lastIndex { $0 <= seconds }
+		if activeLine != playbackInfo.activeLyricsLine {
+			playbackInfo.activeLyricsLine = activeLine
 		}
 	}
 	

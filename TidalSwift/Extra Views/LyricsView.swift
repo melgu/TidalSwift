@@ -26,11 +26,8 @@ struct LyricsView: View {
 		queueInfo.currentItem
 	}
 	
-	private var activeLine: Int? {
-		syncedLines?.lastIndex { $0.time <= playbackInfo.currentTime }
-	}
-	
 	var body: some View {
+		let activeLine = playbackInfo.activeLyricsLine
 		ScrollViewReader { proxy in
 			ScrollView {
 				VStack(alignment: .leading) {
@@ -58,7 +55,23 @@ struct LyricsView: View {
 								if let syncedLines {
 									VStack(alignment: .leading, spacing: 0) {
 										ForEach(syncedLines.indices, id: \.self) { index in
-											syncedLine(index: index, line: syncedLines[index])
+											SyncedLyricsLineView(line: syncedLines[index], isActive: index == activeLine)
+												.onTapGesture {
+													player.seek(toSeconds: syncedLines[index].time)
+												}
+												.id(index)
+												.onGeometryChange(for: Bool.self) { geometry in
+													guard let scrollViewBounds = geometry.bounds(of: .scrollView) else {
+														return false
+													}
+													return scrollViewBounds.contains(CGRect(origin: .zero, size: geometry.size))
+												} action: { isFullyVisible in
+													if isFullyVisible {
+														fullyVisibleLines.insert(index)
+													} else {
+														fullyVisibleLines.remove(index)
+													}
+												}
 										}
 									}
 								} else {
@@ -107,41 +120,34 @@ struct LyricsView: View {
 		}
 	}
 	
-	private func syncedLine(index: Int, line: SyncedLyricsLine) -> some View {
-		// An empty line would collapse, but it marks a break in the song
-		Text(line.text.isEmpty ? " " : line.text)
-			.fontWeight(index == activeLine ? .bold : .regular)
-			.frame(maxWidth: .infinity, alignment: .leading)
-			.contentShape(Rectangle())
-			.onTapGesture {
-				player.seek(toSeconds: line.time)
-			}
-			.id(index)
-			.onGeometryChange(for: Bool.self) { geometry in
-				guard let scrollViewBounds = geometry.bounds(of: .scrollView) else {
-					return false
-				}
-				return scrollViewBounds.contains(CGRect(origin: .zero, size: geometry.size))
-			} action: { isFullyVisible in
-				if isFullyVisible {
-					fullyVisibleLines.insert(index)
-				} else {
-					fullyVisibleLines.remove(index)
-				}
-			}
-	}
-	
 	private func fetchLyrics() async {
 		guard let track else {
 			lyrics = nil
 			syncedLines = nil
+			player.setLyricsLineTimes([])
 			loadingState = .error
 			return
 		}
 		loadingState = .loading
+		player.setLyricsLineTimes([])
 		let response = await track.getLyrics(session: session)
 		lyrics = response?.lyrics
 		syncedLines = response?.syncedLines
+		player.setLyricsLineTimes(syncedLines?.map(\.time) ?? [])
 		loadingState = lyrics == nil ? .error : .successful
+	}
+}
+
+// Separate view, so SwiftUI only re-evaluates the lines whose state changed
+private struct SyncedLyricsLineView: View {
+	let line: SyncedLyricsLine
+	let isActive: Bool
+	
+	var body: some View {
+		// An empty line would collapse, but it marks a break in the song
+		Text(line.text.isEmpty ? " " : line.text)
+			.fontWeight(isActive ? .bold : .regular)
+			.frame(maxWidth: .infinity, alignment: .leading)
+			.contentShape(Rectangle())
 	}
 }
