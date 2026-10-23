@@ -6,7 +6,13 @@
 //  Copyright © 2026 Melvin Gundlach. All rights reserved.
 //
 
+#if canImport(AppKit)
 import AppKit
+private typealias PlatformImage = NSImage
+#else
+import UIKit
+private typealias PlatformImage = UIImage
+#endif
 import MediaPlayer
 import TidalSwiftLib
 
@@ -86,7 +92,7 @@ final class NowPlaying {
 	
 	// The request handler is called off the main thread, so the artwork is built outside the main actor
 	nonisolated private static func artwork(from data: Data) -> MPMediaItemArtwork? {
-		guard let image = NSImage(data: data) else {
+		guard let image = PlatformImage(data: data) else {
 			return nil
 		}
 		return MPMediaItemArtwork(boundsSize: image.size) { _ in image }
