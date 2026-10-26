@@ -242,7 +242,8 @@ final class TidalSwiftAppModel {
 			LyricsView(session: session, player: player)
 				.environment(viewState)
 				.environment(player.queueInfo)
-				.environment(player.playbackInfo)
+				.environment(player.playbackInfo),
+			autosaveName: "Lyrics"
 		)
 		lyricsViewController?.window?.title = "Lyrics"
 		// Occlusion also covers a closed, minimized or hidden window
@@ -262,20 +263,23 @@ final class TidalSwiftAppModel {
 			QueueView(session: session, player: player)
 				.environment(viewState)
 				.environment(player.queueInfo)
-				.environment(playlistEditingValues)
+				.environment(playlistEditingValues),
+			autosaveName: "Queue"
 		)
 		queueViewController?.window?.title = "Queue"
 		
 		viewHistoryViewController = ResizableWindowControllerFactory.create(rootView:
 			ViewHistoryView()
-				.environment(viewState)
+				.environment(viewState),
+			autosaveName: "ViewHistory"
 		)
 		viewHistoryViewController?.window?.title = "View History"
 		
 		playbackHistoryViewController = ResizableWindowControllerFactory.create(
 			rootView: PlaybackHistoryView(session: session, player: player)
 				.environment(viewState)
-				.environment(player.queueInfo)
+				.environment(player.queueInfo),
+			autosaveName: "PlaybackHistory"
 		)
 		playbackHistoryViewController?.window?.title = "Playback History"
 	}
