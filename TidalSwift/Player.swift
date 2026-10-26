@@ -403,11 +403,11 @@ class Player {
 		let wasPlaying = playbackInfo.playing
 		clearQueue()
 		if playbackInfo.shuffle {
-			queueInfo.nonShuffledQueue = tracks
 			addLast(tracks: Array(tracks[0...index]))
 			if index + 1 < tracks.count {
 				addLast(tracks: tracks[index + 1..<tracks.count].shuffled())
 			}
+			queueInfo.nonShuffledQueue = tracks
 		} else {
 			addLast(tracks: tracks)
 		}
@@ -440,9 +440,7 @@ class Player {
 		}
 		let wasEmtpy = queueInfo.queue.isEmpty
 		
-		if !playbackInfo.shuffle {
-			queueInfo.nonShuffledQueue.append(contentsOf: tracks)
-		}
+		queueInfo.nonShuffledQueue.append(contentsOf: tracks)
 		
 		let newQueueItems = tracks
 		queueInfo.queue.append(contentsOf: newQueueItems)
