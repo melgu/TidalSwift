@@ -707,13 +707,13 @@ final class TidalSwiftAppModel {
 	}
 	
 	private func refreshFavoriteState() {
-		guard hasCurrentTrack else {
+		// Called from QueueInfo's didSet, so queue and currentIndex can be briefly out of sync
+		guard let track = player.queueInfo.currentItem else {
 			trackIsFavorite = false
 			albumIsFavorite = false
 			return
 		}
 		
-		let track = player.queueInfo.queue[player.queueInfo.currentIndex]
 		Task {
 			let trackFavorite = await track.isInFavorites(session: session) ?? false
 			let albumFavorite = await track.album.isInFavorites(session: session) ?? false

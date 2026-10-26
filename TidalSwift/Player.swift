@@ -480,8 +480,11 @@ class Player {
 	
 	func clearQueue(leavingCurrent: Bool = false) {
 		if leavingCurrent {
-			queueInfo.queue.removeFirst(queueInfo.currentIndex)
-			queueInfo.queue.removeLast(queueCount() - 1)
+			guard let current = queueInfo.currentItem else {
+				clearQueue()
+				return
+			}
+			queueInfo.queue = [current]
 			queueInfo.currentIndex = 0
 			queueInfo.nonShuffledQueue = queueInfo.queue
 		} else {
