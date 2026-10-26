@@ -463,8 +463,14 @@ class Player {
 			queueInfo.nonShuffledQueue.remove(at: atIndex)
 		}
 		queueInfo.queue.remove(at: atIndex)
+		let removedCurrent = atIndex == queueInfo.currentIndex
 		
-		if atIndex == queueInfo.currentIndex {
+		// Removed the current track while it was last in the queue
+		if queueInfo.currentIndex >= queueInfo.queue.count {
+			queueInfo.currentIndex = max(queueInfo.queue.count - 1, 0)
+		}
+		
+		if removedCurrent {
 			if !queueInfo.queue.isEmpty {
 				avSetItem(from: queueInfo.queue[queueInfo.currentIndex])
 			} else {
