@@ -244,7 +244,8 @@ class Player {
 	}
 	
 	func seek(toSeconds seconds: Double) {
-		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 600))
+		// Without zero tolerance, the audio can land off the reported time, which offsets the synced lyrics
+		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
 		nowPlaying.update(playing: playbackInfo.playing, elapsed: seconds)
 	}
 	
@@ -305,7 +306,9 @@ class Player {
 		
 		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: avPlayer.currentItem)
 		
-		let item = AVPlayerItem(url: url)
+		// Otherwise seeking in a progressive stream only estimates the position
+		let asset = AVURLAsset(url: url, options: [AVURLAssetPreferPreciseDurationAndTimingKey: true])
+		let item = AVPlayerItem(asset: asset)
 		NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(sender:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: item)
 		avPlayer.replaceCurrentItem(with: item)
 		
