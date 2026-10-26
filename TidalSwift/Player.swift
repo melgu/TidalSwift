@@ -422,7 +422,15 @@ class Player {
 		if tracks.isEmpty {
 			return
 		}
-		queueInfo.nonShuffledQueue.insert(contentsOf: tracks, at: queueInfo.currentIndex)
+		// Insert after the current track in the non-shuffled order too, as currentIndex refers to the shuffled queue
+		let nonShuffledIndex: Int
+		if let current = queueInfo.currentItem,
+		   let i = queueInfo.nonShuffledQueue.firstIndex(of: current) {
+			nonShuffledIndex = i + 1
+		} else {
+			nonShuffledIndex = queueInfo.nonShuffledQueue.count
+		}
+		queueInfo.nonShuffledQueue.insert(contentsOf: tracks, at: nonShuffledIndex)
 		let newQueueItems = tracks
 		if queueInfo.queue.isEmpty {
 			queueInfo.queue.insert(contentsOf: newQueueItems, at: queueInfo.currentIndex)
