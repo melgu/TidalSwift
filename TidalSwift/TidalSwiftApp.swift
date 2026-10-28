@@ -671,6 +671,7 @@ final class TidalSwiftAppModel {
 			guard let user = await session.user(userId: userId) else { return }
 			let controller = ResizableWindowControllerFactory.create(rootView:
 				AccountInfoView(session: session)
+					.environment(viewState)
 			)
 			controller.window?.title = user.username
 			controller.showWindow(nil)
