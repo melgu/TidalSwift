@@ -15,6 +15,8 @@ final class PlaybackInfo {
 	var playbackTimeInfo: String = "0:00 / 0:00"
 	var activeLyricsLine: Int? // Only kept up to date while lyrics following is enabled
 	var playing: Bool = false
+	var loading = false // Fetching the stream or buffering
+	var seekable = false // Only once the current track's duration is known
 	var volume: Float = 1.0 {
 		didSet {
 			hasUnsavedChanges = true

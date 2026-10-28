@@ -223,6 +223,8 @@ private struct ProgressBar: View {
 	@Environment(PlaybackInfo.self) private var playbackInfo
 	@Environment(\.colorScheme) private var colorScheme: ColorScheme
 	
+	@State private var showsLoading = false
+	
 	var body: some View {
 		let fraction = Binding(
 			get: { playbackInfo.fraction },
@@ -239,25 +241,87 @@ private struct ProgressBar: View {
 				Rectangle()
 					.foregroundStyle(Color.playbackProgressBarForeground(for: colorScheme))
 					.frame(width: geometry.size.width * min(max(playbackInfo.fraction, 0), 1))
+				if showsLoading {
+					LoadingSweep(fraction: min(max(playbackInfo.fraction, 0), 1))
+						.transition(.opacity)
+				}
 			}
 			.clipShape(.rect(cornerRadius: 3))
 			.contentShape(.rect)
 			.gesture(
 				DragGesture(minimumDistance: 0)
 					.onChanged { value in
-						guard geometry.size.width > 0 else { return }
+						// While a new track loads, dragging would only move the bar
+						guard geometry.size.width > 0, playbackInfo.seekable else { return }
 						fraction.wrappedValue = min(max(value.location.x / geometry.size.width, 0), 1)
 					}
 			)
 		}
 		.frame(height: 5)
-		.help(playbackInfo.playbackTimeInfo)
+		.task(id: playbackInfo.loading) {
+			if playbackInfo.loading {
+				// Short loads, like most seeks, would only make the indicator flash
+				try? await Task.sleep(for: .milliseconds(150))
+				guard !Task.isCancelled else { return }
+			}
+			withAnimation(.easeInOut(duration: 0.2)) {
+				showsLoading = playbackInfo.loading
+			}
+		}
+		.help(timeInfo)
 		.accessibilityRepresentation {
 			Slider(value: fraction, in: 0...1) {
 				Text("Playback Position")
 			}
-			.accessibilityValue(playbackInfo.playbackTimeInfo)
+			.accessibilityValue(timeInfo)
 		}
+	}
+	
+	private var timeInfo: String {
+		guard showsLoading else {
+			return playbackInfo.playbackTimeInfo
+		}
+		return playbackInfo.playbackTimeInfo.isEmpty ? "Loading" : "\(playbackInfo.playbackTimeInfo) (Loading)"
+	}
+}
+
+private struct LoadingSweep: View {
+	let fraction: CGFloat
+	
+	@Environment(\.colorScheme) private var colorScheme: ColorScheme
+	@Environment(\.accessibilityReduceMotion) private var reduceMotion
+	
+	@State private var start = Date.now
+	
+	private let sweepDuration = 1.2
+	private let pulseDuration = 1.6
+	private let highlightOpacity = 0.65
+	
+	var body: some View {
+		let highlight = Color.playbackProgressBarForeground(for: colorScheme).opacity(highlightOpacity)
+		
+		TimelineView(.animation) { timeline in
+			let elapsed = timeline.date.timeIntervalSince(start)
+			GeometryReader { geometry in
+				let width = geometry.size.width
+				if reduceMotion {
+					// Pulses the unplayed part instead of moving across the bar
+					let phase = elapsed.truncatingRemainder(dividingBy: pulseDuration) / pulseDuration
+					Rectangle()
+						.foregroundStyle(highlight)
+						.opacity(0.5 - 0.5 * cos(2 * .pi * phase))
+						.frame(width: width * (1 - fraction))
+						.offset(x: width * fraction)
+				} else {
+					let bandWidth = width / 3
+					let progress = elapsed.truncatingRemainder(dividingBy: sweepDuration) / sweepDuration
+					LinearGradient(colors: [.clear, highlight, .clear], startPoint: .leading, endPoint: .trailing)
+						.frame(width: bandWidth)
+						.offset(x: -bandWidth + progress * (width + bandWidth))
+				}
+			}
+		}
+		.allowsHitTesting(false)
 	}
 }
 

@@ -29,6 +29,10 @@ class Player {
 	@ObservationIgnored private var failedItems = 0
 	// Incremented on every item change, so outdated async loads can be discarded
 	@ObservationIgnored private var itemLoadID = 0
+	@ObservationIgnored private var isFetchingStream = false
+	@ObservationIgnored private var itemStatusObservation: NSKeyValueObservation?
+	@ObservationIgnored private var timeControlStatusObservation: NSKeyValueObservation?
+	@ObservationIgnored private var waitingReasonObservation: NSKeyValueObservation?
 	
 	private var currentAudioQuality: AudioQuality
 	private var currentIsDolbyAtmos = false
@@ -51,6 +55,18 @@ class Player {
 					// Boundary observers miss seeks, but this one also fires on every time jump
 					self.updateActiveLyricsLine()
 				}
+			}
+		}
+		
+		// Buffering after a seek or a stall also counts as loading
+		timeControlStatusObservation = avPlayer.observe(\.timeControlStatus) { [weak self] _, _ in
+			Task { @MainActor in
+				self?.updateLoading()
+			}
+		}
+		waitingReasonObservation = avPlayer.observe(\.reasonForWaitingToPlay) { [weak self] _, _ in
+			Task { @MainActor in
+				self?.updateLoading()
 			}
 		}
 		
@@ -244,6 +260,10 @@ class Player {
 	}
 	
 	func seek(toSeconds seconds: Double) {
+		// While a new track loads, the current item is still the previous one, or its duration is unknown
+		guard playbackInfo.seekable else {
+			return
+		}
 		// Without zero tolerance, the audio can land off the reported time, which offsets the synced lyrics
 		avPlayer.seek(to: CMTime(seconds: seconds, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
 		nowPlaying.update(playing: playbackInfo.playing, elapsed: seconds)
@@ -252,6 +272,10 @@ class Player {
 	private func avSetItem(from track: Track) {
 		itemLoadID += 1
 		let loadID = itemLoadID
+		isFetchingStream = true
+		itemStatusObservation = nil
+		playbackInfo.seekable = false
+		updateLoading()
 		Task {
 			await avSetItemAsync(from: track, loadID: loadID)
 		}
@@ -265,6 +289,10 @@ class Player {
 		avPlayer.pause()
 		
 		func skip() {
+			// The previous item stays current if nothing else gets loaded
+			isFetchingStream = false
+			playbackInfo.seekable = avPlayer.currentItem?.status == .readyToPlay
+			updateLoading()
 			failedItems += 1
 			if failedItems == queueInfo.queue.count {
 				clearQueue()
@@ -311,6 +339,9 @@ class Player {
 		let item = AVPlayerItem(asset: asset)
 		NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(sender:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: item)
 		avPlayer.replaceCurrentItem(with: item)
+		isFetchingStream = false
+		updateLoading()
+		observeReadiness(of: item)
 		
 		currentAudioQuality = nextAudioQuality
 		currentIsDolbyAtmos = isDolbyAtmos
@@ -321,6 +352,37 @@ class Player {
 		} else {
 			nowPlaying.update(playing: false, elapsed: 0)
 		}
+	}
+	
+	// The duration, and with it seeking, is only available once the item is ready
+	private func observeReadiness(of item: AVPlayerItem) {
+		itemStatusObservation = item.observe(\.status, options: [.initial]) { [weak self] item, _ in
+			let itemID = ObjectIdentifier(item)
+			let ready = item.status == .readyToPlay
+			Task { @MainActor in
+				guard let self, let currentItem = self.avPlayer.currentItem, ObjectIdentifier(currentItem) == itemID else {
+					return
+				}
+				self.playbackInfo.seekable = ready
+			}
+		}
+	}
+	
+	private func updateLoading() {
+		let isBuffering = avPlayer.timeControlStatus == .waitingToPlayAtSpecifiedRate
+			&& avPlayer.reasonForWaitingToPlay != .noItemToPlay
+		let loading = isFetchingStream || isBuffering
+		if loading != playbackInfo.loading {
+			playbackInfo.loading = loading
+		}
+	}
+	
+	private func clearItem() {
+		avPlayer.replaceCurrentItem(with: nil)
+		isFetchingStream = false
+		itemStatusObservation = nil
+		playbackInfo.seekable = false
+		updateLoading()
 	}
 	
 	@objc private func playerDidFinishPlaying(sender: Notification) {
@@ -483,7 +545,7 @@ class Player {
 			if !queueInfo.queue.isEmpty {
 				avSetItem(from: queueInfo.queue[queueInfo.currentIndex])
 			} else {
-				avPlayer.replaceCurrentItem(with: nil)
+				clearItem()
 				nowPlaying.clear()
 			}
 		}
@@ -507,7 +569,7 @@ class Player {
 			avPlayer.pause()
 			playbackInfo.playing = false
 			queueInfo.currentIndex = 0
-			avPlayer.replaceCurrentItem(with: nil)
+			clearItem()
 			nowPlaying.clear()
 			queueInfo.queue.removeAll()
 			queueInfo.nonShuffledQueue.removeAll()
