@@ -152,7 +152,6 @@ private struct PlaybackControls: View {
 	var body: some View {
 		VStack(spacing: 8) {
 			HStack {
-				Spacer()
 				Button {
 					playbackInfo.shuffle.toggle()
 				} label: {
@@ -201,8 +200,8 @@ private struct PlaybackControls: View {
 						.help("Repeat")
 				}
 				.buttonStyle(.plain)
-				Spacer()
 			}
+			.frame(maxWidth: .infinity)
 			ProgressBar(player: player)
 				.opacity(queueInfo.queue.isEmpty ? 0.5 : 1)
 				.disabled(queueInfo.queue.isEmpty)
