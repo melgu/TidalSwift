@@ -24,6 +24,7 @@ struct TrackList: View {
 			ForEach(Array(tracks.enumerated()), id: \.offset) { index, track in
 				TrackRow(track: track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
 						 trackNumber: showAlbumTrackNumber ? nil : index, session: session)
+				.contentShape(.rect)
 				.onTapGesture(count: 2) {
 					play(track, at: index)
 				}

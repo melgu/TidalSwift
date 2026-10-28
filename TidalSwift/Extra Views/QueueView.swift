@@ -56,15 +56,6 @@ struct QueueView: View {
 							Text("\(track.title) - \(track.artists.formArtistString())")
 								.fontWeight(index == queueInfo.currentIndex ? .bold : .regular)
 								.lineLimit(1)
-								.onTapGesture(count: 2) {
-									player.play(atIndex: index)
-								}
-								.accessibilityAction {
-									player.play(atIndex: index)
-								}
-								.contextMenu {
-									TrackContextMenu(track: track, session: session, player: player)
-								}
 							Spacer(minLength: 5)
 							Button {
 								player.removeTrack(atIndex: index)
@@ -74,6 +65,16 @@ struct QueueView: View {
 									.accessibilityLabel("Remove from Queue")
 							}
 							.buttonStyle(.plain)
+						}
+						.contentShape(.rect)
+						.onTapGesture(count: 2) {
+							player.play(atIndex: index)
+						}
+						.accessibilityAction {
+							player.play(atIndex: index)
+						}
+						.contextMenu {
+							TrackContextMenu(track: track, session: session, player: player)
 						}
 						.padding(.top, -12)
 					}

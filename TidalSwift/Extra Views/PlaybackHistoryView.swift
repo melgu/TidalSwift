@@ -41,16 +41,17 @@ struct PlaybackHistoryView: View {
 							Text("\(track.title) - \(track.artists.formArtistString())")
 								.fontWeight(index == queueInfo.history.count - 1 ? .bold : .regular)
 								.lineLimit(1)
-								.onTapGesture(count: 2) {
-									player.add(tracks: queueInfo.history, .now, playAt: index)
-								}
-								.accessibilityAction {
-									player.add(tracks: queueInfo.history, .now, playAt: index)
-								}
-								.contextMenu {
-									TrackContextMenu(track: track, session: session, player: player)
-								}
 							Spacer(minLength: 0)
+						}
+						.contentShape(.rect)
+						.onTapGesture(count: 2) {
+							player.add(tracks: queueInfo.history, .now, playAt: index)
+						}
+						.accessibilityAction {
+							player.add(tracks: queueInfo.history, .now, playAt: index)
+						}
+						.contextMenu {
+							TrackContextMenu(track: track, session: session, player: player)
 						}
 					}
 				}
