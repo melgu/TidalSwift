@@ -278,7 +278,8 @@ final class TidalSwiftAppModel {
 		playbackHistoryViewController = ResizableWindowControllerFactory.create(
 			rootView: PlaybackHistoryView(session: session, player: player)
 				.environment(viewState)
-				.environment(player.queueInfo),
+				.environment(player.queueInfo)
+				.environment(playlistEditingValues),
 			autosaveName: "PlaybackHistory"
 		)
 		playbackHistoryViewController?.window?.title = "Playback History"
