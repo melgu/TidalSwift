@@ -16,11 +16,13 @@ enum ResizableWindowControllerFactory {
 		window.setContentSize(NSSize(width: width, height: height))
 		window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
 		window.center()
+		let controller = NSWindowController(window: window)
 		if let autosaveName {
-			// Restores a saved frame, so it must come after center()
-			window.setFrameAutosaveName(autosaveName)
+			// Set through the controller, because on macOS 26 NSWindowController(window:) resets the
+			// window's autosave name to its own empty one. Restores a saved frame, so it must come after center()
+			controller.windowFrameAutosaveName = autosaveName
 		}
-		return NSWindowController(window: window)
+		return controller
 	}
 }
 #endif
