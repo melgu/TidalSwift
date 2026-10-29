@@ -45,6 +45,26 @@ public struct Video: Codable, Equatable, Identifiable, Hashable {
 		await session.videoUrl(videoId: id)
 	}
 	
+	/// The offline file if there is one, otherwise the stream
+	public func playbackUrl(session: Session) async -> URL? {
+		if let url = session.helpers.offline.url(for: self) {
+			return url
+		}
+		return await videoUrl(session: session)
+	}
+	
+	public func isOffline(session: Session) -> Bool {
+		session.helpers.offline.isVideoOffline(video: self)
+	}
+	
+	public func addOffline(session: Session) {
+		session.helpers.offline.add(video: self)
+	}
+	
+	public func removeOffline(session: Session) {
+		session.helpers.offline.remove(video: self)
+	}
+	
 	public func imageUrl(session: Session, resolution: Int) -> URL? {
 		guard let imageId = imageId else {
 			return nil

@@ -83,6 +83,14 @@ Variant playlists (on `im-fa.manifest.tidal.com`) are VOD fMP4 with 4-second seg
 
 **This is the only path found that delivers Hi-Res (24 bit) to TidalSwift's client ID.**
 
+### v1 `GET /videos/{id}/playbackinfo` (videos)
+
+Parameters: `videoquality=HIGH`, `playbackmode=STREAM`, `assetpresentation=FULL`. The base64 `manifest` is JSON with `mimeType: application/vnd.apple.mpegurl` and `urls`, whose first entry is an HLS master playlist on `im-fa.manifest.tidal.com`.
+
+The master playlist lists one variant per resolution, from 320x180 to 1920x1080 (`CODECS="mp4a.40.2,avc1.…"`), with audio and video muxed together and no separate renditions. Each media playlist is VOD with 6-second MPEG-TS segments on `vmz-ad-cf.video.tidal.com`, H.264 plus AAC LC at 48 kHz (320 kbit/s at 1080p), unencrypted. Segment URLs are CloudFront-signed (`Policy`, `Signature`, `Key-Pair-Id`). Playlists and segments are plain `http://`, which `Info.plist` allows for both hosts; the segments refuse `https://` with 403.
+
+`HLSDownloader` joins the segments of the best variant into one `.ts` file, which AVFoundation reads directly, and exports it as MP4 with `AVAssetExportPresetPassthrough`. A 5:20 video at 1080p comes to about 200 MB.
+
 ## Official iOS app (HTTP Catcher capture)
 
 Capture of TIDAL for iOS (build 9217, client version 2.216.0) playing three songs:

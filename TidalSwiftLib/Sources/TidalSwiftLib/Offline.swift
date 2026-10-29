@@ -10,6 +10,8 @@ import SwiftUI
 
 // MARK: DB
 
+/// Observable, so views showing whether something is offline update when it changes
+@Observable
 public final class OfflineDB {
 	/// All tracks needed offline. Derived from the favorites, albums and playlists instead of stored,
 	/// so a track is kept exactly as long as one of them still contains it.
@@ -77,6 +79,18 @@ public final class OfflineDB {
 		playlistTracks[playlist] = tracks
 	}
 	
+	fileprivate var videos: [Video] = [] {
+		didSet {
+			save()
+		}
+	}
+	fileprivate func add(_ video: Video) {
+		videos.append(video)
+	}
+	fileprivate func remove(_ video: Video) {
+		videos.removeAll(where: { $0 == video })
+	}
+	
 	init() {
 		// Counters used before tracks were derived, which could drift and keep files forever
 		UserDefaults.standard.removeObject(forKey: "OfflineDB:Tracks")
@@ -116,6 +130,13 @@ public final class OfflineDB {
 				self.playlistTracks = [:]
 			}
 		}
+		if let data = UserDefaults.standard.data(forKey: "OfflineDB:Videos") {
+			if let temp = try? JSONDecoder().decode([Video].self, from: data) {
+				self.videos = temp
+			} else {
+				self.videos = []
+			}
+		}
 		
 		// Removals used to leave these behind
 		let albums = self.albums
@@ -132,6 +153,7 @@ public final class OfflineDB {
 		albumTracks = [:]
 		playlists = []
 		playlistTracks = [:]
+		videos = []
 	}
 	
 	private func save() {
@@ -149,6 +171,9 @@ public final class OfflineDB {
 		
 		let playlistTracksData = try? JSONEncoder().encode(playlistTracks)
 		UserDefaults.standard.set(playlistTracksData, forKey: "OfflineDB:PlaylistTracks")
+		
+		let videosData = try? JSONEncoder().encode(videos)
+		UserDefaults.standard.set(videosData, forKey: "OfflineDB:Videos")
 	}
 }
 
@@ -158,6 +183,8 @@ public final class Offline {
 	private unowned let session: Session
 	private let downloadStatus: DownloadStatus
 	private let mainPath = "TidalSwift Offline Library"
+	/// Separate from the tracks, so the track sync doesn't treat video files as leftover tracks and delete them. Files are named "<video ID>.mp4".
+	private var videosPath: String { "\(mainPath)/Videos" }
 	@MainActor
 	public var uiRefreshFunc: () -> Void = {}
 	
@@ -309,6 +336,32 @@ public final class Offline {
 		offlineTrackIdsCacheIntact = false
 	}
 	
+	/// Video files on disk by video ID
+	private func localVideoFilesByVideoId() -> [Int: URL]? {
+		// Not passing the whole path as the name, as that turns its slashes into colons
+		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "Videos", pathExtension: nil) else {
+			displayError(title: "Offline: Error loading Video IDs on Disk", content: "Error while building path to: \(videosPath)")
+			return nil
+		}
+		// Only created by the first video download
+		guard FileManager.default.fileExists(atPath: path.path) else {
+			return [:]
+		}
+		do {
+			let directoryContents = try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil, options: [])
+			var files: [Int: URL] = [:]
+			for url in directoryContents where url.pathExtension == "mp4" {
+				if let id = Int(url.deletingPathExtension().lastPathComponent) {
+					files[id] = url
+				}
+			}
+			return files
+		} catch {
+			displayError(title: "Offline: Couldn't load Video IDs from Disk", content: error.localizedDescription)
+			return nil
+		}
+	}
+	
 	public func offlineTrackIds() -> [Int]? {
 		if !offlineTrackIdsCacheIntact {
 			offlineTrackIdsCache = loadOfflineTrackIds()
@@ -444,6 +497,8 @@ public final class Offline {
 		}
 		task.track = nil
 		
+		await syncVideos(task: task)
+		
 		// Outro
 		if syncAgain {
 			syncAgain = false
@@ -453,6 +508,53 @@ public final class Offline {
 			syncRunning = false
 			print("Offline: --- Finished Sync ---")
 		}
+	}
+	
+	private func syncVideos(task: DownloadTask) async {
+		guard let localFiles = localVideoFilesByVideoId() else {
+			return
+		}
+		let videos = db.videos
+		
+		for (videoId, file) in localFiles where !videos.contains(where: { $0.id == videoId }) {
+			print("Offline: Removing video \(videoId)")
+			do {
+				try FileManager.default.removeItem(at: file)
+			} catch {
+				displayError(title: "Offline: Error while removing offline video", content: "Error: \(error)")
+			}
+		}
+		
+		let toAdd = videos.filter { localFiles[$0.id] == nil }
+		for (index, video) in toAdd.enumerated() {
+			task.video = DownloadTask.Step(title: video.title, index: index + 1, count: toAdd.count)
+			task.progress = nil
+			print("Offline: Downloading video \(video.title)")
+			guard let url = await video.videoUrl(session: session) else {
+				displayError(title: "Offline: Error while loading offline video", content: "Couldn't get Video URL for \(video.title)")
+				continue
+			}
+			guard let path = buildPath(baseLocation: .music, parentFolder: videosPath, name: String(video.id), pathExtension: "mp4") else {
+				displayError(title: "Offline: Error while loading offline video", content: "Error while building path to: \(videosPath)/\(video.id).mp4")
+				continue
+			}
+			do {
+				try await HLSDownloader.download(url, to: path, tags: nil) { progress in
+					task.progress = progress
+				}
+			} catch {
+				// E.g. by removing everything
+				if Task.isCancelled {
+					break
+				}
+				displayError(title: "Offline: Error while loading offline video", content: "Error: \(error)")
+				continue
+			}
+			print("Offline: Finished Download of video \(video.title)")
+			await uiRefreshFunc()
+		}
+		task.video = nil
+		task.progress = nil
 	}
 	
 	private var syncTask: Task<Void, Never>?
@@ -654,6 +756,31 @@ public final class Offline {
 	public func remove(playlist: Playlist) async {
 		await db.remove(playlist)
 		await db.setTracks(for: playlist, to: nil)
+		asyncSync()
+	}
+	
+	// MARK: - Video
+	
+	public func isVideoOffline(video: Video) -> Bool {
+		db.videos.contains(video)
+	}
+	
+	/// The downloaded file, once the video is offline and downloaded
+	public func url(for video: Video) -> URL? {
+		guard db.videos.contains(video) else {
+			return nil
+		}
+		return localVideoFilesByVideoId()?[video.id]
+	}
+	
+	public func add(video: Video) {
+		guard !db.videos.contains(video) else { return }
+		db.add(video)
+		asyncSync()
+	}
+	
+	public func remove(video: Video) {
+		db.remove(video)
 		asyncSync()
 	}
 	

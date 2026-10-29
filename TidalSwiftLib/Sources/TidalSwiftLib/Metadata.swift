@@ -27,6 +27,16 @@ nonisolated struct AudioTags {
 	var cover: Data?
 }
 
+/// Written by `MP4TagWriter`, while exporting a downloaded video
+nonisolated struct VideoTags {
+	var title: String
+	var artist: String?
+	/// Formatted as `yyyy-MM-dd`
+	var releaseDate: String?
+	var isExplicit: Bool
+	var cover: Data?
+}
+
 class Metadata {
 	private unowned let session: Session
 	
@@ -86,6 +96,19 @@ class Metadata {
 			tags.cover = await downloadCover(from: coverUrl)
 		}
 		
+		return tags
+	}
+	
+	func tags(for video: Video) async -> VideoTags {
+		var tags = VideoTags(
+			title: video.title,
+			artist: video.artists.isEmpty ? nil : video.artists.formArtistString(),
+			releaseDate: video.releaseDate?.formatted(.iso8601.year().month().day()),
+			isExplicit: video.explicit
+		)
+		if let imageUrl = video.imageUrl(session: session, resolution: 1280) {
+			tags.cover = await downloadCover(from: imageUrl)
+		}
 		return tags
 	}
 	

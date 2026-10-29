@@ -38,6 +38,9 @@ public final class DownloadTask: Identifiable {
 	/// Only set for downloads spanning several albums
 	public internal(set) var album: Step?
 	public internal(set) var track: Step?
+	public internal(set) var video: Step?
+	/// How much of the current video is downloaded, as tracks are quick enough without
+	public internal(set) var progress: Double?
 	
 	init(title: String) {
 		self.title = title
@@ -134,20 +137,31 @@ public class Download {
 	}
 	
 	public func download(video: Video, parentFolder: String = "") async -> Bool {
-		guard let url = await video.videoUrl(session: session) else { return false }
-		print("Downloading Video \(video.title)")
-		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: formFileName(video), pathExtension: "mp4")
-		guard let path = optionalPath else {
+		let task = downloadStatus.startTask(title: "\(video.title) – \(video.artists.formArtistString())")
+		defer { downloadStatus.finishTask(task) }
+		
+		guard let url = await video.videoUrl(session: session) else {
+			displayError(title: "Error while downloading video", content: "Couldn't get Video URL for \(video.title)")
 			return false
 		}
+		let filename = formFileName(video)
+		print("Downloading Video: \(filename)")
+		guard let path = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: "mp4") else {
+			displayError(title: "Error while downloading video", content: "Couldn't build path for video: \(video.title) - \(video.artists.formArtistString())")
+			return false
+		}
+		
+		let tags = await metadata.tags(for: video)
 		do {
-			try await Network.download(url, path: path, overwrite: true)
-			return true
+			try await HLSDownloader.download(url, to: path, tags: tags) { progress in
+				task.progress = progress
+			}
 		} catch {
+			displayError(title: "Error while downloading video", content: "Download failed for video \(video.title). Error: \(error)")
 			return false
 		}
-//		metadataHandler.setMetadata(for: video, at: path)
-		// TODO: Metadata for Videos
+		print("Download Finished: \(filename)")
+		return true
 	}
 	
 	public func download(album: Album, parentFolder: String = "") async -> DownloadErrors {

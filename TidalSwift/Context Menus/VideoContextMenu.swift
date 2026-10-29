@@ -18,6 +18,10 @@ struct VideoContextMenu: View {
 	@Environment(PlaybackInfo.self) private var playbackInfo
 	@State private var isFavorite: Bool? = nil
 	
+	private var isOffline: Bool {
+		video.isOffline(session: session)
+	}
+	
 	var body: some View {
 		Group {
 			if video.streamReady {
@@ -25,7 +29,7 @@ struct VideoContextMenu: View {
 					#if canImport(AppKit)
 					Task {
 						print("Play Video: \(video.title)")
-						guard let url = await video.videoUrl(session: session) else {
+						guard let url = await video.playbackUrl(session: session) else {
 							return
 						}
 						print(url)
@@ -87,6 +91,31 @@ struct VideoContextMenu: View {
 						print("Add \(video.title) to Playlist")
 					} label: {
 						Text("Add to Playlist …")
+					}
+					Divider()
+					if isOffline {
+						Button {
+							print("Remove from Offline")
+							video.removeOffline(session: session)
+							viewState.refreshCurrentView()
+						} label: {
+							Text("Remove from Offline")
+						}
+					} else {
+						Button {
+							print("Add to Offline")
+							video.addOffline(session: session)
+						} label: {
+							Text("Add to Offline")
+						}
+					}
+					Button {
+						Task {
+							print("Download")
+							_ = await session.helpers.download.download(video: video)
+						}
+					} label: {
+						Text("Download")
 					}
 				}
 				#if canImport(AppKit)

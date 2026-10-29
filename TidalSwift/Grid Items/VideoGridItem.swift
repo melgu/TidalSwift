@@ -17,6 +17,10 @@ struct VideoGridItem: View {
 	
 	@Environment(PlaybackInfo.self) private var playbackInfo
 	
+	private var isOffline: Bool {
+		video.isOffline(session: session)
+	}
+	
 	var body: some View {
 		VStack {
 			if let imageUrl = video.imageUrl(session: session, resolution: 320) {
@@ -48,6 +52,13 @@ struct VideoGridItem: View {
 						.foregroundColor(.secondary)
 						.layoutPriority(1)
 				}
+				// The thumbnail is wider than high, so a corner badge like the albums' would float below it
+				if isOffline {
+					Image(systemName: "cloud.fill")
+						.foregroundColor(.secondary)
+						.accessibilityLabel("Available Offline")
+						.layoutPriority(1)
+				}
 			}
 			.frame(width: 160)
 			if showArtist {
@@ -75,7 +86,7 @@ struct VideoGridItem: View {
 	private func play() {
 		print("Play Video: \(video.title)")
 		Task {
-			guard let url = await video.videoUrl(session: session) else { return }
+			guard let url = await video.playbackUrl(session: session) else { return }
 			print(url)
 			player.pause()
 			let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)

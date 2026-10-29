@@ -36,7 +36,12 @@ struct DownloadIndicator: View {
 	
 	private var helpText: String {
 		let lines = downloadStatus.tasks.map { task in
-			let steps = [task.album.map { "Album \(describe($0))" }, task.track.map { "Track \(describe($0))" }]
+			let steps = [
+				task.album.map { "Album \(describe($0))" },
+				task.track.map { "Track \(describe($0))" },
+				task.video.map { "Video \(describe($0))" },
+				task.progress.map { $0.formatted(.percent.precision(.fractionLength(0))) },
+			]
 				.compactMap { $0 }
 			return steps.isEmpty ? task.title : "\(task.title): \(steps.joined(separator: ", "))"
 		}

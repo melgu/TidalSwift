@@ -68,6 +68,21 @@ nonisolated enum MP4TagWriter {
 		return items
 	}
 	
+	static func metadataItems(for tags: VideoTags) -> [AVMetadataItem] {
+		var items = [
+			item(.iTunesMetadataSongName, tags.title),
+			item(.iTunesMetadataArtist, tags.artist),
+			item(.iTunesMetadataReleaseDate, tags.releaseDate),
+		].compactMap { $0 }
+		if tags.isExplicit {
+			items.append(item(.iTunesMetadataContentRating, NSNumber(value: 1), dataType: kCMMetadataBaseDataType_SInt8))
+		}
+		if let cover = tags.cover {
+			items.append(item(.iTunesMetadataCoverArt, cover as NSData, dataType: kCMMetadataBaseDataType_JPEG))
+		}
+		return items
+	}
+	
 	private static func item(_ identifier: AVMetadataIdentifier, _ string: String?) -> AVMetadataItem? {
 		guard let string, !string.isEmpty else {
 			return nil
