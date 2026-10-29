@@ -115,7 +115,7 @@ struct VideoContextMenu: View {
 					Button {
 						Task {
 							logger.debug("Download")
-							_ = await session.helpers.download.download(video: video)
+							_ = await session.helpers.download.download(video: video, options: session.downloadOptions)
 						}
 					} label: {
 						Text("Download")

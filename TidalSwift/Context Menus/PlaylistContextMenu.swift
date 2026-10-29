@@ -124,7 +124,7 @@ struct PlaylistContextMenu: View {
 				Button {
 					Task {
 						logger.debug("Download")
-						_ = await session.helpers.download.download(playlist: playlist)
+						_ = await session.helpers.download.download(playlist: playlist, options: session.downloadOptions)
 					}
 				} label: {
 					Text("Download")

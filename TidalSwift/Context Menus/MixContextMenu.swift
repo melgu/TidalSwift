@@ -65,7 +65,7 @@ struct MixContextMenu: View {
 				Task {
 					logger.debug("Download")
 					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
-						_ = await session.helpers.download.download(tracks: tracks, parentFolder: mix.title)
+						_ = await session.helpers.download.download(tracks: tracks, parentFolder: mix.title, options: session.downloadOptions)
 					}
 				}
 			} label: {

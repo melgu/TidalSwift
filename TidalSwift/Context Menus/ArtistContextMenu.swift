@@ -73,7 +73,7 @@ struct ArtistContextMenu: View {
 			Button {
 				Task {
 					logger.debug("Download all Albums of \(artist.name)")
-					_ = await session.helpers.download.downloadAllAlbums(from: artist)
+					_ = await session.helpers.download.downloadAllAlbums(from: artist, options: session.downloadOptions)
 				}
 			} label: {
 				Text("Download all Albums")
