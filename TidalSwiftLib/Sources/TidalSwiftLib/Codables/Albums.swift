@@ -67,18 +67,6 @@ public struct Album: Codable, Equatable, Identifiable, Hashable {
 		return session.imageUrl(imageId: cover, resolution: resolution)
 	}
 	
-	public func isOffline(session: Session) async -> Bool {
-		await session.helpers.offline.isAlbumOffline(album: self)
-	}
-	
-	public func addOffline(session: Session) async {
-		await session.helpers.offline.add(album: self)
-	}
-	
-	public func removeOffline(session: Session) async {
-		await session.helpers.offline.remove(album: self)
-	}
-	
 	public func credits(session: Session) async -> [Credit]? {
 		await session.albumCredits(albumId: id)
 	}

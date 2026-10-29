@@ -22,7 +22,6 @@ public class Config {
 	var refreshToken: String
 	var clientID: String
 	var apiToken: String
-	public var offlineAudioQuality: AudioQuality
 	var imageSize: Int
 	var tokenExpirationDate: Date?
 	
@@ -31,7 +30,6 @@ public class Config {
 		refreshToken: String,
 		clientID: String,
 		apiToken: String? = nil,
-		offlineAudioQuality: AudioQuality,
 		imageLocation: String = "",
 		imageSize: Int = 1280,
 		tokenExpirationDate: Date? = nil
@@ -45,9 +43,6 @@ public class Config {
 		} else {
 			self.apiToken = "_DSTon1kC8pABnTw" // Direct ALAC, 1080p Videos
 		}
-		
-		self.offlineAudioQuality = offlineAudioQuality
-		
 		
 		self.imageSize = imageSize
 		self.tokenExpirationDate = tokenExpirationDate

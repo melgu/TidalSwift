@@ -19,9 +19,10 @@ struct VideoGridItem: View {
 	let player: Player
 	
 	@Environment(PlaybackInfo.self) private var playbackInfo
+	@Environment(Offline.self) private var offline
 	
 	private var isOffline: Bool {
-		video.isOffline(session: session)
+		offline.isVideoOffline(video: video)
 	}
 	
 	var body: some View {
@@ -89,7 +90,7 @@ struct VideoGridItem: View {
 	private func play() {
 		logger.debug("Play Video: \(video.title)")
 		Task {
-			guard let url = await video.playbackUrl(session: session) else { return }
+			guard let url = await offline.playbackUrl(for: video) else { return }
 			logger.debug("\(url)")
 			player.pause()
 			let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)

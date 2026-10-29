@@ -18,6 +18,7 @@ struct MixContextMenu: View {
 	let player: Player
 	
 	@Environment(PlaylistEditingValues.self) private var playlistEditingValues
+	@Environment(Offline.self) private var offline
 	
 	var body: some View {
 		Group {
@@ -65,7 +66,7 @@ struct MixContextMenu: View {
 				Task {
 					logger.debug("Download")
 					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
-						_ = await session.helpers.download.download(tracks: tracks, parentFolder: mix.title, options: session.downloadOptions)
+						_ = await session.helpers.download.download(tracks: tracks, parentFolder: mix.title, options: offline.downloadOptions)
 					}
 				}
 			} label: {

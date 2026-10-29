@@ -17,13 +17,13 @@ private let logger = Logger(category: "Download")
 public final class DownloadStatus {
 	public private(set) var tasks: [DownloadTask] = []
 	
-	func startTask(title: String) -> DownloadTask {
+	public func startTask(title: String) -> DownloadTask {
 		let task = DownloadTask(title: title)
 		tasks.append(task)
 		return task
 	}
 	
-	func finishTask(_ task: DownloadTask) {
+	public func finishTask(_ task: DownloadTask) {
 		tasks.removeAll { $0 === task }
 	}
 }
@@ -35,15 +35,21 @@ public final class DownloadTask: Identifiable {
 		public let title: String
 		public let index: Int
 		public let count: Int
+		
+		public init(title: String, index: Int, count: Int) {
+			self.title = title
+			self.index = index
+			self.count = count
+		}
 	}
 	
 	public let title: String
 	/// Only set for downloads spanning several albums
-	public internal(set) var album: Step?
-	public internal(set) var track: Step?
-	public internal(set) var video: Step?
+	public var album: Step?
+	public var track: Step?
+	public var video: Step?
 	/// How much of the current video is downloaded, as tracks are quick enough without
-	public internal(set) var progress: Double?
+	public var progress: Double?
 	
 	init(title: String) {
 		self.title = title
@@ -55,11 +61,6 @@ public struct DownloadErrors {
 	fileprivate var affectedAlbums = Set<Album>()
 	fileprivate var affectedArtists = Set<Artist>()
 	fileprivate var affectedPlaylists = Set<Playlist>()
-}
-
-public enum DownloadLocation {
-	case downloads
-	case music
 }
 
 public struct DownloadOptions {
@@ -227,46 +228,4 @@ public class Download {
 		let errors = await downloadTracks(tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)", options: options, task: task)
 		return errors
 	}
-}
-
-func buildPath(baseLocation: DownloadLocation, parentFolder: String?, name: String, pathExtension: String?) -> URL? {
-	
-//	if !parentFolder.isEmpty {
-//		if URL(string: parentFolder) == nil {
-//			displayError(title: "Download Error", content: "Target Path '\(targetPath)' is not valid")
-//			return nil
-//		}
-//	}
-//	if URL(string: name) == nil {
-//		displayError(title: "Download Error", content: "Name '\(name)' is not valid")
-//		return nil
-//	}
-	// TODO: Doesn't work as intended, because URL doesn't allow whitespace, but should
-	
-	var path: URL
-	do {
-		switch baseLocation {
-		case .downloads:
-			path = try FileManager.default.url(for: .downloadsDirectory,
-											   in: .userDomainMask,
-											   appropriateFor: nil,
-											   create: false)
-		case .music:
-			path = try FileManager.default.url(for: .musicDirectory,
-											   in: .userDomainMask,
-											   appropriateFor: nil,
-											   create: false)
-		}
-		if let parentFolder = parentFolder {
-			path.appendPathComponent(parentFolder)
-		}
-		path.appendPathComponent(name.replacingOccurrences(of: "/", with: ":"))
-		if let pathExtension = pathExtension {
-			path.appendPathExtension(pathExtension)
-		}
-	} catch {
-		displayError(title: "Path Building Error", content: "File Error: \(error)")
-		return nil
-	}
-	return path
 }

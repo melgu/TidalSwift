@@ -13,7 +13,7 @@ import AVFoundation
 ///
 /// Tidal's videos are transport stream segments with video and audio muxed together.
 /// Joined one after the other, they form a single transport stream, which AVFoundation exports as MP4.
-nonisolated enum HLSDownloader {
+nonisolated public enum HLSDownloader {
 	enum DownloadError: Error {
 		case invalidServerResponse(statusCode: Int)
 		case exportUnavailable
@@ -26,7 +26,7 @@ nonisolated enum HLSDownloader {
 	
 	/// - Parameter progress: The fraction of segments downloaded so far
 	@concurrent
-	static func download(_ manifestURL: URL, to outputURL: URL, tags: VideoTags?, progress: @escaping @MainActor @Sendable (Double) -> Void) async throws {
+	public static func download(_ manifestURL: URL, to outputURL: URL, tags: VideoTags?, progress: @escaping @MainActor @Sendable (Double) -> Void) async throws {
 		let fileManager = FileManager.default
 		try fileManager.createDirectory(at: outputURL.deletingLastPathComponent(), withIntermediateDirectories: true)
 		let temporaryDirectory = try fileManager.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: outputURL, create: true)

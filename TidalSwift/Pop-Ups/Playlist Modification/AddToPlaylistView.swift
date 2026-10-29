@@ -14,6 +14,7 @@ private let logger = Logger(category: "AddToPlaylistView")
 
 struct AddToPlaylistView: View {
 	let session: Session
+	@Environment(Offline.self) private var offline
 	
 	@State private var playlists: [Playlist]? = nil
 	@State private var loadingState: LoadingState = .loading
@@ -103,7 +104,7 @@ struct AddToPlaylistView: View {
 							let success = await session.playlistEditing.addTracks(ids, to: playlistId, duplicate: false)
 							if success {
 								if let playlist = await session.playlist(playlistId: playlistId) {
-									session.helpers.offline.syncPlaylist(playlist)
+									offline.syncPlaylist(playlist)
 									viewState.refreshCurrentView()
 									playlistEditingValues.showAddTracksModal = false
 								} else {

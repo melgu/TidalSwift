@@ -90,6 +90,7 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 @Observable
 final class ViewState {
 	let session: Session
+	let offline: Offline
 	@ObservationIgnored var cache: ViewCache
 	
 	@ObservationIgnored var searchTerm: String = ""
@@ -108,8 +109,9 @@ final class ViewState {
 	@ObservationIgnored weak var window: NSWindow?
 	#endif
 	
-	init(session: Session, cache: ViewCache) {
+	init(session: Session, offline: Offline, cache: ViewCache) {
 		self.session = session
+		self.offline = offline
 		self.cache = cache
 	}
 	

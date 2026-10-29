@@ -20,6 +20,7 @@ struct AlbumGridItem: View {
 	let player: Player
 	
 	@Environment(ViewState.self) private var viewState
+	@Environment(Offline.self) private var offline
 	@State private var isOffline: Bool = false
 	
 	init(album: Album, showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
@@ -120,7 +121,7 @@ struct AlbumGridItem: View {
 			AlbumContextMenu(album: album, session: session, player: player)
 		}
 		.task(id: album.id) {
-			isOffline = await album.isOffline(session: session)
+			isOffline = await offline.isAlbumOffline(album: album)
 		}
 	}
 	

@@ -128,6 +128,7 @@ struct FavoriteTracks: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(SortingState.self) private var sortingState
+	@Environment(Offline.self) private var offline
 	
 	@AppStorage("SaveFavoritesOffline") private var saveFavoritesOffline = false
 	
@@ -146,7 +147,7 @@ struct FavoriteTracks: View {
 						Button {
 							logger.debug("\(saveFavoritesOffline ? "Remove from Offline" : "Add to Offline")")
 							saveFavoritesOffline.toggle()
-							session.helpers.offline.asyncSyncFavoriteTracks()
+							offline.asyncSyncFavoriteTracks()
 							viewState.refreshCurrentView()
 						} label: {
 							Image(systemName: saveFavoritesOffline ? "cloud.fill" : "cloud")

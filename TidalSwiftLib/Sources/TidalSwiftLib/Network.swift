@@ -17,7 +17,7 @@ struct Response {
 	let etag: Int?
 }
 
-enum Network {}
+public enum Network {}
 
 extension Network {
 	
@@ -134,7 +134,7 @@ extension Network {
 	// MARK: - Downloads
 	
 	// Path Structure example: path/to/file -> [path, to, file]. Cannot be empty
-	static func download(_ url: URL, path: URL, overwrite: Bool = false) async throws {
+	public static func download(_ url: URL, path: URL, overwrite: Bool = false) async throws {
 //		print("=== Network Download ===")
 //		print("Download URL: \(url)")
 //		print("Temp Local URL: \(dataUrl)")

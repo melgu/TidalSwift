@@ -65,18 +65,6 @@ public struct Playlist: Codable, Equatable, Identifiable, Hashable {
 	
 	// Offline
 	
-	public func isOffline(session: Session) async -> Bool {
-		await session.helpers.offline.isPlaylistOffline(playlist: self)
-	}
-	
-	public func addOffline(session: Session) async {
-		await session.helpers.offline.add(playlist: self)
-	}
-	
-	public func removeOffline(session: Session) async {
-		await session.helpers.offline.remove(playlist: self)
-	}
-	
 	// Playlist Editing
 	
 	public func addTracks(_ tracks: [Track], duplicate: Bool, session: Session) async -> Bool {

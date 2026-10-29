@@ -46,7 +46,7 @@ extension ViewState {
 		view.loadingState = .successful
 		cache.favoriteTracks = tracks
 		
-		session.helpers.offline.asyncSyncFavoriteTracks()
+		offline.asyncSyncFavoriteTracks()
 		replaceCurrentView(with: view)
 	}
 }

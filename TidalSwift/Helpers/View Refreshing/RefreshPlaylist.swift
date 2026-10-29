@@ -48,10 +48,10 @@ extension ViewState {
 			guard !Task.isCancelled else { return }
 			view.loadingState = .successful
 			cache.playlistTracks[playlist.id] = view.tracks
-			session.helpers.offline.syncPlaylist(playlist)
+			offline.syncPlaylist(playlist)
 		} else {
 			view.loadingState = .error
-			view.tracks = await session.helpers.offline.getTracks(for: playlist)
+			view.tracks = await offline.getTracks(for: playlist)
 		}
 		
 		guard !Task.isCancelled else { return }

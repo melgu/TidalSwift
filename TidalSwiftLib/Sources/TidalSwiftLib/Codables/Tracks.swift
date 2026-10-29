@@ -105,10 +105,6 @@ public struct Track: Codable, Equatable, Identifiable, Hashable {
 		return AudioStream(url: url, pathExtension: session.pathExtension(for: audioQuality), isDolbyAtmos: false)
 	}
 	
-	public func isOffline(session: Session) async -> Bool {
-		await session.helpers.offline.isTrackOffline(track: self)
-	}
-	
 	public func radio(session: Session) async -> [Track]? {
 		await session.trackRadio(trackId: id)
 	}
@@ -126,6 +122,12 @@ public struct AudioStream {
 	public let url: URL
 	public let pathExtension: String
 	public let isDolbyAtmos: Bool
+	
+	public init(url: URL, pathExtension: String, isDolbyAtmos: Bool) {
+		self.url = url
+		self.pathExtension = pathExtension
+		self.isDolbyAtmos = isDolbyAtmos
+	}
 }
 
 struct TrackPlaybackInfo: Decodable {

@@ -16,6 +16,7 @@ private let logger = Logger(category: "Player")
 @Observable
 class Player {
 	private let session: Session
+	private let offline: Offline
 	private var autoplayAfterAddNow: Bool
 	
 	private let avPlayer = AVPlayer()
@@ -42,8 +43,9 @@ class Player {
 	private(set) var nextAudioQuality: AudioQuality
 	private(set) var preferDolbyAtmos: Bool
 	
-	init(session: Session, audioQuality: AudioQuality, preferDolbyAtmos: Bool = false, autoplayAfterAddNow: Bool = true) {
+	init(session: Session, offline: Offline, audioQuality: AudioQuality, preferDolbyAtmos: Bool = false, autoplayAfterAddNow: Bool = true) {
 		self.session = session
+		self.offline = offline
 		self.currentAudioQuality = audioQuality
 		self.nextAudioQuality = audioQuality
 		self.preferDolbyAtmos = preferDolbyAtmos
@@ -311,7 +313,7 @@ class Player {
 		
 		let url: URL
 		let isDolbyAtmos: Bool
-		if let offlineStream = await session.helpers.offline.stream(for: track) {
+		if let offlineStream = await offline.stream(for: track) {
 			url = offlineStream.url
 			isDolbyAtmos = offlineStream.isDolbyAtmos
 			logger.debug("Play \(track.title) from offline URL\(offlineStream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(offlineStream.url)")
@@ -402,7 +404,7 @@ class Player {
 	func add(playlist: Playlist, _ when: When) {
 		Task {
 			let apiTracks = await session.playlistTracks(playlistId: playlist.uuid)
-			let offlineTracks = await session.helpers.offline.getTracks(for: playlist)
+			let offlineTracks = await offline.getTracks(for: playlist)
 			if let tracks = apiTracks ?? offlineTracks {
 				add(tracks: tracks, when)
 			}
@@ -418,7 +420,7 @@ class Player {
 	func add(album: Album, _ when: When) {
 		Task {
 			let apiTracks = await session.albumTracks(albumId: album.id)
-			let offlineTracks = await session.helpers.offline.getTracks(for: album)
+			let offlineTracks = await offline.getTracks(for: album)
 			if let tracks = apiTracks ?? offlineTracks {
 				add(tracks: tracks, when)
 			} else if when == .now {

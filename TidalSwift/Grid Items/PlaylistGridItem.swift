@@ -18,6 +18,7 @@ struct PlaylistGridItem: View {
 	let player: Player
 	
 	@Environment(ViewState.self) private var viewState
+	@Environment(Offline.self) private var offline
 	@State private var isOffline: Bool = false
 	
 	var body: some View {
@@ -71,7 +72,7 @@ struct PlaylistGridItem: View {
 			PlaylistContextMenu(playlist: playlist, session: session, player: player)
 		}
 		.task(id: playlist.uuid) {
-			isOffline = await playlist.isOffline(session: session)
+			isOffline = await offline.isPlaylistOffline(playlist: playlist)
 		}
 	}
 	

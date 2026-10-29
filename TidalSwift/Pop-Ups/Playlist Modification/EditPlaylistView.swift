@@ -14,6 +14,7 @@ private let logger = Logger(category: "EditPlaylistView")
 
 struct EditPlaylistView: View {
 	let session: Session
+	@Environment(Offline.self) private var offline
 	
 	let playlistEditingValues: PlaylistEditingValues
 	let viewState: ViewState
@@ -52,7 +53,7 @@ struct EditPlaylistView: View {
 						Task {
 							let success = await playlist.edit(title: playlistTitle, description: playlistDescription, session: session)
 							if success {
-								await playlist.removeOffline(session: session)
+								await offline.remove(playlist: playlist)
 								playlistEditingValues.showEditModal = false
 								viewState.refreshCurrentView()
 							}
@@ -62,7 +63,7 @@ struct EditPlaylistView: View {
 					}
 				}
 				.task(id: playlist.uuid) {
-					isOffline = await playlist.isOffline(session: session)
+					isOffline = await offline.isPlaylistOffline(playlist: playlist)
 				}
 			} else {
 				Text("Missing Playlist")

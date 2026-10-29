@@ -12,13 +12,11 @@ public class Helpers {
 	private unowned let session: Session
 	private let metadata: Metadata
 	public let downloadStatus = DownloadStatus()
-	public let offline: Offline
 	public let download: Download
 	
 	public init(session: Session) {
 		self.session = session
 		self.metadata = Metadata(session: session)
-		self.offline = Offline(session: session, downloadStatus: downloadStatus)
 		self.download = Download(session: session, metadata: self.metadata, downloadStatus: downloadStatus)
 	}
 	

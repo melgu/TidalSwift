@@ -32,6 +32,7 @@ struct TidalSwiftApp: App {
 				player: appModel.player
 			)
 			.environment(appModel)
+			.environment(appModel.offline)
 			.onAppear {
 				#if canImport(AppKit)
 				appDelegate.appModel = appModel
@@ -85,6 +86,7 @@ final class TidalSwiftAppModel {
 	@ObservationIgnored private let updateNotification = UpdateNotification(feedUrl: URL(string: "https://www.melvin-gundlach.de/apps/app-feeds/TidalSwift.json")!)
 	
 	let session: Session
+	let offline: Offline
 	let player: Player
 	var viewState: ViewState
 	var sortingState: SortingState
@@ -106,7 +108,7 @@ final class TidalSwiftAppModel {
 	var trackIsFavorite = false
 	var albumIsFavorite = false
 	
-	// The offline settings live in the non-observable library, so the menus read these copies
+	// The offline settings are stored with AppStorage, which isn't observable, so the menus read these copies
 	private(set) var offlineAudioQuality: AudioQuality
 	private(set) var offlinePreferDolbyAtmos: Bool
 	
@@ -116,10 +118,11 @@ final class TidalSwiftAppModel {
 	
 	init() {
 		session = Session(config: nil)
+		offline = Offline(session: session, downloadStatus: session.helpers.downloadStatus)
 		
 		let preferDolbyAtmos = UserDefaults.standard.bool(forKey: "preferDolbyAtmos")
 		// Only High is offered, so a stored Low or Low 320 falls back to it as well
-		player = Player(session: session, audioQuality: .high, preferDolbyAtmos: preferDolbyAtmos)
+		player = Player(session: session, offline: offline, audioQuality: .high, preferDolbyAtmos: preferDolbyAtmos)
 		
 		var cache = ViewCache()
 		if let data = UserDefaults.standard.data(forKey: "ViewCache") {
@@ -128,11 +131,11 @@ final class TidalSwiftAppModel {
 			}
 		}
 		
-		viewState = ViewState(session: session, cache: cache)
+		viewState = ViewState(session: session, offline: offline, cache: cache)
 		sortingState = SortingState()
 		
-		offlineAudioQuality = session.config.offlineAudioQuality
-		offlinePreferDolbyAtmos = session.helpers.offline.preferDolbyAtmos
+		offlineAudioQuality = offline.audioQuality
+		offlinePreferDolbyAtmos = offline.preferDolbyAtmos
 	}
 	
 	func startupIfNeeded() {
@@ -142,7 +145,7 @@ final class TidalSwiftAppModel {
 	}
 	
 	private func startup() {
-		session.helpers.offline.uiRefreshFunc = { [weak self] in
+		offline.uiRefreshFunc = { [weak self] in
 			self?.viewState.refreshCurrentView()
 		}
 		
@@ -172,7 +175,7 @@ final class TidalSwiftAppModel {
 		#endif
 		
 		Task {
-			await session.helpers.offline.syncAllOfflinePlaylistsAndFavoriteTracks()
+			await offline.syncAllOfflinePlaylistsAndFavoriteTracks()
 		}
 		
 		Task {
@@ -244,6 +247,7 @@ final class TidalSwiftAppModel {
 		lyricsViewController = ResizableWindowControllerFactory.create(rootView:
 			LyricsView(session: session, player: player)
 				.environment(viewState)
+				.environment(offline)
 				.environment(player.queueInfo)
 				.environment(player.playbackInfo),
 			autosaveName: "Lyrics"
@@ -265,6 +269,7 @@ final class TidalSwiftAppModel {
 		queueViewController = ResizableWindowControllerFactory.create(rootView:
 			QueueView(session: session, player: player)
 				.environment(viewState)
+				.environment(offline)
 				.environment(player.queueInfo)
 				.environment(playlistEditingValues),
 			autosaveName: "Queue"
@@ -273,7 +278,8 @@ final class TidalSwiftAppModel {
 		
 		viewHistoryViewController = ResizableWindowControllerFactory.create(rootView:
 			ViewHistoryView()
-				.environment(viewState),
+				.environment(viewState)
+				.environment(offline),
 			autosaveName: "ViewHistory"
 		)
 		viewHistoryViewController?.window?.title = "View History"
@@ -281,6 +287,7 @@ final class TidalSwiftAppModel {
 		playbackHistoryViewController = ResizableWindowControllerFactory.create(
 			rootView: PlaybackHistoryView(session: session, player: player)
 				.environment(viewState)
+				.environment(offline)
 				.environment(player.queueInfo)
 				.environment(playlistEditingValues),
 			autosaveName: "PlaybackHistory"
@@ -531,7 +538,7 @@ final class TidalSwiftAppModel {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex]
 		Task { [self] in
-			_ = await session.helpers.download.download(track: track, options: session.downloadOptions)
+			_ = await session.helpers.download.download(track: track, options: offline.downloadOptions)
 		}
 	}
 	
@@ -553,7 +560,7 @@ final class TidalSwiftAppModel {
 		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].id
 		Task {
 			if await session.favorites?.addTrack(trackId: trackId) == true {
-				session.helpers.offline.asyncSyncFavoriteTracks()
+				offline.asyncSyncFavoriteTracks()
 				refreshFavoriteState()
 				viewState.refreshCurrentView()
 			}
@@ -565,7 +572,7 @@ final class TidalSwiftAppModel {
 		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].id
 		Task {
 			if await session.favorites?.removeTrack(trackId: trackId) == true {
-				session.helpers.offline.asyncSyncFavoriteTracks()
+				offline.asyncSyncFavoriteTracks()
 				refreshFavoriteState()
 				viewState.refreshCurrentView()
 			}
@@ -653,13 +660,13 @@ final class TidalSwiftAppModel {
 	}
 	
 	func setOfflineAudioQuality(_ audioQuality: AudioQuality) {
-		session.helpers.offline.setAudioQuality(to: audioQuality)
-		offlineAudioQuality = session.config.offlineAudioQuality
+		offline.setAudioQuality(to: audioQuality)
+		offlineAudioQuality = offline.audioQuality
 	}
 	
 	func toggleOfflinePreferDolbyAtmos() {
-		session.helpers.offline.setPreferDolbyAtmos(to: !session.helpers.offline.preferDolbyAtmos)
-		offlinePreferDolbyAtmos = session.helpers.offline.preferDolbyAtmos
+		offline.setPreferDolbyAtmos(to: !offline.preferDolbyAtmos)
+		offlinePreferDolbyAtmos = offline.preferDolbyAtmos
 	}
 	
 	func togglePreferDolbyAtmos() {
@@ -679,6 +686,7 @@ final class TidalSwiftAppModel {
 			let controller = ResizableWindowControllerFactory.create(rootView:
 				AccountInfoView(session: session)
 					.environment(viewState)
+					.environment(offline)
 			)
 			controller.window?.title = user.username
 			controller.showWindow(nil)
@@ -699,7 +707,7 @@ final class TidalSwiftAppModel {
 	}
 	
 	func logout() {
-		session.helpers.offline.removeAll()
+		offline.removeAll()
 		closeModals()
 		#if canImport(AppKit)
 		closeAllSecondaryWindows()
@@ -714,7 +722,7 @@ final class TidalSwiftAppModel {
 	
 	func removeAllOfflineContent() {
 		Task {
-			session.helpers.offline.removeAll()
+			offline.removeAll()
 			viewState.clearEverything()
 		}
 	}

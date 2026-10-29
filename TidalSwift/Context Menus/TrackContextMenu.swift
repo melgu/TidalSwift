@@ -21,6 +21,7 @@ struct TrackContextMenu: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(PlaylistEditingValues.self) private var playlistEditingValues
+	@Environment(Offline.self) private var offline
 	@State private var isFavorite: Bool? = nil
 	
 	init(track: Track, indexInPlaylist: Int? = nil, playlist: Playlist? = nil, session: Session, player: Player) {
@@ -80,7 +81,7 @@ struct TrackContextMenu: View {
 						Task {
 							logger.debug("Remove from Favorites")
 							if await session.favorites?.removeTrack(trackId: track.id) == true {
-								session.helpers.offline.asyncSyncFavoriteTracks()
+								offline.asyncSyncFavoriteTracks()
 								isFavorite = false
 								viewState.refreshCurrentView()
 							}
@@ -93,7 +94,7 @@ struct TrackContextMenu: View {
 						Task {
 							logger.debug("Add to Favorites")
 							if await session.favorites?.addTrack(trackId: track.id) == true {
-								session.helpers.offline.asyncSyncFavoriteTracks()
+								offline.asyncSyncFavoriteTracks()
 								isFavorite = true
 								viewState.refreshCurrentView()
 							}
@@ -127,7 +128,7 @@ struct TrackContextMenu: View {
 					Button {
 						Task {
 							logger.debug("Download")
-							_ = await session.helpers.download.download(track: track, options: session.downloadOptions)
+							_ = await session.helpers.download.download(track: track, options: offline.downloadOptions)
 						}
 					} label: {
 						Text("Download")

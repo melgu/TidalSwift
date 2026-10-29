@@ -45,8 +45,7 @@ public class Session {
 				self.config = Config(
 					accessToken: "",
 					refreshToken: "",
-					clientID: "",
-					offlineAudioQuality: .high
+					clientID: ""
 				)
 			}
 		}

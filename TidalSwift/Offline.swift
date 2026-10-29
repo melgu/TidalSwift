@@ -1,15 +1,20 @@
 //
 //  Offline.swift
-//  TidalSwiftLib
+//  TidalSwift
 //
 //  Created by Melvin Gundlach on 12.12.19.
 //  Copyright © 2019 Melvin Gundlach. All rights reserved.
 //
 
 import SwiftUI
+import TidalSwiftLib
 import OSLog
 
 private let logger = Logger(category: "Offline")
+
+private func displayError(title: String, content: String) {
+	logger.error("\(title). \(content)")
+}
 
 // MARK: DB
 
@@ -182,17 +187,25 @@ public final class OfflineDB {
 
 // MARK: - Offline
 
+/// Observable only to be injected into the environment, views observe the DB
+@Observable
 public final class Offline {
-	private unowned let session: Session
-	private let downloadStatus: DownloadStatus
-	private let mainPath = "TidalSwift Offline Library"
+	@ObservationIgnored private unowned let session: Session
+	@ObservationIgnored private let downloadStatus: DownloadStatus
+	@ObservationIgnored private let mainPath = "TidalSwift Offline Library"
 	/// Separate from the tracks, so the track sync doesn't treat video files as leftover tracks and delete them. Files are named "<video ID>.mp4".
 	private var videosPath: String { "\(mainPath)/Videos" }
-	@MainActor
+	@ObservationIgnored @MainActor
 	public var uiRefreshFunc: () -> Void = {}
 	
-	@AppStorage("SaveFavoritesOffline") public var saveFavoritesOffline = false
-	@AppStorage("offlinePreferDolbyAtmos") public private(set) var preferDolbyAtmos = false
+	@ObservationIgnored @AppStorage("SaveFavoritesOffline") public var saveFavoritesOffline = false
+	@ObservationIgnored @AppStorage("offlinePreferDolbyAtmos") public private(set) var preferDolbyAtmos = false
+	@ObservationIgnored @AppStorage("offlineAudioQuality") public private(set) var audioQuality = AudioQuality.high
+	
+	/// Downloads use the offline settings and go to the Downloads folder, the only one the sandbox allows writing to
+	public var downloadOptions: DownloadOptions {
+		DownloadOptions(audioQuality: audioQuality, preferDolbyAtmos: preferDolbyAtmos, destination: .downloadsDirectory)
+	}
 	
 	/// Dolby Atmos files are named "<track ID>.atmos.m4a", stereo files "<track ID>.<audio quality>.<extension>"
 	private let dolbyAtmosFileMarker = "atmos"
@@ -203,11 +216,19 @@ public final class Offline {
 		case stereo(AudioQuality?)
 	}
 	
-	private let db = OfflineDB()
+	@ObservationIgnored private let db = OfflineDB()
 	
 	public init(session: Session, downloadStatus: DownloadStatus) {
 		self.session = session
 		self.downloadStatus = downloadStatus
+		
+		// Older versions stored the audio quality in the library's config
+		if UserDefaults.standard.string(forKey: "offlineAudioQuality") == nil,
+		   let configInformation = UserDefaults.standard.dictionary(forKey: "Config Information") as? [String: String],
+		   let audioQualityString = configInformation["offlineAudioQuality"],
+		   let audioQuality = AudioQuality(rawValue: audioQualityString) {
+			self.audioQuality = audioQuality
+		}
 		
 		// Create main folder if it doesn't exist
 		do {
@@ -242,9 +263,8 @@ public final class Offline {
 	
 	/// Changing it replaces offline files in other qualities on the next sync
 	public func setAudioQuality(to audioQuality: AudioQuality) {
-		guard audioQuality != session.config.offlineAudioQuality else { return }
-		session.config.offlineAudioQuality = audioQuality
-		session.saveConfig()
+		guard audioQuality != self.audioQuality else { return }
+		self.audioQuality = audioQuality
 		asyncSync()
 	}
 	
@@ -260,7 +280,7 @@ public final class Offline {
 		if track.hasDolbyAtmos && (preferDolbyAtmos || !track.hasStereo) {
 			return .dolbyAtmos
 		}
-		return .stereo(session.config.offlineAudioQuality)
+		return .stereo(audioQuality)
 	}
 	
 	private func variant(of url: URL, track: Track) -> FileVariant {
@@ -277,7 +297,7 @@ public final class Offline {
 	}
 	
 	private func variant(of stream: AudioStream) -> FileVariant {
-		stream.isDolbyAtmos ? .dolbyAtmos : .stereo(session.config.offlineAudioQuality)
+		stream.isDolbyAtmos ? .dolbyAtmos : .stereo(audioQuality)
 	}
 	
 	// The following always show the goal state (planned), i.e., after all downloads have finished
@@ -311,7 +331,7 @@ public final class Offline {
 	/// Files on disk by track ID, whatever their extension, so files stay usable after the offline quality changes
 	private func localFilesByTrackId() -> [Int: [URL]]? {
 		do {
-			guard let path = buildPath(baseLocation: .music, parentFolder: nil, name: mainPath, pathExtension: nil) else {
+			guard let path = buildPath(parentFolder: nil, name: mainPath, pathExtension: nil) else {
 				displayError(title: "Offline: Error loading Track IDs on Disk", content: "Error while building path to: \(mainPath)")
 				return nil
 			}
@@ -342,7 +362,7 @@ public final class Offline {
 	/// Video files on disk by video ID
 	private func localVideoFilesByVideoId() -> [Int: URL]? {
 		// Not passing the whole path as the name, as that turns its slashes into colons
-		guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: "Videos", pathExtension: nil) else {
+		guard let path = buildPath(parentFolder: mainPath, name: "Videos", pathExtension: nil) else {
 			displayError(title: "Offline: Error loading Video IDs on Disk", content: "Error while building path to: \(videosPath)")
 			return nil
 		}
@@ -459,7 +479,7 @@ public final class Offline {
 			task.track = DownloadTask.Step(title: track.title, index: index + 1, count: toAdd.count)
 			logger.debug("Downloading \(track.title)")
 			let existingFiles = localFiles[track.id] ?? []
-			guard let stream = await track.audioStream(session: session, audioQuality: session.config.offlineAudioQuality, preferDolbyAtmos: preferDolbyAtmos) else {
+			guard let stream = await track.audioStream(session: session, audioQuality: audioQuality, preferDolbyAtmos: preferDolbyAtmos) else {
 				if !existingFiles.isEmpty {
 					logger.debug("Keeping existing file of \(track.title), as no Audio URL is available")
 					continue
@@ -475,9 +495,9 @@ public final class Offline {
 			}
 			let url = stream.url
 			let pathExtension = stream.pathExtension
-			let marker = stream.isDolbyAtmos ? dolbyAtmosFileMarker : session.config.offlineAudioQuality.rawValue.lowercased()
+			let marker = stream.isDolbyAtmos ? dolbyAtmosFileMarker : audioQuality.rawValue.lowercased()
 			let name = "\(track.id).\(marker)"
-			guard let path = buildPath(baseLocation: .music, parentFolder: mainPath, name: name, pathExtension: pathExtension) else {
+			guard let path = buildPath(parentFolder: mainPath, name: name, pathExtension: pathExtension) else {
 				displayError(title: "Offline: Error while loading offline track", content: "Error while building path to: \(mainPath)/\(name).\(pathExtension)")
 				continue
 			}
@@ -537,7 +557,7 @@ public final class Offline {
 				displayError(title: "Offline: Error while loading offline video", content: "Couldn't get Video URL for \(video.title)")
 				continue
 			}
-			guard let path = buildPath(baseLocation: .music, parentFolder: videosPath, name: String(video.id), pathExtension: "mp4") else {
+			guard let path = buildPath(parentFolder: videosPath, name: String(video.id), pathExtension: "mp4") else {
 				displayError(title: "Offline: Error while loading offline video", content: "Error while building path to: \(videosPath)/\(video.id).mp4")
 				continue
 			}
@@ -782,6 +802,14 @@ public final class Offline {
 		return localVideoFilesByVideoId()?[video.id]
 	}
 	
+	/// The offline file if there is one, otherwise the stream
+	public func playbackUrl(for video: Video) async -> URL? {
+		if let url = url(for: video) {
+			return url
+		}
+		return await video.videoUrl(session: session)
+	}
+	
 	public func add(video: Video) {
 		guard !db.videos.contains(video) else { return }
 		db.add(video)
@@ -799,5 +827,23 @@ public final class Offline {
 			syncPlaylist(playlist)
 		}
 		_asyncSyncFavoriteTracks()
+	}
+	
+	private func buildPath(parentFolder: String?, name: String, pathExtension: String?) -> URL? {
+		var path: URL
+		do {
+			path = try FileManager.default.url(for: .musicDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+		} catch {
+			displayError(title: "Path Building Error", content: "File Error: \(error)")
+			return nil
+		}
+		if let parentFolder {
+			path.appendPathComponent(parentFolder)
+		}
+		path.appendPathComponent(name.replacingOccurrences(of: "/", with: ":"))
+		if let pathExtension {
+			path.appendPathExtension(pathExtension)
+		}
+		return path
 	}
 }

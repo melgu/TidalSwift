@@ -15,7 +15,7 @@ extension ViewState {
 			return
 		}
 		Task {
-			view.playlists = await session.helpers.offline.allOfflinePlaylists()
+			view.playlists = await offline.allOfflinePlaylists()
 			view.loadingState = .successful
 			replaceCurrentView(with: view)
 		}
@@ -26,7 +26,7 @@ extension ViewState {
 			return
 		}
 		Task {
-			view.albums = await session.helpers.offline.allOfflineAlbums()
+			view.albums = await offline.allOfflineAlbums()
 			view.loadingState = .successful
 			replaceCurrentView(with: view)
 		}
@@ -37,7 +37,7 @@ extension ViewState {
 			return
 		}
 		Task {
-			view.tracks = await session.helpers.offline.allOfflineTracks()
+			view.tracks = await offline.allOfflineTracks()
 			view.loadingState = .successful
 			replaceCurrentView(with: view)
 		}
@@ -47,7 +47,7 @@ extension ViewState {
 		guard var view = stack.last else {
 			return
 		}
-		view.videos = session.helpers.offline.allOfflineVideos()
+		view.videos = offline.allOfflineVideos()
 		view.loadingState = .successful
 		replaceCurrentView(with: view)
 	}

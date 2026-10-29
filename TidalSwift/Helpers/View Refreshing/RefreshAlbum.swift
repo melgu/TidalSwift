@@ -66,7 +66,7 @@ extension ViewState {
 			cache.albumTracks[album.id] = view.tracks
 		} else {
 			view.loadingState = .error
-			view.tracks = await session.helpers.offline.getTracks(for: album)
+			view.tracks = await offline.getTracks(for: album)
 		}
 		
 		guard !Task.isCancelled else { return }

@@ -19,6 +19,7 @@ struct AlbumContextMenu: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(PlaylistEditingValues.self) private var playlistEditingValues
+	@Environment(Offline.self) private var offline
 	@State private var isFavorite: Bool? = nil
 	@State private var isOffline: Bool = false
 	
@@ -102,7 +103,7 @@ struct AlbumContextMenu: View {
 							Button {
 								Task {
 									logger.debug("Remove from Offline")
-									await album.removeOffline(session: session)
+									await offline.remove(album: album)
 									isOffline = false
 									viewState.refreshCurrentView()
 								}
@@ -113,7 +114,7 @@ struct AlbumContextMenu: View {
 							Button {
 								Task {
 									logger.debug("Add to Offline")
-									await album.addOffline(session: session)
+									await offline.add(album: album)
 									isOffline = true
 								}
 							} label: {
@@ -124,7 +125,7 @@ struct AlbumContextMenu: View {
 						Button {
 							Task {
 								logger.debug("Download")
-								_ = await session.helpers.download.download(album: album, options: session.downloadOptions)
+								_ = await session.helpers.download.download(album: album, options: offline.downloadOptions)
 							}
 						} label: {
 							Text("Download")
@@ -170,7 +171,7 @@ struct AlbumContextMenu: View {
 		}
 		.task(id: album.id) {
 			isFavorite = await album.isInFavorites(session: session)
-			isOffline = await album.isOffline(session: session)
+			isOffline = await offline.isAlbumOffline(album: album)
 		}
 	}
 }

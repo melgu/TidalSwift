@@ -17,6 +17,7 @@ struct AlbumView: View {
 	let player: Player
 	
 	@Environment(ViewState.self) private var viewState
+	@Environment(Offline.self) private var offline
 	
 	@State private var cloudPressed: Bool = false
 	@State private var isFavorite: Bool? = nil
@@ -142,7 +143,7 @@ struct AlbumView: View {
 										if isOffline {
 											Task {
 												logger.debug("Remove from Offline")
-												await album.removeOffline(session: session)
+												await offline.remove(album: album)
 												cloudPressed = false
 												isOffline = false
 												viewState.refreshCurrentView()
@@ -151,7 +152,7 @@ struct AlbumView: View {
 											Task {
 												logger.debug("Add to Offline")
 												cloudPressed = true
-												await album.addOffline(session: session)
+												await offline.add(album: album)
 												isOffline = true
 												viewState.refreshCurrentView()
 											}
@@ -187,7 +188,7 @@ struct AlbumView: View {
 		.task(id: viewState.stack.last?.album?.id) {
 			guard let album = viewState.stack.last?.album else { return }
 			isFavorite = await album.isInFavorites(session: session)
-			isOffline = await album.isOffline(session: session)
+			isOffline = await offline.isAlbumOffline(album: album)
 		}
 	}
 }

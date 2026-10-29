@@ -14,6 +14,7 @@ private let logger = Logger(category: "RemoveFromPlaylistView")
 
 struct RemoveFromPlaylistView: View {
 	let session: Session
+	@Environment(Offline.self) private var offline
 	
 	let playlistEditingValues: PlaylistEditingValues
 	let viewState: ViewState
@@ -36,7 +37,7 @@ struct RemoveFromPlaylistView: View {
 							logger.debug("Delete Index \(i) from \(playlist.title)")
 							let success = await playlist.removeItem(atIndex: i, session: session)
 							if success {
-								session.helpers.offline.syncPlaylist(playlist)
+								offline.syncPlaylist(playlist)
 								viewState.refreshCurrentView()
 								playlistEditingValues.showRemoveTracksModal = false
 							}

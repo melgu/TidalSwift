@@ -17,6 +17,7 @@ struct PlaylistView: View {
 	let player: Player
 	
 	@Environment(ViewState.self) private var viewState
+	@Environment(Offline.self) private var offline
 	@State private var isFavorite: Bool? = nil
 	@State private var isOffline: Bool = false
 	
@@ -117,14 +118,14 @@ struct PlaylistView: View {
 								if isOffline {
 									Task {
 										logger.debug("Remove from Offline")
-										await playlist.removeOffline(session: session)
+										await offline.remove(playlist: playlist)
 										isOffline = false
 										viewState.refreshCurrentView()
 									}
 								} else {
 									Task {
 										logger.debug("Add to Offline")
-										await playlist.addOffline(session: session)
+										await offline.add(playlist: playlist)
 										isOffline = true
 										viewState.refreshCurrentView()
 									}
@@ -160,7 +161,7 @@ struct PlaylistView: View {
 		.task(id: viewState.stack.last?.playlist?.uuid) {
 			guard let playlist = viewState.stack.last?.playlist else { return }
 			isFavorite = await playlist.isInFavorites(session: session)
-			isOffline = await playlist.isOffline(session: session)
+			isOffline = await offline.isPlaylistOffline(playlist: playlist)
 		}
 	}
 }

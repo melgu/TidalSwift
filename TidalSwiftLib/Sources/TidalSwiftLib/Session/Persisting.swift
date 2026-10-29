@@ -67,7 +67,6 @@ extension Session {
 		
 		var persistentInformation: [String: String] = [
 			"apiToken": config.apiToken,
-			"offlineAudioQuality": config.offlineAudioQuality.rawValue,
 			"imageSize": String(config.imageSize)
 		]
 		// Keep credentials that couldn't be moved to the Keychain yet
@@ -134,8 +133,6 @@ extension Config {
 		}
 		
 		guard let apiToken = persistentInformation["apiToken"],
-			  let offlineAudioQualityString = persistentInformation["offlineAudioQuality"],
-			  let offlineAudioQuality = AudioQuality(rawValue: offlineAudioQualityString),
 			  let imageSizeString = persistentInformation["imageSize"],
 			  let imageSize = Int(imageSizeString)
 		else {
@@ -153,7 +150,6 @@ extension Config {
 			refreshToken: credentials.refreshToken,
 			clientID: credentials.clientID,
 			apiToken: apiToken,
-			offlineAudioQuality: offlineAudioQuality,
 			imageSize: imageSize,
 			tokenExpirationDate: credentials.tokenExpirationDate
 		)

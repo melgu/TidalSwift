@@ -64,6 +64,7 @@ private struct TrackRow: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(QueueInfo.self) private var queueInfo
+	@Environment(Offline.self) private var offline
 	@State private var isOffline: Bool = false
 	@State private var isFavorite: Bool? = nil
 	
@@ -180,7 +181,7 @@ private struct TrackRow: View {
 							logger.debug("Remove from Favorites")
 							Task {
 								if await session.favorites?.removeTrack(trackId: track.id) == true {
-									session.helpers.offline.asyncSyncFavoriteTracks()
+									offline.asyncSyncFavoriteTracks()
 									isFavorite = false
 									viewState.refreshCurrentView()
 								}
@@ -189,7 +190,7 @@ private struct TrackRow: View {
 							logger.debug("Add to Favorites")
 							Task {
 								if await session.favorites?.addTrack(trackId: track.id) == true {
-									session.helpers.offline.asyncSyncFavoriteTracks()
+									offline.asyncSyncFavoriteTracks()
 									isFavorite = true
 									viewState.refreshCurrentView()
 								}
@@ -205,7 +206,7 @@ private struct TrackRow: View {
 			}
 		.foregroundColor(track.isPlayable ? .primary : .secondary)
 		.task(id: track.id) {
-			isOffline = await track.isOffline(session: session)
+			isOffline = offline.isTrackOffline(track: track)
 			isFavorite = await track.isInFavorites(session: session)
 		}
 	}

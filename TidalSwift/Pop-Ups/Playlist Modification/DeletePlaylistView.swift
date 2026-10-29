@@ -14,6 +14,7 @@ private let logger = Logger(category: "DeletePlaylistView")
 
 struct DeletePlaylistView: View {
 	let session: Session
+	@Environment(Offline.self) private var offline
 	
 	let playlistEditingValues: PlaylistEditingValues
 	let viewState: ViewState
@@ -35,7 +36,7 @@ struct DeletePlaylistView: View {
 							logger.debug("Delete \(playlist.title)")
 							let success = await playlist.delete(session: session)
 							if success {
-								await playlist.removeOffline(session: session)
+								await offline.remove(playlist: playlist)
 								playlistEditingValues.showDeleteModal = false
 								viewState.refreshCurrentView()
 							}

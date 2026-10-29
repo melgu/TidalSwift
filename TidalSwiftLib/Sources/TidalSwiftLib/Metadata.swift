@@ -31,7 +31,7 @@ nonisolated struct AudioTags {
 }
 
 /// Written by `MP4TagWriter`, while exporting a downloaded video
-nonisolated struct VideoTags {
+nonisolated public struct VideoTags: Sendable {
 	var title: String
 	var artist: String?
 	/// Formatted as `yyyy-MM-dd`
