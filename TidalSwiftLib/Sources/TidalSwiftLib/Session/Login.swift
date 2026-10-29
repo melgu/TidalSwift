@@ -187,6 +187,8 @@ extension Session {
 		} catch {
 			throw SessionError.network(underlying: error)
 		}
+		// Logging out cancels the refresh, which mustn't bring the credentials back if the response arrived anyway
+		try Task.checkCancellation()
 		
 		if let successResponse = try? JSONDecoder.custom.decode(TokenSuccessResponse.self, from: response.data) {
 			setAccessToken(successResponse.accessToken, refreshToken: successResponse.refreshToken, expiresIn: successResponse.expiresIn)
