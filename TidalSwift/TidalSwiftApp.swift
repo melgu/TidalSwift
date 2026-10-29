@@ -426,7 +426,7 @@ final class TidalSwiftAppModel {
 			offlinePlaylistSorting: sortingState.offlinePlaylistSorting,
 			offlinePlaylistReversed: sortingState.offlinePlaylistReversed,
 			offlineAlbumSorting: sortingState.offlineAlbumSorting,
-			offlineAlbumReversed: sortingState.offlinePlaylistReversed,
+			offlineAlbumReversed: sortingState.offlineAlbumReversed,
 			offlineTrackSorting: sortingState.offlineTrackSorting,
 			offlineTrackReversed: sortingState.offlineTrackReversed,
 			offlineVideoSorting: sortingState.offlineVideoSorting,
