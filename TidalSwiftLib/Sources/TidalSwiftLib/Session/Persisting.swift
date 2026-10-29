@@ -64,21 +64,9 @@ extension Session {
 				displayError(title: "Couldn't save Login", content: "Couldn't write to Keychain: \(error)")
 			}
 		}
-		
-		var persistentInformation: [String: String] = [
-			"apiToken": config.apiToken,
-			"imageSize": String(config.imageSize)
-		]
-		// Keep credentials that couldn't be moved to the Keychain yet
-		if savedCredentials == nil,
-		   let previousInformation = UserDefaults.standard.dictionary(forKey: "Config Information") as? [String: String] {
-			for key in legacyCredentialKeys {
-				persistentInformation[key] = previousInformation[key]
-			}
-		}
-		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
 	}
 	
+	/// Only removes what the library stores, the app clears its own state
 	public func deletePersistentInformation() {
 		do {
 			try Keychain.delete(service: keychainService, account: credentialsAccount)
@@ -87,13 +75,8 @@ extension Session {
 		}
 		savedCredentials = nil
 		
-		if let domain = Bundle.main.bundleIdentifier {
-			UserDefaults.standard.removePersistentDomain(forName: domain)
-		} else {
-			// Command line tools have no bundle identifier
-			UserDefaults.standard.removeObject(forKey: "Session Information")
-			UserDefaults.standard.removeObject(forKey: "Config Information")
-		}
+		UserDefaults.standard.removeObject(forKey: "Session Information")
+		UserDefaults.standard.removeObject(forKey: legacyConfigKey)
 	}
 }
 
@@ -118,28 +101,14 @@ extension Credentials {
 
 private let credentialsAccount = "Credentials"
 
-/// Keys older versions stored the credentials under in UserDefaults
+/// UserDefaults key older versions stored the credentials and other settings under
+private let legacyConfigKey = "Config Information"
 private let legacyCredentialKeys = ["accessToken", "refreshToken", "clientID", "tokenExpirationDate"]
 
 extension Config {
 	/// `savedCredentials` is nil if the credentials couldn't be moved to the Keychain
 	static func load(keychainService: String) -> (config: Config, savedCredentials: Credentials?)? {
-		let persistentInformationOptional: [String: String]? =
-			UserDefaults.standard.dictionary(forKey: "Config Information") as? [String: String]
-		
-		guard let persistentInformation = persistentInformationOptional else {
-			displayError(title: "Couldn't load Config", content: "Persistent Config doesn't exist")
-			return nil
-		}
-		
-		guard let apiToken = persistentInformation["apiToken"],
-			  let imageSizeString = persistentInformation["imageSize"],
-			  let imageSize = Int(imageSizeString)
-		else {
-			displayError(title: "Couldn't load Config", content: "Missing part of Persistent Config.")
-			return nil
-		}
-		
+		let persistentInformation = UserDefaults.standard.dictionary(forKey: legacyConfigKey) as? [String: String] ?? [:]
 		guard let loaded = loadCredentials(keychainService: keychainService, persistentInformation: persistentInformation) else {
 			return nil
 		}
@@ -149,8 +118,6 @@ extension Config {
 			accessToken: credentials.accessToken,
 			refreshToken: credentials.refreshToken,
 			clientID: credentials.clientID,
-			apiToken: apiToken,
-			imageSize: imageSize,
 			tokenExpirationDate: credentials.tokenExpirationDate
 		)
 		return (config, loaded.isInKeychain ? credentials : nil)
@@ -178,7 +145,7 @@ extension Config {
 			for key in legacyCredentialKeys {
 				remainingInformation[key] = nil
 			}
-			UserDefaults.standard.set(remainingInformation, forKey: "Config Information")
+			UserDefaults.standard.set(remainingInformation, forKey: legacyConfigKey)
 			return (credentials, true)
 		} catch {
 			logger.error("Couldn't move login to Keychain: \(String(describing: error))")

@@ -37,11 +37,11 @@ extension Session {
 		// A failed proactive refresh isn't fatal here: the request itself
 		// surfaces the definitive error (network failure or 401 below)
 		try? await refreshAccessTokenIfNeeded()
-		let response = try await Network.request(method: method, url: url, parameters: parameters, etag: etag, accessToken: config.accessToken, xTidalToken: config.apiToken)
+		let response = try await Network.request(method: method, url: url, parameters: parameters, etag: etag, accessToken: config.accessToken, xTidalToken: AuthInformation.apiToken)
 		guard response.statusCode == 401 else {
 			return response
 		}
 		try await refreshAccessToken()
-		return try await Network.request(method: method, url: url, parameters: parameters, etag: etag, accessToken: config.accessToken, xTidalToken: config.apiToken)
+		return try await Network.request(method: method, url: url, parameters: parameters, etag: etag, accessToken: config.accessToken, xTidalToken: AuthInformation.apiToken)
 	}
 }

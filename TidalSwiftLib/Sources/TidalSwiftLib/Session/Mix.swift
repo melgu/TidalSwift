@@ -30,7 +30,7 @@ extension Session {
 		var parameters = sessionParameters
 		parameters["mixId"] = "\(mixId)"
 		parameters["deviceType"] = "DESKTOP"
-		parameters["token"] = "\(config.apiToken)"
+		parameters["token"] = AuthInformation.apiToken
 		
 		let url = URL(string: "\(AuthInformation.APILocation)/pages/mix")!
 		do {

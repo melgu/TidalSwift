@@ -714,6 +714,10 @@ final class TidalSwiftAppModel {
 		#endif
 		player.clearQueue()
 		session.logout()
+		// The library only removes its own data, so this clears the app's settings, caches and offline database
+		if let domain = Bundle.main.bundleIdentifier {
+			UserDefaults.standard.removePersistentDomain(forName: domain)
+		}
 		viewState.clearEverything()
 		loginInfo.showModal = true
 		trackIsFavorite = false

@@ -40,7 +40,7 @@ extension Session {
 		let url = URL(string: "https://login.tidal.com/oauth2/me")!
 		let response: Response
 		do {
-			response = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: config.apiToken)
+			response = try await Network.get(url: url, parameters: sessionParameters, accessToken: config.accessToken, xTidalToken: AuthInformation.apiToken)
 		} catch {
 			throw SessionError.network(underlying: error)
 		}
