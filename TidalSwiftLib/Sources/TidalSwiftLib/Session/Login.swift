@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(category: "Login")
 
 extension Session {
 	/// Margin before actual expiration to trigger a refresh (5 minutes)
@@ -136,12 +139,12 @@ extension Session {
 			} else if let errorResponse = try? JSONDecoder.custom.decode(TokenErrorResponse.self, from: response.data) {
 				switch errorResponse.error {
 				case "authorization_pending":
-					print("Auth pending")
+					logger.debug("Auth pending")
 				case "expired_token":
-					print("Expired token")
+					logger.debug("Expired token")
 					return .failure(AuthorizationError.expiredToken)
 				default:
-					print("Polling failed")
+					logger.error("Polling failed")
 					return .failure(AuthorizationError.pollingFailed)
 				}
 			} else {
@@ -165,7 +168,7 @@ extension Session {
 	}
 	
 	private func performAccessTokenRefresh() async throws {
-		print("refreshAccessToken")
+		logger.debug("refreshAccessToken")
 		guard !config.refreshToken.isEmpty else {
 			throw SessionError.notLoggedIn
 		}
@@ -193,7 +196,7 @@ extension Session {
 		if let successResponse = try? JSONDecoder.custom.decode(TokenSuccessResponse.self, from: response.data) {
 			setAccessToken(successResponse.accessToken, refreshToken: successResponse.refreshToken, expiresIn: successResponse.expiresIn)
 			saveConfig()
-			print("Access token refreshed. New expiration: \(config.tokenExpirationDate?.description ?? "unknown")")
+			logger.debug("Access token refreshed. New expiration: \(self.config.tokenExpirationDate?.description ?? "unknown")")
 		} else if let errorResponse = try? JSONDecoder.custom.decode(TokenErrorResponse.self, from: response.data) {
 			throw SessionError.invalidCredentials(description: errorResponse.errorDescription)
 		} else {

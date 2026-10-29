@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "VideoContextMenu")
 
 struct VideoContextMenu: View {
 	let video: Video
@@ -28,18 +31,18 @@ struct VideoContextMenu: View {
 				Button {
 					#if canImport(AppKit)
 					Task {
-						print("Play Video: \(video.title)")
+						logger.debug("Play Video: \(video.title)")
 						guard let url = await video.playbackUrl(session: session) else {
 							return
 						}
-						print(url)
+						logger.debug("\(url)")
 						player.pause()
 						let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
 						controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
 						controller.showWindow(nil)
 					}
 					#else
-					print("Coming soon")
+					logger.debug("Coming soon")
 					#endif
 				} label: {
 					Text("Play")
@@ -65,7 +68,7 @@ struct VideoContextMenu: View {
 				if isFavorite ?? true {
 					Button {
 						Task {
-							print("Remove from Favorites")
+							logger.debug("Remove from Favorites")
 							if await session.favorites?.removeVideo(videoId: video.id) == true {
 								isFavorite = false
 								viewState.refreshCurrentView()
@@ -77,7 +80,7 @@ struct VideoContextMenu: View {
 				} else {
 					Button {
 						Task {
-							print("Add to Favorites")
+							logger.debug("Add to Favorites")
 							if await session.favorites?.addVideo(videoId: video.id) == true {
 								isFavorite = true
 							}
@@ -88,14 +91,14 @@ struct VideoContextMenu: View {
 				}
 				if video.streamReady {
 					Button {
-						print("Add \(video.title) to Playlist")
+						logger.debug("Add \(video.title) to Playlist")
 					} label: {
 						Text("Add to Playlist …")
 					}
 					Divider()
 					if isOffline {
 						Button {
-							print("Remove from Offline")
+							logger.debug("Remove from Offline")
 							video.removeOffline(session: session)
 							viewState.refreshCurrentView()
 						} label: {
@@ -103,7 +106,7 @@ struct VideoContextMenu: View {
 						}
 					} else {
 						Button {
-							print("Add to Offline")
+							logger.debug("Add to Offline")
 							video.addOffline(session: session)
 						} label: {
 							Text("Add to Offline")
@@ -111,7 +114,7 @@ struct VideoContextMenu: View {
 					}
 					Button {
 						Task {
-							print("Download")
+							logger.debug("Download")
 							_ = await session.helpers.download.download(video: video)
 						}
 					} label: {
@@ -123,7 +126,7 @@ struct VideoContextMenu: View {
 					Divider()
 					if let imagegUrl = video.imageUrl(session: session, resolution: 1280) {
 						Button {
-							print("Preview Image")
+							logger.debug("Preview Image")
 							let controller = ImageWindowController(
 								imageUrl: imagegUrl,
 								title: video.title

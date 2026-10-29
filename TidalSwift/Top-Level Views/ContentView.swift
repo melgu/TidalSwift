@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "ContentView")
 
 struct ContentView: View {
 	@Bindable var loginInfo: LoginInfo
@@ -57,7 +60,7 @@ struct ContentView: View {
 					try await session.populateVariablesForAccessToken()
 				} catch SessionError.network(let underlying) {
 					// The stored credentials may still be valid — keep the session
-					print("Couldn't reach Tidal on startup: \(underlying)")
+					logger.error("Couldn't reach Tidal on startup: \(underlying)")
 				} catch {
 					loginInfo.showModal = true
 				}

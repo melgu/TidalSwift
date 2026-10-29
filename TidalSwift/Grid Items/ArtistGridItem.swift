@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "ArtistGridItem")
 
 struct ArtistGridItem: View {
 	let artist: Artist
@@ -57,12 +60,12 @@ struct ArtistGridItem: View {
 	}
 	
 	private func open() {
-		print("First Click. \(artist.name)")
+		logger.debug("First Click. \(artist.name)")
 		viewState.push(artist: artist)
 	}
 	
 	private func play() {
-		print("\(artist.name)")
+		logger.debug("\(artist.name)")
 		player.add(artist: artist, .now)
 	}
 }

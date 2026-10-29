@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "Favorites")
 
 let PICKERWIDTH: CGFloat = 580
 
@@ -141,7 +144,7 @@ struct FavoriteTracks: View {
 						Spacer()
 						LoadingSpinner()
 						Button {
-							print(saveFavoritesOffline ? "Remove from Offline" : "Add to Offline")
+							logger.debug("\(saveFavoritesOffline ? "Remove from Offline" : "Add to Offline")")
 							saveFavoritesOffline.toggle()
 							session.helpers.offline.asyncSyncFavoriteTracks()
 							viewState.refreshCurrentView()

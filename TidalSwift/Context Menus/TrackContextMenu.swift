@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "TrackContextMenu")
 
 struct TrackContextMenu: View {
 	let track: Track
@@ -75,7 +78,7 @@ struct TrackContextMenu: View {
 				if isFavorite ?? false {
 					Button {
 						Task {
-							print("Remove from Favorites")
+							logger.debug("Remove from Favorites")
 							if await session.favorites?.removeTrack(trackId: track.id) == true {
 								session.helpers.offline.asyncSyncFavoriteTracks()
 								isFavorite = false
@@ -88,7 +91,7 @@ struct TrackContextMenu: View {
 				} else {
 					Button {
 						Task {
-							print("Add to Favorites")
+							logger.debug("Add to Favorites")
 							if await session.favorites?.addTrack(trackId: track.id) == true {
 								session.helpers.offline.asyncSyncFavoriteTracks()
 								isFavorite = true
@@ -101,7 +104,7 @@ struct TrackContextMenu: View {
 				}
 				if track.streamReady {
 					Button {
-						print("Add \(track.title) to Playlist")
+						logger.debug("Add \(track.title) to Playlist")
 						playlistEditingValues.tracks = [track]
 						playlistEditingValues.showAddTracksModal = true
 					} label: {
@@ -110,7 +113,7 @@ struct TrackContextMenu: View {
 				}
 				if indexInPlaylist != nil {
 					Button {
-						print("Remove \(track.title) from Playlist")
+						logger.debug("Remove \(track.title) from Playlist")
 						playlistEditingValues.tracks = [track]
 						playlistEditingValues.indexToRemove = indexInPlaylist
 						playlistEditingValues.playlist = playlist
@@ -123,7 +126,7 @@ struct TrackContextMenu: View {
 				if track.isPlayable {
 					Button {
 						Task {
-							print("Download")
+							logger.debug("Download")
 							_ = await session.helpers.download.download(track: track)
 						}
 					} label: {
@@ -132,7 +135,7 @@ struct TrackContextMenu: View {
 					Divider()
 					Button {
 						Task {
-							print("Radio")
+							logger.debug("Radio")
 							if let radioTracks = await track.radio(session: session) {
 								player.add(tracks: radioTracks, .now)
 							}
@@ -143,7 +146,7 @@ struct TrackContextMenu: View {
 					#if canImport(AppKit)
 					if let coverUrl = track.album.getCoverUrl(session: session, resolution: 1280) {
 						Button {
-							print("Cover")
+							logger.debug("Cover")
 							let title = "\(track.title) – \(track.album.title)"
 							let controller = ImageWindowController(
 								imageUrl: coverUrl,
@@ -156,7 +159,7 @@ struct TrackContextMenu: View {
 						}
 					}
 					Button {
-						print("Credits")
+						logger.debug("Credits")
 						let controller = ResizableWindowControllerFactory.create(rootView:
 							CreditsView(session: session, track: track)
 								.environment(viewState)
@@ -168,7 +171,7 @@ struct TrackContextMenu: View {
 					}
 					#endif
 					Button {
-						print("Share Track")
+						logger.debug("Share Track")
 						Pasteboard.copy(string: track.url.absoluteString)
 					} label: {
 						Text("Copy URL")

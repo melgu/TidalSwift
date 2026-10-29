@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "DeletePlaylistView")
 
 struct DeletePlaylistView: View {
 	let session: Session
@@ -22,14 +25,14 @@ struct DeletePlaylistView: View {
 				
 				HStack {
 					Button {
-						print("Cancel")
+						logger.debug("Cancel")
 						playlistEditingValues.showDeleteModal = false
 					} label: {
 						Text("Cancel")
 					}
 					Button {
 						Task {
-							print("Delete \(playlist.title)")
+							logger.debug("Delete \(playlist.title)")
 							let success = await playlist.delete(session: session)
 							if success {
 								await playlist.removeOffline(session: session)

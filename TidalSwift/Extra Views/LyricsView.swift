@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "LyricsView")
 
 struct LyricsView: View {
 	let session: Session
@@ -80,7 +83,7 @@ struct LyricsView: View {
 							}
 							.contextMenu {
 								Button {
-									print("Copy Lyrics")
+									logger.debug("Copy Lyrics")
 									Pasteboard.copy(string: lyrics)
 								} label: {
 									Text("Copy")

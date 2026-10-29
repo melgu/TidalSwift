@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(category: "Search")
 
 extension Session {
 	public func search(for term: String, limit: Int = 50, offset: Int = 0) async -> SearchResponse? {
@@ -30,7 +33,7 @@ extension Session {
 				topHit: response.topHit
 			)
 		} catch {
-			print("Search failed: \(error)")
+			logger.error("Search failed: \(String(describing: error))")
 			return nil
 		}
 	}

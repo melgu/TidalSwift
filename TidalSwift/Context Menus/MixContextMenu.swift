@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "MixContextMenu")
 
 struct MixContextMenu: View {
 	let mix: MixesItem
@@ -48,7 +51,7 @@ struct MixContextMenu: View {
 			Divider()
 			Button {
 				Task {
-					print("Add \(mix.title) to Playlist")
+					logger.debug("Add \(mix.title) to Playlist")
 					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
 						playlistEditingValues.tracks = tracks
 						playlistEditingValues.showAddTracksModal = true
@@ -60,7 +63,7 @@ struct MixContextMenu: View {
 			Divider()
 			Button {
 				Task {
-					print("Download")
+					logger.debug("Download")
 					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
 						_ = await session.helpers.download.download(tracks: tracks, parentFolder: mix.title)
 					}
@@ -71,7 +74,7 @@ struct MixContextMenu: View {
 			#if canImport(AppKit)
 			Divider()
 			Button {
-				print("Image")
+				logger.debug("Image")
 				let controller = ResizableWindowControllerFactory.create(rootView: MixImage(mix: mix, highResolutionImages: true, session: session), width: 640, height: 640)
 				controller.window?.title = mix.title
 				controller.showWindow(nil)

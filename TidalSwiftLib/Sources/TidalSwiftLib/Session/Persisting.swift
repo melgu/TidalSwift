@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(category: "Persisting")
 
 private struct PersistentInformation {
 	var sessionId: String
@@ -182,7 +185,7 @@ extension Config {
 			UserDefaults.standard.set(remainingInformation, forKey: "Config Information")
 			return (credentials, true)
 		} catch {
-			print("Couldn't move login to Keychain: \(error)")
+			logger.error("Couldn't move login to Keychain: \(String(describing: error))")
 			return (credentials, false)
 		}
 	}

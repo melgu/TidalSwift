@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "MixGridItem")
 
 struct MixGridItem: View {
 	let mix: MixesItem
@@ -45,12 +48,12 @@ struct MixGridItem: View {
 	}
 	
 	private func open() {
-		print("First Click. \(mix.title)")
+		logger.debug("First Click. \(mix.title)")
 		viewState.push(mix: mix)
 	}
 	
 	private func play() {
-		print("Second Click. \(mix.title)")
+		logger.debug("Second Click. \(mix.title)")
 		Task {
 			if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
 				player.add(tracks: tracks, .now)

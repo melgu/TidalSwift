@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "EditPlaylistView")
 
 struct EditPlaylistView: View {
 	let session: Session
@@ -39,13 +42,13 @@ struct EditPlaylistView: View {
 				
 				HStack {
 					Button {
-						print("Cancel")
+						logger.debug("Cancel")
 						playlistEditingValues.showEditModal = false
 					} label: {
 						Text("Cancel")
 					}
 					Button {
-						print("Rename \(playlist.title)")
+						logger.debug("Rename \(playlist.title)")
 						Task {
 							let success = await playlist.edit(title: playlistTitle, description: playlistDescription, session: session)
 							if success {

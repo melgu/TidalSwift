@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(category: "Metadata")
 
 /// Format-independent tags, written by `FLACTagWriter` and `MP4TagWriter`
 nonisolated struct AudioTags {
@@ -54,7 +57,7 @@ class Metadata {
 			case "m4a", "mp4":
 				try await MP4TagWriter.write(tags, to: path)
 			default:
-				print("Metadata: Unsupported file type \(path.pathExtension)")
+				logger.error("Unsupported file type \(path.pathExtension)")
 			}
 		} catch {
 			displayError(title: "Error writing Metadata", content: "Path: \(path). Error: \(error)")
@@ -116,12 +119,12 @@ class Metadata {
 		do {
 			let (data, response) = try await URLSession.shared.data(from: url)
 			if let statusCode = (response as? HTTPURLResponse)?.statusCode, !(200..<300).contains(statusCode) {
-				print("Metadata: Cover download failed with status \(statusCode)")
+				logger.error("Cover download failed with status \(statusCode)")
 				return nil
 			}
 			return data
 		} catch {
-			print("Metadata: Cover download failed. Error: \(error)")
+			logger.error("Cover download failed. Error: \(String(describing: error))")
 			return nil
 		}
 	}

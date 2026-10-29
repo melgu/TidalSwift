@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "ArtistContextMenu")
 
 struct ArtistContextMenu: View {
 	let artist: Artist
@@ -39,7 +42,7 @@ struct ArtistContextMenu: View {
 				if isFavorite ?? true {
 					Button {
 						Task {
-							print("Remove from Favorites")
+							logger.debug("Remove from Favorites")
 							if await session.favorites?.removeArtist(artistId: artist.id) == true {
 								isFavorite = false
 								viewState.refreshCurrentView()
@@ -51,7 +54,7 @@ struct ArtistContextMenu: View {
 				} else {
 					Button {
 						Task {
-							print("Add to Favorites")
+							logger.debug("Add to Favorites")
 							if await session.favorites?.addArtist(artistId: artist.id) == true {
 								isFavorite = true
 							}
@@ -63,13 +66,13 @@ struct ArtistContextMenu: View {
 			}
 			Divider()
 			Button {
-				print("Offline")
+				logger.debug("Offline")
 			} label: {
 				Text("Offline")
 			}
 			Button {
 				Task {
-					print("Download all Albums of \(artist.name)")
+					logger.debug("Download all Albums of \(artist.name)")
 					_ = await session.helpers.download.downloadAllAlbums(from: artist)
 				}
 			} label: {
@@ -79,7 +82,7 @@ struct ArtistContextMenu: View {
 			Group {
 				Button {
 					Task {
-						print("Radio")
+						logger.debug("Radio")
 						if let radioTracks = await artist.radio(session: session) {
 							player.add(tracks: radioTracks, .now)
 						}
@@ -90,7 +93,7 @@ struct ArtistContextMenu: View {
 				#if canImport(AppKit)
 				if let pictureUrl = artist.pictureUrl(session: session, resolution: 750) {
 					Button {
-						print("Picture")
+						logger.debug("Picture")
 						let controller = ImageWindowController(
 							imageUrl: pictureUrl,
 							title: artist.name
@@ -102,7 +105,7 @@ struct ArtistContextMenu: View {
 					}
 				}
 				Button {
-					print("Bio")
+					logger.debug("Bio")
 					let controller = ResizableWindowControllerFactory.create(rootView:
 						ArtistBioView(session: session, artist: artist)
 							.environment(viewState)
@@ -115,7 +118,7 @@ struct ArtistContextMenu: View {
 				#endif
 				if let url = artist.url {
 					Button {
-						print("Share Artist")
+						logger.debug("Share Artist")
 						Pasteboard.copy(string: url.absoluteString)
 					} label: {
 						Text("Copy URL")

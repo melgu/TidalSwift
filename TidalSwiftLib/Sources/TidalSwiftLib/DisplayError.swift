@@ -8,9 +8,12 @@
 
 import Foundation
 import SwiftUI
+import OSLog
+
+private let logger = Logger(category: "DisplayError")
 
 func displayError(title: String, content: String) {
 	// Comment out while unit testing to prevent pop-ups
 	
-	print("\(title). \(content)")
+	logger.error("\(title). \(content)")
 }

@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "TidalLinks")
 
 extension ViewState {
 	/// The URL the Share button of the current view copies, if it has one
@@ -28,7 +31,7 @@ extension ViewState {
 	func open(_ link: TidalLink) {
 		Task {
 			if await !push(link) {
-				print("Couldn't load \(link)")
+				logger.error("Couldn't load \(String(describing: link))")
 				#if canImport(AppKit)
 				NSSound.beep()
 				#endif

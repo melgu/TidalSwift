@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "AlbumGridItem")
 
 struct AlbumGridItem: View {
 	let album: Album
@@ -122,14 +125,14 @@ struct AlbumGridItem: View {
 	}
 	
 	private func open() {
-		print("First Click. \(album.title)")
+		logger.debug("First Click. \(album.title)")
 		if album.streamReady ?? false {
 			viewState.push(album: album)
 		}
 	}
 	
 	private func play() {
-		print("Second Click. \(album.title)")
+		logger.debug("Second Click. \(album.title)")
 		player.add(album: album, .now)
 	}
 	

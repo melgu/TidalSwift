@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "SearchView")
 
 struct SearchView: View {
 	let session: Session
@@ -16,7 +19,7 @@ struct SearchView: View {
 	@Environment(ViewState.self) private var viewState
 	
 	init(session: Session, player: Player) {
-		print("init SearchView")
+		logger.debug("init SearchView")
 		self.session = session
 		self.player = player
 	}

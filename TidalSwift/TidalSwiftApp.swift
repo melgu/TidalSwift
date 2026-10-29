@@ -9,6 +9,9 @@
 import SwiftUI
 import TidalSwiftLib
 import UpdateNotification
+import OSLog
+
+private let logger = Logger(category: "TidalSwiftApp")
 
 @main
 struct TidalSwiftApp: App {
@@ -144,7 +147,7 @@ final class TidalSwiftAppModel {
 		}
 		
 		let loggedIn = session.loadSession()
-		print("Login Succesful: \(loggedIn)")
+		logger.debug("Login Succesful: \(loggedIn)")
 		loginInfo.showModal = !loggedIn
 		
 		if loggedIn {
@@ -499,7 +502,7 @@ final class TidalSwiftAppModel {
 		#if canImport(AppKit)
 		updateNotification.showChangelogWindow()
 		#else
-		print("Not implemented")
+		logger.debug("Not implemented")
 		#endif
 	}
 	
@@ -518,7 +521,7 @@ final class TidalSwiftAppModel {
 					alert.runModal()
 				}
 			} catch {
-				print("Checking for updates failed: \(error)")
+				logger.error("Checking for updates failed: \(String(describing: error))")
 			}
 		}
 	}
@@ -681,7 +684,7 @@ final class TidalSwiftAppModel {
 			controller.showWindow(nil)
 		}
 		#else
-		print("Coming soon")
+		logger.debug("Coming soon")
 		#endif
 	}
 	
@@ -690,7 +693,7 @@ final class TidalSwiftAppModel {
 			do {
 				try await session.refreshAccessToken()
 			} catch {
-				print("Refresh Access Token failed. Error: \(error)")
+				logger.error("Refresh Access Token failed. Error: \(String(describing: error))")
 			}
 		}
 	}

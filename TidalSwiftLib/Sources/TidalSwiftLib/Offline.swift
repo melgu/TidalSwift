@@ -7,6 +7,9 @@
 //
 
 import SwiftUI
+import OSLog
+
+private let logger = Logger(category: "Offline")
 
 // MARK: DB
 
@@ -214,7 +217,7 @@ public final class Offline {
 												   create: false)
 			path.appendPathComponent(mainPath)
 			if !FileManager.default.fileExists(atPath: path.relativePath) {
-				print("Offline: Library Folder doesn't exist. Redownloading all Songs.")
+				logger.debug("Library Folder doesn't exist. Redownloading all Songs.")
 				try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
 			}
 		} catch {
@@ -383,7 +386,7 @@ public final class Offline {
 	private func sync(task: DownloadTask) async {
 		// Preparations (e.g. setting syncRunning) happen in asyncSync func beforehand
 		
-		print("Offline: --- Starting Sync ---")
+		logger.debug("--- Starting Sync ---")
 		
 		// Load Local Track IDs
 		let dbTracks = await Array(db.tracks)
@@ -394,8 +397,8 @@ public final class Offline {
 			return
 		}
 		let localTracksIds = Array(localFiles.keys)
-		print("Offline: DB IDs: \(dbTracks.map { $0.id })")
-		print("Offline: Track IDs: \(localTracksIds)")
+		logger.debug("DB IDs: \(dbTracks.map { $0.id })")
+		logger.debug("Track IDs: \(localTracksIds)")
 		
 		// Diff
 		var toRemove: [Int] = []
@@ -425,7 +428,7 @@ public final class Offline {
 		// Do
 		if !toRemove.isEmpty {
 			for trackId in toRemove {
-				print("Offline: Removing \(trackId)")
+				logger.debug("Removing \(trackId)")
 				do {
 					guard let files = localFiles[trackId], !files.isEmpty else {
 						displayError(title: "Offline: Error while removing offline track", content: "File to remove doesn't exist: \(mainPath)/\(trackId)")
@@ -434,7 +437,7 @@ public final class Offline {
 					for file in files {
 						try FileManager.default.removeItem(at: file)
 					}
-					print("Offline: Removed \(trackId)")
+					logger.debug("Removed \(trackId)")
 				} catch {
 					displayError(title: "Offline: Error while removing offline track", content: "Error: \(error)")
 				}
@@ -444,7 +447,7 @@ public final class Offline {
 		}
 		
 		for file in leftoverFiles {
-			print("Offline: Removing leftover file \(file.lastPathComponent)")
+			logger.debug("Removing leftover file \(file.lastPathComponent)")
 			do {
 				try FileManager.default.removeItem(at: file)
 			} catch {
@@ -454,11 +457,11 @@ public final class Offline {
 		
 		for (index, track) in toAdd.enumerated() {
 			task.track = DownloadTask.Step(title: track.title, index: index + 1, count: toAdd.count)
-			print("Offline: Downloading \(track.title)")
+			logger.debug("Downloading \(track.title)")
 			let existingFiles = localFiles[track.id] ?? []
 			guard let stream = await track.audioStream(session: session, audioQuality: session.config.offlineAudioQuality, preferDolbyAtmos: preferDolbyAtmos) else {
 				if !existingFiles.isEmpty {
-					print("Offline: Keeping existing file of \(track.title), as no Audio URL is available")
+					logger.debug("Keeping existing file of \(track.title), as no Audio URL is available")
 					continue
 				}
 				displayError(title: "Offline: Error while loading offline track", content: "Couldn't get Audio URL for \(track.title)")
@@ -467,7 +470,7 @@ public final class Offline {
 			// The Atmos stream can be unavailable, in which case the existing file can be what we'd download again
 			let streamVariant = variant(of: stream)
 			if existingFiles.contains(where: { variant(of: $0, track: track) == streamVariant }) {
-				print("Offline: Keeping existing file of \(track.title)")
+				logger.debug("Keeping existing file of \(track.title)")
 				continue
 			}
 			let url = stream.url
@@ -491,7 +494,7 @@ public final class Offline {
 					displayError(title: "Offline: Error while removing old offline file", content: "Error: \(error)")
 				}
 			}
-			print("Offline: Finished Download of \(track.title)")
+			logger.debug("Finished Download of \(track.title)")
 			invalidateOfflineTrackIdsCache()
 			await uiRefreshFunc()
 		}
@@ -502,11 +505,11 @@ public final class Offline {
 		// Outro
 		if syncAgain {
 			syncAgain = false
-			print("Offline: Something changed. Restarting Sync")
+			logger.debug("Something changed. Restarting Sync")
 			await sync(task: task)
 		} else {
 			syncRunning = false
-			print("Offline: --- Finished Sync ---")
+			logger.debug("--- Finished Sync ---")
 		}
 	}
 	
@@ -517,7 +520,7 @@ public final class Offline {
 		let videos = db.videos
 		
 		for (videoId, file) in localFiles where !videos.contains(where: { $0.id == videoId }) {
-			print("Offline: Removing video \(videoId)")
+			logger.debug("Removing video \(videoId)")
 			do {
 				try FileManager.default.removeItem(at: file)
 			} catch {
@@ -529,7 +532,7 @@ public final class Offline {
 		for (index, video) in toAdd.enumerated() {
 			task.video = DownloadTask.Step(title: video.title, index: index + 1, count: toAdd.count)
 			task.progress = nil
-			print("Offline: Downloading video \(video.title)")
+			logger.debug("Downloading video \(video.title)")
 			guard let url = await video.videoUrl(session: session) else {
 				displayError(title: "Offline: Error while loading offline video", content: "Couldn't get Video URL for \(video.title)")
 				continue
@@ -550,7 +553,7 @@ public final class Offline {
 				displayError(title: "Offline: Error while loading offline video", content: "Error: \(error)")
 				continue
 			}
-			print("Offline: Finished Download of video \(video.title)")
+			logger.debug("Finished Download of video \(video.title)")
 			await uiRefreshFunc()
 		}
 		task.video = nil
@@ -578,7 +581,8 @@ public final class Offline {
 	
 	public func removeAll() {
 		Task {
-			print("Offline: Removing all \(await db.tracks.count) tracks in \(await db.albums.count) albums & \(await db.playlists.count) playlists")
+			let (tracks, albums, playlists) = (await db.tracks.count, await db.albums.count, await db.playlists.count)
+			logger.debug("Removing all \(tracks) tracks in \(albums) albums & \(playlists) playlists")
 		}
 		
 		syncTask?.cancel()
@@ -620,7 +624,7 @@ public final class Offline {
 			tracks = []
 		}
 		await db.setFavoriteTracks(to: tracks)
-		print("Offline: Favorite Tracks synchronized")
+		logger.debug("Favorite Tracks synchronized")
 		
 		// Outro
 		if favTracksSyncAgain {
@@ -662,7 +666,7 @@ public final class Offline {
 	// Probably no need to do async, as it's only a single quick call to the Tidal API
 	public func add(album: Album) async {
 		if await db.albums.contains(album) {
-			print("Offline: Album \(album.title) is offline already. This suggests a bug.")
+			logger.error("Album \(album.title) is offline already. This suggests a bug.")
 			return
 		}
 		guard let tracks = await session.albumTracks(albumId: album.id) else {
@@ -695,23 +699,23 @@ public final class Offline {
 	private func syncPlaylists() async {
 		// Preparations (e.g. setting playlistSyncRunning) happen in syncPlaylist func beforehand
 		
-		print("Offline: --- Sync Playlist ---")
+		logger.debug("--- Sync Playlist ---")
 		
 		// Prepare
 		if playlistsToSync.isEmpty {
-			print("Offline: No more Playlists to sync.")
-			print("Offline: --- Sync Playlists finished ---")
+			logger.debug("No more Playlists to sync.")
+			logger.debug("--- Sync Playlists finished ---")
 			playlistSyncRunning = false
 			return
 		}
 		let playlist = playlistsToSync[0]
 		playlistsToSync.remove(at: 0)
 		
-		print("Offline: Sync Playlist: \(playlist.title)")
+		logger.debug("Sync Playlist: \(playlist.title)")
 		
 		if await db.playlists.contains(playlist) {
 			if let tracks = await session.playlistTracks(playlistId: playlist.id) {
-				print("Offline: Playlist tracks: \(tracks.map { $0.id })")
+				logger.debug("Playlist tracks: \(tracks.map { $0.id })")
 				// Removed while loading, e.g. by removing everything
 				if await db.playlists.contains(playlist) {
 					await db.setTracks(for: playlist, to: tracks)
@@ -721,17 +725,17 @@ public final class Offline {
 				displayError(title: "Offline: Error while synchronizing Playlist Tracks", content: "Couldn't load playlist tracks from Tidal API.")
 			}
 		} else {
-			print("Offline: Playlist isn't marked to be offline, so deleting offline tracks, if there are any")
+			logger.debug("Playlist isn't marked to be offline, so deleting offline tracks, if there are any")
 			await db.setTracks(for: playlist, to: nil)
 		}
 		
 		// Outro
 		if !playlistsToSync.isEmpty {
-			print("Offline: Another Playlist to Sync")
+			logger.debug("Another Playlist to Sync")
 			await syncPlaylists()
 		} else {
 			playlistSyncRunning = false
-			print("Offline: --- Sync Playlists finished ---")
+			logger.debug("--- Sync Playlists finished ---")
 			asyncSync()
 		}
 	}

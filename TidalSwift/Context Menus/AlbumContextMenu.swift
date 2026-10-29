@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "AlbumContextMenu")
 
 struct AlbumContextMenu: View {
 	let album: Album
@@ -60,7 +63,7 @@ struct AlbumContextMenu: View {
 				if isFavorite ?? false {
 					Button {
 						Task {
-							print("Remove from Favorites")
+							logger.debug("Remove from Favorites")
 							if await session.favorites?.removeAlbum(albumId: album.id) == true {
 								isFavorite = false
 								viewState.refreshCurrentView()
@@ -72,7 +75,7 @@ struct AlbumContextMenu: View {
 				} else {
 					Button {
 						Task {
-							print("Add to Favorites")
+							logger.debug("Add to Favorites")
 							if await session.favorites?.addAlbum(albumId: album.id) == true {
 								isFavorite = true
 							}
@@ -84,7 +87,7 @@ struct AlbumContextMenu: View {
 				if album.streamReady ?? false {
 					Button {
 						Task {
-							print("Add \(album.title) to Playlist")
+							logger.debug("Add \(album.title) to Playlist")
 							if let tracks = await session.albumTracks(albumId: album.id) {
 								playlistEditingValues.tracks = tracks
 								playlistEditingValues.showAddTracksModal = true
@@ -98,7 +101,7 @@ struct AlbumContextMenu: View {
 						if isOffline {
 							Button {
 								Task {
-									print("Remove from Offline")
+									logger.debug("Remove from Offline")
 									await album.removeOffline(session: session)
 									isOffline = false
 									viewState.refreshCurrentView()
@@ -109,7 +112,7 @@ struct AlbumContextMenu: View {
 						} else {
 							Button {
 								Task {
-									print("Add to Offline")
+									logger.debug("Add to Offline")
 									await album.addOffline(session: session)
 									isOffline = true
 								}
@@ -120,7 +123,7 @@ struct AlbumContextMenu: View {
 						
 						Button {
 							Task {
-								print("Download")
+								logger.debug("Download")
 								_ = await session.helpers.download.download(album: album)
 							}
 						} label: {
@@ -131,7 +134,7 @@ struct AlbumContextMenu: View {
 					#if canImport(AppKit)
 					if let coverUrl = album.getCoverUrl(session: session, resolution: 1280) {
 						Button {
-							print("Cover")
+							logger.debug("Cover")
 							let controller = ImageWindowController(
 								imageUrl: coverUrl,
 								title: album.title
@@ -143,7 +146,7 @@ struct AlbumContextMenu: View {
 						}
 					}
 					Button {
-						print("Credits")
+						logger.debug("Credits")
 						let controller = ResizableWindowControllerFactory.create(rootView:
 							CreditsView(session: session, album: album)
 								.environment(viewState)
@@ -156,7 +159,7 @@ struct AlbumContextMenu: View {
 					#endif
 					if let url = album.url {
 						Button {
-							print("Share")
+							logger.debug("Share")
 							Pasteboard.copy(string: url.absoluteString)
 						} label: {
 							Text("Copy URL")

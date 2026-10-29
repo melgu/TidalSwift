@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "PlayerInfoView")
 
 struct PlayerInfoView: View {
 	let session: Session
@@ -76,7 +79,7 @@ private struct TrackInfoView: View {
 							.cornerRadius(CORNERRADIUS)
 						#if canImport(AppKit)
 						Button {
-							print("Big Cover")
+							logger.debug("Big Cover")
 							let title = "\(track.title) – \(track.album.title)"
 							let controller = ImageWindowController(
 								imageUrl: coverUrlBig,
@@ -191,7 +194,7 @@ private struct PlaybackControls: View {
 				.disabled(queueInfo.queue.isEmpty)
 				Button {
 					player.playbackInfo.repeatState = player.playbackInfo.repeatState.next()
-					print("Repeat: \(player.playbackInfo.repeatState)")
+					logger.debug("Repeat: \(String(describing: player.playbackInfo.repeatState))")
 				} label: {
 					Image(systemName: playbackInfo.repeatState == .single ? "repeat.1" : "repeat")
 						.foregroundStyle(playbackInfo.repeatState == .off ? .primary : Color.accentColor)

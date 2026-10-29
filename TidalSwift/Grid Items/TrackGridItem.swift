@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "TrackGridItem")
 
 struct TrackGridItem: View {
 	let track: Track
@@ -68,7 +71,7 @@ struct TrackGridItem: View {
 	}
 	
 	private func play() {
-		print("\(track.title)")
+		logger.debug("\(track.title)")
 		player.add(track: track, .now)
 	}
 	

@@ -9,6 +9,9 @@
 import SwiftUI
 import AVFoundation
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "Player")
 
 @Observable
 class Player {
@@ -187,7 +190,7 @@ class Player {
 		if avPlayer.currentTime().seconds >= 3 || queueInfo.currentIndex == 0 {
 			seek(toSeconds: 0)
 			if queueInfo.currentIndex == 0 && !queueInfo.queue[queueInfo.currentIndex].isPlayable {
-				print("Not possible to stream \(queueInfo.queue[queueInfo.currentIndex].title)")
+				logger.error("Not possible to stream \(self.queueInfo.queue[self.queueInfo.currentIndex].title)")
 				pause()
 				next()
 			}
@@ -200,7 +203,7 @@ class Player {
 			avSetItem(from: queueInfo.queue[queueInfo.currentIndex])
 //			print("previous() done")
 		} else {
-			print("Not possible to stream \(queueInfo.queue[queueInfo.currentIndex].title)")
+			logger.error("Not possible to stream \(self.queueInfo.queue[self.queueInfo.currentIndex].title)")
 			previous()
 		}
 	}
@@ -227,7 +230,7 @@ class Player {
 //			print("next(): \(playbackInfo.currentIndex) - \(queueCount())")
 			avSetItem(from: queueInfo.queue[queueInfo.currentIndex])
 		} else {
-			print("Not possible to stream \(queueInfo.queue[queueInfo.currentIndex].title)")
+			logger.error("Not possible to stream \(self.queueInfo.queue[self.queueInfo.currentIndex].title)")
 			next()
 		}
 		
@@ -311,17 +314,17 @@ class Player {
 		if let offlineStream = await session.helpers.offline.stream(for: track) {
 			url = offlineStream.url
 			isDolbyAtmos = offlineStream.isDolbyAtmos
-			print("Play \(track.title) from offline URL\(offlineStream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(offlineStream.url)")
+			logger.debug("Play \(track.title) from offline URL\(offlineStream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(offlineStream.url)")
 		} else {
 			if let stream = await track.audioStream(session: session, audioQuality: nextAudioQuality, preferDolbyAtmos: preferDolbyAtmos) {
 				url = stream.url
 				isDolbyAtmos = stream.isDolbyAtmos
-				print("Play \(track.title) from online URL\(stream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(stream.url)")
+				logger.debug("Play \(track.title) from online URL\(stream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(stream.url)")
 			} else {
 				guard loadID == itemLoadID else {
 					return
 				}
-				print("No URL so skipping \(track.title)")
+				logger.error("No URL so skipping \(track.title)")
 				skip()
 				return
 			}
@@ -445,7 +448,7 @@ class Player {
 	func add(tracks: [Track], _ when: When, playAt index: Int = 0) {
 		let unavailableCount = tracks[0..<index].filter { !$0.isPlayable }.count
 		let newIndex = index - unavailableCount
-		print("New Index: \(newIndex), index: \(index), \(unavailableCount)")
+		logger.debug("New Index: \(newIndex), index: \(index), \(unavailableCount)")
 		
 		let tracks = tracks.filter(\.isPlayable)
 		if when == .now {
@@ -526,7 +529,7 @@ class Player {
 	func removeTrack(atIndex: Int) {
 		if playbackInfo.shuffle {
 			guard let nonShuffledIndex = queueInfo.nonShuffledQueue.firstIndex(of: queueInfo.queue[atIndex]) else {
-				print("ERROR - Player.removeTrack(): queueInfo.nonShuffledQueue.firstIndex is nil")
+				logger.error("removeTrack():queueInfo.nonShuffledQueue.firstIndex is nil")
 				return
 			}
 			queueInfo.nonShuffledQueue.remove(at: nonShuffledIndex)

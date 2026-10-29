@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "PlaylistGridItem")
 
 struct PlaylistGridItem: View {
 	let playlist: Playlist
@@ -73,12 +76,12 @@ struct PlaylistGridItem: View {
 	}
 	
 	private func open() {
-		print("First Click. \(playlist.title)")
+		logger.debug("First Click. \(playlist.title)")
 		viewState.push(playlist: playlist)
 	}
 	
 	private func play() {
-		print("Second Click. \(playlist.title)")
+		logger.debug("Second Click. \(playlist.title)")
 		player.add(playlist: playlist, .now)
 	}
 }

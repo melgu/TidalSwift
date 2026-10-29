@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(category: "Network")
 
 struct Response {
 	let data: Data
@@ -32,6 +35,18 @@ extension Network {
 		components.queryItems = queryItems
 		return components.percentEncodedQuery ?? ""
 	}
+	
+	#if DEBUG
+	private static let secretKeys = "access_token|refresh_token|id_token|client_secret|device_code|deviceCode|user_code|userCode"
+	private static let formSecretRegex = try! NSRegularExpression(pattern: "\\b(\(secretKeys))=[^&]*")
+	private static let jsonSecretRegex = try! NSRegularExpression(pattern: "\"(\(secretKeys))\"\\s*:\\s*\"[^\"]*\"")
+	
+	/// Blanks secrets in form-encoded request bodies and JSON responses, so they can be logged
+	private static func redactingSecrets(_ string: String) -> String {
+		let formRedacted = formSecretRegex.stringByReplacingMatches(in: string, range: NSRange(string.startIndex..., in: string), withTemplate: "$1=<redacted>")
+		return jsonSecretRegex.stringByReplacingMatches(in: formRedacted, range: NSRange(formRedacted.startIndex..., in: formRedacted), withTemplate: "\"$1\":\"<redacted>\"")
+	}
+	#endif
 	
 	static func request(method: HttpMethod, url: URL, parameters: [String: String], etag: Int? = nil, accessToken: String?, xTidalToken: String?) async throws -> Response {
 		var request = URLRequest(url: url)
@@ -62,13 +77,14 @@ extension Network {
 			let urlString = request.url!.absoluteString + "?" + encodeParameters(parameters)
 			request.url = URL(string: urlString)
 		}
-		print("=== Network Request ===")
-		print("\(request.httpMethod!) Request with URL: \(request.url!.absoluteString)")
-		print("Headers: \(request.allHTTPHeaderFields!)")
-		if let httpBody = request.httpBody {
-			print("Body: \(String(data: httpBody, encoding: .utf8)!)")
+		logger.debug("\(request.httpMethod!, privacy: .public) \(request.url!.absoluteString)")
+		// Private, as they hold the access token
+		logger.debug("Headers: \(request.allHTTPHeaderFields ?? [:], privacy: .private)")
+		#if DEBUG
+		if let httpBody = request.httpBody, let body = String(data: httpBody, encoding: .utf8) {
+			logger.debug("Body: \(redactingSecrets(body))")
 		}
-		print("=======================")
+		#endif
 		
 		let (data, response) = try await URLSession.shared.data(for: request)
 		
@@ -82,11 +98,13 @@ extension Network {
 			etag = Int(etagSubString)
 		}
 		
+		#if DEBUG
 		if let responseString = String(data: data, encoding: .utf8) {
-			print("Response: \(responseString)")
+			logger.debug("Response \(statusCode ?? 0, privacy: .public): \(redactingSecrets(responseString))")
 		} else {
-			print("Response is not UTF8")
+			logger.debug("Response \(statusCode ?? 0, privacy: .public) is not UTF8")
 		}
+		#endif
 		
 		return Response(data: data, statusCode: statusCode, etag: etag)
 	}

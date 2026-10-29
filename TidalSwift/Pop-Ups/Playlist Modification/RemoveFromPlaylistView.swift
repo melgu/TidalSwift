@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "RemoveFromPlaylistView")
 
 struct RemoveFromPlaylistView: View {
 	let session: Session
@@ -22,7 +25,7 @@ struct RemoveFromPlaylistView: View {
 				
 				HStack {
 					Button {
-						print("Cancel")
+						logger.debug("Cancel")
 						playlistEditingValues.showRemoveTracksModal = false
 					} label: {
 						Text("Cancel")
@@ -30,7 +33,7 @@ struct RemoveFromPlaylistView: View {
 					Button {
 						Task {
 							let i = playlistEditingValues.indexToRemove!
-							print("Delete Index \(i) from \(playlist.title)")
+							logger.debug("Delete Index \(i) from \(playlist.title)")
 							let success = await playlist.removeItem(atIndex: i, session: session)
 							if success {
 								session.helpers.offline.syncPlaylist(playlist)

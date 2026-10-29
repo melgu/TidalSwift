@@ -9,6 +9,9 @@
 import Foundation
 import AVFoundation
 import Observation
+import OSLog
+
+private let logger = Logger(category: "Download")
 
 @Observable
 public final class DownloadStatus {
@@ -95,7 +98,7 @@ public class Download {
 			return false
 		}
 		let filename = formFileName(track)
-		print("Downloading: \(filename)")
+		logger.debug("Downloading: \(filename)")
 		let optionalPath = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: stream.pathExtension)
 		guard let path = optionalPath else {
 			displayError(title: "Error while downloading track", content: "Couldn't build path for track: \(track.title) -  \(track.artists.formArtistString())")
@@ -110,7 +113,7 @@ public class Download {
 		}
 		
 		await metadata.setMetadata(for: track, at: path)
-		print("Download Finished: \(filename)")
+		logger.debug("Download Finished: \(filename)")
 		return true
 	}
 	
@@ -132,7 +135,7 @@ public class Download {
 				errors.affectedTracks.insert(track)
 			}
 		}
-		print("Track Download Done!")
+		logger.debug("Track Download Done!")
 		return errors
 	}
 	
@@ -145,7 +148,7 @@ public class Download {
 			return false
 		}
 		let filename = formFileName(video)
-		print("Downloading Video: \(filename)")
+		logger.debug("Downloading Video: \(filename)")
 		guard let path = buildPath(baseLocation: .downloads, parentFolder: parentFolder, name: filename, pathExtension: "mp4") else {
 			displayError(title: "Error while downloading video", content: "Couldn't build path for video: \(video.title) - \(video.artists.formArtistString())")
 			return false
@@ -160,7 +163,7 @@ public class Download {
 			displayError(title: "Error while downloading video", content: "Download failed for video \(video.title). Error: \(error)")
 			return false
 		}
-		print("Download Finished: \(filename)")
+		logger.debug("Download Finished: \(filename)")
 		return true
 	}
 	

@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "AddToPlaylistView")
 
 struct AddToPlaylistView: View {
 	let session: Session
@@ -70,27 +73,27 @@ struct AddToPlaylistView: View {
 				
 				HStack {
 					Button {
-						print("Cancel")
+						logger.debug("Cancel")
 						playlistEditingValues.showAddTracksModal = false
 					} label: {
 						Text("Cancel")
 					}
 					Button {
 						Task {
-							print("Add to \(selectedPlaylist)")
+							logger.debug("Add to \(selectedPlaylist)")
 							guard !playlistEditingValues.tracks.isEmpty else {
-								print("Tried to add zero tracks to a playlist")
+								logger.error("Tried to add zero tracks to a playlist")
 								return
 							}
 							var playlistId = selectedPlaylist
 							if playlistId == "_newPlaylist" {
 								guard !newPlaylistName.isEmpty else {
-									print("Playlist name can't be empty")
+									logger.error("Playlist name can't be empty")
 									showEmptyNameWarning = true
 									return
 								}
 								guard let playlist = await session.playlistEditing.create(title: newPlaylistName, description: newPlaylistDescription) else {
-									print("Error creating Playlist")
+									logger.error("Error creating Playlist")
 									return
 								}
 								playlistId = playlist.uuid

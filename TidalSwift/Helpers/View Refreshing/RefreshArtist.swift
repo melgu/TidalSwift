@@ -8,6 +8,9 @@
 
 import Foundation
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "RefreshArtist")
 
 extension ViewState {
 	func artist() {
@@ -47,7 +50,7 @@ extension ViewState {
 		}
 		
 		if artist.url == nil {
-			print("Album incomplete. Loading complete Artist: \(artist.name)")
+			logger.debug("Album incomplete. Loading complete Artist: \(artist.name)")
 			if let tArtist = await session.artist(artistId: artist.id) {
 				guard !Task.isCancelled else { return }
 				view.artist = tArtist

@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "VideoGridItem")
 
 struct VideoGridItem: View {
 	let video: Video
@@ -84,10 +87,10 @@ struct VideoGridItem: View {
 	
 	#if canImport(AppKit)
 	private func play() {
-		print("Play Video: \(video.title)")
+		logger.debug("Play Video: \(video.title)")
 		Task {
 			guard let url = await video.playbackUrl(session: session) else { return }
-			print(url)
+			logger.debug("\(url)")
 			player.pause()
 			let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
 			controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"

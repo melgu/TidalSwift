@@ -7,6 +7,9 @@
 //
 
 import SwiftUI
+import OSLog
+
+private let logger = Logger(category: "BackButton")
 
 struct BackButton: View {
 	@Environment(ViewState.self) private var viewState
@@ -15,7 +18,7 @@ struct BackButton: View {
 		VStack {
 			HStack {
 				Button {
-					print("Back")
+					logger.debug("Back")
 					viewState.pop()
 				} label: {
 					Image(systemName: "chevron.left")

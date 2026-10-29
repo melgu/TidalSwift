@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "ViewState")
 
 enum ViewType: String, Codable {
 	case search = "Search"
@@ -162,7 +165,7 @@ final class ViewState {
 	}
 	
 	func clearHistory() {
-		print("Clear History")
+		logger.debug("Clear History")
 		history.removeAll()
 		cache = ViewCache()
 	}

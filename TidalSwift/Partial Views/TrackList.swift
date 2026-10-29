@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "TrackList")
 
 struct TrackList: View {
 	let tracks: [Track]
@@ -42,7 +45,7 @@ struct TrackList: View {
 	
 	private func play(_ track: Track, at index: Int) {
 		guard track.isPlayable else { return }
-		print("\(track.id) \(track.title)")
+		logger.debug("\(track.id) \(track.title)")
 		player.add(tracks: tracks, .now, playAt: index)
 	}
 }
@@ -174,7 +177,7 @@ private struct TrackRow: View {
 					#endif
 					Button {
 						if isFavorite ?? false {
-							print("Remove from Favorites")
+							logger.debug("Remove from Favorites")
 							Task {
 								if await session.favorites?.removeTrack(trackId: track.id) == true {
 									session.helpers.offline.asyncSyncFavoriteTracks()
@@ -183,7 +186,7 @@ private struct TrackRow: View {
 								}
 							}
 						} else {
-							print("Add to Favorites")
+							logger.debug("Add to Favorites")
 							Task {
 								if await session.favorites?.addTrack(trackId: track.id) == true {
 									session.helpers.offline.asyncSyncFavoriteTracks()

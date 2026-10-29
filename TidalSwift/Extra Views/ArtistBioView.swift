@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "ArtistBioView")
 
 struct ArtistBioView: View {
 	let session: Session
@@ -35,7 +38,7 @@ struct ArtistBioView: View {
 					}
 					.contextMenu {
 						Button {
-							print("Copy Artist Bio")
+							logger.debug("Copy Artist Bio")
 							Pasteboard.copy(string: bio.text)
 						} label: {
 							Text("Copy")

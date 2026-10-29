@@ -8,6 +8,9 @@
 
 import Foundation
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "RefreshAlbum")
 
 extension ViewState {
 	func album() {
@@ -43,7 +46,7 @@ extension ViewState {
 		}
 		
 		if album.releaseDate == nil {
-			print("Album incomplete. Loading complete album: \(album.title)")
+			logger.debug("Album incomplete. Loading complete album: \(album.title)")
 			if let tAlbum = await session.album(albumId: album.id) {
 				guard !Task.isCancelled else { return }
 				view.album = tAlbum

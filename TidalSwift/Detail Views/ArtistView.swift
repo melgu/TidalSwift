@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "ArtistView")
 
 struct ArtistView: View {
 	let session: Session
@@ -133,7 +136,7 @@ struct ArtistView: View {
 					Button {
 						if isFavorite ?? true {
 							Task {
-								print("Remove from Favorites")
+								logger.debug("Remove from Favorites")
 								if await session.favorites?.removeArtist(artistId: artist.id) == true {
 									isFavorite = false
 									viewState.refreshCurrentView()
@@ -141,7 +144,7 @@ struct ArtistView: View {
 							}
 						} else {
 							Task {
-								print("Add to Favorites")
+								logger.debug("Add to Favorites")
 								if await session.favorites?.addArtist(artistId: artist.id) == true {
 									isFavorite = true
 									viewState.refreshCurrentView()

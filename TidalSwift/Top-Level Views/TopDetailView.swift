@@ -8,6 +8,9 @@
 
 import SwiftUI
 import TidalSwiftLib
+import OSLog
+
+private let logger = Logger(category: "TopDetailView")
 
 struct TopDetailView: View {
 	let session: Session
@@ -89,7 +92,7 @@ private struct SearchField: View {
 	
 	var body: some View {
 		TextField("Search", text: $searchTerm, onCommit: {
-			print("Search Commit: \(searchTerm)")
+			logger.debug("Search Commit: \(searchTerm)")
 			if let link = TidalLink(string: searchTerm) {
 				// Ending editing writes the typed text back, so clear it afterwards
 				isFocused = false
@@ -136,7 +139,7 @@ private struct DetailView: View {
 	init(session: Session, player: Player) {
 		self.session = session
 		self.player = player
-		print("init DetailView")
+		logger.debug("init DetailView")
 	}
 	
 	private var placeHolderView: some View {

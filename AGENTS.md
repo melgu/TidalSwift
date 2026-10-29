@@ -59,6 +59,7 @@ Prefer `async/await` over callback-style APIs for new async work (the codebase w
 Never mess with indentation or whitespace on unrelated lines, but make sure that new or edited blocks have correct indentation.
 Blank lines inside a type or function carry the indentation of the surrounding block (e.g. a single tab between two methods), they are not left empty. Only blank lines at the top level of a file are empty. Editors and tools tend to strip this whitespace, so check the diff of new or edited code for bare blank lines (`git diff | grep -n '^+$'`).
 Default Actor Isolation is set to `MainActor` and Approachable Concurrency is enabled for both `TidalSwift` and `TidalSwiftLib`.
+Log with OSLog instead of `print`: declare `private let logger = Logger(category: "<FileName>")` per file, using the `Logger(category:)` init in each target's `Logger.swift` (subsystems `de.melgu.TidalSwift` and `de.melgu.TidalSwiftLib`). `TidalSwiftLib` must not write to stdout, as a command line tool's output would break. Log tokens, credentials and request headers only with `privacy: .private`, never `.public`; `Network` logs bodies and responses only in debug builds, with secrets redacted.
 
 ## Commit & Pull Request Guidelines
 
