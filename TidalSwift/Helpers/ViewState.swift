@@ -24,7 +24,7 @@ enum ViewType: String, Codable {
 	case offlineAlbums = "Offline Albums"
 	case offlinePlaylists = "Offline Playlists"
 	case offlineTracks = "Offline Tracks"
-//	case offlineVideos = "Favorite Videos" // Add when Video downloading works
+	case offlineVideos = "Offline Videos"
 	
 	case artist = "Artist"
 	case album = "Album"
@@ -79,7 +79,8 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 			viewType == .favoriteArtists || viewType == .favoriteAlbums ||
 			viewType == .favoritePlaylists || viewType == .favoriteTracks ||
 			viewType == .favoriteVideos || viewType == .offlineAlbums ||
-			viewType == .offlinePlaylists || viewType == .offlineTracks
+			viewType == .offlinePlaylists || viewType == .offlineTracks ||
+			viewType == .offlineVideos
 	}
 }
 

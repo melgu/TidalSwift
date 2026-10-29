@@ -143,3 +143,46 @@ struct OfflineTracksView: View {
 		}
 	}
 }
+
+struct OfflineVideosView: View {
+	let session: Session
+	let player: Player
+	
+	@Environment(ViewState.self) private var viewState
+	@Environment(SortingState.self) private var sortingState
+	
+	var body: some View {
+		@Bindable var sortingState = sortingState
+		
+		ScrollView {
+			VStack(alignment: .leading) {
+				HStack {
+					Text("Offline Videos")
+						.font(.largeTitle)
+					Spacer()
+					Picker(selection: $sortingState.offlineVideoSorting, label: Spacer(minLength: 0)) {
+						Text("Added").tag(VideoSorting.dateAdded)
+						Text("Title").tag(VideoSorting.title)
+						Text("Artists").tag(VideoSorting.artists)
+						Text("Release Date").tag(VideoSorting.releaseDate)
+						Text("Duration").tag(VideoSorting.duration)
+						Text("Popularity").tag(VideoSorting.popularity)
+					}
+					.pickerStyle(SegmentedPickerStyle())
+					.frame(width: PICKERWIDTH)
+					ReverseButton(reversed: $sortingState.offlineVideoReversed)
+				}
+				if let videos = viewState.stack.last?.videos {
+					HStack {
+						Text("\(videos.count) \(videos.count == 1 ? "Video" : "Videos")")
+						Spacer()
+					}
+					VideoGrid(videos: videos.sortedVideos(by: sortingState.offlineVideoSorting).reversed(sortingState.offlineVideoReversed),
+							  showArtists: true, session: session, player: player)
+				}
+				Spacer(minLength: 0)
+			}
+			.padding(.horizontal)
+		}
+	}
+}

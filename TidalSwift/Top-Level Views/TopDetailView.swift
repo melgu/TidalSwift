@@ -72,7 +72,7 @@ private struct TopView: View {
 					Text("Playlists").tag(ViewType.offlinePlaylists)
 					Text("Albums").tag(ViewType.offlineAlbums)
 					Text("Tracks").tag(ViewType.offlineTracks)
-//					Text("Videos").tag(ViewType.favoriteVideos) // Add when Video downloading works
+					Text("Videos").tag(ViewType.offlineVideos)
 				}
 			}.listStyle(SidebarListStyle())
 		}
@@ -186,6 +186,8 @@ private struct DetailView: View {
 						OfflineAlbumsView(session: session, player: player)
 					} else if viewType == .offlineTracks {
 						OfflineTracksView(session: session, player: player)
+					} else if viewType == .offlineVideos {
+						OfflineVideosView(session: session, player: player)
 					}
 					
 					// Single Things

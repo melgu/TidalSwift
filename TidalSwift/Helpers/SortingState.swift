@@ -37,6 +37,9 @@ final class SortingState {
 	var offlineTrackSorting: TrackSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
 	var offlineTrackReversed: Bool = false { didSet { hasUnsavedChanges = true } }
 	
+	var offlineVideoSorting: VideoSorting = .dateAdded { didSet { hasUnsavedChanges = true } }
+	var offlineVideoReversed: Bool = false { didSet { hasUnsavedChanges = true } }
+	
 	@ObservationIgnored var hasUnsavedChanges = false
 }
 
@@ -66,4 +69,8 @@ struct CodableSortingState: Codable {
 	
 	var offlineTrackSorting: TrackSorting
 	var offlineTrackReversed: Bool
+	
+	// Optional, as states saved before offline videos lack them
+	var offlineVideoSorting: VideoSorting?
+	var offlineVideoReversed: Bool?
 }

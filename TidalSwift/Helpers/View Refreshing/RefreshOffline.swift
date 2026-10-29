@@ -42,4 +42,13 @@ extension ViewState {
 			replaceCurrentView(with: view)
 		}
 	}
+	
+	func offlineVideos() {
+		guard var view = stack.last else {
+			return
+		}
+		view.videos = session.helpers.offline.allOfflineVideos()
+		view.loadingState = .successful
+		replaceCurrentView(with: view)
+	}
 }

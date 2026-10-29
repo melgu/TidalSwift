@@ -349,6 +349,8 @@ final class TidalSwiftAppModel {
 				sortingState.offlineAlbumReversed = codableSS.offlineAlbumReversed
 				sortingState.offlineTrackSorting = codableSS.offlineTrackSorting
 				sortingState.offlineTrackReversed = codableSS.offlineTrackReversed
+				sortingState.offlineVideoSorting = codableSS.offlineVideoSorting ?? .dateAdded
+				sortingState.offlineVideoReversed = codableSS.offlineVideoReversed ?? false
 			}
 		}
 	}
@@ -426,7 +428,9 @@ final class TidalSwiftAppModel {
 			offlineAlbumSorting: sortingState.offlineAlbumSorting,
 			offlineAlbumReversed: sortingState.offlinePlaylistReversed,
 			offlineTrackSorting: sortingState.offlineTrackSorting,
-			offlineTrackReversed: sortingState.offlineTrackReversed
+			offlineTrackReversed: sortingState.offlineTrackReversed,
+			offlineVideoSorting: sortingState.offlineVideoSorting,
+			offlineVideoReversed: sortingState.offlineVideoReversed
 		)
 		let codableSSData = try? JSONEncoder().encode(codableSS)
 		UserDefaults.standard.set(codableSSData, forKey: "SortingState")

@@ -40,6 +40,8 @@ extension ViewState {
 			offlinePlaylists()
 		case .offlineTracks:
 			offlineTracks()
+		case .offlineVideos:
+			offlineVideos()
 		
 		case .artist:
 			artist()

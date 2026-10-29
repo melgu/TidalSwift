@@ -761,6 +761,11 @@ public final class Offline {
 	
 	// MARK: - Video
 	
+	/// In the order they were added
+	public func allOfflineVideos() -> [Video] {
+		db.videos
+	}
+	
 	public func isVideoOffline(video: Video) -> Bool {
 		db.videos.contains(video)
 	}
