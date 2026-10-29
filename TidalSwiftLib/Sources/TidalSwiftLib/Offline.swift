@@ -327,13 +327,10 @@ public final class Offline {
 	private var syncRunning = false
 	private var syncAgain = false
 	
-	private func sync() async {
+	private func sync(task: DownloadTask) async {
 		// Preparations (e.g. setting syncRunning) happen in asyncSync func beforehand
 		
 		print("Offline: --- Starting Sync ---")
-		
-		downloadStatus.startTask()
-		defer { downloadStatus.finishTask() }
 		
 		// Load Local Track IDs
 		let dbTracks = await Array(db.tracks)
@@ -402,7 +399,8 @@ public final class Offline {
 			}
 		}
 		
-		for track in toAdd {
+		for (index, track) in toAdd.enumerated() {
+			task.track = DownloadTask.Step(title: track.title, index: index + 1, count: toAdd.count)
 			print("Offline: Downloading \(track.title)")
 			let existingFiles = localFiles[track.id] ?? []
 			guard let stream = await track.audioStream(session: session, audioQuality: session.config.offlineAudioQuality, preferDolbyAtmos: preferDolbyAtmos) else {
@@ -444,12 +442,13 @@ public final class Offline {
 			invalidateOfflineTrackIdsCache()
 			await uiRefreshFunc()
 		}
+		task.track = nil
 		
 		// Outro
 		if syncAgain {
 			syncAgain = false
 			print("Offline: Something changed. Restarting Sync")
-			await sync()
+			await sync(task: task)
 		} else {
 			syncRunning = false
 			print("Offline: --- Finished Sync ---")
@@ -466,7 +465,11 @@ public final class Offline {
 		// Set before the task starts, so a second call in the meantime can't start another sync
 		syncRunning = true
 		
-		syncTask = Task { await sync() }
+		syncTask = Task {
+			let task = downloadStatus.startTask(title: "Offline Sync")
+			defer { downloadStatus.finishTask(task) }
+			await sync(task: task)
+		}
 	}
 	
 	// MARK: - All

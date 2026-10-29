@@ -12,14 +12,35 @@ import Observation
 
 @Observable
 public final class DownloadStatus {
-	public var downloadingTasks: Int = 0
+	public private(set) var tasks: [DownloadTask] = []
 	
-	func startTask() {
-		downloadingTasks += 1
+	func startTask(title: String) -> DownloadTask {
+		let task = DownloadTask(title: title)
+		tasks.append(task)
+		return task
 	}
 	
-	func finishTask() {
-		downloadingTasks -= 1
+	func finishTask(_ task: DownloadTask) {
+		tasks.removeAll { $0 === task }
+	}
+}
+
+@Observable
+public final class DownloadTask: Identifiable {
+	/// Position of the item being worked on within its parent, e.g. the third of twelve tracks
+	public struct Step {
+		public let title: String
+		public let index: Int
+		public let count: Int
+	}
+	
+	public let title: String
+	/// Only set for downloads spanning several albums
+	public internal(set) var album: Step?
+	public internal(set) var track: Step?
+	
+	init(title: String) {
+		self.title = title
 	}
 }
 
@@ -60,9 +81,13 @@ public class Download {
 	
 	/// Uses the offline audio quality and Dolby Atmos preference
 	public func download(track: Track, parentFolder: String = "") async -> Bool {
-		downloadStatus.startTask()
-		defer { downloadStatus.finishTask() }
+		let task = downloadStatus.startTask(title: "\(track.title) – \(track.artists.formArtistString())")
+		defer { downloadStatus.finishTask(task) }
 		
+		return await downloadTrack(track, parentFolder: parentFolder)
+	}
+	
+	private func downloadTrack(_ track: Track, parentFolder: String) async -> Bool {
 		guard let stream = await track.audioStream(session: session, audioQuality: session.config.offlineAudioQuality, preferDolbyAtmos: session.helpers.offline.preferDolbyAtmos) else {
 			return false
 		}
@@ -87,12 +112,19 @@ public class Download {
 	}
 	
 	public func download(tracks: [Track], parentFolder: String = "") async -> DownloadErrors {
-		downloadStatus.startTask()
-		defer { downloadStatus.finishTask() }
+		let task = downloadStatus.startTask(title: parentFolder.isEmpty ? "\(tracks.count) Tracks" : parentFolder)
+		defer { downloadStatus.finishTask(task) }
+		
+		return await downloadTracks(tracks, parentFolder: parentFolder, task: task)
+	}
+	
+	private func downloadTracks(_ tracks: [Track], parentFolder: String, task: DownloadTask) async -> DownloadErrors {
+		defer { task.track = nil }
 		
 		var errors = DownloadErrors()
-		for track in tracks {
-			let success = await download(track: track, parentFolder: parentFolder)
+		for (index, track) in tracks.enumerated() {
+			task.track = DownloadTask.Step(title: track.title, index: index + 1, count: tracks.count)
+			let success = await downloadTrack(track, parentFolder: parentFolder)
 			if !success {
 				errors.affectedTracks.insert(track)
 			}
@@ -119,26 +151,32 @@ public class Download {
 	}
 	
 	public func download(album: Album, parentFolder: String = "") async -> DownloadErrors {
-		downloadStatus.startTask()
-		defer { downloadStatus.finishTask() }
+		let artistString = album.artists != nil ? "\(album.artists!.formArtistString()) - " : ""
+		let task = downloadStatus.startTask(title: "\(artistString)\(album.title)")
+		defer { downloadStatus.finishTask(task) }
 		
+		return await downloadAlbum(album, parentFolder: parentFolder, task: task)
+	}
+	
+	private func downloadAlbum(_ album: Album, parentFolder: String, task: DownloadTask) async -> DownloadErrors {
 		guard let tracks = await session.albumTracks(albumId: album.id) else {
 			return DownloadErrors(affectedAlbums: [album])
 		}
 		let artistString = album.artists != nil ? "\(album.artists!.formArtistString()) - " : ""
-		return await download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artistString)\(album.title.replacingOccurrences(of: "/", with: ":"))")
+		return await downloadTracks(tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artistString)\(album.title.replacingOccurrences(of: "/", with: ":"))", task: task)
 	}
 	
 	public func downloadAllAlbums(from artist: Artist, parentFolder: String = "") async -> DownloadErrors {
-		downloadStatus.startTask()
-		defer { downloadStatus.finishTask() }
+		let task = downloadStatus.startTask(title: artist.name)
+		defer { downloadStatus.finishTask(task) }
 		
 		guard let albums = await session.artistAlbums(artistId: artist.id) else {
 			return DownloadErrors(affectedArtists: [artist])
 		}
 		var error = DownloadErrors()
-		for album in albums {
-			let r = await download(album: album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)")
+		for (index, album) in albums.enumerated() {
+			task.album = DownloadTask.Step(title: album.title, index: index + 1, count: albums.count)
+			let r = await downloadAlbum(album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)", task: task)
 			error.affectedAlbums.formUnion(r.affectedAlbums)
 			error.affectedTracks.formUnion(r.affectedTracks)
 		}
@@ -146,13 +184,13 @@ public class Download {
 	}
 	
 	public func download(playlist: Playlist, parentFolder: String = "") async -> DownloadErrors {
-		downloadStatus.startTask()
-		defer { downloadStatus.finishTask() }
+		let task = downloadStatus.startTask(title: playlist.title)
+		defer { downloadStatus.finishTask(task) }
 		
 		guard let tracks = await session.playlistTracks(playlistId: playlist.uuid) else {
 			return DownloadErrors(affectedPlaylists: [playlist])
 		}
-		let errors = await download(tracks: tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)")
+		let errors = await downloadTracks(tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)", task: task)
 		return errors
 	}
 }
