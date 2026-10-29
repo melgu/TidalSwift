@@ -16,6 +16,12 @@ private struct PersistentInformation {
 
 extension Session {
 	public func loadSession() -> Bool {
+		// Without credentials, e.g. after a failed Keychain read, every request would fail while appearing logged in
+		guard !config.refreshToken.isEmpty else {
+			displayError(title: "Couldn't load Session", content: "Login credentials don't exist")
+			return false
+		}
+		
 		let persistentInformationOptional: [String: String]? =
 			UserDefaults.standard.dictionary(forKey: "Session Information") as? [String: String]
 		
@@ -45,29 +51,77 @@ extension Session {
 	}
 	
 	public func saveConfig() {
-		var persistentInformation: [String: String?] = [
-			"accessToken": config.accessToken,
-			"refreshToken": config.refreshToken,
-			"clientID": config.clientID,
+		let credentials = Credentials(config: config)
+		// Never write empty credentials, which would replace a login that just couldn't be read
+		if credentials != savedCredentials && !credentials.refreshToken.isEmpty {
+			do {
+				try Keychain.save(JSONEncoder().encode(credentials), service: keychainService, account: credentialsAccount)
+				savedCredentials = credentials
+			} catch {
+				displayError(title: "Couldn't save Login", content: "Couldn't write to Keychain: \(error)")
+			}
+		}
+		
+		var persistentInformation: [String: String] = [
 			"apiToken": config.apiToken,
 			"offlineAudioQuality": config.offlineAudioQuality.rawValue,
 			"imageSize": String(config.imageSize)
 		]
-		if let tokenExpirationDate = config.tokenExpirationDate {
-			persistentInformation["tokenExpirationDate"] = String(tokenExpirationDate.timeIntervalSince1970)
+		// Keep credentials that couldn't be moved to the Keychain yet
+		if savedCredentials == nil,
+		   let previousInformation = UserDefaults.standard.dictionary(forKey: "Config Information") as? [String: String] {
+			for key in legacyCredentialKeys {
+				persistentInformation[key] = previousInformation[key]
+			}
 		}
-		
 		UserDefaults.standard.set(persistentInformation, forKey: "Config Information")
 	}
 	
 	public func deletePersistentInformation() {
-		let domain = Bundle.main.bundleIdentifier!
-		UserDefaults.standard.removePersistentDomain(forName: domain)
+		do {
+			try Keychain.delete(service: keychainService, account: credentialsAccount)
+		} catch {
+			displayError(title: "Couldn't delete Login", content: "Couldn't remove from Keychain: \(error)")
+		}
+		savedCredentials = nil
+		
+		if let domain = Bundle.main.bundleIdentifier {
+			UserDefaults.standard.removePersistentDomain(forName: domain)
+		} else {
+			// Command line tools have no bundle identifier
+			UserDefaults.standard.removeObject(forKey: "Session Information")
+			UserDefaults.standard.removeObject(forKey: "Config Information")
+		}
 	}
 }
 
+/// Login secrets, stored in the Keychain instead of UserDefaults
+struct Credentials: Codable, Equatable {
+	var accessToken: String
+	var refreshToken: String
+	var clientID: String
+	var tokenExpirationDate: Date?
+}
+
+extension Credentials {
+	init(config: Config) {
+		self.init(
+			accessToken: config.accessToken,
+			refreshToken: config.refreshToken,
+			clientID: config.clientID,
+			tokenExpirationDate: config.tokenExpirationDate
+		)
+	}
+}
+
+private let credentialsAccount = "Credentials"
+
+/// Keys older versions stored the credentials under in UserDefaults
+private let legacyCredentialKeys = ["accessToken", "refreshToken", "clientID", "tokenExpirationDate"]
+
 extension Config {
-	static func load() -> Config? {
+	/// `savedCredentials` is nil if the credentials couldn't be moved to the Keychain
+	static func load(keychainService: String) -> (config: Config, savedCredentials: Credentials?)? {
 		let persistentInformationOptional: [String: String]? =
 			UserDefaults.standard.dictionary(forKey: "Config Information") as? [String: String]
 		
@@ -76,9 +130,7 @@ extension Config {
 			return nil
 		}
 		
-		guard let accessToken = persistentInformation["accessToken"],
-			  let refreshToken = persistentInformation["refreshToken"],
-			  let apiToken = persistentInformation["apiToken"],
+		guard let apiToken = persistentInformation["apiToken"],
 			  let offlineAudioQualityString = persistentInformation["offlineAudioQuality"],
 			  let offlineAudioQuality = AudioQuality(rawValue: offlineAudioQualityString),
 			  let imageSizeString = persistentInformation["imageSize"],
@@ -88,7 +140,59 @@ extension Config {
 			return nil
 		}
 		
-		let clientID = persistentInformation["clientID"] ?? AuthInformation.OAuthClientID
+		guard let loaded = loadCredentials(keychainService: keychainService, persistentInformation: persistentInformation) else {
+			return nil
+		}
+		let credentials = loaded.credentials
+		
+		let config = Config(
+			accessToken: credentials.accessToken,
+			refreshToken: credentials.refreshToken,
+			clientID: credentials.clientID,
+			apiToken: apiToken,
+			offlineAudioQuality: offlineAudioQuality,
+			imageSize: imageSize,
+			tokenExpirationDate: credentials.tokenExpirationDate
+		)
+		return (config, loaded.isInKeychain ? credentials : nil)
+	}
+	
+	private static func loadCredentials(keychainService: String, persistentInformation: [String: String]) -> (credentials: Credentials, isInKeychain: Bool)? {
+		do {
+			if let data = try Keychain.load(service: keychainService, account: credentialsAccount) {
+				return (try JSONDecoder().decode(Credentials.self, from: data), true)
+			}
+		} catch {
+			displayError(title: "Couldn't load Login", content: "Couldn't read from Keychain: \(error)")
+			return nil
+		}
+		
+		guard let credentials = legacyCredentials(from: persistentInformation) else {
+			displayError(title: "Couldn't load Login", content: "Login doesn't exist in Keychain")
+			return nil
+		}
+		
+		// Move the credentials over from UserDefaults, but keep them there if that fails
+		do {
+			try Keychain.save(JSONEncoder().encode(credentials), service: keychainService, account: credentialsAccount)
+			var remainingInformation = persistentInformation
+			for key in legacyCredentialKeys {
+				remainingInformation[key] = nil
+			}
+			UserDefaults.standard.set(remainingInformation, forKey: "Config Information")
+			return (credentials, true)
+		} catch {
+			print("Couldn't move login to Keychain: \(error)")
+			return (credentials, false)
+		}
+	}
+	
+	private static func legacyCredentials(from persistentInformation: [String: String]) -> Credentials? {
+		guard let accessToken = persistentInformation["accessToken"],
+			  let refreshToken = persistentInformation["refreshToken"]
+		else {
+			return nil
+		}
 		
 		var tokenExpirationDate: Date?
 		if let expirationString = persistentInformation["tokenExpirationDate"],
@@ -96,13 +200,10 @@ extension Config {
 			tokenExpirationDate = Date(timeIntervalSince1970: expirationInterval)
 		}
 		
-		return Config(
+		return Credentials(
 			accessToken: accessToken,
 			refreshToken: refreshToken,
-			clientID: clientID,
-			apiToken: apiToken,
-			offlineAudioQuality: offlineAudioQuality,
-			imageSize: imageSize,
+			clientID: persistentInformation["clientID"] ?? AuthInformation.OAuthClientID,
 			tokenExpirationDate: tokenExpirationDate
 		)
 	}

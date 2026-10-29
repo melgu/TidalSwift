@@ -18,7 +18,7 @@ Keep app-facing code in `TidalSwift/...` and platform-agnostic API/domain logic 
 
 ### Key Subsystems
 
-**Networking (`TidalSwiftLib/Network.swift`):** Async/await HTTP client supporting GET/POST/DELETE. All Tidal API calls go through `Session` (`TidalSwiftLib/Session/Session.swift`), which holds auth state and constructs requests. API credentials live in `TidalSwiftLib/Config.swift` — treat these as sensitive.
+**Networking (`TidalSwiftLib/Network.swift`):** Async/await HTTP client supporting GET/POST/DELETE. All Tidal API calls go through `Session` (`TidalSwiftLib/Session/Session.swift`), which holds auth state and constructs requests. The login (tokens and client ID) is stored in the login keychain through `TidalSwiftLib/Keychain.swift`, not UserDefaults, under the `keychainService` passed to `Session`. API credentials live in `TidalSwiftLib/Config.swift` — treat these as sensitive.
 
 **State Management (`TidalSwift/Helpers/`):**
 - `ViewState.swift` — navigation stack, view history, and per-view cached content
