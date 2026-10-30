@@ -67,6 +67,7 @@ struct AlbumGridItem: View {
 						.resizable()
 						.scaledToFit()
 						.frame(width: 30)
+						.foregroundStyle(.white)
 						.shadow(radius: SHADOWRADIUS)
 						.padding(5)
 				}
