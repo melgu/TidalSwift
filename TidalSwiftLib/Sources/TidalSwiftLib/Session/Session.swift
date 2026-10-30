@@ -41,6 +41,8 @@ public class Session {
 			if let loaded = Config.load(keychainService: keychainService) {
 				self.config = loaded.config
 				savedCredentials = loaded.savedCredentials
+				countryCode = loaded.savedCredentials?.countryCode
+				userId = loaded.savedCredentials?.userId
 			} else {
 				self.config = Config(
 					accessToken: "",

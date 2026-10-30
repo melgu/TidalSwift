@@ -453,7 +453,6 @@ final class TidalSwiftAppModel {
 	
 	func saveState() {
 		session.saveConfig()
-		session.saveSession()
 		savePlaybackState()
 		saveViewState()
 		saveViewCache()

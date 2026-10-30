@@ -152,7 +152,6 @@ struct LoginView: View {
 		loginErrorMessage = nil
 		loginInfo.showModal = false
 		session.saveConfig()
-		session.saveSession()
 		viewState.push(view: TidalSwiftView(viewType: .favoriteTracks))
 	}
 }
