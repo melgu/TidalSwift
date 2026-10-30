@@ -188,7 +188,7 @@ struct AlbumView: View {
 		.task(id: viewState.stack.last?.album?.id) {
 			guard let album = viewState.stack.last?.album else { return }
 			isFavorite = await album.isInFavorites(session: session)
-			isOffline = await offline.isAlbumOffline(album: album)
+			isOffline = offline.isAlbumOffline(album: album)
 		}
 	}
 }

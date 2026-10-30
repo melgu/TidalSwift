@@ -675,8 +675,8 @@ public final class Offline {
 	
 	// MARK: - Album
 	
-	public func isAlbumOffline(album: Album) async -> Bool {
-		await db.albums.contains(album)
+	public func isAlbumOffline(album: Album) -> Bool {
+		db.albums.contains(album)
 	}
 	
 	public func getTracks(for album: Album) async -> [Track]? {
@@ -708,8 +708,8 @@ public final class Offline {
 	private var playlistsToSync: [Playlist] = []
 	private var playlistSyncRunning = false
 	
-	public func isPlaylistOffline(playlist: Playlist) async -> Bool {
-		await db.playlists.contains(playlist)
+	public func isPlaylistOffline(playlist: Playlist) -> Bool {
+		db.playlists.contains(playlist)
 	}
 	
 	public func getTracks(for playlist: Playlist) async -> [Track]? {

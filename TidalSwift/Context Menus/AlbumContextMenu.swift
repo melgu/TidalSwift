@@ -21,7 +21,11 @@ struct AlbumContextMenu: View {
 	@Environment(PlaylistEditingValues.self) private var playlistEditingValues
 	@Environment(Offline.self) private var offline
 	@State private var isFavorite: Bool? = nil
-	@State private var isOffline: Bool = false
+	
+	/// Read when the menu is built, which a value loaded in .task would be too late for
+	private var isOffline: Bool {
+		offline.isAlbumOffline(album: album)
+	}
 	
 	var body: some View {
 		Group {
@@ -104,7 +108,6 @@ struct AlbumContextMenu: View {
 								Task {
 									logger.debug("Remove from Offline")
 									await offline.remove(album: album)
-									isOffline = false
 									viewState.refreshCurrentView()
 								}
 							} label: {
@@ -115,7 +118,6 @@ struct AlbumContextMenu: View {
 								Task {
 									logger.debug("Add to Offline")
 									await offline.add(album: album)
-									isOffline = true
 								}
 							} label: {
 								Text("Add to Offline")
@@ -171,7 +173,6 @@ struct AlbumContextMenu: View {
 		}
 		.task(id: album.id) {
 			isFavorite = await album.isInFavorites(session: session)
-			isOffline = await offline.isAlbumOffline(album: album)
 		}
 	}
 }

@@ -121,7 +121,7 @@ struct AlbumGridItem: View {
 			AlbumContextMenu(album: album, session: session, player: player)
 		}
 		.task(id: album.id) {
-			isOffline = await offline.isAlbumOffline(album: album)
+			isOffline = offline.isAlbumOffline(album: album)
 		}
 	}
 	

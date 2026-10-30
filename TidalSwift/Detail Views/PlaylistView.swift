@@ -161,7 +161,7 @@ struct PlaylistView: View {
 		.task(id: viewState.stack.last?.playlist?.uuid) {
 			guard let playlist = viewState.stack.last?.playlist else { return }
 			isFavorite = await playlist.isInFavorites(session: session)
-			isOffline = await offline.isPlaylistOffline(playlist: playlist)
+			isOffline = offline.isPlaylistOffline(playlist: playlist)
 		}
 	}
 }

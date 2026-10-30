@@ -63,7 +63,7 @@ struct EditPlaylistView: View {
 					}
 				}
 				.task(id: playlist.uuid) {
-					isOffline = await offline.isPlaylistOffline(playlist: playlist)
+					isOffline = offline.isPlaylistOffline(playlist: playlist)
 				}
 			} else {
 				Text("Missing Playlist")

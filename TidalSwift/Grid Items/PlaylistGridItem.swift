@@ -72,7 +72,7 @@ struct PlaylistGridItem: View {
 			PlaylistContextMenu(playlist: playlist, session: session, player: player)
 		}
 		.task(id: playlist.uuid) {
-			isOffline = await offline.isPlaylistOffline(playlist: playlist)
+			isOffline = offline.isPlaylistOffline(playlist: playlist)
 		}
 	}
 	
