@@ -19,7 +19,10 @@ struct PlaylistGridItem: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(Offline.self) private var offline
-	@State private var isOffline: Bool = false
+	
+	private var isOffline: Bool {
+		offline.isPlaylistOffline(playlist: playlist)
+	}
 	
 	var body: some View {
 		VStack {
@@ -71,9 +74,6 @@ struct PlaylistGridItem: View {
 		.accessibilityAction(named: "Play", play)
 		.contextMenu {
 			PlaylistContextMenu(playlist: playlist, session: session, player: player)
-		}
-		.task(id: playlist.uuid) {
-			isOffline = offline.isPlaylistOffline(playlist: playlist)
 		}
 	}
 	

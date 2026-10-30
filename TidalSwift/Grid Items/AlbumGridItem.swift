@@ -21,7 +21,10 @@ struct AlbumGridItem: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(Offline.self) private var offline
-	@State private var isOffline: Bool = false
+	
+	private var isOffline: Bool {
+		offline.isAlbumOffline(album: album)
+	}
 	
 	init(album: Album, showArtists: Bool, showReleaseDate: Bool = false, session: Session, player: Player) {
 		self.album = album
@@ -120,9 +123,6 @@ struct AlbumGridItem: View {
 		.accessibilityAction(named: "Play", play)
 		.contextMenu {
 			AlbumContextMenu(album: album, session: session, player: player)
-		}
-		.task(id: album.id) {
-			isOffline = offline.isAlbumOffline(album: album)
 		}
 	}
 	
