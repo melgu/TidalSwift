@@ -55,11 +55,47 @@ public final class DownloadTask: Identifiable {
 	}
 }
 
-public struct DownloadErrors {
-	fileprivate var affectedTracks = Set<Track>()
-	fileprivate var affectedAlbums = Set<Album>()
-	fileprivate var affectedArtists = Set<Artist>()
-	fileprivate var affectedPlaylists = Set<Playlist>()
+public enum DownloadError: LocalizedError {
+	/// Tidal didn't provide a stream, e.g. because the item isn't available in the account's country
+	case streamUnavailable
+	/// The tracks or albums to download couldn't be loaded
+	case contentsUnavailable
+	/// Downloading or writing the file failed
+	case transfer(underlying: Error)
+	
+	public var errorDescription: String? {
+		switch self {
+		case .streamUnavailable:
+			"No stream available"
+		case .contentsUnavailable:
+			"Couldn't load the contents"
+		case .transfer(let underlying):
+			"Download failed: \(underlying.localizedDescription)"
+		}
+	}
+}
+
+/// Outcome of downloading several tracks, which continues past failed ones
+public struct DownloadResult {
+	public enum Item {
+		case track(Track)
+		case album(Album)
+		case artist(Artist)
+		case playlist(Playlist)
+	}
+	
+	public struct Failure {
+		public let item: Item
+		public let error: DownloadError
+	}
+	
+	public fileprivate(set) var downloadedTracks = 0
+	public fileprivate(set) var failures: [Failure] = []
+	
+	fileprivate mutating func append(_ other: DownloadResult) {
+		downloadedTracks += other.downloadedTracks
+		failures += other.failures
+	}
 }
 
 public struct DownloadOptions {
@@ -109,16 +145,19 @@ public class Download {
 		return path.appendingPathExtension(pathExtension)
 	}
 	
-	public func download(track: Track, parentFolder: String = "", options: DownloadOptions) async -> Bool {
+	/// Returns the downloaded file
+	@discardableResult
+	public func download(track: Track, parentFolder: String = "", options: DownloadOptions) async throws(DownloadError) -> URL {
 		let task = downloadStatus.startTask(title: "\(track.title) – \(track.artists.formArtistString())")
 		defer { downloadStatus.finishTask(task) }
 		
-		return await downloadTrack(track, parentFolder: parentFolder, options: options)
+		return try await downloadTrack(track, parentFolder: parentFolder, options: options)
 	}
 	
-	private func downloadTrack(_ track: Track, parentFolder: String, options: DownloadOptions) async -> Bool {
+	private func downloadTrack(_ track: Track, parentFolder: String, options: DownloadOptions) async throws(DownloadError) -> URL {
 		guard let stream = await track.audioStream(session: session, audioQuality: options.audioQuality, preferDolbyAtmos: options.preferDolbyAtmos) else {
-			return false
+			displayError(title: "Error while downloading track", content: "No stream for track \(track.title)")
+			throw .streamUnavailable
 		}
 		let filename = formFileName(track)
 		logger.debug("Downloading: \(filename)")
@@ -128,44 +167,48 @@ public class Download {
 			try await Network.download(stream.url, path: path, overwrite: true)
 		} catch {
 			displayError(title: "Error while downloading track", content: "Download failed for track \(track.title). Error: \(error)")
-			return false
+			throw .transfer(underlying: error)
 		}
 		
 		await metadata.setMetadata(for: track, at: path)
 		logger.debug("Download Finished: \(filename)")
-		return true
+		return path
 	}
 	
-	public func download(tracks: [Track], parentFolder: String = "", options: DownloadOptions) async -> DownloadErrors {
+	@discardableResult
+	public func download(tracks: [Track], parentFolder: String = "", options: DownloadOptions) async -> DownloadResult {
 		let task = downloadStatus.startTask(title: parentFolder.isEmpty ? "\(tracks.count) Tracks" : parentFolder)
 		defer { downloadStatus.finishTask(task) }
 		
 		return await downloadTracks(tracks, parentFolder: parentFolder, options: options, task: task)
 	}
 	
-	private func downloadTracks(_ tracks: [Track], parentFolder: String, options: DownloadOptions, task: DownloadTask) async -> DownloadErrors {
+	private func downloadTracks(_ tracks: [Track], parentFolder: String, options: DownloadOptions, task: DownloadTask) async -> DownloadResult {
 		defer { task.track = nil }
 		
-		var errors = DownloadErrors()
+		var result = DownloadResult()
 		for (index, track) in tracks.enumerated() {
 			task.track = DownloadTask.Step(title: track.title, index: index + 1, count: tracks.count)
-			let success = await downloadTrack(track, parentFolder: parentFolder, options: options)
-			if !success {
-				errors.affectedTracks.insert(track)
+			do {
+				_ = try await downloadTrack(track, parentFolder: parentFolder, options: options)
+				result.downloadedTracks += 1
+			} catch {
+				result.failures.append(DownloadResult.Failure(item: .track(track), error: error))
 			}
 		}
 		logger.debug("Track Download Done!")
-		return errors
+		return result
 	}
 	
-	/// Only uses the destination of the options, as videos come in a single quality
-	public func download(video: Video, parentFolder: String = "", options: DownloadOptions) async -> Bool {
+	/// Only uses the destination of the options, as videos come in a single quality. Returns the downloaded file.
+	@discardableResult
+	public func download(video: Video, parentFolder: String = "", options: DownloadOptions) async throws(DownloadError) -> URL {
 		let task = downloadStatus.startTask(title: "\(video.title) – \(video.artists.formArtistString())")
 		defer { downloadStatus.finishTask(task) }
 		
 		guard let url = await video.videoUrl(session: session) else {
 			displayError(title: "Error while downloading video", content: "Couldn't get Video URL for \(video.title)")
-			return false
+			throw .streamUnavailable
 		}
 		let filename = formFileName(video)
 		logger.debug("Downloading Video: \(filename)")
@@ -178,13 +221,14 @@ public class Download {
 			}
 		} catch {
 			displayError(title: "Error while downloading video", content: "Download failed for video \(video.title). Error: \(error)")
-			return false
+			throw .transfer(underlying: error)
 		}
 		logger.debug("Download Finished: \(filename)")
-		return true
+		return path
 	}
 	
-	public func download(album: Album, parentFolder: String = "", options: DownloadOptions) async -> DownloadErrors {
+	@discardableResult
+	public func download(album: Album, parentFolder: String = "", options: DownloadOptions) async -> DownloadResult {
 		let artistString = album.artists != nil ? "\(album.artists!.formArtistString()) - " : ""
 		let task = downloadStatus.startTask(title: "\(artistString)\(album.title)")
 		defer { downloadStatus.finishTask(task) }
@@ -192,39 +236,38 @@ public class Download {
 		return await downloadAlbum(album, parentFolder: parentFolder, options: options, task: task)
 	}
 	
-	private func downloadAlbum(_ album: Album, parentFolder: String, options: DownloadOptions, task: DownloadTask) async -> DownloadErrors {
+	private func downloadAlbum(_ album: Album, parentFolder: String, options: DownloadOptions, task: DownloadTask) async -> DownloadResult {
 		guard let tracks = await session.albumTracks(albumId: album.id) else {
-			return DownloadErrors(affectedAlbums: [album])
+			return DownloadResult(failures: [DownloadResult.Failure(item: .album(album), error: .contentsUnavailable)])
 		}
 		let artistString = album.artists != nil ? "\(album.artists!.formArtistString()) - " : ""
 		return await downloadTracks(tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artistString)\(album.title.replacingOccurrences(of: "/", with: ":"))", options: options, task: task)
 	}
 	
-	public func downloadAllAlbums(from artist: Artist, parentFolder: String = "", options: DownloadOptions) async -> DownloadErrors {
+	@discardableResult
+	public func downloadAllAlbums(from artist: Artist, parentFolder: String = "", options: DownloadOptions) async -> DownloadResult {
 		let task = downloadStatus.startTask(title: artist.name)
 		defer { downloadStatus.finishTask(task) }
 		
 		guard let albums = await session.artistAlbums(artistId: artist.id) else {
-			return DownloadErrors(affectedArtists: [artist])
+			return DownloadResult(failures: [DownloadResult.Failure(item: .artist(artist), error: .contentsUnavailable)])
 		}
-		var error = DownloadErrors()
+		var result = DownloadResult()
 		for (index, album) in albums.enumerated() {
 			task.album = DownloadTask.Step(title: album.title, index: index + 1, count: albums.count)
-			let r = await downloadAlbum(album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)", options: options, task: task)
-			error.affectedAlbums.formUnion(r.affectedAlbums)
-			error.affectedTracks.formUnion(r.affectedTracks)
+			result.append(await downloadAlbum(album, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(artist.name)", options: options, task: task))
 		}
-		return error
+		return result
 	}
 	
-	public func download(playlist: Playlist, parentFolder: String = "", options: DownloadOptions) async -> DownloadErrors {
+	@discardableResult
+	public func download(playlist: Playlist, parentFolder: String = "", options: DownloadOptions) async -> DownloadResult {
 		let task = downloadStatus.startTask(title: playlist.title)
 		defer { downloadStatus.finishTask(task) }
 		
 		guard let tracks = await session.playlistTracks(playlistId: playlist.uuid) else {
-			return DownloadErrors(affectedPlaylists: [playlist])
+			return DownloadResult(failures: [DownloadResult.Failure(item: .playlist(playlist), error: .contentsUnavailable)])
 		}
-		let errors = await downloadTracks(tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)", options: options, task: task)
-		return errors
+		return await downloadTracks(tracks, parentFolder: "\(parentFolder.isEmpty ? "" : "\(parentFolder)/")\(playlist.title)", options: options, task: task)
 	}
 }

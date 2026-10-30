@@ -537,7 +537,7 @@ final class TidalSwiftAppModel {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex]
 		Task { [self] in
-			_ = await session.helpers.download.download(track: track, options: offline.downloadOptions)
+			try? await session.helpers.download.download(track: track, options: offline.downloadOptions)
 		}
 	}
 	
