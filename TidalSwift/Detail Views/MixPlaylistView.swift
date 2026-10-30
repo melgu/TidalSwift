@@ -45,7 +45,7 @@ struct MixPlaylistView: View {
 									.font(.title)
 									.lineLimit(2)
 								Text(mix.subTitle)
-									.foregroundColor(.secondary)
+									.foregroundStyle(.secondary)
 							}
 							Spacer(minLength: 0)
 							LoadingSpinner()

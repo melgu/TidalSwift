@@ -31,7 +31,7 @@ struct MixGridItem: View {
 				.frame(width: 160)
 			Text(mix.subTitle)
 				.fontWeight(.light)
-				.foregroundColor(Color.secondary)
+				.foregroundStyle(Color.secondary)
 				.lineLimit(1)
 				.frame(width: 160)
 		}
@@ -81,7 +81,7 @@ struct MixImage: View {
 							Text(mix.title)
 								.font(.system(size: metrics.size.width * 0.1))
 								.bold()
-								.foregroundColor(Color(hex: mix.graphic.images[0].vibrantColor) ?? Color.gray)
+								.foregroundStyle(Color(hex: mix.graphic.images[0].vibrantColor) ?? Color.gray)
 								.padding(metrics.size.width * 0.1)
 							Spacer()
 						}
@@ -213,7 +213,7 @@ struct MixImage: View {
 				.background((Color(hex: mix.graphic.images[0].vibrantColor) ?? Color.gray).colorMultiply(Color.gray))
 			} else {
 				Rectangle()
-					.foregroundColor(Color.black)
+					.fill(Color.black)
 			}
 		}
 	}

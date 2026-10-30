@@ -47,7 +47,7 @@ struct CreditsView: View {
 					FullscreenLoadingSpinner(.loading)
 				} else {
 					Text("No Credits available")
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 					Spacer(minLength: 0)
 				}
 			}

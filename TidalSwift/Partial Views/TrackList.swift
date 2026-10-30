@@ -114,19 +114,19 @@ private struct TrackRow: View {
 								.accessibilityHidden(true)
 							} else {
 								Rectangle()
-									.foregroundColor(.black)
+									.fill(.black)
 									.frame(width: 30, height: 30)
 									.cornerRadius(CORNERRADIUS)
 							}
 						} else {
 							Text("\(trackNumber ?? track.trackNumber)")
 								.fontWeight(.thin)
-								.foregroundColor(.secondary)
+								.foregroundStyle(.secondary)
 						}
 						Text(track.title)
 						if let version = track.version {
 							Text(version)
-								.foregroundColor(.secondary)
+								.foregroundStyle(.secondary)
 								.padding(.leading, -5)
 								.layoutPriority(-1)
 						}
@@ -204,7 +204,7 @@ private struct TrackRow: View {
 					.buttonStyle(.plain)
 				}
 			}
-		.foregroundColor(track.isPlayable ? .primary : .secondary)
+		.foregroundStyle(track.isPlayable ? .primary : .secondary)
 		.task(id: track.id) {
 			isOffline = offline.isTrackOffline(track: track)
 			isFavorite = await track.isInFavorites(session: session)

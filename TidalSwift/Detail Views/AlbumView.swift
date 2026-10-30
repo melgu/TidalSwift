@@ -123,11 +123,11 @@ struct AlbumView: View {
 								VStack(alignment: .leading) {
 									if let numberOfTracks = album.numberOfTracks {
 										Text("\(numberOfTracks) Tracks")
-											.foregroundColor(.secondary)
+											.foregroundStyle(.secondary)
 									}
 									if let duration = album.duration {
 										Text(secondsToHoursMinutesSecondsString(seconds: duration))
-											.foregroundColor(.secondary)
+											.foregroundStyle(.secondary)
 									}
 									Spacer()
 								}

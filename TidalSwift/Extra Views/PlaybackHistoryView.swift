@@ -34,7 +34,7 @@ struct PlaybackHistoryView: View {
 				}
 				if queueInfo.history.isEmpty {
 					Text("Empty History")
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 				} else {
 					ForEach(Array(queueInfo.history.enumerated()), id: \.offset) { index, track in
 						HStack {

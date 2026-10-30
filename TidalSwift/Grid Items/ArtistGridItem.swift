@@ -31,12 +31,12 @@ struct ArtistGridItem: View {
 			} else {
 				ZStack {
 					Rectangle()
-						.foregroundColor(.black)
+						.fill(.black)
 						.frame(width: 160, height: 160)
 						.cornerRadius(CORNERRADIUS)
 						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 					Text(artist.name)
-						.foregroundColor(.white)
+						.foregroundStyle(.white)
 						.multilineTextAlignment(.center)
 						.lineLimit(5)
 						.frame(width: 160)

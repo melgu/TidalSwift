@@ -93,7 +93,7 @@ struct LyricsView: View {
 							FullscreenLoadingSpinner(.loading)
 						} else {
 							Text("No Lyrics available")
-								.foregroundColor(.secondary)
+								.foregroundStyle(.secondary)
 						}
 					} else {
 						HStack {

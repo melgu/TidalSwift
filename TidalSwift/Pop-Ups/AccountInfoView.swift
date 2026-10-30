@@ -49,7 +49,7 @@ struct AccountInfoView: View {
 					FullscreenLoadingSpinner(.loading)
 				} else {
 					Text("Cannot access user or subscription info")
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 					Spacer(minLength: 0)
 				}
 			}

@@ -36,12 +36,12 @@ struct PlaylistGridItem: View {
 				} else {
 					ZStack {
 						Rectangle()
-							.foregroundColor(.black)
+							.fill(.black)
 							.frame(width: 160, height: 160)
 							.cornerRadius(CORNERRADIUS)
 							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 						Text(playlist.title)
-							.foregroundColor(.white)
+							.foregroundStyle(.white)
 							.multilineTextAlignment(.center)
 							.lineLimit(2)
 							.frame(width: 160)

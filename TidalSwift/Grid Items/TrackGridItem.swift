@@ -31,7 +31,7 @@ struct TrackGridItem: View {
 					Rectangle()
 						.frame(width: 160, height: 160)
 					Text(track.title)
-						.foregroundColor(.white)
+						.foregroundStyle(.white)
 						.multilineTextAlignment(.center)
 						.lineLimit(5)
 						.frame(width: 160)
@@ -41,7 +41,7 @@ struct TrackGridItem: View {
 				Text(track.title)
 				if let version = track.version {
 					Text(version)
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 						.padding(.leading, -5)
 				}
 				track.attributeHStack
@@ -53,7 +53,7 @@ struct TrackGridItem: View {
 			if showArtist {
 				Text(track.artists.formArtistString())
 					.fontWeight(.light)
-					.foregroundColor(Color.secondary)
+					.foregroundStyle(Color.secondary)
 					.lineLimit(1)
 					.frame(width: 160)
 					.padding(.top, track.hasAttributes ? -6.5 : 0)

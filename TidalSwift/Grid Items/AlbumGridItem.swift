@@ -44,19 +44,19 @@ struct AlbumGridItem: View {
 				} else {
 					ZStack {
 						Rectangle()
-							.foregroundColor(.black)
+							.fill(.black)
 							.frame(width: 160, height: 160)
 							.cornerRadius(CORNERRADIUS)
 							.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 						if album.streamReady ?? false {
 							Text(album.title)
-								.foregroundColor(.white)
+								.foregroundStyle(.white)
 								.multilineTextAlignment(.center)
 								.lineLimit(5)
 								.frame(width: 160)
 						} else {
 							Text("Album not available")
-								.foregroundColor(.white)
+								.foregroundStyle(.white)
 								.multilineTextAlignment(.center)
 								.frame(width: 160)
 						}
@@ -84,20 +84,20 @@ struct AlbumGridItem: View {
 				if let artists = album.artists { // Multiple Artists
 					Text(artists.formArtistString())
 						.fontWeight(.light)
-						.foregroundColor(Color.secondary)
+						.foregroundStyle(Color.secondary)
 						.lineLimit(1)
 						.frame(width: 160)
 						.padding(.top, album.hasAttributes ? -6.5 : 0)
 				} else if let artist = album.artist { // Single Artist
 					Text(artist.name)
 						.fontWeight(.light)
-						.foregroundColor(Color.secondary)
+						.foregroundStyle(Color.secondary)
 						.lineLimit(1)
 						.frame(width: 160)
 				} else {
 					Text("Unknown Artist")
 						.fontWeight(.light)
-						.foregroundColor(Color.secondary)
+						.foregroundStyle(Color.secondary)
 						.lineLimit(1)
 						.frame(width: 160)
 				}
@@ -105,7 +105,7 @@ struct AlbumGridItem: View {
 			if showReleaseDate, let releaseDate = album.releaseDate {
 				Text(DateFormatter.dateOnly.string(from: releaseDate))
 					.fontWeight(.light)
-					.foregroundColor(Color.secondary)
+					.foregroundStyle(Color.secondary)
 					.lineLimit(1)
 					.frame(width: 160)
 			}

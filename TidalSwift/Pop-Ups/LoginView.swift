@@ -85,7 +85,7 @@ struct LoginView: View {
 				EmptyView()
 			case .failure(_):
 				Text("Something went wrong")
-					.foregroundColor(.red)
+					.foregroundStyle(.red)
 			}
 			
 			Button(action: startAuthorization) {
@@ -103,7 +103,7 @@ struct LoginView: View {
 			
 			if let loginErrorMessage {
 				Text(loginErrorMessage)
-					.foregroundColor(.red)
+					.foregroundStyle(.red)
 			}
 			
 			Button(action: setAuthorization) {

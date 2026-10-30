@@ -41,15 +41,15 @@ struct QueueView: View {
 					}
 					VStack(alignment: .trailing) {
 						Text("\(queueInfo.queue.count) Tracks")
-							.foregroundColor(.secondary)
+							.foregroundStyle(.secondary)
 						Text(secondsToHoursMinutesSecondsString(seconds: calculateTotalTime(for: queueInfo.queue)))
-							.foregroundColor(.secondary)
+							.foregroundStyle(.secondary)
 						Spacer()
 					}
 				}
 				if queueInfo.queue.isEmpty {
 					Text("Empty Queue")
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 				} else {
 					ForEach(Array(queueInfo.queue.enumerated()), id: \.offset) { index, track in
 						HStack {

@@ -99,7 +99,7 @@ private struct TrackInfoView: View {
 						#endif
 					} else {
 						Rectangle()
-							.foregroundColor(.black)
+							.fill(.black)
 							.frame(width: 30, height: 30)
 							.cornerRadius(CORNERRADIUS)
 					}
@@ -109,22 +109,22 @@ private struct TrackInfoView: View {
 							Text("\(track.title)")
 							if let version = track.version {
 								Text(version)
-									.foregroundColor(.secondary)
+									.foregroundStyle(.secondary)
 									.padding(.leading, -5)
 									.layoutPriority(-1)
 							}
 							Text(player.currentQualityString())
 								.fontWeight(.light)
-								.foregroundColor(.orange)
+								.foregroundStyle(.orange)
 								.help("Current Quality")
 							Text(player.maxQualityString())
 								.fontWeight(.light)
-								.foregroundColor(.secondary)
+								.foregroundStyle(.secondary)
 								.help("Maximum available quality")
 						}
 						.help(trackToolTipString(for: track))
 						Text("\(track.artists.formArtistString()) – \(track.album.title)")
-							.foregroundColor(.secondary)
+							.foregroundStyle(.secondary)
 							.help("\(track.artists.formArtistString()) – \(track.album.title)")
 					}
 					Spacer()

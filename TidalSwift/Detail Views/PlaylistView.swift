@@ -100,17 +100,17 @@ struct PlaylistView: View {
 									Text(playlist.description ?? "")
 									Text(playlist.creator.name ?? "")
 									Text("Created: \(DateFormatter.dateOnly.string(from: playlist.created))")
-										.foregroundColor(.secondary)
+										.foregroundStyle(.secondary)
 									Text("Last updated: \(DateFormatter.dateOnly.string(from: playlist.lastUpdated))")
-										.foregroundColor(.secondary)
+										.foregroundStyle(.secondary)
 								}
 								Spacer(minLength: 5)
 									.layoutPriority(-1)
 								VStack(alignment: .leading) {
 									Text("\(playlist.numberOfTracks) Tracks")
-										.foregroundColor(.secondary)
+										.foregroundStyle(.secondary)
 									Text(secondsToHoursMinutesSecondsString(seconds: playlist.duration))
-										.foregroundColor(.secondary)
+										.foregroundStyle(.secondary)
 									Spacer()
 								}
 							}

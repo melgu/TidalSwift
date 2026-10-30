@@ -31,7 +31,7 @@ struct ViewHistoryView: View {
 				}
 				if viewState.history.isEmpty {
 					Text("Empty History")
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 				} else {
 					ForEach(viewState.history) { view in
 						ViewHistoryViewRow(view: view)

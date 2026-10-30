@@ -63,14 +63,14 @@ struct AddToPlaylistView: View {
 					ProgressView()
 				} else {
 					Text("Couldn't load playlists")
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 				}
 				
 				Text(showEmptyNameWarning ? "Playlist name can't be empty" : "")
-					.foregroundColor(.red)
+					.foregroundStyle(.red)
 				
 				Text("Duplicate tracks won't be added")
-					.foregroundColor(.secondary)
+					.foregroundStyle(.secondary)
 				
 				HStack {
 					Button {

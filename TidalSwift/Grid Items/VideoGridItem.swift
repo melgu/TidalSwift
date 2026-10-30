@@ -37,12 +37,12 @@ struct VideoGridItem: View {
 			} else {
 				ZStack {
 					Rectangle()
-						.foregroundColor(.black)
+						.fill(.black)
 						.frame(width: 160, height: 160)
 						.cornerRadius(CORNERRADIUS)
 						.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 					Text(video.title)
-						.foregroundColor(.white)
+						.foregroundStyle(.white)
 						.multilineTextAlignment(.center)
 						.lineLimit(2)
 						.frame(width: 160)
@@ -53,13 +53,13 @@ struct VideoGridItem: View {
 					.lineLimit(1)
 				if video.explicit {
 					Text("􀂝")
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 						.layoutPriority(1)
 				}
 				// The thumbnail is wider than high, so a corner badge like the albums' would float below it
 				if isOffline {
 					Image(systemName: "cloud.fill")
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 						.accessibilityLabel("Available Offline")
 						.layoutPriority(1)
 				}
@@ -68,7 +68,7 @@ struct VideoGridItem: View {
 			if showArtist {
 				Text(video.artists.formArtistString())
 					.fontWeight(.light)
-					.foregroundColor(Color.secondary)
+					.foregroundStyle(Color.secondary)
 					.lineLimit(1)
 					.frame(width: 160)
 			}

@@ -38,7 +38,7 @@ struct EditPlaylistView: View {
 					}
 				if isOffline {
 					Text("This playlist is saved offline, but won't anymore if renamed. You have to to add it to Offline items again manually, if you so desire.")
-						.foregroundColor(.secondary)
+						.foregroundStyle(.secondary)
 				}
 				
 				HStack {
