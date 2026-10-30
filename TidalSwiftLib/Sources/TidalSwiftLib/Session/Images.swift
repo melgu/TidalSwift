@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 extension Session {
 	public func imageUrl(imageId: String, resolution: Int, resolutionY: Int? = nil) -> URL? {

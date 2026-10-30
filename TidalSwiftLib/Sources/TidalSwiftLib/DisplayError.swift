@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftUI
 import OSLog
 
 private let logger = Logger(category: "DisplayError")

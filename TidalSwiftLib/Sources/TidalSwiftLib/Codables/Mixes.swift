@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct Mixes: Decodable {
 	let selfLink: URL?

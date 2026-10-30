@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 public struct User: Decodable, Identifiable {
 	public let id: Int

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct Videos: Decodable {
 	let limit: Int

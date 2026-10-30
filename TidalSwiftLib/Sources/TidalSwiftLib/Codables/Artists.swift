@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct Artists: Decodable {
 	let limit: Int
