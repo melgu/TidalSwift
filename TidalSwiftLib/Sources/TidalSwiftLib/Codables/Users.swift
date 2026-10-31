@@ -11,16 +11,17 @@ import Foundation
 public struct User: Decodable, Identifiable {
 	public let id: Int
 	public let username: String
-	public let firstName: String
-	public let lastName: String
+	public let firstName: String?
+	public let lastName: String?
 	public let email: String
 	public let countryCode: String
 	public let created: Date
 	public let picture: String?
 	public let newsletter: Bool
 	public let acceptedEULA: Bool
-	public let gender: String
-	public let dateOfBirth: Date
+	/// No longer sent by Tidal
+	public let gender: String?
+	public let dateOfBirth: Date?
 	public let facebookUid: Int?
 	public let appleUid: String?
 	

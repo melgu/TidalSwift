@@ -92,14 +92,14 @@ private struct UserInfoView: View {
 				Text("")
 				Text("First Name")
 					.bold()
-				Text(user.firstName)
+				Text(user.firstName ?? "–")
 				Text("")
 				
 			}
 			Group {
 				Text("Last Name")
 					.bold()
-				Text(user.lastName)
+				Text(user.lastName ?? "–")
 				Text("")
 				Text("E-Mail")
 					.bold()
@@ -128,11 +128,11 @@ private struct UserInfoView: View {
 			Group {
 				Text("Gender")
 					.bold()
-				Text(user.gender)
+				Text(user.gender ?? "–")
 				Text("")
 				Text("Date of Birth")
 					.bold()
-				Text(DateFormatter.dateOnly.string(from: user.dateOfBirth))
+				Text(user.dateOfBirth.map { DateFormatter.dateOnly.string(from: $0) } ?? "–")
 				
 				if let faceBookUid = user.facebookUid {
 					Text("")
