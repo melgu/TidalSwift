@@ -53,6 +53,9 @@ extension ViewState {
 		case .playlist(let uuid):
 			guard let playlist = await session.playlist(playlistId: uuid) else { return false }
 			push(playlist: playlist)
+		case .video:
+			// There's no view for a single video
+			return false
 		}
 		return true
 	}

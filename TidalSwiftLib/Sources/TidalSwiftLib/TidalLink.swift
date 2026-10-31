@@ -14,6 +14,7 @@ public enum TidalLink: Equatable, Sendable {
 	case album(id: Int)
 	case artist(id: Int)
 	case playlist(uuid: String)
+	case video(id: Int)
 	
 	/// Parses links like `https://tidal.com/browse/album/123`, `https://listen.tidal.com/track/123/u`,
 	/// `http://www.tidal.com/playlist/<uuid>` or `tidal://artist/123`. The scheme may be left out.
@@ -71,6 +72,9 @@ public enum TidalLink: Equatable, Sendable {
 		case "playlist":
 			guard UUID(uuidString: id) != nil else { return nil }
 			self = .playlist(uuid: id.lowercased())
+		case "video":
+			guard let id = Int(id) else { return nil }
+			self = .video(id: id)
 		default:
 			return nil
 		}
