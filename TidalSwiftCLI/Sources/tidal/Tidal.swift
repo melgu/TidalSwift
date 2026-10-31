@@ -16,7 +16,11 @@ struct Tidal: AsyncParsableCommand {
 		subcommands: [
 			Login.self,
 			Logout.self,
-			Me.self
+			Me.self,
+			Search.self,
+			Playlists.self,
+			Favorites.self,
+			DownloadCommand.self
 		]
 	)
 }
