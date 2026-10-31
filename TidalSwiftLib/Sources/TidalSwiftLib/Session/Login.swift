@@ -62,11 +62,24 @@ extension Session {
 		case failure(Error)
 	}
 	
-	private enum AuthorizationError: Error {
+	private enum AuthorizationError: LocalizedError {
 		case deviceAuthorizationFailed
 		case pollingFailed
 		case expiredToken
 		case unknown
+		
+		var errorDescription: String? {
+			switch self {
+			case .deviceAuthorizationFailed:
+				"Couldn't start the login"
+			case .pollingFailed:
+				"Couldn't check whether the login was approved"
+			case .expiredToken:
+				"The link expired before the login was approved"
+			case .unknown:
+				"Unknown error"
+			}
+		}
 	}
 	
 	/// Runs the device authorization flow. Cancelling the consumer of the stream stops the polling.
