@@ -8,6 +8,7 @@ TidalSwift is a macOS Tidal Music Streaming Client written in Swift. It supports
 
 `TidalSwift` contains the macOS app target (views, UI helpers, assets, and app lifecycle code).
 `TidalSwiftLib` contains the reusable API/client library (session endpoints, codable models, downloads, metadata, and networking).
+`TidalSwiftCLI` is a separate Swift package for the `tidal` command line tool, which depends on `TidalSwiftLib` by path. `Commands` holds the argument parsing and text output, `Operations` the logic shared with the planned MCP server (`tidal mcp`). It isn't part of the Xcode project, so its dependencies stay out of the app. It keeps its own login under the Keychain service `de.melgu.TidalSwift.cli`.
 `TidalSwift.xcodeproj` defines the shared `TidalSwift` scheme. `TidalSwiftLib` is a local Swift package, whose scheme Xcode generates.
 `README.assets` stores images used in project documentation, not runtime app assets.
 `docs` holds developer notes: API research, investigations, and plans for larger changes. Check it for background before working on a related area, and add findings there that are worth keeping but don't belong in code comments.
@@ -50,6 +51,8 @@ Use Xcode's MCP if possible.
   Build the macOS app from CLI.
 - `xcodebuild -project TidalSwift.xcodeproj -scheme TidalSwiftLib -configuration Debug build`
   Build the framework target.
+- `TidalSwiftCLI/build.sh [debug|release]`
+  Build the command line tool and sign it with the development certificate. Use this instead of plain `swift build`: an ad hoc signed build counts as a new app to the Keychain and asks for access after every build.
 
 There is no automated test suite. If `xcodebuild` fails due to local simulator/cache issues, build directly in Xcode and capture the exact error in the PR.
 
