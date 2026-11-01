@@ -188,6 +188,23 @@ class Player {
 		seek(to: 0)
 	}
 	
+	#if canImport(AppKit)
+	/// Opens a video in a window of its own and pauses the music. Returns false if it can't be played.
+	@discardableResult
+	func play(video: Video) async -> Bool {
+		logger.debug("Play Video: \(video.title)")
+		guard let url = await offline.playbackUrl(for: video) else {
+			logger.error("No URL to play video \(video.id)")
+			return false
+		}
+		pause()
+		let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
+		controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
+		controller.showWindow(nil)
+		return true
+	}
+	#endif
+	
 	func previous() {
 		if avPlayer.currentTime().seconds >= 3 || queueInfo.currentIndex == 0 {
 			seek(toSeconds: 0)

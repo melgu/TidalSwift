@@ -91,6 +91,8 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 final class ViewState {
 	let session: Session
 	let offline: Offline
+	/// Plays videos opened by a link
+	@ObservationIgnored let player: Player
 	@ObservationIgnored var cache: ViewCache
 	
 	@ObservationIgnored var searchTerm: String = ""
@@ -109,9 +111,10 @@ final class ViewState {
 	@ObservationIgnored weak var window: NSWindow?
 	#endif
 	
-	init(session: Session, offline: Offline, cache: ViewCache) {
+	init(session: Session, offline: Offline, player: Player, cache: ViewCache) {
 		self.session = session
 		self.offline = offline
+		self.player = player
 		self.cache = cache
 	}
 	

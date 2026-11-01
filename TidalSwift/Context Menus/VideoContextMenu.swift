@@ -18,7 +18,6 @@ struct VideoContextMenu: View {
 	let player: Player
 	
 	@Environment(ViewState.self) private var viewState
-	@Environment(PlaybackInfo.self) private var playbackInfo
 	@Environment(Offline.self) private var offline
 	@State private var isFavorite: Bool? = nil
 	
@@ -32,15 +31,7 @@ struct VideoContextMenu: View {
 				Button {
 					#if canImport(AppKit)
 					Task {
-						logger.debug("Play Video: \(video.title)")
-						guard let url = await offline.playbackUrl(for: video) else {
-							return
-						}
-						logger.debug("\(url)")
-						player.pause()
-						let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
-						controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
-						controller.showWindow(nil)
+						await player.play(video: video)
 					}
 					#else
 					logger.debug("Coming soon")

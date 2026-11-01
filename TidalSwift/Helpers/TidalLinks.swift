@@ -27,7 +27,7 @@ extension ViewState {
 		}
 	}
 	
-	/// Opens the view for a link. Tracks open their album.
+	/// Opens the view for a link. Tracks open their album, videos play in a window of their own.
 	func open(_ link: TidalLink) {
 		Task {
 			if await !push(link) {
@@ -53,9 +53,14 @@ extension ViewState {
 		case .playlist(let uuid):
 			guard let playlist = await session.playlist(playlistId: uuid) else { return false }
 			push(playlist: playlist)
-		case .video:
-			// There's no view for a single video
+		case .video(let id):
+			#if canImport(AppKit)
+			// There's no view for a single video, so it plays like on a double click
+			guard let video = await session.video(videoId: id) else { return false }
+			return await player.play(video: video)
+			#else
 			return false
+			#endif
 		}
 		return true
 	}

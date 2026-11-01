@@ -131,7 +131,7 @@ final class TidalSwiftAppModel {
 			}
 		}
 		
-		viewState = ViewState(session: session, offline: offline, cache: cache)
+		viewState = ViewState(session: session, offline: offline, player: player, cache: cache)
 		sortingState = SortingState()
 		
 		offlineAudioQuality = offline.audioQuality

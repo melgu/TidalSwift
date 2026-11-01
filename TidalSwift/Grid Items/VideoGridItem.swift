@@ -8,9 +8,6 @@
 
 import SwiftUI
 import TidalSwiftLib
-import OSLog
-
-private let logger = Logger(category: "VideoGridItem")
 
 struct VideoGridItem: View {
 	let video: Video
@@ -18,7 +15,6 @@ struct VideoGridItem: View {
 	let session: Session
 	let player: Player
 	
-	@Environment(PlaybackInfo.self) private var playbackInfo
 	@Environment(Offline.self) private var offline
 	
 	private var isOffline: Bool {
@@ -88,14 +84,8 @@ struct VideoGridItem: View {
 	
 	#if canImport(AppKit)
 	private func play() {
-		logger.debug("Play Video: \(video.title)")
 		Task {
-			guard let url = await offline.playbackUrl(for: video) else { return }
-			logger.debug("\(url)")
-			player.pause()
-			let controller = VideoPlayerController(videoUrl: url, volume: playbackInfo.volume)
-			controller.window?.title = "\(video.title) - \(video.artists.formArtistString())"
-			controller.showWindow(nil)
+			await player.play(video: video)
 		}
 	}
 	#endif
