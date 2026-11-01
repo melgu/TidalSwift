@@ -40,12 +40,7 @@ struct DownloadCommand: AsyncParsableCommand {
 		let session = try loggedInSession()
 		let link = try TidalLink(reference: item, kind: type)
 		
-		let destination = out.map { URL(filePath: ($0 as NSString).expandingTildeInPath, directoryHint: .isDirectory) }
-			?? URL.currentDirectory()
-		var isDirectory: ObjCBool = false
-		guard FileManager.default.fileExists(atPath: destination.path(), isDirectory: &isDirectory), isDirectory.boolValue else {
-			throw CLIError("\(destination.path()) isn't a folder")
-		}
+		let destination = try downloadFolder(path: out, fallback: .currentDirectory())
 		let options = DownloadOptions(audioQuality: .high, preferDolbyAtmos: atmos, destination: destination)
 		
 		let summary = try await download(session: session, link: link, options: options) { step in

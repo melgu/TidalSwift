@@ -23,8 +23,13 @@ func printToStderr(_ message: String) {
 }
 
 func printJSON<Value: Encodable>(_ value: Value) throws {
+	print(try jsonString(value))
+}
+
+/// The JSON that `--json` prints and MCP tools return
+func jsonString<Value: Encodable>(_ value: Value) throws -> String {
 	let encoder = JSONEncoder()
 	encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
 	encoder.dateEncodingStrategy = .iso8601
-	print(String(decoding: try encoder.encode(value), as: UTF8.self))
+	return String(decoding: try encoder.encode(value), as: UTF8.self)
 }

@@ -22,6 +22,16 @@ struct DownloadSummary: Codable {
 	let destination: String
 }
 
+/// The folder at a path, which may start with ~, or the fallback if none is given
+func downloadFolder(path: String?, fallback: URL) throws -> URL {
+	let folder = path.map { URL(filePath: ($0 as NSString).expandingTildeInPath, directoryHint: .isDirectory) } ?? fallback
+	var isDirectory: ObjCBool = false
+	guard FileManager.default.fileExists(atPath: folder.path(), isDirectory: &isDirectory), isDirectory.boolValue else {
+		throw CLIError("\(folder.path()) isn't a folder")
+	}
+	return folder
+}
+
 /// Downloads into the destination, with a subfolder for albums, artists and playlists.
 /// Calls `progress` with the item being worked on.
 @MainActor
