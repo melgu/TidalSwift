@@ -51,8 +51,8 @@ Use Xcode's MCP if possible.
   Build the macOS app from CLI.
 - `xcodebuild -project TidalSwift.xcodeproj -scheme TidalSwiftLib -configuration Debug build`
   Build the framework target.
-- `TidalSwiftCLI/build.sh [debug|release]`
-  Build the command line tool and sign it with the development certificate. Use this instead of plain `swift build`: an ad hoc signed build counts as a new app to the Keychain and asks for access after every build.
+- `TidalSwiftCLI/build.sh [debug|release|install]`
+  Build the command line tool and sign it with the development certificate. Use this instead of plain `swift build`: an ad hoc signed build counts as a new app to the Keychain and asks for access after every build. `install` builds release and copies it to `/usr/local/bin` (or `TIDAL_INSTALL_DIR`), so the installed `tidal` and MCP clients using it aren't affected by development builds.
 
 There is no automated test suite. If `xcodebuild` fails due to local simulator/cache issues, build directly in Xcode and capture the exact error in the PR.
 
