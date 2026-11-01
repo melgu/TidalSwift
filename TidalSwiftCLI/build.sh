@@ -5,6 +5,7 @@
 # Usage: ./build.sh [debug|release|install]
 # install builds release and copies it to /usr/local/bin, so it runs from any folder
 # and later development builds don't change it. Set TIDAL_INSTALL_DIR for another folder.
+# It also installs zsh completion to /usr/local/share/zsh/site-functions, or TIDAL_COMPLETION_DIR.
 # Set TIDAL_CODESIGN_IDENTITY if there's more than one "Apple Development" certificate.
 
 set -euo pipefail
@@ -30,6 +31,13 @@ if [[ $mode == install ]]; then
 	cp ".build/release/tidal" "$destination/.tidal.new"
 	mv -f "$destination/.tidal.new" "$destination/tidal"
 	echo "$destination/tidal"
+
+	# Completion for commands, options and their values, regenerated so it matches this build
+	completions=${TIDAL_COMPLETION_DIR:-/usr/local/share/zsh/site-functions}
+	if [[ -d $completions ]]; then
+		"$destination/tidal" --generate-completion-script zsh >| "$completions/_tidal"
+		echo "$completions/_tidal"
+	fi
 else
 	echo ".build/$configuration/tidal"
 fi
