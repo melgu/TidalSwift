@@ -36,6 +36,9 @@ final class TidalServer {
 	
 	private var session: Session?
 	private var pendingLogin: PendingLogin?
+	/// Asking the user to log in, which further calls wait for instead of asking again
+	private var loginPrompt: Task<Session, Error>?
+	private var elicitation: Client.Capabilities.Elicitation?
 	
 	func run() async throws {
 		await server.withMethodHandler(ListTools.self) { _ in
@@ -44,7 +47,9 @@ final class TidalServer {
 		await server.withMethodHandler(CallTool.self) { [self] parameters in
 			try await call(parameters)
 		}
-		try await server.start(transport: StdioTransport())
+		try await server.start(transport: StdioTransport()) { [self] _, capabilities in
+			await setElicitation(capabilities.elicitation)
+		}
 		await server.waitUntilCompleted()
 	}
 	
@@ -73,7 +78,12 @@ final class TidalServer {
 	
 	// MARK: - Login
 	
-	/// The stored login, or one finished since the last call. Otherwise starts a login and fails with its link.
+	private func setElicitation(_ elicitation: Client.Capabilities.Elicitation?) {
+		self.elicitation = elicitation
+	}
+	
+	/// The stored login, or one finished since the last call. Otherwise starts a login and asks the user
+	/// to approve it through the client, or, if the client can't ask, fails with its link.
 	private func loggedInSession() async throws -> Session {
 		if let session {
 			return session
@@ -84,8 +94,57 @@ final class TidalServer {
 			return stored
 		}
 		
+		if let loginPrompt {
+			return try await loginPrompt.value
+		}
 		let login = try await startLogin()
-		throw CLIError("""
+		guard let elicitation else {
+			throw loginRequired(login)
+		}
+		let prompt = Task {
+			defer { loginPrompt = nil }
+			return try await askToLogIn(login, elicitation: elicitation)
+		}
+		loginPrompt = prompt
+		return try await prompt.value
+	}
+	
+	/// Shows the link in the client and waits until the login is approved
+	private func askToLogIn(_ login: PendingLogin, elicitation: Client.Capabilities.Elicitation) async throws -> Session {
+		let expiration = login.expiration.formatted(date: .omitted, time: .shortened)
+		let elicitationId = UUID().uuidString
+		let result: CreateElicitation.Result
+		do {
+			if elicitation.url != nil {
+				result = try await server.requestElicitation(
+					message: "Log in to Tidal by approving this device on the page that opens. The link works until \(expiration).",
+					url: login.url.absoluteString,
+					elicitationId: elicitationId
+				)
+			} else {
+				// Form mode can only show text, so the link is part of the message
+				result = try await server.requestElicitation(
+					message: "Open \(login.url.absoluteString) and approve the login to Tidal before \(expiration), then continue here.",
+					requestedSchema: .init()
+				)
+			}
+		} catch {
+			// The client claimed support but couldn't ask, so the model passes the link on instead
+			throw loginRequired(login)
+		}
+		
+		guard result.action == .accept else {
+			throw CLIError("The user didn't log in to Tidal. Calling a tool again asks again, or run `tidal login` in a terminal.")
+		}
+		let session = try await login.task.value
+		if elicitation.url != nil {
+			try? await server.notify(ElicitationCompleteNotification.message(.init(elicitationId: elicitationId)))
+		}
+		return session
+	}
+	
+	private func loginRequired(_ login: PendingLogin) -> CLIError {
+		CLIError("""
 			Not logged in to Tidal. Ask the user to open \(login.url.absoluteString) and approve the login \
 			before \(login.expiration.formatted(date: .omitted, time: .shortened)), then call the tool again. \
 			Running `tidal login` in a terminal works as well.
