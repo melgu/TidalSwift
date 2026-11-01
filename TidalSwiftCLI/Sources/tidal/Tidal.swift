@@ -18,6 +18,8 @@ struct Tidal: AsyncParsableCommand {
 			Logout.self,
 			Me.self,
 			Search.self,
+			ArtistCommand.self,
+			NewReleases.self,
 			Playlists.self,
 			Favorites.self,
 			DownloadCommand.self,

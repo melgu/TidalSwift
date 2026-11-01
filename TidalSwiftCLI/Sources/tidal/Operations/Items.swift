@@ -31,6 +31,11 @@ struct AlbumSummary: Codable {
 	let artists: String?
 	let releaseDate: Date?
 	let numberOfTracks: Int?
+	let explicit: Bool?
+	/// Tidal often lists the Dolby Atmos and Hi-Res versions as separate albums
+	let dolbyAtmos: Bool
+	/// Only for streaming, downloads are 16 bit either way
+	let hiRes: Bool
 	let url: URL?
 }
 
@@ -86,6 +91,9 @@ extension AlbumSummary {
 			artists: (album.artists ?? album.artist.map { [$0] })?.formArtistString(),
 			releaseDate: album.releaseDate,
 			numberOfTracks: album.numberOfTracks,
+			explicit: album.explicit,
+			dolbyAtmos: album.audioModes?.contains(.dolbyAtmos) ?? false,
+			hiRes: album.hasHiRes,
 			url: album.url
 		)
 	}

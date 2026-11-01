@@ -12,6 +12,7 @@ import Foundation
 // One line per item, starting with the ID other commands take
 
 extension ItemKind: ExpressibleByArgument {}
+extension ReleaseType: ExpressibleByArgument {}
 
 func formatDuration(_ seconds: Int) -> String {
 	let hours = seconds / 3600
@@ -28,12 +29,29 @@ extension TrackSummary {
 
 extension AlbumSummary {
 	var line: String {
+		line(fullDate: false)
+	}
+	
+	/// The full date matters for lists of releases, the year is enough elsewhere
+	func line(fullDate: Bool) -> String {
 		var details: [String] = []
 		if let releaseDate {
-			details.append(String(Calendar.current.component(.year, from: releaseDate)))
+			details.append(fullDate
+				? releaseDate.formatted(date: .abbreviated, time: .omitted)
+				: String(Calendar.current.component(.year, from: releaseDate)))
 		}
 		if let numberOfTracks {
 			details.append(numberOfTracks == 1 ? "1 track" : "\(numberOfTracks) tracks")
+		}
+		// Tells apart the separate albums Tidal lists for these versions
+		if dolbyAtmos {
+			details.append("Dolby Atmos")
+		}
+		if hiRes {
+			details.append("Hi-Res")
+		}
+		if explicit == true {
+			details.append("explicit")
 		}
 		let artistString = artists.map { " – \($0)" } ?? ""
 		let detailString = details.isEmpty ? "" : " (\(details.joined(separator: ", ")))"

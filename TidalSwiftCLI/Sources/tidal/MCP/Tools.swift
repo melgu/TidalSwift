@@ -37,6 +37,31 @@ let tools: [Tool] = [
 		annotations: readOnly
 	),
 	Tool(
+		name: "artist_releases",
+		title: "Artist Releases",
+		description: "An artist's releases of one type, newest first. Unlike search, the list is complete, so it answers questions like an artist's latest album.",
+		inputSchema: schema([
+			"artist": string("An artist link or ID"),
+			"type": .object([
+				"type": "string",
+				"enum": .array(ReleaseType.allCases.map { .string($0.rawValue) }),
+				"description": "Which releases. Appearances are compilations and other artists' albums. Defaults to albums."
+			]),
+			"limit": integer("Maximum number of releases. Defaults to all.")
+		], required: ["artist"]),
+		annotations: readOnly
+	),
+	Tool(
+		name: "new_releases",
+		title: "New Releases",
+		description: "The newest releases of the account's favorite artists, newest first, as the app's New Releases shows them.",
+		inputSchema: schema([
+			"include_eps_and_singles": boolean("Include EPs and singles, not only albums"),
+			"limit": integer("Maximum number of releases. Defaults to 40.")
+		]),
+		annotations: readOnly
+	),
+	Tool(
 		name: "list_playlists",
 		title: "List Playlists",
 		description: "The account's own playlists and the ones it added to its favorites. Only own playlists (isOwn) can be changed.",
@@ -174,6 +199,20 @@ func callTool(_ name: String, arguments: ToolArguments, session: Session, progre
 		let kinds = try arguments.kinds("types").map(Set.init) ?? Set(ItemKind.allCases)
 		let limit = try arguments.optionalInt("limit") ?? 10
 		return try jsonString(await search(session: session, term: arguments.string("query"), kinds: kinds, limit: limit))
+	case "artist_releases":
+		let type = try arguments.optionalString("type").map { string in
+			guard let type = ReleaseType(rawValue: string) else {
+				throw CLIError("type must be one of \(ReleaseType.allCases.map(\.rawValue).joined(separator: ", "))")
+			}
+			return type
+		} ?? .albums
+		return try jsonString(await artistReleases(session: session, reference: arguments.string("artist"), type: type, limit: arguments.optionalInt("limit")))
+	case "new_releases":
+		return try jsonString(await newReleases(
+			session: session,
+			includeEpsAndSingles: arguments.bool("include_eps_and_singles"),
+			limit: arguments.optionalInt("limit") ?? 40
+		))
 	case "list_playlists":
 		return try jsonString(await playlists(session: session, ownOnly: arguments.bool("own_only")))
 	case "show_playlist":
