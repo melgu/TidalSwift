@@ -7,19 +7,18 @@ TidalSwift is a macOS Tidal Music Streaming Client written in Swift. It supports
 ## Project Structure & Module Organization
 
 `TidalSwift` contains the macOS app target (views, UI helpers, assets, and app lifecycle code).
-`TidalSwiftLib` contains the reusable API/client library (session endpoints, codable models, downloads, metadata, and networking).
-`TidalSwiftCLI` is a separate Swift package for the `tidal` command line tool, which depends on `TidalSwiftLib` by path. `Commands` holds the argument parsing and text output, `MCP` the MCP server (`tidal mcp`, on stdio, where stdout carries only protocol messages), and `Operations` the logic both share. It isn't part of the Xcode project, so its dependencies stay out of the app. It keeps its own login under the Keychain service `de.melgu.TidalSwift.cli`.
-`TidalSwift.xcodeproj` defines the shared `TidalSwift` scheme. `TidalSwiftLib` is a local Swift package, whose scheme Xcode generates.
+The API/client library (session endpoints, codable models, downloads, metadata, and networking) lives in its own repo, [TidalSwiftLib](https://github.com/melgu/TidalSwiftLib), checked out next to this one at `../TidalSwiftLib`. The `tidal` command line tool and its MCP server live in [TidalSwiftCLI](https://github.com/melgu/TidalSwiftCLI), which depends on the library as well. Each repo has its own guidelines; read the library's `AGENTS.md` before changing it.
+`TidalSwift.xcodeproj` defines the shared `TidalSwift` scheme. It references TidalSwiftLib as a local Swift package at `../TidalSwiftLib`, whose scheme Xcode generates.
 `README.assets` stores images used in project documentation, not runtime app assets.
 `docs` holds developer notes: API research, investigations, and plans for larger changes. Check it for background before working on a related area, and add findings there that are worth keeping but don't belong in code comments.
 
-Keep app-facing code in `TidalSwift/...` and platform-agnostic API/domain logic in `TidalSwiftLib/...`.
+Keep app-facing code in `TidalSwift/...` and platform-agnostic API/domain logic in TidalSwiftLib. A change that spans both needs a commit in each repo.
 
 ## Architecture
 
 ### Key Subsystems
 
-**Networking (`TidalSwiftLib/Network.swift`):** Async/await HTTP client supporting GET/POST/DELETE. All Tidal API calls go through `Session` (`TidalSwiftLib/Session/Session.swift`), which holds auth state and constructs requests. The login (tokens and client ID) is stored in the login keychain through `TidalSwiftLib/Keychain.swift`, not UserDefaults, under the `keychainService` passed to `Session`. API credentials live in `TidalSwiftLib/Config.swift` — treat these as sensitive.
+**Networking (TidalSwiftLib):** All Tidal API calls go through the library's `Session`, which holds auth state and stores the login in the login keychain under the `keychainService` passed to it. The app uses its bundle identifier.
 
 **State Management (`TidalSwift/Helpers/`):**
 - `ViewState.swift` — navigation stack, view history, and per-view cached content
@@ -33,12 +32,11 @@ All state objects are `@Observable` classes, injected with `.environment(_:)` an
 
 **Offline (`TidalSwift/Offline.swift`):** Keeps favorite tracks, albums, playlists and videos in the Music folder for offline playback and syncs them. It's app-only, owned by `TidalSwiftAppModel` and read via `@Environment(Offline.self)`, so a library user can't start a sync that deletes the offline files.
 
-**Downloads (`TidalSwiftLib/Download.swift`):** Downloads tracks, albums, artists, playlists and videos into the destination given by `DownloadOptions`, which also sets audio quality and Dolby Atmos. The app passes its offline settings and the Downloads folder. `Metadata` tags downloaded tracks without dependencies: `FLACTagWriter` writes Vorbis comment and picture blocks, `MP4TagWriter` uses an AVFoundation passthrough export.
-
-**Models (`TidalSwiftLib/Codables/`):** `Codable` structs for every Tidal entity — `Album`, `Artist`, `Track`, `Video`, `Playlist`, login responses, etc.
+**Downloads (TidalSwiftLib):** The library downloads and tags tracks, albums, artists, playlists and videos into the destination given by `DownloadOptions`, which also sets audio quality and Dolby Atmos. The app passes its offline settings and the Downloads folder.
 
 ### Swift Package Manager Dependencies
 
+- `TidalSwiftLib` — the Tidal API, models and downloads
 - `UpdateNotification` — in-app update checking
 
 ## Build, Test, and Development Commands
@@ -50,9 +48,7 @@ Use Xcode's MCP if possible.
 - `xcodebuild -project TidalSwift.xcodeproj -scheme TidalSwift -configuration Debug build`
   Build the macOS app from CLI.
 - `xcodebuild -project TidalSwift.xcodeproj -scheme TidalSwiftLib -configuration Debug build`
-  Build the framework target.
-- `TidalSwiftCLI/build.sh [debug|release|install]`
-  Build the command line tool and sign it with the development certificate. Use this instead of plain `swift build`: an ad hoc signed build counts as a new app to the Keychain and asks for access after every build. `install` builds release and copies it to `/usr/local/bin` (or `TIDAL_INSTALL_DIR`), so the installed `tidal` and MCP clients using it aren't affected by development builds.
+  Build the library.
 
 There is no automated test suite. If `xcodebuild` fails due to local simulator/cache issues, build directly in Xcode and capture the exact error in the PR.
 
@@ -63,8 +59,8 @@ Types use `UpperCamelCase`; functions/properties use `lowerCamelCase`; file name
 Prefer `async/await` over callback-style APIs for new async work (the codebase was recently migrated from callbacks).
 Never mess with indentation or whitespace on unrelated lines, but make sure that new or edited blocks have correct indentation.
 Blank lines inside a type or function carry the indentation of the surrounding block (e.g. a single tab between two methods), they are not left empty. Only blank lines at the top level of a file are empty. Editors and tools tend to strip this whitespace, so check the diff of new or edited code for bare blank lines (`git diff | grep -n '^+$'`).
-Default Actor Isolation is set to `MainActor` and Approachable Concurrency is enabled for both `TidalSwift` and `TidalSwiftLib`.
-Log with OSLog instead of `print`: declare `private let logger = Logger(category: "<FileName>")` per file, using the `Logger(category:)` init in each target's `Logger.swift` (subsystems `de.melgu.TidalSwift` and `de.melgu.TidalSwiftLib`). `TidalSwiftLib` must not write to stdout, as a command line tool's output would break. Log tokens, credentials and request headers only with `privacy: .private`, never `.public`; `Network` logs bodies and responses only in debug builds, with secrets redacted.
+Default Actor Isolation is set to `MainActor` and Approachable Concurrency is enabled.
+Log with OSLog instead of `print`: declare `private let logger = Logger(category: "<FileName>")` per file, using the `Logger(category:)` init in `TidalSwift/Helpers/Logger.swift` (subsystem `de.melgu.TidalSwift`). Log tokens, credentials and request headers only with `privacy: .private`, never `.public`.
 
 ## Commit & Pull Request Guidelines
 
@@ -79,4 +75,4 @@ PRs should include:
 ## Security & Configuration Tips
 
 Do not add personal tokens, account data, or local secrets to commits.
-Treat auth/config constants in `TidalSwiftLib/Config.swift` as sensitive integration settings; discuss API/auth changes in the PR description.
+Auth and API changes belong in TidalSwiftLib, whose `Config.swift` holds sensitive integration settings.

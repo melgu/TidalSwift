@@ -2,9 +2,11 @@
 
 # TidalSwift
 
-Tidal Music Streaming Client & Library written in Swift
+Tidal Music Streaming Client written in Swift
 
 It supports all major features of the official Tidal app, while adding additional ones, like New Releases, Lyrics, automatic Dark Mode, Downloads & Offline Playback – all while being only 1/10th the size of the official app.
+
+The app is built on [TidalSwiftLib](https://github.com/melgu/TidalSwiftLib), a Swift library for the Tidal API that you can use in your own apps. For the terminal, there's [TidalSwiftCLI](https://github.com/melgu/TidalSwiftCLI): the `tidal` command line tool, which also works as an MCP server for AI assistants.
 
 > [!IMPORTANT]
 >

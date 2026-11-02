@@ -421,7 +421,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		B03D3DDF2F49FF200044CEA6 /* XCLocalSwiftPackageReference "TidalSwiftLib" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = TidalSwiftLib;
+			relativePath = ../TidalSwiftLib;
 		};
 /* End XCLocalSwiftPackageReference section */
 
