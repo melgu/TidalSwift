@@ -129,7 +129,7 @@
 			mainGroup = B07C899D2F49F7B800078B50;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				B03D3DDF2F49FF200044CEA6 /* XCLocalSwiftPackageReference "TidalSwiftLib" */,
+				B03D3DDF2F49FF200044CEA6 /* XCRemoteSwiftPackageReference "TidalSwiftLib" */,
 				B0E115172F4AA7C3007AF324 /* XCRemoteSwiftPackageReference "UpdateNotification" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -418,14 +418,15 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		B03D3DDF2F49FF200044CEA6 /* XCLocalSwiftPackageReference "TidalSwiftLib" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../TidalSwiftLib;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
+		B03D3DDF2F49FF200044CEA6 /* XCRemoteSwiftPackageReference "TidalSwiftLib" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/melgu/TidalSwiftLib";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 		B0E115172F4AA7C3007AF324 /* XCRemoteSwiftPackageReference "UpdateNotification" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/melgu/UpdateNotification.git";
@@ -439,6 +440,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		B03D3DE02F49FF200044CEA6 /* TidalSwiftLib */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = B03D3DDF2F49FF200044CEA6 /* XCRemoteSwiftPackageReference "TidalSwiftLib" */;
 			productName = TidalSwiftLib;
 		};
 		B0E115182F4AA7C3007AF324 /* UpdateNotification */ = {

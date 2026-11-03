@@ -7,12 +7,12 @@ TidalSwift is a macOS Tidal Music Streaming Client written in Swift. It supports
 ## Project Structure & Module Organization
 
 `TidalSwift` contains the macOS app target (views, UI helpers, assets, and app lifecycle code).
-The API/client library (session endpoints, codable models, downloads, metadata, and networking) lives in its own repo, [TidalSwiftLib](https://github.com/melgu/TidalSwiftLib), checked out next to this one at `../TidalSwiftLib`. The `tidal` command line tool and its MCP server live in [TidalSwiftCLI](https://github.com/melgu/TidalSwiftCLI), which depends on the library as well. Each repo has its own guidelines; read the library's `AGENTS.md` before changing it.
-`TidalSwift.xcodeproj` defines the shared `TidalSwift` scheme. The app is released for macOS only for now. iOS and visionOS versions are planned but still need their UI work, so the target already supports both and has to keep compiling for them: guard AppKit code with `#if canImport(AppKit)` and check new code with an iOS and a visionOS Simulator build. It references TidalSwiftLib as a local Swift package at `../TidalSwiftLib`, whose scheme Xcode generates.
+The API/client library (session endpoints, codable models, downloads, metadata, and networking) lives in its own repo, [TidalSwiftLib](https://github.com/melgu/TidalSwiftLib), usually checked out next to this one at `../TidalSwiftLib`. The `tidal` command line tool and its MCP server live in [TidalSwiftCLI](https://github.com/melgu/TidalSwiftCLI), which depends on the library as well. Each repo has its own guidelines; read the library's `AGENTS.md` before changing it.
+`TidalSwift.xcodeproj` defines the shared `TidalSwift` scheme. The app is released for macOS only for now. iOS and visionOS versions are planned but still need their UI work, so the target already supports both and has to keep compiling for them: guard AppKit code with `#if canImport(AppKit)` and check new code with an iOS and a visionOS Simulator build. It depends on TidalSwiftLib by its GitHub URL, up to the next minor version, as the library is below 1.0.0 and a minor version can break its API.
 `README.assets` stores images used in project documentation, not runtime app assets.
 `docs` holds developer notes: API research, investigations, and plans for larger changes. Check it for background before working on a related area, and add findings there that are worth keeping but don't belong in code comments.
 
-Keep app-facing code in `TidalSwift/...` and platform-agnostic API/domain logic in TidalSwiftLib. A change that spans both needs a commit in each repo.
+Keep app-facing code in `TidalSwift/...` and platform-agnostic API/domain logic in TidalSwiftLib. A change that spans both needs a commit in each repo. To work on both at once, drag the `../TidalSwiftLib` folder into the project in Xcode: a local package with the same name replaces the GitHub one until it's removed again, which must happen before committing. Then release a new library version and raise the app's requirement to it (File › Packages › Update to Latest Package Versions, or the package's settings for a new minor version).
 
 ## Architecture
 
@@ -47,8 +47,6 @@ Use Xcode's MCP if possible.
   Open the project in Xcode.
 - `xcodebuild -project TidalSwift.xcodeproj -scheme TidalSwift -configuration Debug build`
   Build the macOS app from CLI.
-- `xcodebuild -project TidalSwift.xcodeproj -scheme TidalSwiftLib -configuration Debug build`
-  Build the library.
 
 There is no automated test suite. If `xcodebuild` fails due to local simulator/cache issues, build directly in Xcode and capture the exact error in the PR.
 
