@@ -8,7 +8,7 @@ TidalSwift is a macOS Tidal Music Streaming Client written in Swift. It supports
 
 `TidalSwift` contains the macOS app target (views, UI helpers, assets, and app lifecycle code).
 The API/client library (session endpoints, codable models, downloads, metadata, and networking) lives in its own repo, [TidalSwiftLib](https://github.com/melgu/TidalSwiftLib), checked out next to this one at `../TidalSwiftLib`. The `tidal` command line tool and its MCP server live in [TidalSwiftCLI](https://github.com/melgu/TidalSwiftCLI), which depends on the library as well. Each repo has its own guidelines; read the library's `AGENTS.md` before changing it.
-`TidalSwift.xcodeproj` defines the shared `TidalSwift` scheme. It references TidalSwiftLib as a local Swift package at `../TidalSwiftLib`, whose scheme Xcode generates.
+`TidalSwift.xcodeproj` defines the shared `TidalSwift` scheme. The app is released for macOS only for now. iOS and visionOS versions are planned but still need their UI work, so the target already supports both and has to keep compiling for them: guard AppKit code with `#if canImport(AppKit)` and check new code with an iOS and a visionOS Simulator build. It references TidalSwiftLib as a local Swift package at `../TidalSwiftLib`, whose scheme Xcode generates.
 `README.assets` stores images used in project documentation, not runtime app assets.
 `docs` holds developer notes: API research, investigations, and plans for larger changes. Check it for background before working on a related area, and add findings there that are worth keeping but don't belong in code comments.
 

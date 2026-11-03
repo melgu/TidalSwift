@@ -2,7 +2,7 @@
 
 # TidalSwift
 
-Tidal Music Streaming Client written in Swift
+Tidal Music Streaming Client for macOS, written in Swift
 
 It supports all major features of the official Tidal app, while adding additional ones, like New Releases, Lyrics, automatic Dark Mode, Downloads & Offline Playback – all while being only 1/10th the size of the official app.
 
