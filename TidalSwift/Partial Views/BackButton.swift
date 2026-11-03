@@ -40,10 +40,15 @@ private extension PrimitiveButtonStyle where Self == BackButtonStyle {
 
 private struct BackButtonStyle: PrimitiveButtonStyle {
 	func makeBody(configuration: Configuration) -> some View {
+#if os(visionOS)
+		// visionOS has no glass button style, as its buttons sit on glass already
+		Button(configuration).buttonStyle(.automatic)
+#else
 		if #available(anyAppleOS 26.0, *) {
 			Button(configuration).buttonStyle(.glass)
 		} else {
 			Button(configuration).buttonStyle(.automatic)
 		}
+#endif
 	}
 }
