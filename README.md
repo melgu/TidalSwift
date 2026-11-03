@@ -91,3 +91,8 @@ TidalSwift obviously supports the macOS Dark Mode.
 
 ![Artist View (Dark Mode)](README.assets/ArtistView-DarkMode.png)
 
+
+
+## License
+
+TidalSwift is licensed under the [GNU General Public License v3.0](LICENSE).
