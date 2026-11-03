@@ -18,7 +18,13 @@ The app is built on [TidalSwiftLib](https://github.com/melgu/TidalSwiftLib), my 
 
 ## Download
 
-You can download the latest version [here](https://github.com/melgu/TidalSwift/releases).
+The easiest way is [Homebrew](https://brew.sh), which also takes care of the steps below:
+
+```sh
+brew install --cask melgu/tap/tidalswift
+```
+
+Or download the latest version [here](https://github.com/melgu/TidalSwift/releases).
 After downloading and unpacking the TidalSwift.zip, move the app to the Applications folder. Because the app is unsigned (I refuse to give current Apple money), you need to explicitly allow the app after the first start in the Privacy system settings. Alternatively, you can execute this:
 
 ```sh
