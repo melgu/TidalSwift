@@ -114,6 +114,13 @@ while (( ${#version_parts} < 3 )); do
 done
 feed_version=${(j:.:)version_parts}
 min_os_parts=("${(@s:.:)min_os}")
+# Homebrew names macOS versions in depends_on
+case ${min_os_parts[1]} in
+	14) macos_name=sonoma ;;
+	15) macos_name=sequoia ;;
+	26) macos_name=tahoe ;;
+	*) fail "Add the Homebrew name of macOS $min_os to release.sh." ;;
+esac
 print -r -- "TidalSwift $version ($build), tag $tag, macOS $min_os or later"
 
 ! git rev-parse -q --verify "refs/tags/$tag" >/dev/null || fail "Tag $tag exists already. Bump the version first."
@@ -286,7 +293,7 @@ jq -e --slurpfile old "$work/feed-old.json" '.items[1:] == $old[0].items and del
 step "Release $tag"
 print -r -- "GitHub release: $version ($build)$( (( prerelease )) && print -n ', pre-release')"
 print -r -- "Zip SHA-256:    $sha"
-print -r -- "Minimum macOS:  $min_os"
+print -r -- "Minimum macOS:  $min_os ($macos_name)"
 print -r -- ""
 print -r -- "--- GitHub release notes ---"
 cat "$release_body"
@@ -300,7 +307,7 @@ if (( dry_run )); then
 	print -r -- "- tag HEAD as $tag and push main and the tag"
 	print -r -- "- create the GitHub release $tag with the zip"
 	print -r -- "- upload the feed to $FEED_SFTP_HOST and check $feed_url"
-	print -r -- "- set the cask to $tag with SHA-256 $sha, commit and push the tap"
+	print -r -- "- set the cask to $tag with SHA-256 $sha and macOS $macos_name, commit and push the tap"
 	print -r -- "- install the app to /Applications"
 	print -r -- ""
 	print -r -- "Everything is in $work"
@@ -336,8 +343,8 @@ curl -sSfL -H 'Cache-Control: no-cache' "$feed_url" | cmp -s - "$feed" || fail "
 
 step "Updating the Homebrew cask"
 git -C "$tap" pull -q --ff-only
-sed -i '' -E "s/^  version \".*\"$/  version \"$tag\"/; s/^  sha256 \".*\"$/  sha256 \"$sha\"/" "$cask"
-grep -qx "  version \"$tag\"" "$cask" && grep -qx "  sha256 \"$sha\"" "$cask" || fail "Couldn't set the version and SHA-256 in $cask."
+sed -i '' -E "s/^  version \".*\"$/  version \"$tag\"/; s/^  sha256 \".*\"$/  sha256 \"$sha\"/; s/^  depends_on macos: :.*$/  depends_on macos: :$macos_name/" "$cask"
+grep -qx "  version \"$tag\"" "$cask" && grep -qx "  sha256 \"$sha\"" "$cask" && grep -qx "  depends_on macos: :$macos_name" "$cask" || fail "Couldn't set the version, SHA-256 and minimum macOS in $cask."
 brew style melgu/tap
 git -C "$tap" commit -qam "tidalswift $tag"
 git -C "$tap" push -q
