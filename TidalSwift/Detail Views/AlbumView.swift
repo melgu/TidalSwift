@@ -18,9 +18,9 @@ struct AlbumView: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(Offline.self) private var offline
+	@Environment(FavoritesState.self) private var favoritesState
 	
 	@State private var cloudPressed: Bool = false
-	@State private var isFavorite: Bool? = nil
 	@State private var isOffline: Bool = false
 	
 	var body: some View {
@@ -82,27 +82,25 @@ struct AlbumView: View {
 										.buttonStyle(.plain)
 										#endif
 										Button {
-											if isFavorite ?? true {
+											if favoritesState.contains(album: album) {
 												Task {
 													logger.debug("Remove from Favorites")
-													if await session.favorites?.removeAlbum(albumId: album.id) == true {
-														isFavorite = false
+													if await favoritesState.removeAlbum(albumId: album.id) {
 														viewState.refreshCurrentView()
 													}
 												}
 											} else {
 												Task {
 													logger.debug("Add to Favorites")
-													if await session.favorites?.addAlbum(albumId: album.id) == true {
-														isFavorite = true
+													if await favoritesState.addAlbum(albumId: album.id) {
 														viewState.refreshCurrentView()
 													}
 												}
 											}
 										} label: {
-											Image(systemName: isFavorite ?? true ? "heart.fill" : "heart")
+											Image(systemName: favoritesState.contains(album: album) ? "heart.fill" : "heart")
 												.accessibilityLabel("Favorite")
-												.accessibilityAddTraits(isFavorite ?? true ? .isSelected : [])
+												.accessibilityAddTraits(favoritesState.contains(album: album) ? .isSelected : [])
 										}
 										.buttonStyle(.plain)
 										if let url = album.url {
@@ -187,7 +185,6 @@ struct AlbumView: View {
 		}
 		.task(id: viewState.stack.last?.album?.id) {
 			guard let album = viewState.stack.last?.album else { return }
-			isFavorite = await album.isInFavorites(session: session)
 			isOffline = offline.isAlbumOffline(album: album)
 		}
 	}

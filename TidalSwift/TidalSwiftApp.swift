@@ -33,6 +33,7 @@ struct TidalSwiftApp: App {
 			)
 			.environment(appModel)
 			.environment(appModel.offline)
+			.environment(appModel.favoritesState)
 			.onAppear {
 				#if canImport(AppKit)
 				appDelegate.appModel = appModel
@@ -40,7 +41,10 @@ struct TidalSwiftApp: App {
 				appModel.startupIfNeeded()
 			}
 			.onChange(of: scenePhase) { _, newValue in
-				if newValue != .active {
+				if newValue == .active {
+					// Picks up favorites changed in other apps
+					appModel.favoritesState.refresh()
+				} else {
 					appModel.saveState()
 				}
 			}
@@ -103,6 +107,7 @@ final class TidalSwiftAppModel {
 	
 	let session: Session
 	let offline: Offline
+	let favoritesState: FavoritesState
 	let player: Player
 	var viewState: ViewState
 	var sortingState: SortingState
@@ -121,8 +126,13 @@ final class TidalSwiftAppModel {
 	
 	@ObservationIgnored private var saveTask: Task<Void, Never>?
 	
-	var trackIsFavorite = false
-	var albumIsFavorite = false
+	var trackIsFavorite: Bool {
+		player.queueInfo.currentItem.map(favoritesState.contains(track:)) ?? false
+	}
+	
+	var albumIsFavorite: Bool {
+		player.queueInfo.currentItem.map { favoritesState.contains(album: $0.album) } ?? false
+	}
 	
 	/// The menu items ask first, as neither can be undone
 	var confirmsLogout = false
@@ -139,6 +149,7 @@ final class TidalSwiftAppModel {
 	init() {
 		session = Session(config: nil)
 		offline = Offline(session: session, downloadStatus: session.helpers.downloadStatus)
+		favoritesState = FavoritesState(session: session)
 		
 		let preferDolbyAtmos = UserDefaults.standard.bool(forKey: "preferDolbyAtmos")
 		// Only High is offered, so a stored Low or Low 320 falls back to it as well
@@ -178,14 +189,11 @@ final class TidalSwiftAppModel {
 			restorePlaybackState()
 			restoreSortingState()
 			restoreViewState()
+			favoritesState.refresh()
 		}
 		
-		player.queueInfo.onCurrentTrackChange = { [weak self] in
-			self?.refreshFavoriteState()
-		}
 		startSaveLoop()
 		viewState.refreshCurrentView()
-		refreshFavoriteState()
 		
 		#if canImport(AppKit)
 		initSecondaryWindows()
@@ -269,6 +277,7 @@ final class TidalSwiftAppModel {
 			LyricsView(session: session, player: player)
 				.environment(viewState)
 				.environment(offline)
+				.environment(favoritesState)
 				.environment(player.queueInfo)
 				.environment(player.playbackInfo),
 			autosaveName: "Lyrics"
@@ -291,6 +300,7 @@ final class TidalSwiftAppModel {
 			QueueView(session: session, player: player)
 				.environment(viewState)
 				.environment(offline)
+				.environment(favoritesState)
 				.environment(player.queueInfo)
 				.environment(playlistEditingValues),
 			autosaveName: "Queue"
@@ -300,7 +310,8 @@ final class TidalSwiftAppModel {
 		viewHistoryViewController = ResizableWindowControllerFactory.create(rootView:
 			ViewHistoryView()
 				.environment(viewState)
-				.environment(offline),
+				.environment(offline)
+				.environment(favoritesState),
 			autosaveName: "ViewHistory"
 		)
 		viewHistoryViewController?.window?.title = "View History"
@@ -309,6 +320,7 @@ final class TidalSwiftAppModel {
 			rootView: PlaybackHistoryView(session: session, player: player)
 				.environment(viewState)
 				.environment(offline)
+				.environment(favoritesState)
 				.environment(player.queueInfo)
 				.environment(playlistEditingValues),
 			autosaveName: "PlaybackHistory"
@@ -579,9 +591,8 @@ final class TidalSwiftAppModel {
 		guard hasCurrentTrack else { return }
 		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].id
 		Task {
-			if await session.favorites?.addTrack(trackId: trackId) == true {
+			if await favoritesState.addTrack(trackId: trackId) {
 				offline.asyncSyncFavoriteTracks()
-				refreshFavoriteState()
 				viewState.refreshCurrentView()
 			}
 		}
@@ -591,9 +602,8 @@ final class TidalSwiftAppModel {
 		guard hasCurrentTrack else { return }
 		let trackId = player.queueInfo.queue[player.queueInfo.currentIndex].id
 		Task {
-			if await session.favorites?.removeTrack(trackId: trackId) == true {
+			if await favoritesState.removeTrack(trackId: trackId) {
 				offline.asyncSyncFavoriteTracks()
-				refreshFavoriteState()
 				viewState.refreshCurrentView()
 			}
 		}
@@ -610,8 +620,7 @@ final class TidalSwiftAppModel {
 		guard hasCurrentTrack else { return }
 		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].album.id
 		Task {
-			if await session.favorites?.addAlbum(albumId: albumId) == true {
-				refreshFavoriteState()
+			if await favoritesState.addAlbum(albumId: albumId) {
 				viewState.refreshCurrentView()
 			}
 		}
@@ -621,8 +630,7 @@ final class TidalSwiftAppModel {
 		guard hasCurrentTrack else { return }
 		let albumId = player.queueInfo.queue[player.queueInfo.currentIndex].album.id
 		Task {
-			if await session.favorites?.removeAlbum(albumId: albumId) == true {
-				refreshFavoriteState()
+			if await favoritesState.removeAlbum(albumId: albumId) {
 				viewState.refreshCurrentView()
 			}
 		}
@@ -742,8 +750,7 @@ final class TidalSwiftAppModel {
 		loginInfo.loginKinds = []
 		loginInfo.addingKind = nil
 		loginInfo.showModal = true
-		trackIsFavorite = false
-		albumIsFavorite = false
+		favoritesState.clear()
 	}
 	
 	/// Logs in with the other kind as well, for both Hi-Res and Dolby Atmos
@@ -756,22 +763,6 @@ final class TidalSwiftAppModel {
 		Task {
 			offline.removeAll()
 			viewState.clearEverything()
-		}
-	}
-	
-	private func refreshFavoriteState() {
-		// Called from QueueInfo's didSet, so queue and currentIndex can be briefly out of sync
-		guard let track = player.queueInfo.currentItem else {
-			trackIsFavorite = false
-			albumIsFavorite = false
-			return
-		}
-		
-		Task {
-			let trackFavorite = await track.isInFavorites(session: session) ?? false
-			let albumFavorite = await track.album.isInFavorites(session: session) ?? false
-			self.trackIsFavorite = trackFavorite
-			self.albumIsFavorite = albumFavorite
 		}
 	}
 }

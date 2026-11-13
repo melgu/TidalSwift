@@ -20,7 +20,7 @@ struct AlbumContextMenu: View {
 	@Environment(ViewState.self) private var viewState
 	@Environment(PlaylistEditingValues.self) private var playlistEditingValues
 	@Environment(Offline.self) private var offline
-	@State private var isFavorite: Bool? = nil
+	@Environment(FavoritesState.self) private var favoritesState
 	
 	/// Read when the menu is built, which a value loaded in .task would be too late for
 	private var isOffline: Bool {
@@ -65,12 +65,11 @@ struct AlbumContextMenu: View {
 				Divider()
 			}
 			Group {
-				if isFavorite ?? false {
+				if favoritesState.contains(album: album) {
 					Button {
 						Task {
 							logger.debug("Remove from Favorites")
-							if await session.favorites?.removeAlbum(albumId: album.id) == true {
-								isFavorite = false
+							if await favoritesState.removeAlbum(albumId: album.id) {
 								viewState.refreshCurrentView()
 							}
 						}
@@ -81,9 +80,7 @@ struct AlbumContextMenu: View {
 					Button {
 						Task {
 							logger.debug("Add to Favorites")
-							if await session.favorites?.addAlbum(albumId: album.id) == true {
-								isFavorite = true
-							}
+							await favoritesState.addAlbum(albumId: album.id)
 						}
 					} label: {
 						Text("Add to Favorites")
@@ -170,9 +167,6 @@ struct AlbumContextMenu: View {
 					}
 				}
 			}
-		}
-		.task(id: album.id) {
-			isFavorite = await album.isInFavorites(session: session)
 		}
 	}
 }

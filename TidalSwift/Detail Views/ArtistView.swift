@@ -32,7 +32,7 @@ struct ArtistView: View {
 	}
 	
 	@State private var bottomSectionType: BottomSectionType = .albums
-	@State private var isFavorite: Bool? = nil
+	@Environment(FavoritesState.self) private var favoritesState
 	
 	init(session: Session, player: Player, viewState: ViewState) {
 		self.session = session
@@ -78,10 +78,6 @@ struct ArtistView: View {
 				Text("Couldn't load Artist")
 			}
 			BackButton()
-		}
-		.task(id: artist?.id) {
-			guard let artist else { return }
-			isFavorite = await artist.isInFavorites(session: session)
 		}
 	}
 	
@@ -134,27 +130,25 @@ struct ArtistView: View {
 					.buttonStyle(.plain)
 					#endif
 					Button {
-						if isFavorite ?? true {
+						if favoritesState.contains(artist: artist) {
 							Task {
 								logger.debug("Remove from Favorites")
-								if await session.favorites?.removeArtist(artistId: artist.id) == true {
-									isFavorite = false
+								if await favoritesState.removeArtist(artistId: artist.id) {
 									viewState.refreshCurrentView()
 								}
 							}
 						} else {
 							Task {
 								logger.debug("Add to Favorites")
-								if await session.favorites?.addArtist(artistId: artist.id) == true {
-									isFavorite = true
+								if await favoritesState.addArtist(artistId: artist.id) {
 									viewState.refreshCurrentView()
 								}
 							}
 						}
 					} label: {
-						Image(systemName: isFavorite ?? true ? "heart.fill" : "heart")
+						Image(systemName: favoritesState.contains(artist: artist) ? "heart.fill" : "heart")
 							.accessibilityLabel("Favorite")
-							.accessibilityAddTraits(isFavorite ?? true ? .isSelected : [])
+							.accessibilityAddTraits(favoritesState.contains(artist: artist) ? .isSelected : [])
 					}
 					.buttonStyle(.plain)
 					if let url = artist.url {

@@ -15,13 +15,11 @@ final class QueueInfo {
 	var queue = [Track]() {
 		didSet {
 			hasUnsavedChanges = true
-			onCurrentTrackChange?()
 		}
 	}
 	var currentIndex: Int = 0 {
 		didSet {
 			hasUnsavedChanges = true
-			onCurrentTrackChange?()
 		}
 	}
 	
@@ -29,8 +27,6 @@ final class QueueInfo {
 	@ObservationIgnored var maxHistoryItems: Int = 100
 	
 	@ObservationIgnored var hasUnsavedChanges = false
-	
-	@ObservationIgnored var onCurrentTrackChange: (() -> Void)?
 	
 	var currentItem: Track? {
 		queue.element(at: currentIndex)

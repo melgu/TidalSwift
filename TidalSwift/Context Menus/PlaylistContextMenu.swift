@@ -20,7 +20,7 @@ struct PlaylistContextMenu: View {
 	@Environment(ViewState.self) private var viewState
 	@Environment(PlaylistEditingValues.self) private var playlistEditingValues
 	@Environment(Offline.self) private var offline
-	@State private var isFavorite: Bool? = nil
+	@Environment(FavoritesState.self) private var favoritesState
 	
 	/// Read when the menu is built, which a value loaded in .task would be too late for
 	private var isOffline: Bool {
@@ -64,13 +64,11 @@ struct PlaylistContextMenu: View {
 						Text("Delete Playlist …")
 					}
 				} else {
-					if isFavorite ?? false {
+					if favoritesState.contains(playlist: playlist) {
 						Button {
 							Task {
 								logger.debug("Remove from Favorites")
-								if await session.favorites?.removePlaylist(playlistId: playlist.uuid) == true {
-									isFavorite = false
-								}
+								await favoritesState.removePlaylist(playlistId: playlist.uuid)
 							}
 						} label: {
 							Text("Remove from Favorites")
@@ -79,9 +77,7 @@ struct PlaylistContextMenu: View {
 						Button {
 							Task {
 								logger.debug("Add to Favorites")
-								if await session.favorites?.addPlaylist(playlistId: playlist.uuid) == true {
-									isFavorite = true
-								}
+								await favoritesState.addPlaylist(playlistId: playlist.uuid)
 							}
 						} label: {
 							Text("Add to Favorites")
@@ -157,9 +153,6 @@ struct PlaylistContextMenu: View {
 					Text("Copy URL")
 				}
 			}
-		}
-		.task(id: playlist.uuid) {
-			isFavorite = await playlist.isInFavorites(session: session)
 		}
 	}
 }

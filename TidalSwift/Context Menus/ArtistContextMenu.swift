@@ -19,7 +19,7 @@ struct ArtistContextMenu: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(Offline.self) private var offline
-	@State private var isFavorite: Bool? = nil
+	@Environment(FavoritesState.self) private var favoritesState
 	
 	var body: some View {
 		Group {
@@ -40,12 +40,11 @@ struct ArtistContextMenu: View {
 			}
 			Divider()
 			Group {
-				if isFavorite ?? false {
+				if favoritesState.contains(artist: artist) {
 					Button {
 						Task {
 							logger.debug("Remove from Favorites")
-							if await session.favorites?.removeArtist(artistId: artist.id) == true {
-								isFavorite = false
+							if await favoritesState.removeArtist(artistId: artist.id) {
 								viewState.refreshCurrentView()
 							}
 						}
@@ -56,9 +55,7 @@ struct ArtistContextMenu: View {
 					Button {
 						Task {
 							logger.debug("Add to Favorites")
-							if await session.favorites?.addArtist(artistId: artist.id) == true {
-								isFavorite = true
-							}
+							await favoritesState.addArtist(artistId: artist.id)
 						}
 					} label: {
 						Text("Add to Favorites")
@@ -126,9 +123,6 @@ struct ArtistContextMenu: View {
 					}
 				}
 			}
-		}
-		.task(id: artist.id) {
-			isFavorite = await artist.isInFavorites(session: session)
 		}
 	}
 }

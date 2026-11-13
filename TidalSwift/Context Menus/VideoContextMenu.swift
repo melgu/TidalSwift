@@ -19,7 +19,7 @@ struct VideoContextMenu: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(Offline.self) private var offline
-	@State private var isFavorite: Bool? = nil
+	@Environment(FavoritesState.self) private var favoritesState
 	
 	private var isOffline: Bool {
 		offline.isVideoOffline(video: video)
@@ -57,12 +57,11 @@ struct VideoContextMenu: View {
 				Divider()
 			}
 			Group {
-				if isFavorite ?? false {
+				if favoritesState.contains(video: video) {
 					Button {
 						Task {
 							logger.debug("Remove from Favorites")
-							if await session.favorites?.removeVideo(videoId: video.id) == true {
-								isFavorite = false
+							if await favoritesState.removeVideo(videoId: video.id) {
 								viewState.refreshCurrentView()
 							}
 						}
@@ -73,9 +72,7 @@ struct VideoContextMenu: View {
 					Button {
 						Task {
 							logger.debug("Add to Favorites")
-							if await session.favorites?.addVideo(videoId: video.id) == true {
-								isFavorite = true
-							}
+							await favoritesState.addVideo(videoId: video.id)
 						}
 					} label: {
 						Text("Add to Favorites")
@@ -132,9 +129,6 @@ struct VideoContextMenu: View {
 				}
 				#endif
 			}
-		}
-		.task(id: video.id) {
-			isFavorite = await video.isInFavorites(session: session)
 		}
 	}
 }

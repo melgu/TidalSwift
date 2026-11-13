@@ -18,7 +18,7 @@ struct PlaylistView: View {
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(Offline.self) private var offline
-	@State private var isFavorite: Bool? = nil
+	@Environment(FavoritesState.self) private var favoritesState
 	@State private var isOffline: Bool = false
 	
 	private var isUserPlaylist: Bool {
@@ -67,27 +67,25 @@ struct PlaylistView: View {
 											.font(.title)
 											.lineLimit(2)
 										Button {
-											if isFavorite ?? true {
+											if favoritesState.contains(playlist: playlist) {
 												Task {
 													logger.debug("Remove from Favorites")
-													if await session.favorites?.removePlaylist(playlistId: playlist.uuid) == true {
-														isFavorite = false
+													if await favoritesState.removePlaylist(playlistId: playlist.uuid) {
 														viewState.refreshCurrentView()
 													}
 												}
 											} else {
 												Task {
 													logger.debug("Add to Favorites")
-													if await session.favorites?.addPlaylist(playlistId: playlist.uuid) == true {
-														isFavorite = true
+													if await favoritesState.addPlaylist(playlistId: playlist.uuid) {
 														viewState.refreshCurrentView()
 													}
 												}
 											}
 										} label: {
-											Image(systemName: isFavorite ?? true ? "heart.fill" : "heart")
+											Image(systemName: favoritesState.contains(playlist: playlist) ? "heart.fill" : "heart")
 												.accessibilityLabel("Favorite")
-												.accessibilityAddTraits(isFavorite ?? true ? .isSelected : [])
+												.accessibilityAddTraits(favoritesState.contains(playlist: playlist) ? .isSelected : [])
 										}
 										.buttonStyle(.plain)
 										ShareLink(item: playlist.url, preview: SharePreview(playlist.title)) {
@@ -160,7 +158,6 @@ struct PlaylistView: View {
 		}
 		.task(id: viewState.stack.last?.playlist?.uuid) {
 			guard let playlist = viewState.stack.last?.playlist else { return }
-			isFavorite = await playlist.isInFavorites(session: session)
 			isOffline = offline.isPlaylistOffline(playlist: playlist)
 		}
 	}

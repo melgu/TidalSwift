@@ -60,6 +60,7 @@ struct LoginView: View {
 	let session: Session
 	
 	@Environment(\.openURL) private var openURL
+	@Environment(FavoritesState.self) private var favoritesState
 	
 	/// The kind picked for the first login
 	@State private var chosenKind: LoginKind?
@@ -365,6 +366,7 @@ struct LoginView: View {
 		loginErrorMessage = nil
 		loginInfo.loginKinds = session.loginKinds
 		session.saveConfig()
+		favoritesState.refresh()
 		let isFirstLogin = loginInfo.addingKind == nil
 		loginInfo.addingKind = nil
 		loginInfo.showModal = false

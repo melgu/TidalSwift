@@ -65,8 +65,8 @@ private struct TrackRow: View {
 	@Environment(ViewState.self) private var viewState
 	@Environment(QueueInfo.self) private var queueInfo
 	@Environment(Offline.self) private var offline
+	@Environment(FavoritesState.self) private var favoritesState
 	@State private var isOffline: Bool = false
-	@State private var isFavorite: Bool? = nil
 	
 	init(track: Track, showCover: Bool = false, showArtist: Bool, showAlbum: Bool,
 		 trackNumber: Int? = nil, session: Session) {
@@ -177,29 +177,27 @@ private struct TrackRow: View {
 					.buttonStyle(.plain)
 					#endif
 					Button {
-						if isFavorite ?? false {
+						if favoritesState.contains(track: track) {
 							logger.debug("Remove from Favorites")
 							Task {
-								if await session.favorites?.removeTrack(trackId: track.id) == true {
+								if await favoritesState.removeTrack(trackId: track.id) {
 									offline.asyncSyncFavoriteTracks()
-									isFavorite = false
 									viewState.refreshCurrentView()
 								}
 							}
 						} else {
 							logger.debug("Add to Favorites")
 							Task {
-								if await session.favorites?.addTrack(trackId: track.id) == true {
+								if await favoritesState.addTrack(trackId: track.id) {
 									offline.asyncSyncFavoriteTracks()
-									isFavorite = true
 									viewState.refreshCurrentView()
 								}
 							}
 						}
 					} label: {
-						Image(systemName: isFavorite ?? false ? "heart.fill" : "heart")
+						Image(systemName: favoritesState.contains(track: track) ? "heart.fill" : "heart")
 							.accessibilityLabel("Favorite")
-							.accessibilityAddTraits(isFavorite ?? false ? .isSelected : [])
+							.accessibilityAddTraits(favoritesState.contains(track: track) ? .isSelected : [])
 					}
 					.buttonStyle(.plain)
 				}
@@ -207,7 +205,6 @@ private struct TrackRow: View {
 		.foregroundStyle(track.isPlayable ? .primary : .secondary)
 		.task(id: track.id) {
 			isOffline = offline.isTrackOffline(track: track)
-			isFavorite = await track.isInFavorites(session: session)
 		}
 	}
 		.lineLimit(1)

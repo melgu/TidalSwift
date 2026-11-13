@@ -22,7 +22,7 @@ struct TrackContextMenu: View {
 	@Environment(ViewState.self) private var viewState
 	@Environment(PlaylistEditingValues.self) private var playlistEditingValues
 	@Environment(Offline.self) private var offline
-	@State private var isFavorite: Bool? = nil
+	@Environment(FavoritesState.self) private var favoritesState
 	
 	init(track: Track, indexInPlaylist: Int? = nil, playlist: Playlist? = nil, session: Session, player: Player) {
 		self.track = track
@@ -76,13 +76,12 @@ struct TrackContextMenu: View {
 			}
 			Divider()
 			Group {
-				if isFavorite ?? false {
+				if favoritesState.contains(track: track) {
 					Button {
 						Task {
 							logger.debug("Remove from Favorites")
-							if await session.favorites?.removeTrack(trackId: track.id) == true {
+							if await favoritesState.removeTrack(trackId: track.id) {
 								offline.asyncSyncFavoriteTracks()
-								isFavorite = false
 								viewState.refreshCurrentView()
 							}
 						}
@@ -93,9 +92,8 @@ struct TrackContextMenu: View {
 					Button {
 						Task {
 							logger.debug("Add to Favorites")
-							if await session.favorites?.addTrack(trackId: track.id) == true {
+							if await favoritesState.addTrack(trackId: track.id) {
 								offline.asyncSyncFavoriteTracks()
-								isFavorite = true
 								viewState.refreshCurrentView()
 							}
 						}
@@ -179,9 +177,6 @@ struct TrackContextMenu: View {
 					}
 				}
 			}
-		}
-		.task(id: track.id) {
-			isFavorite = await track.isInFavorites(session: session)
 		}
 	}
 }
