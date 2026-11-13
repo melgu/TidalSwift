@@ -760,6 +760,19 @@ private struct TidalSwiftCommands: Commands {
 	let appModel: TidalSwiftAppModel
 	@FocusedValue(\.searchFieldFocus) private var searchFieldFocus
 	
+	/// Only the Hi-Res login gets Max and the Low qualities, so without it they stay visible, but disabled
+	@ViewBuilder
+	private var audioQualityOptions: some View {
+		let hasHiResLogin = appModel.loginInfo.loginKinds.contains(.pkce)
+		Text("Low (96 kbps)").tag(AudioQuality.low)
+			.disabled(!hasHiResLogin)
+		Text("Low (320 kbps)").tag(AudioQuality.medium)
+			.disabled(!hasHiResLogin)
+		Text("High (Lossless)").tag(AudioQuality.high)
+		Text("Max (Hi-Res Lossless)").tag(AudioQuality.max)
+			.disabled(!hasHiResLogin)
+	}
+	
 	var body: some Commands {
 		#if canImport(AppKit)
 		CommandGroup(after: .appInfo) {
@@ -895,12 +908,7 @@ private struct TidalSwiftCommands: Commands {
 					get: { appModel.player.nextAudioQuality },
 					set: { appModel.setAudioQuality($0) }
 				)) {
-					// Low and Low 320 only come as DASH streams encrypted with Widevine and PlayReady DRM
-//					Text("Low (96 kbps)").tag(AudioQuality.low)
-//					Text("Low (320 kbps)").tag(AudioQuality.medium)
-					Text("High (Lossless)").tag(AudioQuality.high)
-					// Only the PKCE login gets Hi-Res, the device login falls back to High
-					Text("Max (Hi-Res Lossless)").tag(AudioQuality.max)
+					audioQualityOptions
 				}
 				.pickerStyle(.inline)
 				.labelsHidden()
@@ -918,11 +926,7 @@ private struct TidalSwiftCommands: Commands {
 					get: { appModel.offlineAudioQuality },
 					set: { appModel.setOfflineAudioQuality($0) }
 				)) {
-					// Same options as Audio Quality, see there
-//					Text("Low (96 kbps)").tag(AudioQuality.low)
-//					Text("Low (320 kbps)").tag(AudioQuality.medium)
-					Text("High (Lossless)").tag(AudioQuality.high)
-					Text("Max (Hi-Res Lossless)").tag(AudioQuality.max)
+					audioQualityOptions
 				}
 				.pickerStyle(.inline)
 				.labelsHidden()

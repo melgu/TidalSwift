@@ -28,15 +28,15 @@ extension LoginKind {
 	
 	var advantages: [String] {
 		switch self {
-		case .device: ["Dolby Atmos", "Up to High: FLAC 16 bit / 44.1 kHz"]
-		case .pkce: ["Up to Max: FLAC up to 24 bit / 192 kHz"]
+		case .device: ["High: FLAC 16 bit / 44.1 kHz", "Dolby Atmos"]
+		case .pkce: ["All qualities: Low, High and Max (FLAC up to 24 bit / 192 kHz)"]
 		}
 	}
 	
 	/// What the other login makes up for
 	var limitations: [String] {
 		switch self {
-		case .device: ["No Hi-Res"]
+		case .device: ["No Hi-Res", "No Low qualities, plays High instead"]
 		case .pkce: ["No Dolby Atmos, tracks play in stereo"]
 		}
 	}
