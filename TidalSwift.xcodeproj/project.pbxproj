@@ -424,7 +424,7 @@
 			repositoryURL = "https://github.com/melgu/TidalSwiftLib";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.1.0;
+				minimumVersion = 0.2.0;
 			};
 		};
 		B0E115172F4AA7C3007AF324 /* XCRemoteSwiftPackageReference "UpdateNotification" */ = {
