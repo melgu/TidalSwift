@@ -44,6 +44,22 @@ struct TidalSwiftApp: App {
 					appModel.saveState()
 				}
 			}
+			.alert("Log Out?", isPresented: $appModel.confirmsLogout) {
+				Button("Log Out", role: .destructive) {
+					appModel.logout()
+				}
+				Button("Cancel", role: .cancel) {}
+			} message: {
+				Text("This removes your logins, all offline content and TidalSwift's settings from this Mac.")
+			}
+			.alert("Remove All Offline Content?", isPresented: $appModel.confirmsOfflineRemoval) {
+				Button("Remove", role: .destructive) {
+					appModel.removeAllOfflineContent()
+				}
+				Button("Cancel", role: .cancel) {}
+			} message: {
+				Text("This deletes all offline tracks, albums, playlists and videos from this Mac and stops keeping your favorites offline.")
+			}
 		}
 		.commands {
 			TidalSwiftCommands(appModel: appModel)
@@ -107,6 +123,10 @@ final class TidalSwiftAppModel {
 	
 	var trackIsFavorite = false
 	var albumIsFavorite = false
+	
+	/// The menu items ask first, as neither can be undone
+	var confirmsLogout = false
+	var confirmsOfflineRemoval = false
 	
 	// The offline settings are stored with AppStorage, which isn't observable, so the menus read these copies
 	private(set) var offlineAudioQuality: AudioQuality
@@ -953,11 +973,11 @@ private struct TidalSwiftCommands: Commands {
 					appModel.addLogin(kind.other)
 				}
 			}
-			Button("Logout") {
-				appModel.logout()
+			Button("Logout…") {
+				appModel.confirmsLogout = true
 			}
-			Button("Remove All Offline Content") {
-				appModel.removeAllOfflineContent()
+			Button("Remove All Offline Content…") {
+				appModel.confirmsOfflineRemoval = true
 			}
 		}
 		
