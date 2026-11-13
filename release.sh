@@ -3,10 +3,12 @@
 # notes in the editor, archives and zips the app, tags and pushes, creates the GitHub release, adds
 # the release to the update feed, updates the Homebrew cask and installs the app to /Applications.
 #
-# Usage: ./release.sh [--dry-run] [--prerelease] [--notes <file>]
+# Usage: ./release.sh [--dry-run] [--prerelease] [--yes] [--notes <file>]
 #   --dry-run     Run the checks, builds, notes, archive and feed, show what would be published and
 #                 stop. Nothing is tagged, pushed, uploaded or installed.
 #   --prerelease  Mark the GitHub release as a pre-release.
+#   -y, --yes     Answer yes to every question: publish without asking, quit a running TidalSwift
+#                 to install the new version, and reopen the editor when the notes are incomplete.
 #   --notes       Open the editor with this file instead of the template.
 #
 # Bump MARKETING_VERSION and CURRENT_PROJECT_VERSION in a "Bump version to X" commit first, and run
@@ -29,19 +31,25 @@ step() {
 }
 
 ask() {
+	if (( yes )); then
+		print -r -- "$1 [y/N] y"
+		return 0
+	fi
 	local answer
 	read "answer?$1 [y/N] "
 	[[ $answer == [yY]* ]]
 }
 
-usage="Usage: $0 [--dry-run] [--prerelease] [--notes <file>]"
+usage="Usage: $0 [--dry-run] [--prerelease] [--yes] [--notes <file>]"
 dry_run=0
 prerelease=0
+yes=0
 notes_input=
 while (( $# )); do
 	case $1 in
 		--dry-run) dry_run=1 ;;
 		--prerelease) prerelease=1 ;;
+		-y|--yes) yes=1 ;;
 		--notes)
 			(( $# >= 2 )) || fail $usage
 			notes_input=${2:A}
