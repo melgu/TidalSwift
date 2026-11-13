@@ -40,7 +40,7 @@ struct ArtistContextMenu: View {
 			}
 			Divider()
 			Group {
-				if isFavorite ?? true {
+				if isFavorite ?? false {
 					Button {
 						Task {
 							logger.debug("Remove from Favorites")
