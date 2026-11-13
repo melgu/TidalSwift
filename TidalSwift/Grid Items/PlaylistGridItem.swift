@@ -51,7 +51,7 @@ struct PlaylistGridItem: View {
 					}
 				}
 				if isOffline {
-					Image(systemName: "cloud.fill")
+					Image(systemName: "arrow.down.circle.fill")
 						.resizable()
 						.scaledToFit()
 						.frame(width: 30)

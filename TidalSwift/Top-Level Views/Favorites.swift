@@ -150,7 +150,7 @@ struct FavoriteTracks: View {
 							offline.asyncSyncFavoriteTracks()
 							viewState.refreshCurrentView()
 						} label: {
-							Image(systemName: saveFavoritesOffline ? "cloud.fill" : "cloud")
+							Image(systemName: saveFavoritesOffline ? "arrow.down.circle.fill" : "arrow.down.circle")
 								.resizable()
 								.scaledToFit()
 								.frame(width: 30)

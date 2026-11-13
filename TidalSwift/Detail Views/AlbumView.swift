@@ -134,7 +134,7 @@ struct AlbumView: View {
 							}
 							Group {
 								if cloudPressed && !isOffline {
-									Image(systemName: "cloud.fill")
+									Image(systemName: "arrow.down.circle.fill")
 										.resizable()
 										.scaledToFit()
 										.secondaryIconColor()
@@ -158,7 +158,7 @@ struct AlbumView: View {
 											}
 										}
 									} label: {
-										Image(systemName: isOffline ? "cloud.fill" : "cloud")
+										Image(systemName: isOffline ? "arrow.down.circle.fill" : "arrow.down.circle")
 											.resizable()
 											.scaledToFit()
 											.accessibilityLabel("Available Offline")

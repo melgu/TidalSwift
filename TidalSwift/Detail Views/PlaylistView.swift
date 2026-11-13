@@ -131,7 +131,7 @@ struct PlaylistView: View {
 									}
 								}
 							} label: {
-								Image(systemName: isOffline ? "cloud.fill" : "cloud")
+								Image(systemName: isOffline ? "arrow.down.circle.fill" : "arrow.down.circle")
 									.resizable()
 									.scaledToFit()
 									.frame(width: 30)

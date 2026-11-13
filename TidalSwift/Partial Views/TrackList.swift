@@ -158,7 +158,7 @@ private struct TrackRow: View {
 					Text(secondsToHoursMinutesSecondsString(seconds: track.duration))
 					Spacer()
 					if isOffline {
-						Image(systemName: "cloud.fill")
+						Image(systemName: "arrow.down.circle.fill")
 							.secondaryIconColor()
 					}
 					#if canImport(AppKit)

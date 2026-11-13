@@ -54,7 +54,7 @@ struct VideoGridItem: View {
 				}
 				// The thumbnail is wider than high, so a corner badge like the albums' would float below it
 				if isOffline {
-					Image(systemName: "cloud.fill")
+					Image(systemName: "arrow.down.circle.fill")
 						.foregroundStyle(.secondary)
 						.accessibilityLabel("Available Offline")
 						.layoutPriority(1)
