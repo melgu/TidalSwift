@@ -152,6 +152,7 @@ final class TidalSwiftAppModel {
 		let loggedIn = session.loadSession()
 		logger.debug("Login Succesful: \(loggedIn)")
 		loginInfo.showModal = !loggedIn
+		loginInfo.loginKinds = loggedIn ? session.loginKinds : []
 		
 		if loggedIn {
 			restorePlaybackState()
@@ -718,9 +719,17 @@ final class TidalSwiftAppModel {
 			UserDefaults.standard.removePersistentDomain(forName: domain)
 		}
 		viewState.clearEverything()
+		loginInfo.loginKinds = []
+		loginInfo.addingKind = nil
 		loginInfo.showModal = true
 		trackIsFavorite = false
 		albumIsFavorite = false
+	}
+	
+	/// Logs in with the other kind as well, for both Hi-Res and Dolby Atmos
+	func addLogin(_ kind: LoginKind) {
+		loginInfo.addingKind = kind
+		loginInfo.showModal = true
 	}
 	
 	func removeAllOfflineContent() {
@@ -890,8 +899,8 @@ private struct TidalSwiftCommands: Commands {
 //					Text("Low (96 kbps)").tag(AudioQuality.low)
 //					Text("Low (320 kbps)").tag(AudioQuality.medium)
 					Text("High (Lossless)").tag(AudioQuality.high)
-					// Max isn't delivered to this client, see AudioQuality
-//					Text("Max (Hi-Res Lossless)").tag(AudioQuality.max)
+					// Only the PKCE login gets Hi-Res, the device login falls back to High
+					Text("Max (Hi-Res Lossless)").tag(AudioQuality.max)
 				}
 				.pickerStyle(.inline)
 				.labelsHidden()
@@ -913,7 +922,7 @@ private struct TidalSwiftCommands: Commands {
 //					Text("Low (96 kbps)").tag(AudioQuality.low)
 //					Text("Low (320 kbps)").tag(AudioQuality.medium)
 					Text("High (Lossless)").tag(AudioQuality.high)
-//					Text("Max (Hi-Res Lossless)").tag(AudioQuality.max)
+					Text("Max (Hi-Res Lossless)").tag(AudioQuality.max)
 				}
 				.pickerStyle(.inline)
 				.labelsHidden()
@@ -933,6 +942,12 @@ private struct TidalSwiftCommands: Commands {
 			}
 			Button("Refresh Access Token") {
 				appModel.refreshAccessToken()
+			}
+			// Only one login exists, so the other one can be added
+			if appModel.loginInfo.loginKinds.count == 1, let kind = appModel.loginInfo.loginKinds.first {
+				Button("Add \(kind.other.name) Login…") {
+					appModel.addLogin(kind.other)
+				}
 			}
 			Button("Logout") {
 				appModel.logout()

@@ -39,6 +39,8 @@ class Player {
 	@ObservationIgnored private var waitingReasonObservation: NSKeyValueObservation?
 	
 	private var currentAudioQuality: AudioQuality
+	/// What Tidal says it delivers, if it does
+	private var currentStreamQuality: AudioQuality?
 	private var currentIsDolbyAtmos = false
 	private(set) var nextAudioQuality: AudioQuality
 	private(set) var preferDolbyAtmos: Bool
@@ -328,16 +330,21 @@ class Player {
 			return
 		}
 		
-		let url: URL
+		// Otherwise seeking in a progressive stream only estimates the position
+		let assetOptions = [AVURLAssetPreferPreciseDurationAndTimingKey: true]
+		let asset: AVURLAsset
 		let isDolbyAtmos: Bool
+		var streamQuality: AudioQuality?
 		if let offlineStream = await offline.stream(for: track) {
-			url = offlineStream.url
+			asset = AVURLAsset(url: offlineStream.url, options: assetOptions)
 			isDolbyAtmos = offlineStream.isDolbyAtmos
 			logger.debug("Play \(track.title) from offline URL\(offlineStream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(offlineStream.url)")
 		} else {
 			if let stream = await track.audioStream(session: session, audioQuality: nextAudioQuality, preferDolbyAtmos: preferDolbyAtmos) {
-				url = stream.url
+				// DASH streams only play through the asset the library makes
+				asset = stream.makeAsset(options: assetOptions)
 				isDolbyAtmos = stream.isDolbyAtmos
+				streamQuality = stream.audioQuality
 				logger.debug("Play \(track.title) from online URL\(stream.isDolbyAtmos ? " (Dolby Atmos)" : ""): \(stream.url)")
 			} else {
 				guard loadID == itemLoadID else {
@@ -356,8 +363,6 @@ class Player {
 		
 		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: avPlayer.currentItem)
 		
-		// Otherwise seeking in a progressive stream only estimates the position
-		let asset = AVURLAsset(url: url, options: [AVURLAssetPreferPreciseDurationAndTimingKey: true])
 		let item = AVPlayerItem(asset: asset)
 		NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(sender:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: item)
 		avPlayer.replaceCurrentItem(with: item)
@@ -366,6 +371,7 @@ class Player {
 		observeReadiness(of: item)
 		
 		currentAudioQuality = nextAudioQuality
+		currentStreamQuality = streamQuality
 		currentIsDolbyAtmos = isDolbyAtmos
 		
 		nowPlaying.update(track: track)
@@ -665,6 +671,9 @@ class Player {
 		if currentIsDolbyAtmos {
 			return "ATMOS"
 		}
+		if let currentStreamQuality {
+			return qualityToString(quality: currentStreamQuality)
+		}
 		guard let quality = queueInfo.queue[queueInfo.currentIndex].audioQuality else {
 			return ""
 		}
@@ -672,6 +681,10 @@ class Player {
 		var chosenQuality = currentAudioQuality
 //		print("\(chosenQuality) \(quality)")
 		
+		// Without a Hi-Res stream, Tidal falls back to lossless
+		if chosenQuality == .max {
+			chosenQuality = .high
+		}
 		if chosenQuality == .high && (quality == .medium || quality == .low) {
 			chosenQuality = .medium
 		}
@@ -707,6 +720,8 @@ class Player {
 			return "LOW 320"
 		case .high:
 			return "HIGH"
+		case .max:
+			return "MAX"
 		}
 	}
 }

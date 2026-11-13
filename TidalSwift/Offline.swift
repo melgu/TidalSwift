@@ -493,7 +493,6 @@ public final class Offline {
 				logger.debug("Keeping existing file of \(track.title)")
 				continue
 			}
-			let url = stream.url
 			let pathExtension = stream.pathExtension
 			let marker = stream.isDolbyAtmos ? dolbyAtmosFileMarker : audioQuality.rawValue.lowercased()
 			let name = "\(track.id).\(marker)"
@@ -502,7 +501,8 @@ public final class Offline {
 				continue
 			}
 			do {
-				try await Network.download(url, path: path, overwrite: true)
+				// DASH streams have to be joined from their segments
+				try await stream.download(to: path)
 			} catch {
 				displayError(title: "Offline: Error while loading offline track", content: "Network error: \(error)")
 				continue
