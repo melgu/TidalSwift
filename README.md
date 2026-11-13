@@ -4,7 +4,7 @@
 
 Tidal Music Streaming Client for macOS, written in Swift
 
-It supports all major features of the official Tidal app, while adding additional ones, like New Releases, Lyrics, automatic Dark Mode, Downloads & Offline Playback – all while being only 1/10th the size of the official app.
+It supports all major features of the official Tidal app, including Hi-Res and Dolby Atmos, while adding additional ones, like New Releases, Lyrics, automatic Dark Mode, Downloads & Offline Playback – all while being only 1/10th the size of the official app.
 
 The app is built on [TidalSwiftLib](https://github.com/melgu/TidalSwiftLib), my Swift library for the Tidal API.
 
