@@ -9,7 +9,7 @@
 #   --prerelease  Mark the GitHub release as a pre-release.
 #   -y, --yes     Answer yes to every question: publish without asking, quit a running TidalSwift
 #                 to install the new version, and reopen the editor when the notes are incomplete.
-#   --notes       Open the editor with this file instead of the template.
+#   --notes       Use the notes in this file as they are, without opening the editor.
 #
 # Bump MARKETING_VERSION and CURRENT_PROJECT_VERSION in a "Bump version to X" commit first, and run
 # it on main with a clean working copy. It needs gh (logged in), jq, a clone of melgu/homebrew-tap at
@@ -228,11 +228,16 @@ parse_notes() {
 	fi
 }
 
-while true; do
-	edit_notes
-	parse_notes && break
-	ask "Edit the notes again?" || fail "Stopped. The notes are kept in $notes for the next run."
-done
+if [[ -n $notes_input ]]; then
+	# Notes given on the command line are final, so the release can run without the editor
+	parse_notes || fail "Fix the notes in $notes_input."
+else
+	while true; do
+		edit_notes
+		parse_notes && break
+		ask "Edit the notes again?" || fail "Stopped. The notes are kept in $notes for the next run."
+	done
+fi
 
 # The app shows the text as plain text, so the Markdown markup goes
 feed_text=$(print -r -- "$body" | perl -pe 's/^#{1,6}\s+//; s/\*\*(.+?)\*\*/$1/g; s/__(.+?)__/$1/g; s/`([^`]*)`/$1/g; s/\[([^\]]+)\]\(([^)]+)\)/$1 ($2)/g')
