@@ -53,6 +53,10 @@ It even goes a step further. You can download music to your hard drive and do wi
 
 ![My Downloads](README.assets/Downloads.png)
 
+### My Mixes
+
+![My Mixes](README.assets/MyMixes.png)
+
 ### Search
 
 ![Search](README.assets/Search.png)
