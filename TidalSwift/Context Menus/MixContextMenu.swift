@@ -76,7 +76,7 @@ struct MixContextMenu: View {
 			Divider()
 			Button {
 				logger.debug("Image")
-				let controller = ResizableWindowControllerFactory.create(rootView: MixImage(mix: mix, highResolutionImages: true, session: session), width: 640, height: 640)
+				let controller = ResizableWindowControllerFactory.create(rootView: MixImage(mix: mix, highResolutionImages: true), width: 640, height: 640)
 				controller.window?.title = mix.title
 				controller.showWindow(nil)
 			} label: {

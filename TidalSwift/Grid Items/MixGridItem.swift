@@ -21,7 +21,7 @@ struct MixGridItem: View {
 	
 	var body: some View {
 		VStack {
-			MixImage(mix: mix, highResolutionImages: false, session: session)
+			MixImage(mix: mix, highResolutionImages: false)
 				.frame(width: 160, height: 160)
 				.cornerRadius(CORNERRADIUS)
 				.shadow(radius: SHADOWRADIUS, y: SHADOWY)
@@ -65,156 +65,15 @@ struct MixGridItem: View {
 struct MixImage: View {
 	let mix: MixesItem
 	let highResolutionImages: Bool
-	let session: Session
 	
 	private let lowResolution: Int = 160
 	private let highResolution: Int = 480
 	
-	@State private var scrollImages = false
-	
 	var body: some View {
-		GeometryReader { metrics in
-			if mix.graphic.images.count >= 5 {
-				ZStack {
-					VStack {
-						HStack {
-							Text(mix.title)
-								.font(.system(size: metrics.size.width * 0.1))
-								.bold()
-								.foregroundStyle(Color(hex: mix.graphic.images[0].vibrantColor) ?? Color.gray)
-								.padding(metrics.size.width * 0.1)
-							Spacer()
-						}
-						Spacer()
-					}
-					
-					// Animated Images
-					VStack {
-						HStack {
-							// 4
-							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							
-							// 0 1
-							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							
-							// 2 3 4
-							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							
-							// 0 1
-							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							
-							Spacer()
-								.frame(width: metrics.size.width * 0.2)
-						}
-						HStack {
-							Spacer()
-								.frame(width: metrics.size.width * 0.2)
-							
-							// 2 3 4
-							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(.trailing, metrics.size.width * 0.01)
-							}
-							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							
-							// 0 1
-							if let imageUrl = mix.graphic.images[0].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							if let imageUrl = mix.graphic.images[1].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							
-							// 2 3 4
-							if let imageUrl = mix.graphic.images[2].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							if let imageUrl = mix.graphic.images[3].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-							if let imageUrl = mix.graphic.images[4].getImageUrl(session: session, resolution: highResolutionImages ? highResolution : lowResolution) {
-								AsyncImage(url: imageUrl)
-								.frame(width: metrics.size.width * 0.4, height: metrics.size.width * 0.4)
-								.padding(metrics.size.width * 0.01)
-							}
-						}
-					}
-					.padding(metrics.size.width * 0.06)
-					.offset(x: scrollImages ? metrics.size.width * -2.7 : metrics.size.width * -0.35)
-					.rotationEffect(Angle(degrees: -12))
-					.position(CGPoint(x: metrics.size.width * 2, y: metrics.size.width * 0.4))
-					.scaleEffect(1)
-					.onAppear {
-						withAnimation(Animation.linear(duration: 10).repeatForever(autoreverses: false)) {
-							scrollImages.toggle()
-						}
-					}
-				}
-				.contentShape(Rectangle())
-				.clipped()
-				.overlay(
-					RoundedRectangle(cornerRadius: CORNERRADIUS)
-						.stroke(Color(hex: mix.graphic.images[0].vibrantColor) ?? Color.gray, lineWidth: metrics.size.width * 0.1)
-				)
-				.background((Color(hex: mix.graphic.images[0].vibrantColor) ?? Color.gray).colorMultiply(Color.gray))
-			} else {
-				Rectangle()
-					.fill(Color.black)
-			}
+		if let imageUrl = mix.imageUrl(resolution: highResolutionImages ? highResolution : lowResolution) {
+			AsyncImage(url: imageUrl)
+		} else {
+			Rectangle()
 		}
 	}
 }

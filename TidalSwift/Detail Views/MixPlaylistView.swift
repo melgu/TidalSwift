@@ -21,13 +21,13 @@ struct MixPlaylistView: View {
 				VStack(alignment: .leading) {
 					if let mix = viewState.stack.last?.mix, let tracks = viewState.stack.last?.tracks {
 						HStack {
-							let image = MixImage(mix: mix, highResolutionImages: false, session: session)
+							let image = MixImage(mix: mix, highResolutionImages: false)
 								.frame(width: 100, height: 100)
 								.cornerRadius(CORNERRADIUS)
 								.shadow(radius: SHADOWRADIUS, y: SHADOWY)
 							#if canImport(AppKit)
 							Button {
-								let controller = ResizableWindowControllerFactory.create(rootView: MixImage(mix: mix, highResolutionImages: true, session: session), width: 640, height: 640)
+								let controller = ResizableWindowControllerFactory.create(rootView: MixImage(mix: mix, highResolutionImages: true), width: 640, height: 640)
 								controller.window?.title = mix.title
 								controller.showWindow(nil)
 							} label: {
