@@ -123,16 +123,18 @@ private struct TrackRow: View {
 								.fontWeight(.thin)
 								.foregroundStyle(.secondary)
 						}
-						Text(track.title)
-						if let version = track.version {
-							Text(version)
-								.foregroundStyle(.secondary)
-								.padding(.leading, -5)
-								.layoutPriority(-1)
+						HStack(spacing: 4) {
+							Text(track.title)
+							if let version = track.version {
+								Text(version)
+									.foregroundStyle(.secondary)
+									.layoutPriority(-1)
+							}
+							if track.hasAttributes {
+								track.attributeHStack
+									.layoutPriority(1)
+							}
 						}
-						track.attributeHStack
-							.padding(.leading, -5)
-							.layoutPriority(1)
 						Spacer(minLength: 5)
 					}
 					.frame(width: metrics.size.width * widthFactorTrack)

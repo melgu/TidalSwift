@@ -75,12 +75,13 @@ struct AlbumGridItem: View {
 						.padding(5)
 				}
 			}
-			HStack {
+			HStack(spacing: 4) {
 				Text(album.title)
 					.lineLimit(1)
-				album.attributeHStack
-					.padding(.leading, -5)
-					.layoutPriority(1)
+				if album.hasAttributes {
+					album.attributeHStack
+						.layoutPriority(1)
+				}
 			}
 			.frame(width: 160)
 			if showArtists {
@@ -149,7 +150,7 @@ struct AlbumGridItem: View {
 
 extension Album {
 	var attributeHStack: some View {
-		HStack {
+		HStack(spacing: 2) {
 			if explicit ?? false {
 				Image(systemName: "e.square")
 			}
@@ -159,8 +160,6 @@ extension Album {
 				Image(systemName: "headphones")
 			} else if audioModes?.contains(.dolbyAtmos) ?? false {
 				Image(systemName: "hifispeaker.fill")
-			} else {
-				Text("")
 			}
 		}
 		.secondaryIconColor()

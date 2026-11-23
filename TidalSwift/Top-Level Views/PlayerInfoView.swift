@@ -106,12 +106,13 @@ private struct TrackInfoView: View {
 					
 					VStack(alignment: .leading) {
 						HStack {
-							Text("\(track.title)")
-							if let version = track.version {
-								Text(version)
-									.foregroundStyle(.secondary)
-									.padding(.leading, -5)
-									.layoutPriority(-1)
+							HStack(spacing: 4) {
+								Text("\(track.title)")
+								if let version = track.version {
+									Text(version)
+										.foregroundStyle(.secondary)
+										.layoutPriority(-1)
+								}
 							}
 							Text(player.currentQualityString())
 								.fontWeight(.light)

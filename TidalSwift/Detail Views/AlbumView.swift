@@ -58,13 +58,14 @@ struct AlbumView: View {
 								
 								VStack(alignment: .leading) {
 									HStack {
-										Text(album.title)
-											.font(.title)
-											.lineLimit(1)
-											.help(album.title)
-										if album.hasAttributes {
-											album.attributeHStack
-												.padding(.leading, -5)
+										HStack(spacing: 4) {
+											Text(album.title)
+												.font(.title)
+												.lineLimit(1)
+												.help(album.title)
+											if album.hasAttributes {
+												album.attributeHStack
+											}
 										}
 										#if canImport(AppKit)
 										Button {

@@ -37,16 +37,16 @@ struct TrackGridItem: View {
 						.frame(width: 160)
 				}
 			}
-			HStack {
+			HStack(spacing: 4) {
 				Text(track.title)
 				if let version = track.version {
 					Text(version)
 						.foregroundStyle(.secondary)
-						.padding(.leading, -5)
 				}
-				track.attributeHStack
-					.padding(.leading, -5)
-					.layoutPriority(1)
+				if track.hasAttributes {
+					track.attributeHStack
+						.layoutPriority(1)
+				}
 			}
 			.lineLimit(1)
 			.frame(width: 160)
@@ -87,7 +87,7 @@ struct TrackGridItem: View {
 
 extension Track {
 	var attributeHStack: some View {
-		HStack {
+		HStack(spacing: 2) {
 			if explicit {
 				Image(systemName: "e.square")
 			}
@@ -104,7 +104,7 @@ extension Track {
 		.secondaryIconColor()
 	}
 	
-	fileprivate var hasAttributes: Bool {
+	var hasAttributes: Bool {
 		explicit ||
 			hasHiRes ||
 			audioModes?.contains(.sony360RealityAudio) ?? false ||
