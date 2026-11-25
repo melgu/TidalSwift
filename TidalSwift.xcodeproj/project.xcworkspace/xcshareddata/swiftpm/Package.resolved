@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/melgu/TidalSwiftLib",
       "state" : {
-        "revision" : "95f9293d680d59caff828b280f5bbe9cccfeb7bb",
-        "version" : "0.4.1"
+        "revision" : "a84bb0fdefaeaed7bdd59d4617ce71d2c390202e",
+        "version" : "0.4.2"
       }
     },
     {
