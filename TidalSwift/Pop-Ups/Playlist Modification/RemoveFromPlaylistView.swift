@@ -22,7 +22,7 @@ struct RemoveFromPlaylistView: View {
 	var body: some View {
 		VStack {
 			if let playlist = playlistEditingValues.playlist {
-				Text("Delete \(playlistEditingValues.tracks[0].title) from \(playlist.title)?")
+				Text("Delete \(playlistEditingValues.items.first?.title ?? "item") from \(playlist.title)?")
 				
 				HStack {
 					Button {

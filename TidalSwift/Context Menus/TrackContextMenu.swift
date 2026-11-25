@@ -104,7 +104,7 @@ struct TrackContextMenu: View {
 				if track.streamReady {
 					Button {
 						logger.debug("Add \(track.title) to Playlist")
-						playlistEditingValues.tracks = [track]
+						playlistEditingValues.set(tracks: [track])
 						playlistEditingValues.showAddTracksModal = true
 					} label: {
 						Text("Add to Playlist …")
@@ -113,7 +113,7 @@ struct TrackContextMenu: View {
 				if indexInPlaylist != nil {
 					Button {
 						logger.debug("Remove \(track.title) from Playlist")
-						playlistEditingValues.tracks = [track]
+						playlistEditingValues.set(tracks: [track])
 						playlistEditingValues.indexToRemove = indexInPlaylist
 						playlistEditingValues.playlist = playlist
 						playlistEditingValues.showRemoveTracksModal = true

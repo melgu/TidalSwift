@@ -60,6 +60,8 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 	var playlists: [Playlist]?
 	var tracks: [Track]?
 	var videos: [Video]?
+	/// Of a playlist, in their order, while `tracks` has only its tracks
+	var playlistItems: [PlaylistItem]?
 	
 	static func == (lhs: TidalSwiftView, rhs: TidalSwiftView) -> Bool {
 		lhs.viewType == rhs.viewType && lhs.artist == rhs.artist &&
@@ -68,7 +70,7 @@ struct TidalSwiftView: Codable, Equatable, Identifiable {
 			lhs.searchResponse == rhs.searchResponse && lhs.mixes == rhs.mixes &&
 			lhs.artists == rhs.artists && lhs.albums == rhs.albums &&
 			lhs.playlists == rhs.playlists && lhs.tracks == rhs.tracks &&
-			lhs.videos == rhs.videos
+			lhs.videos == rhs.videos && lhs.playlistItems == rhs.playlistItems
 	}
 	
 	fileprivate static func equateBase(_ lhs: TidalSwiftView, _ rhs: TidalSwiftView) -> Bool {

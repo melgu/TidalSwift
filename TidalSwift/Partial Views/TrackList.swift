@@ -12,8 +12,11 @@ import OSLog
 
 private let logger = Logger(category: "TrackList")
 
+/// Tracks, or the tracks and videos of a playlist. Videos open in a window of their own and aren't added to the queue.
 struct TrackList: View {
-	let tracks: [Track]
+	let items: [PlaylistItem]
+	/// The tracks of the items, which are played
+	private let tracks: [Track]
 	let showCover: Bool
 	let showAlbumTrackNumber: Bool
 	let showArtist: Bool
@@ -22,20 +25,53 @@ struct TrackList: View {
 	let session: Session
 	let player: Player
 	
+	init(tracks: [Track], showCover: Bool, showAlbumTrackNumber: Bool, showArtist: Bool, showAlbum: Bool, playlist: Playlist?, session: Session, player: Player) {
+		self.init(
+			items: tracks.map(PlaylistItem.track), showCover: showCover, showAlbumTrackNumber: showAlbumTrackNumber,
+			showArtist: showArtist, showAlbum: showAlbum, playlist: playlist, session: session, player: player
+		)
+	}
+	
+	init(items: [PlaylistItem], showCover: Bool, showAlbumTrackNumber: Bool, showArtist: Bool, showAlbum: Bool, playlist: Playlist?, session: Session, player: Player) {
+		self.items = items
+		self.tracks = items.compactMap(\.track)
+		self.showCover = showCover
+		self.showAlbumTrackNumber = showAlbumTrackNumber
+		self.showArtist = showArtist
+		self.showAlbum = showAlbum
+		self.playlist = playlist
+		self.session = session
+		self.player = player
+	}
+	
 	var body: some View {
 		LazyVStack {
-			ForEach(Array(tracks.enumerated()), id: \.offset) { index, track in
-				TrackRow(track: track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum,
-						 trackNumber: showAlbumTrackNumber ? nil : index, session: session)
-				.contentShape(.rect)
-				.onTapGesture(count: 2) {
-					play(track, at: index)
-				}
-				.accessibilityAction {
-					play(track, at: index)
-				}
-				.contextMenu {
-					TrackContextMenu(track: track, indexInPlaylist: playlist != nil ? index : nil, playlist: playlist, session: session, player: player)
+			ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+				switch item {
+				case .track(let track):
+					TrackRow(track: track, showCover: showCover, showArtist: showArtist, showAlbum: showAlbum, trackNumber: showAlbumTrackNumber ? nil : index, session: session)
+					.contentShape(.rect)
+					.onTapGesture(count: 2) {
+						play(track, at: index)
+					}
+					.accessibilityAction {
+						play(track, at: index)
+					}
+					.contextMenu {
+						TrackContextMenu(track: track, indexInPlaylist: playlist != nil ? index : nil, playlist: playlist, session: session, player: player)
+					}
+				case .video(let video):
+					VideoRow(video: video, showArtist: showArtist, showAlbum: showAlbum, session: session)
+					.contentShape(.rect)
+					.onTapGesture(count: 2) {
+						play(video)
+					}
+					.accessibilityAction {
+						play(video)
+					}
+					.contextMenu {
+						VideoContextMenu(video: video, indexInPlaylist: playlist != nil ? index : nil, playlist: playlist, session: session, player: player)
+					}
 				}
 				Divider()
 			}
@@ -43,10 +79,136 @@ struct TrackList: View {
 		.padding(.horizontal)
 	}
 	
+	/// - Parameter index: The position among the items, videos included
 	private func play(_ track: Track, at index: Int) {
 		guard track.isPlayable else { return }
 		logger.debug("\(track.id) \(track.title)")
-		player.add(tracks: tracks, .now, playAt: index)
+		let trackIndex = items[..<index].count { $0.track != nil }
+		player.add(tracks: tracks, .now, playAt: trackIndex)
+	}
+	
+	private func play(_ video: Video) {
+		guard video.streamReady else { return }
+		logger.debug("Video \(video.id) \(video.title)")
+		#if canImport(AppKit)
+		Task {
+			await player.play(video: video)
+		}
+		#endif
+	}
+}
+
+/// Column widths, as fractions of the row
+private struct ColumnWidths {
+	let title: CGFloat
+	let artist: CGFloat
+	let album: CGFloat
+	
+	init(showArtist: Bool, showAlbum: Bool) {
+		if showArtist && showAlbum { // Both
+			(title, artist, album) = (0.28, 0.28, 0.28)
+		} else if showArtist != showAlbum { // One
+			(title, artist, album) = (0.40, 0.40, 0.40)
+		} else { // None
+			(title, artist, album) = (0.66, 0.0, 0.0)
+		}
+	}
+}
+
+/// A video among the tracks of a playlist
+private struct VideoRow: View {
+	let video: Video
+	let showArtist: Bool
+	let showAlbum: Bool
+	let session: Session
+	
+	@Environment(ViewState.self) private var viewState
+	@Environment(Offline.self) private var offline
+	@Environment(FavoritesState.self) private var favoritesState
+	
+	private var widths: ColumnWidths {
+		ColumnWidths(showArtist: showArtist, showAlbum: showAlbum)
+	}
+	
+	var body: some View {
+		GeometryReader { metrics in
+			HStack {
+				HStack {
+					HStack {
+						if let imageUrl = video.imageUrl(session: session, resolution: 160) {
+							AsyncImage(url: imageUrl)
+							.aspectRatio(contentMode: .fill)
+							.frame(width: 30, height: 30)
+							.clipped()
+							.cornerRadius(CORNERRADIUS)
+							.accessibilityHidden(true)
+						} else {
+							Rectangle()
+								.fill(.black)
+								.frame(width: 30, height: 30)
+								.cornerRadius(CORNERRADIUS)
+						}
+						HStack(spacing: 4) {
+							Text(video.title)
+							Image(systemName: "play.rectangle")
+								.secondaryIconColor()
+								.accessibilityLabel("Video")
+								.help("Video")
+								.layoutPriority(1)
+							if video.explicit {
+								Text("􀂝")
+									.foregroundStyle(.secondary)
+									.layoutPriority(1)
+							}
+						}
+						Spacer(minLength: 5)
+					}
+					.frame(width: metrics.size.width * widths.title)
+					.help("\(video.title) – \(video.artists.formArtistString())")
+					if showArtist {
+						HStack {
+							Text(video.artists.formArtistString())
+							Spacer(minLength: 5)
+						}
+						.frame(width: metrics.size.width * widths.artist)
+						.help(video.artists.formArtistString())
+					}
+					if showAlbum {
+						Spacer(minLength: 0)
+							.frame(width: metrics.size.width * widths.album)
+					}
+				}
+				Group {
+					Text(secondsToHoursMinutesSecondsString(seconds: video.duration))
+					Spacer()
+					if offline.isVideoOffline(video: video) {
+						Image(systemName: "arrow.down.circle.fill")
+							.secondaryIconColor()
+					}
+					Button {
+						Task {
+							if favoritesState.contains(video: video) {
+								logger.debug("Remove video from Favorites")
+								if await favoritesState.removeVideo(videoId: video.id) {
+									viewState.refreshCurrentView()
+								}
+							} else {
+								logger.debug("Add video to Favorites")
+								await favoritesState.addVideo(videoId: video.id)
+							}
+						}
+					} label: {
+						Image(systemName: favoritesState.contains(video: video) ? "heart.fill" : "heart")
+							.accessibilityLabel("Favorite")
+							.accessibilityAddTraits(favoritesState.contains(video: video) ? .isSelected : [])
+					}
+					.buttonStyle(.plain)
+				}
+			}
+			.foregroundStyle(video.streamReady ? .primary : .secondary)
+		}
+		.lineLimit(1)
+		.frame(height: 30)
 	}
 }
 
@@ -58,9 +220,7 @@ private struct TrackRow: View {
 	let trackNumber: Int?
 	let session: Session
 	
-	private var widthFactorTrack: CGFloat
-	private var widthFactorArtist: CGFloat
-	private var widthFactorAlbum: CGFloat
+	private let widths: ColumnWidths
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(QueueInfo.self) private var queueInfo
@@ -80,20 +240,7 @@ private struct TrackRow: View {
 			self.trackNumber = nil
 		}
 		self.session = session
-		
-		if showArtist && showAlbum { // Both
-			self.widthFactorTrack = 0.28
-			self.widthFactorArtist = 0.28
-			self.widthFactorAlbum = 0.28
-		} else if showArtist != showAlbum { // One
-			self.widthFactorTrack = 0.40
-			self.widthFactorArtist = 0.40
-			self.widthFactorAlbum = 0.40
-		} else { // None
-			self.widthFactorTrack = 0.66
-			self.widthFactorArtist = 0.0
-			self.widthFactorAlbum = 0.0
-		}
+		self.widths = ColumnWidths(showArtist: showArtist, showAlbum: showAlbum)
 	}
 	
 	var body: some View {
@@ -137,14 +284,14 @@ private struct TrackRow: View {
 						}
 						Spacer(minLength: 5)
 					}
-					.frame(width: metrics.size.width * widthFactorTrack)
+					.frame(width: metrics.size.width * widths.title)
 					.help(trackToolTipString)
 					if showArtist {
 						HStack {
 							Text(track.artists.formArtistString())
 							Spacer(minLength: 5)
 						}
-						.frame(width: metrics.size.width * widthFactorArtist)
+						.frame(width: metrics.size.width * widths.artist)
 						.help(track.artists.formArtistString())
 					}
 					if showAlbum {
@@ -152,7 +299,7 @@ private struct TrackRow: View {
 							Text(track.album.title)
 							Spacer(minLength: 5)
 						}
-						.frame(width: metrics.size.width * widthFactorAlbum)
+						.frame(width: metrics.size.width * widths.album)
 						.help(track.album.title)
 					}
 				}

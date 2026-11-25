@@ -37,7 +37,7 @@ struct AddToPlaylistView: View {
 		ScrollView {
 			VStack {
 				if let playlists = playlists {
-					Text("\(playlistEditingValues.tracks.count) \(playlistEditingValues.tracks.count > 1 ? "tracks" : "track")")
+					Text(itemCountString)
 					Picker("Playlist", selection: $selectedPlaylist) {
 						ForEach(playlists) { playlist in
 							Text(playlist.title).tag(playlist.uuid)
@@ -69,7 +69,7 @@ struct AddToPlaylistView: View {
 				Text(showEmptyNameWarning ? "Playlist name can't be empty" : "")
 					.foregroundStyle(.red)
 				
-				Text("Duplicate tracks won't be added")
+				Text("Duplicates won't be added")
 					.foregroundStyle(.secondary)
 				
 				HStack {
@@ -82,8 +82,8 @@ struct AddToPlaylistView: View {
 					Button {
 						Task {
 							logger.debug("Add to \(selectedPlaylist)")
-							guard !playlistEditingValues.tracks.isEmpty else {
-								logger.error("Tried to add zero tracks to a playlist")
+							guard !playlistEditingValues.items.isEmpty else {
+								logger.error("Tried to add nothing to a playlist")
 								return
 							}
 							var playlistId = selectedPlaylist
@@ -100,7 +100,8 @@ struct AddToPlaylistView: View {
 								playlistId = playlist.uuid
 								selectedPlaylist = playlistId
 							}
-							let ids = playlistEditingValues.tracks.map { $0.id }
+							// Tidal takes video IDs here too
+							let ids = playlistEditingValues.items.map(\.mediaId)
 							let success = await session.playlistEditing.addTracks(ids, to: playlistId, duplicate: false)
 							if success {
 								if let playlist = await session.playlist(playlistId: playlistId) {
@@ -125,6 +126,20 @@ struct AddToPlaylistView: View {
 		.task {
 			await loadPlaylistsIfNeeded()
 		}
+	}
+	
+	private var itemCountString: String {
+		let items = playlistEditingValues.items
+		let trackCount = items.count { $0.track != nil }
+		let videoCount = items.count - trackCount
+		var parts: [String] = []
+		if trackCount > 0 || videoCount == 0 {
+			parts.append(trackCount == 1 ? "1 track" : "\(trackCount) tracks")
+		}
+		if videoCount > 0 {
+			parts.append(videoCount == 1 ? "1 video" : "\(videoCount) videos")
+		}
+		return parts.joined(separator: ", ")
 	}
 	
 	private func loadPlaylistsIfNeeded() async {

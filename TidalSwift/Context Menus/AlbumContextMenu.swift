@@ -91,7 +91,7 @@ struct AlbumContextMenu: View {
 						Task {
 							logger.debug("Add \(album.title) to Playlist")
 							if let tracks = await session.albumTracks(albumId: album.id) {
-								playlistEditingValues.tracks = tracks
+								playlistEditingValues.set(tracks: tracks)
 								playlistEditingValues.showAddTracksModal = true
 							}
 						}

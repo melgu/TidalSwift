@@ -33,5 +33,5 @@ struct ViewCache: Codable {
 	var artistAlbumsAppearances: [Int: [Album]] = [:]
 	var artistVideos: [Int: [Video]] = [:]
 	var albumTracks: [Int: [Track]] = [:]
-	var playlistTracks: [String: [Track]] = [:]
+	var playlistItems: [String: [PlaylistItem]] = [:]
 }

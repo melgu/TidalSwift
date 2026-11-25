@@ -20,7 +20,7 @@ extension ViewState {
 			return
 		}
 		
-		view.tracks = cache.playlistTracks[playlist.id]
+		view.setPlaylistItems(cache.playlistItems[playlist.id])
 		view.loadingState = .loading
 		replaceCurrentView(with: view)
 		
@@ -42,19 +42,26 @@ extension ViewState {
 			return
 		}
 		
-		view.tracks = await session.playlistTracks(playlistId: playlist.id)
-		
-		if view.tracks != nil {
+		if let items = await session.playlistItems(playlistId: playlist.id) {
 			guard !Task.isCancelled else { return }
+			view.setPlaylistItems(items)
 			view.loadingState = .successful
-			cache.playlistTracks[playlist.id] = view.tracks
+			cache.playlistItems[playlist.id] = items
 			offline.syncPlaylist(playlist)
 		} else {
 			view.loadingState = .error
-			view.tracks = await offline.getTracks(for: playlist)
+			view.setPlaylistItems(await offline.getItems(for: playlist))
 		}
 		
 		guard !Task.isCancelled else { return }
 		replaceCurrentView(with: view)
+	}
+}
+
+extension TidalSwiftView {
+	/// Also sets the tracks, for everything that only plays those
+	mutating func setPlaylistItems(_ items: [PlaylistItem]?) {
+		playlistItems = items
+		tracks = items?.compactMap(\.track)
 	}
 }

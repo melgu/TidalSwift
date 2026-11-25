@@ -29,7 +29,7 @@ struct PlaylistView: View {
 		ZStack {
 			ScrollView {
 				VStack(alignment: .leading) {
-					if let tracks = viewState.stack.last?.tracks,
+					if let items = viewState.stack.last?.playlistItems,
 					   let playlist = viewState.stack.last?.playlist,
 			   let imageUrlSmall = playlist.imageUrl(session: session, resolution: 320),
 			   let imageUrlBig = playlist.imageUrl(session: session, resolution: 750) {
@@ -107,6 +107,10 @@ struct PlaylistView: View {
 								VStack(alignment: .leading) {
 									Text("\(playlist.numberOfTracks) Tracks")
 										.foregroundStyle(.secondary)
+									if playlist.numberOfVideos > 0 {
+										Text(playlist.numberOfVideos == 1 ? "1 Video" : "\(playlist.numberOfVideos) Videos")
+											.foregroundStyle(.secondary)
+									}
 									Text(secondsToHoursMinutesSecondsString(seconds: playlist.duration))
 										.foregroundStyle(.secondary)
 									Spacer()
@@ -141,7 +145,7 @@ struct PlaylistView: View {
 						.frame(height: 100)
 						.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
 						
-						TrackList(tracks: tracks, showCover: true, showAlbumTrackNumber: false,
+						TrackList(items: items, showCover: true, showAlbumTrackNumber: false,
 								  showArtist: true, showAlbum: true, playlist: isUserPlaylist ? playlist : nil,
 								  session: session, player: player)
 					} else {

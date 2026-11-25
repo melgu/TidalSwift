@@ -27,8 +27,15 @@ public final class OfflineDB {
 	
 	private func updateTracks() {
 		let albumTracks = albums.flatMap { self.albumTracks[$0] ?? [] }
-		let playlistTracks = playlists.flatMap { self.playlistTracks[$0] ?? [] }
+		let playlistTracks = playlists.flatMap { (self.playlistItems[$0] ?? []).compactMap(\.track) }
 		tracks = Set((favoriteTracks + albumTracks + playlistTracks).filter(\.isPlayable))
+	}
+	
+	/// All videos needed offline: the ones added on their own, then the ones of offline playlists
+	var allVideos: [Video] {
+		var seen = Set<Int>()
+		let playlistVideos = playlists.flatMap { (playlistItems[$0] ?? []).compactMap(\.video) }
+		return (videos + playlistVideos).filter { seen.insert($0.id).inserted }
 	}
 	
 	private(set) var favoriteTracks: [Track] = [] { // Used for Favorites
@@ -77,16 +84,17 @@ public final class OfflineDB {
 		playlists.removeAll(where: { $0 == playlist })
 	}
 	
-	fileprivate var playlistTracks: [Playlist: [Track]] = [:] {
+	fileprivate var playlistItems: [Playlist: [PlaylistItem]] = [:] {
 		didSet {
 			updateTracks()
 			save()
 		}
 	}
-	fileprivate func setTracks(for playlist: Playlist, to tracks: [Track]?) {
-		playlistTracks[playlist] = tracks
+	fileprivate func setItems(for playlist: Playlist, to items: [PlaylistItem]?) {
+		playlistItems[playlist] = items
 	}
 	
+	/// Added on their own, not as part of a playlist
 	fileprivate var videos: [Video] = [] {
 		didSet {
 			save()
@@ -131,13 +139,17 @@ public final class OfflineDB {
 				self.playlists = []
 			}
 		}
-		if let data = UserDefaults.standard.data(forKey: "OfflineDB:PlaylistTracks") {
-			if let temp = try? JSONDecoder().decode([Playlist: [Track]].self, from: data) {
-				self.playlistTracks = temp
+		if let data = UserDefaults.standard.data(forKey: "OfflineDB:PlaylistItems") {
+			if let temp = try? JSONDecoder().decode([Playlist: [PlaylistItem]].self, from: data) {
+				self.playlistItems = temp
 			} else {
-				self.playlistTracks = [:]
+				self.playlistItems = [:]
 			}
+		} else if let data = UserDefaults.standard.data(forKey: "OfflineDB:PlaylistTracks"), let temp = try? JSONDecoder().decode([Playlist: [Track]].self, from: data) {
+			// Stored before playlists kept their videos. The next sync replaces the tracks Tidal had in place of the videos.
+			self.playlistItems = temp.mapValues { $0.map(PlaylistItem.track) }
 		}
+		UserDefaults.standard.removeObject(forKey: "OfflineDB:PlaylistTracks")
 		if let data = UserDefaults.standard.data(forKey: "OfflineDB:Videos") {
 			if let temp = try? JSONDecoder().decode([Video].self, from: data) {
 				self.videos = temp
@@ -150,7 +162,7 @@ public final class OfflineDB {
 		let albums = self.albums
 		let playlists = self.playlists
 		self.albumTracks = self.albumTracks.filter { albums.contains($0.key) }
-		self.playlistTracks = self.playlistTracks.filter { playlists.contains($0.key) }
+		self.playlistItems = self.playlistItems.filter { playlists.contains($0.key) }
 		
 		updateTracks()
 	}
@@ -160,7 +172,7 @@ public final class OfflineDB {
 		albums = []
 		albumTracks = [:]
 		playlists = []
-		playlistTracks = [:]
+		playlistItems = [:]
 		videos = []
 	}
 	
@@ -177,8 +189,8 @@ public final class OfflineDB {
 		let playlistsData = try? JSONEncoder().encode(playlists)
 		UserDefaults.standard.set(playlistsData, forKey: "OfflineDB:Playlists")
 		
-		let playlistTracksData = try? JSONEncoder().encode(playlistTracks)
-		UserDefaults.standard.set(playlistTracksData, forKey: "OfflineDB:PlaylistTracks")
+		let playlistItemsData = try? JSONEncoder().encode(playlistItems)
+		UserDefaults.standard.set(playlistItemsData, forKey: "OfflineDB:PlaylistItems")
 		
 		let videosData = try? JSONEncoder().encode(videos)
 		UserDefaults.standard.set(videosData, forKey: "OfflineDB:Videos")
@@ -537,7 +549,7 @@ public final class Offline {
 		guard let localFiles = localVideoFilesByVideoId() else {
 			return
 		}
-		let videos = db.videos
+		let videos = db.allVideos
 		
 		for (videoId, file) in localFiles where !videos.contains(where: { $0.id == videoId }) {
 			logger.debug("Removing video \(videoId)")
@@ -712,8 +724,12 @@ public final class Offline {
 		db.playlists.contains(playlist)
 	}
 	
+	public func getItems(for playlist: Playlist) async -> [PlaylistItem]? {
+		await db.playlistItems[playlist]
+	}
+	
 	public func getTracks(for playlist: Playlist) async -> [Track]? {
-		await db.playlistTracks[playlist]
+		await getItems(for: playlist)?.compactMap(\.track)
 	}
 	
 	private func syncPlaylists() async {
@@ -734,19 +750,19 @@ public final class Offline {
 		logger.debug("Sync Playlist: \(playlist.title)")
 		
 		if await db.playlists.contains(playlist) {
-			if let tracks = await session.playlistTracks(playlistId: playlist.id) {
-				logger.debug("Playlist tracks: \(tracks.map { $0.id })")
+			if let items = await session.playlistItems(playlistId: playlist.id) {
+				logger.debug("Playlist items: \(items.map(\.mediaId))")
 				// Removed while loading, e.g. by removing everything
 				if await db.playlists.contains(playlist) {
-					await db.setTracks(for: playlist, to: tracks)
+					await db.setItems(for: playlist, to: items)
 				}
 			} else {
-				// Keep the stored tracks and carry on with the other playlists
-				displayError(title: "Offline: Error while synchronizing Playlist Tracks", content: "Couldn't load playlist tracks from Tidal API.")
+				// Keep the stored items and carry on with the other playlists
+				displayError(title: "Offline: Error while synchronizing Playlist Items", content: "Couldn't load playlist items from Tidal API.")
 			}
 		} else {
-			logger.debug("Playlist isn't marked to be offline, so deleting offline tracks, if there are any")
-			await db.setTracks(for: playlist, to: nil)
+			logger.debug("Playlist isn't marked to be offline, so deleting offline items, if there are any")
+			await db.setItems(for: playlist, to: nil)
 		}
 		
 		// Outro
@@ -779,24 +795,30 @@ public final class Offline {
 	
 	public func remove(playlist: Playlist) async {
 		await db.remove(playlist)
-		await db.setTracks(for: playlist, to: nil)
+		await db.setItems(for: playlist, to: nil)
 		asyncSync()
 	}
 	
 	// MARK: - Video
 	
-	/// In the order they were added
+	/// In the order they were added, then the ones of offline playlists
 	public func allOfflineVideos() -> [Video] {
-		db.videos
+		db.allVideos
 	}
 	
+	/// Also true for the videos of offline playlists
 	public func isVideoOffline(video: Video) -> Bool {
+		db.allVideos.contains(video)
+	}
+	
+	/// Whether the video was made available offline on its own, so removing it is possible
+	public func isVideoOfflineOnItsOwn(video: Video) -> Bool {
 		db.videos.contains(video)
 	}
 	
 	/// The downloaded file, once the video is offline and downloaded
 	public func url(for video: Video) -> URL? {
-		guard db.videos.contains(video) else {
+		guard db.allVideos.contains(video) else {
 			return nil
 		}
 		return localVideoFilesByVideoId()?[video.id]

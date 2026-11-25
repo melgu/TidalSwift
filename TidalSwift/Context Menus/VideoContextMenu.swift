@@ -14,12 +14,16 @@ private let logger = Logger(category: "VideoContextMenu")
 
 struct VideoContextMenu: View {
 	let video: Video
+	/// Only set when showing one of the user's playlists
+	var indexInPlaylist: Int? = nil
+	var playlist: Playlist? = nil
 	let session: Session
 	let player: Player
 	
 	@Environment(ViewState.self) private var viewState
 	@Environment(Offline.self) private var offline
 	@Environment(FavoritesState.self) private var favoritesState
+	@Environment(PlaylistEditingValues.self) private var playlistEditingValues
 	
 	private var isOffline: Bool {
 		offline.isVideoOffline(video: video)
@@ -81,11 +85,27 @@ struct VideoContextMenu: View {
 				if video.streamReady {
 					Button {
 						logger.debug("Add \(video.title) to Playlist")
+						playlistEditingValues.items = [.video(video)]
+						playlistEditingValues.showAddTracksModal = true
 					} label: {
 						Text("Add to Playlist …")
 					}
+				}
+				if let indexInPlaylist, let playlist {
+					Button {
+						logger.debug("Remove \(video.title) from Playlist")
+						playlistEditingValues.items = [.video(video)]
+						playlistEditingValues.indexToRemove = indexInPlaylist
+						playlistEditingValues.playlist = playlist
+						playlistEditingValues.showRemoveTracksModal = true
+					} label: {
+						Text("Remove from Playlist …")
+					}
+				}
+				if video.streamReady {
 					Divider()
-					if isOffline {
+					// The videos of offline playlists stay offline with their playlist
+					if offline.isVideoOfflineOnItsOwn(video: video) {
 						Button {
 							logger.debug("Remove from Offline")
 							offline.remove(video: video)
@@ -93,7 +113,7 @@ struct VideoContextMenu: View {
 						} label: {
 							Text("Remove from Offline")
 						}
-					} else {
+					} else if !isOffline {
 						Button {
 							logger.debug("Add to Offline")
 							offline.add(video: video)

@@ -12,7 +12,13 @@ import TidalSwiftLib
 @Observable
 final class PlaylistEditingValues {
 	var showAddTracksModal: Bool = false
-	var tracks: [Track] = []
+	/// The tracks and videos to add, or the one to remove
+	var items: [PlaylistItem] = []
+	
+	/// Sets the tracks to add, or the one to remove
+	func set(tracks: [Track]) {
+		items = tracks.map(PlaylistItem.track)
+	}
 	
 	var showRemoveTracksModal: Bool = false
 	var indexToRemove: Int?

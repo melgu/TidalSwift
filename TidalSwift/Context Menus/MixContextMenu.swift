@@ -54,7 +54,7 @@ struct MixContextMenu: View {
 				Task {
 					logger.debug("Add \(mix.title) to Playlist")
 					if let tracks = await session.mixPlaylistTracks(mixId: mix.id) {
-						playlistEditingValues.tracks = tracks
+						playlistEditingValues.set(tracks: tracks)
 						playlistEditingValues.showAddTracksModal = true
 					}
 				}

@@ -87,8 +87,8 @@ struct PlaylistContextMenu: View {
 				Button {
 					Task {
 						logger.debug("Add \(playlist.title) to Playlist")
-						if let tracks = await session.playlistTracks(playlistId: playlist.uuid) {
-							playlistEditingValues.tracks = tracks
+						if let items = await session.playlistItems(playlistId: playlist.uuid) {
+							playlistEditingValues.items = items
 							playlistEditingValues.showAddTracksModal = true
 						}
 					}

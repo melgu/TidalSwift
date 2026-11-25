@@ -426,7 +426,8 @@ class Player {
 	
 	func add(playlist: Playlist, _ when: When) {
 		Task {
-			let apiTracks = await session.playlistTracks(playlistId: playlist.uuid)
+			// Videos are left out, as they open in a window of their own. The track list would have their "Audio from video" track instead.
+			let apiTracks = await session.playlistItems(playlistId: playlist.uuid)?.compactMap(\.track)
 			let offlineTracks = await offline.getTracks(for: playlist)
 			if let tracks = apiTracks ?? offlineTracks {
 				add(tracks: tracks, when)

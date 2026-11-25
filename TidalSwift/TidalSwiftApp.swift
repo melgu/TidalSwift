@@ -612,7 +612,7 @@ final class TidalSwiftAppModel {
 	func addCurrentTrackToPlaylist() {
 		guard hasCurrentTrack else { return }
 		let track = player.queueInfo.queue[player.queueInfo.currentIndex]
-		playlistEditingValues.tracks = [track]
+		playlistEditingValues.set(tracks: [track])
 		playlistEditingValues.showAddTracksModal = true
 	}
 	
@@ -638,7 +638,7 @@ final class TidalSwiftAppModel {
 	
 	func addQueueToPlaylist() {
 		let tracks = player.queueInfo.queue
-		playlistEditingValues.tracks = tracks
+		playlistEditingValues.set(tracks: tracks)
 		playlistEditingValues.showAddTracksModal = true
 	}
 	
